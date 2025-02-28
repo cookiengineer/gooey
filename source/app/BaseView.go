@@ -7,9 +7,7 @@ type BaseView struct {
 }
 
 func (view BaseView) Init() {
-
 	view.Elements = make(map[string]*dom.Element)
-
 }
 
 func (view BaseView) Enter() bool {

@@ -1,20 +1,23 @@
 package app
 
-import "encoding/json"
 import "gooey/dom"
-import "gooey/storages"
 
 type Main struct {
 	Element *dom.Element     `json:"element"`
-	Storage storages.Storage `json:"storage"`
+	Client  *Client          `json:"client"`
+	Storage *Storage         `json:"storage"`
 	View    View             `json:"view"`
 	Views   map[string]View  `json:"views"`
 }
 
 func (main *Main) Init(element *dom.Element) {
 
+	client := NewClient()
+	storage := NewStorage()
+
 	main.Element = element
-	main.Storage = storages.LocalStorage
+	main.Client  = &client
+	main.Storage = &storage
 	main.View    = nil
 	main.Views   = make(map[string]View)
 
@@ -52,22 +55,3 @@ func (main *Main) ChangeView(name string) bool {
 
 }
 
-func (main *Main) ReadItem(name string, schema any) {
-
-	buffer := main.Storage.GetItemBytes(name)
-
-	if len(buffer) > 0 {
-		json.Unmarshal(buffer, &schema)
-	}
-
-}
-
-func (main *Main) SaveItem(name string, data any)  {
-
-	buffer, err := json.Marshal(data)
-
-	if err == nil {
-		main.Storage.SetItem(name, buffer)
-	}
-
-}

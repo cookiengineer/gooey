@@ -19,6 +19,14 @@ It bridges the gaps between Go, WebASM, Browser APIs, unified App Layouts and re
 - Dynamic elements can be removed from the DOM
 - Dynamic elements should not have DOM event listeners
 
+**App Architecture**
+
+- [app.Main](/source/app/Main.go)
+- [app.Client](/source/app/Client.go)
+- [app.Storage](/source/app/Storage.go)
+- [app.View](/source/app/View.go) interface
+- [app.BaseView](/source/app/BaseView.go) class
+
 **App Layout**
 
 - App Layout always consists of `header`, `main`, and `footer` elements
