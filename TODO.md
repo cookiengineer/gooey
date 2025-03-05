@@ -3,13 +3,12 @@
 
 ## Bindings
 
-### Fetch API
+### Encoding API
 
-[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch)
+[Encoders and Decoders](https://encoding.spec.whatwg.org/#encoders-and-decoders):
 
-- [ ] Currently upstream `chan` support seems broken, and it always hangs when using `go` compiler.
-      The code works in `tinygo` so it's being kept for now, as it will have async behavior as
-      expected from `fetch()` calls.
+- [ ] encoding/TextDecoder
+- [ ] encoding/TextEncoder
 
 
 ### Navigator API
@@ -53,14 +52,6 @@
 - [ ] canvas/OffscreenCanvas
 - [ ] canvas/OffscreenCanvasRenderingContext2D
 - [ ] canvas/ImageBitmapRenderingContext
-
-
-### Encoding API
-
-[Encoders and Decoders](https://encoding.spec.whatwg.org/#encoders-and-decoders):
-
-- [ ] encoding/TextDecoder
-- [ ] encoding/TextEncoder
 
 
 ### Crypto API
