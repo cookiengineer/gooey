@@ -48,6 +48,7 @@ func init() {
 		Search:   value.Get("search").String(),
 		Hash:     value.Get("hash").String(),
 		Origin:   origin,
+		Value:    &value,
 	}
 
 }
@@ -67,20 +68,26 @@ type location struct {
 
 func (location *location) Assign(url string) {
 
-	location.Value.Call("assign", js.ValueOf(url))
-	onchange(location)
+	if location.Value != nil && !location.Value.IsNull() && !location.Value.IsUndefined() {
+		location.Value.Call("assign", js.ValueOf(url))
+		onchange(location)
+	}
 
 }
 
 func (location *location) Reload() {
 
-	location.Value.Call("reload")
+	if location.Value != nil && !location.Value.IsNull() && !location.Value.IsUndefined() {
+		location.Value.Call("reload")
+	}
 
 }
 
 func (location *location) Replace(url string) {
 
-	location.Value.Call("replace", js.ValueOf(url))
-	onchange(location)
+	if location.Value != nil && !location.Value.IsNull() && !location.Value.IsUndefined() {
+		location.Value.Call("replace", js.ValueOf(url))
+		onchange(location)
+	}
 
 }
