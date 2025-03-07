@@ -75,6 +75,10 @@ func (element *Element) AddEventListener(typ EventType, listener EventListener) 
 
 }
 
+func (element *Element) Remove() {
+	element.Value.Call("remove")
+}
+
 func (element *Element) RemoveEventListener(typ EventType, listener *EventListener) bool {
 
 	var result bool = false
@@ -255,6 +259,48 @@ func (element *Element) GetBoundingClientRect() *Rect {
 	}
 
 	return result
+
+}
+
+func (element *Element) InsertAdjacentElement(position string, other Element) {
+
+	if position == "beforebegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+	} else if position == "afterbegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+	} else if position == "beforeend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+	} else if position == "afterend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+	}
+
+}
+
+func (element *Element) InsertAdjacentHTML(position string, value string) {
+
+	if position == "beforebegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterbegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "beforeend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	}
+
+}
+
+func (element *Element) InsertAdjacentText(position string, value string) {
+
+	if position == "beforebegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterbegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "beforeend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	}
 
 }
 
