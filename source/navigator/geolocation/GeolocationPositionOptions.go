@@ -1,4 +1,4 @@
-package navigator
+package geolocation
 
 type GeolocationPositionOptions struct {
 	MaximumAge         uint `json:"maximumAge"`

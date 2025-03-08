@@ -1,7 +1,7 @@
 package main
 
 import "gooey"
-import "gooey/navigator"
+import "gooey/navigator/geolocation"
 import "strconv"
 import "time"
 
@@ -13,26 +13,26 @@ func main() {
 	element_accuracy := gooey.Document.QuerySelector("#accuracy")
 	element_error := gooey.Document.QuerySelector("#error")
 
-	navigator.Geolocation.GetCurrentPosition(func(position navigator.GeolocationPosition) {
+	geolocation.Geolocation.GetCurrentPosition(func(position geolocation.GeolocationPosition) {
 
 		element_latitude.SetInnerHTML(strconv.FormatFloat(position.Coords.Latitude, 'g', -1, 64))
 		element_longitude.SetInnerHTML(strconv.FormatFloat(position.Coords.Longitude, 'g', -1, 64))
 		element_altitude.SetInnerHTML(strconv.FormatFloat(position.Coords.Altitude, 'g', -1, 64))
 		element_accuracy.SetInnerHTML(strconv.FormatFloat(position.Coords.Accuracy, 'g', -1, 64) + " meters")
 
-	}, func(err navigator.GeolocationPositionError) {
+	}, func(err geolocation.GeolocationPositionError) {
 
 		switch err {
-		case navigator.GeolocationPositionErrorUnknown:
+		case geolocation.GeolocationPositionErrorUnknown:
 			element_error.SetInnerHTML("Unknown Error")
 			break
-		case navigator.GeolocationPositionErrorPermissionDenied:
+		case geolocation.GeolocationPositionErrorPermissionDenied:
 			element_error.SetInnerHTML("Permission Denied")
 			break
-		case navigator.GeolocationPositionErrorPositionUnavailable:
+		case geolocation.GeolocationPositionErrorPositionUnavailable:
 			element_error.SetInnerHTML("Position Unavailable")
 			break
-		case navigator.GeolocationPositionErrorTimeout:
+		case geolocation.GeolocationPositionErrorTimeout:
 			element_error.SetInnerHTML("Timeout")
 			break
 		}

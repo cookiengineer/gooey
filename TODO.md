@@ -11,19 +11,26 @@
 - [ ] encoding/TextEncoder
 
 
+## CookieStore API
+
+[CookieStore Object](https://developer.mozilla.org/en-US/docs/Web/API/CookieStore)
+
+
 ### Navigator API
 
 [Navigator Object](https://html.spec.whatwg.org/multipage/system-state.html#the-navigator-object):
 
-- Navigator
-- OnLine
+- [ ] OnLine property might change
+- [ ] DoNotTrack property might change
+- [ ] CookieEnabled property might change
+
+- [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/clipboard)
 - [Credentials API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/credentials)
 - [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation)
 - [Keyboard API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/keyboard)
 - [Language API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/language)
 - [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/permissions)
 - [Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/storage)
-- [UserAgent API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/userAgent)
 - [VirtualKeyBoard API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/virtualKeyboard)
 - [Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate)
 

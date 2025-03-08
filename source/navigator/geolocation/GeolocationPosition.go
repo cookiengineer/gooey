@@ -1,4 +1,4 @@
-package navigator
+package geolocation
 
 import "syscall/js"
 import "time"
