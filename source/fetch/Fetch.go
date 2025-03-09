@@ -15,17 +15,17 @@ func Fetch(url string, request *Request) (*Response, error) {
 	channel := make(chan *fetch_state)
 	done := make(chan struct{}, 1)
 
-	mapped_options := make(map[string]interface{})
+	wrapped_options := make(map[string]interface{})
 
 	if request != nil {
 
-		mapped_options = request.MapToJS()
+		wrapped_options = request.MapToJS()
 
 		if request.Signal != nil {
 
 			controller := js.Global().Get("AbortController").New()
 			signal := controller.Get("signal")
-			mapped_options["signal"] = signal
+			wrapped_options["signal"] = signal
 
 			go func() {
 				select {
@@ -59,7 +59,7 @@ func Fetch(url string, request *Request) (*Response, error) {
 			array := js.Global().Get("Uint8Array").New(len(buffer))
 			js.CopyBytesToJS(array, buffer)
 
-			mapped_options["body"] = array
+			wrapped_options["body"] = array
 
 		}
 
@@ -97,7 +97,7 @@ func Fetch(url string, request *Request) (*Response, error) {
 
 	defer on_failure.Release()
 
-	go js.Global().Call("fetch", url, mapped_options).Call("then", on_success).Call("catch", on_failure)
+	go js.Global().Call("fetch", url, wrapped_options).Call("then", on_success).Call("catch", on_failure)
 
 	state := <-channel
 

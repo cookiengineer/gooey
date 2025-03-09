@@ -21,55 +21,55 @@ type Request struct {
 
 func (request *Request) MapToJS() map[string]any {
 
-	mapped := make(map[string]any)
+	result := make(map[string]any)
 
 	if tmp := request.Method.String(); tmp != "" {
-		mapped["method"] = request.Method.String()
+		result["method"] = request.Method.String()
 	}
 
 	if len(request.Headers) > 0 {
 
-		mapped_headers := make(map[string]any)
+		result_headers := make(map[string]any)
 
 		for key, val := range request.Headers {
-			mapped_headers[key] = val
+			result_headers[key] = val
 		}
 
 	}
 
 	if tmp := request.Mode.String(); tmp != "" {
-		mapped["mode"] = request.Mode.String()
+		result["mode"] = request.Mode.String()
 	}
 
 	if tmp := request.Credentials.String(); tmp != "" {
-		mapped["credentials"] = request.Credentials.String()
+		result["credentials"] = request.Credentials.String()
 	}
 
 	if tmp := request.Cache.String(); tmp != "default" && tmp != "" {
-		mapped["cache"] = request.Cache.String()
+		result["cache"] = request.Cache.String()
 	}
 
 	if tmp := request.Redirect.String(); tmp != "follow" && tmp != "" {
-		mapped["redirect"] = request.Redirect.String()
+		result["redirect"] = request.Redirect.String()
 	}
 
 	if request.Referrer != "" {
-		mapped["referrer"] = request.Referrer
+		result["referrer"] = request.Referrer
 	}
 
 	if request.ReferrerPolicy != "" {
-		mapped["referrerPolicy"] = request.ReferrerPolicy
+		result["referrerPolicy"] = request.ReferrerPolicy
 	}
 
 	if request.Integrity != "" {
-		mapped["integrity"] = request.Integrity
+		result["integrity"] = request.Integrity
 	}
 
 	if request.KeepAlive != false {
-		mapped["keepalive"] = request.KeepAlive
+		result["keepalive"] = request.KeepAlive
 	}
 
-	return mapped
+	return result
 
 }
 
