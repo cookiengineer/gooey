@@ -55,10 +55,6 @@ func Encrypt(iv []byte, key *CryptoKey, buffer []byte) ([]byte, error) {
 
 	})
 
-	js.Global().Get("console").Call("log", wrapped_algorithm)
-	js.Global().Get("console").Call("log", wrapped_key)
-	js.Global().Get("console").Call("log", wrapped_buffer)
-
 	defer on_failure.Release()
 
 	go js.Global().Get("window").Get("crypto").Get("subtle").Call("encrypt", wrapped_algorithm, wrapped_key, wrapped_buffer).Call("then", on_success).Call("catch", on_failure)
