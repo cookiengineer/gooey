@@ -50,96 +50,31 @@ Note: This is currently work-in-progress
 - Web Forms are fulfill an `interface` with `Validate() bool, err`
 
 
-# Bindings
+## Implementation Details
 
-- [x] [Document](/source/Document.go)
-- [x] [Screen](/source/Screen.go)
-- [x] [ScreenOrientation](/source/ScreenOrientation.go)
-- [x] [Window](/source/Window.go)
-
-**animations**
-
-- [x] [animations/CancelAnimationFrame](/source/animations/CancelAnimationFrame.go)
-- [x] [animations/RequestAnimationFrame](/source/animations/RequestAnimationFrame.go)
-
-**dom**
-
-- [x] [dom/Element](/source/dom/Element.go)
-- [x] [dom/Event](/source/dom/Event.go)
-- [x] [dom/EventListener](/source/dom/EventListener.go)
-- [x] [dom/EventPhase](/source/dom/EventPhase.go)
-- [x] [dom/EventType](/source/dom/EventType.go)
-
-**fetch**
-
-Note: If you run into problems, use the [Synchronous XMLHttpRequest](/source/xhr/XMLHttpRequest_sync.go) APIs instead.
-
-- [x] [fetch/Fetch](/source/fetch/Fetch.go) [2]
-- [x] [fetch/Headers](/source/fetch/Headers.go)
-- [x] [fetch/Request](/source/fetch/Request.go) (or `RequestInit` object)
-- [x] [fetch/Response](/source/fetch/Response.go)
-
-Fetch RequestInit Properties:
-
-- [x] [fetch/Cache](/source/fetch/Cache.go)
-- [x] [fetch/Credentials](/source/fetch/Credentials.go)
-- [x] [fetch/Method](/source/fetch/Method.go)
-- [x] [fetch/Mode](/source/fetch/Mode.go)
-- [x] [fetch/Redirect](/source/fetch/Redirect.go)
-- [x] `Referrer` has to be a `string` due to arbitrary URL values.
-- [x] [fetch/ReferrerPolicy](/source/fetch/ReferrerPolicy.go)
-
-**location**
-
-- [x] [location/Location](/source/location/Location.go)
-
-**navigator**
-
-- [x] [navigator/Geolocation](/source/navigator/Geolocation.go)
-- [x] [navigator/GeolocationPosition](/source/navigator/GeolocationPosition.go)
-- [x] [navigator/GeolocationPositionError](/source/navigator/GeolocationPositionError.go)
-- [x] [navigator/GeolocationPositionOptions](/source/navigator/GeolocationPositionOptions.go) [1]
-
-**storages**
-
-- [x] [storages/LocalStorage](/source/storages/LocalStorage.go)
-- [x] [storages/SessionStorage](/source/storages/SessionStorage.go)
-
-**timers**
-
-- [x] [timers/ClearInterval](/source/timers/ClearInterval.go)
-- [x] [timers/ClearTimeout](/source/timers/ClearTimeout.go)
-- [x] [timers/SetInterval](/source/timers/SetInterval.go)
-- [x] [timers/SetTimeout](/source/timers/SetTimeout.go)
-
-**xhr**
-
-- [x] [xhr/Method](/source/xhr/Method.go)
-- [x] [xhr/XMLHttpRequest](/source/xhr/XMLHttpRequest.go) [2]
-- [x] Synchronous [xhr/XMLHttpRequest](/source/xhr/XMLHttpRequest_sync.go)
-
-
---------
-
-[1] This feature is implemented, but not supported across all Browsers. It is disabled to prevent WebASM runtime errors that are irrecoverable.
-
-[2] This feature is implemented asynchronously and uses a go `chan`. It only works with `tinygo` as a compiler as of now. If your WebASM binary
-    hangs when using this, use the synchronous XMLHttpRequest APIs instead.
-
-
-## Work-in-Progress
-
-Currently, this library is in a working state, but also a bit experimental due to the nature of
-upstream WebASM support quirks. There's a separate [TODO.md](/TODO.md) that tries to reflect what
-is not working yet and what is being implemented in the future.
+- [docs/BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented bindings
+- [TODO.md](/TODO.md) documents the work-in-progress of things that will be implemented next
 
 
 ## Examples
 
-There's the [examples](/examples) folder that contains small test projects that you can use
-to find out how APIs work in detail. They are similar to unit tests in nature, because `go test`
-cannot generate binaries for the `syscall/js` platform.
+The [examples](/examples) folder contains minimal test cases that show how you can
+use the bindings. They also contain a separate `main.go` which is compiled into a
+`main.wasm` file and a `serve.go` which reflects the local webserver.
 
+All examples are served on `http://localhost:3000` if you execute the `build.sh`.
+
+These examples also serve as unit tests, because `go test` cannot generate binaries
+for the `syscall/js` platform.
+
+- [crypto-aescbc](/examples/crypto-aescbc/main.go)
+- [elements](/examples/elements/main.go)
+- [fetch](/examples/fetch/main.go)
+- [history](/examples/history/main.go)
+- [location](/examples/location/main.go)
+- [navigator](/examples/navigator/main.go)
+- [navigator-geolocation](/examples/navigator-geolocation/main.go)
+- [storages](/examples/storages/main.go)
 
 ## Projects
 

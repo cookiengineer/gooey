@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Crypto AES-CBC Example</title>
+	</head>
+	<body>
+		<main>
+			<article>
+				<h3>Step 1: Generate Key<h3>
+				<pre id="generated-key">(this shows the generated CryptoKey)</pre>
+			</article>
+
+			<article>
+				<h3>Step 2: Encrypt Message with IV and CryptoKey</h3>
+				<pre id="encrypted-buffer">(this shows the encrypted buffer)</pre>
+			</article>
+
+			<article>
+				<h3>Step 3: Decrypt Message with IV and CryptoKey</h3>
+				<pre id="decrypted-buffer">(this shows the decrypted buffer)</pre>
+			</article>
+		</main>
+		<script src="wasm_exec.js"></script>
+		<script src="wasm_init.js"></script>
+	</body>
+</html>

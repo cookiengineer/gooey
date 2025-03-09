@@ -2,7 +2,7 @@ package crypto
 
 import "syscall/js"
 
-func GetRandomValues(length int) []uint8 {
+func GetRandomValues(length int) []byte {
 
 	buffer := make([]byte, length)
 	value := js.Global().Get("Uint8Array").New(length)
