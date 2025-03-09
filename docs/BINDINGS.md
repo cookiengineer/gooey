@@ -11,6 +11,16 @@
 - [x] [animations/CancelAnimationFrame](/source/animations/CancelAnimationFrame.go)
 - [x] [animations/RequestAnimationFrame](/source/animations/RequestAnimationFrame.go)
 
+**console**
+
+- [x] [console/Clear](/source/console/Clear.go)
+- [x] [console/Error](/source/console/Error.go)
+- [x] [console/Group](/source/console/Group.go)
+- [x] [console/GroupEnd](/source/console/GroupEnd.go)
+- [x] [console/Info](/source/console/Info.go)
+- [x] [console/Log](/source/console/Log.go)
+- [x] [console/Warn](/source/console/Warn.go)
+
 **crypto**
 
 The Web Crypto API has been split up into separate sub-packages, due to the `algorithm` parameters

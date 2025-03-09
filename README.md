@@ -67,6 +67,7 @@ All examples are served on `http://localhost:3000` if you execute the `build.sh`
 These examples also serve as unit tests, because `go test` cannot generate binaries
 for the `syscall/js` platform.
 
+- [console](/examples/console/main.go)
 - [crypto-aescbc](/examples/crypto-aescbc/main.go)
 - [elements](/examples/elements/main.go)
 - [fetch](/examples/fetch/main.go)
