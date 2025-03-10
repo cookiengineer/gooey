@@ -26,7 +26,7 @@ func Encrypt(iv []byte, key *CryptoKey, buffer []byte) ([]byte, error) {
 
 	on_success := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-		array := js.Global().Get("Uint8Array").New(args[0])
+		array  := js.Global().Get("Uint8Array").New(args[0])
 		buffer := make([]byte, array.Get("byteLength").Int())
 		js.CopyBytesToGo(buffer, array)
 
@@ -43,7 +43,7 @@ func Encrypt(iv []byte, key *CryptoKey, buffer []byte) ([]byte, error) {
 
 	on_failure := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-		value := args[0]
+		value   := args[0]
 		message := value.Get("message").String()
 
 		channel <- &encrypt_state{

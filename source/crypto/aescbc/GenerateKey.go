@@ -58,7 +58,7 @@ func GenerateKey(length int, extractable bool, usages []string) (*CryptoKey, err
 
 	if subtle.IsNull() || subtle.IsUndefined() {
 		err := errors.New("Error: Unsecure WebPage Context.")
-		return []byte{}, err
+		return nil, err
 	}
 
 	go subtle.Call("generateKey", wrapped_algorithm, wrapped_extractable, wrapped_usages).Call("then", on_success).Call("catch", on_failure)
