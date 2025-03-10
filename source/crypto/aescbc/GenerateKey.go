@@ -54,7 +54,14 @@ func GenerateKey(length int, extractable bool, usages []string) (*CryptoKey, err
 
 	defer on_failure.Release()
 
-	go js.Global().Get("window").Get("crypto").Get("subtle").Call("generateKey", wrapped_algorithm, wrapped_extractable, wrapped_usages).Call("then", on_success).Call("catch", on_failure)
+	subtle := js.Global().Get("crypto").Get("subtle")
+
+	if subtle.IsNull() || subtle.IsUndefined() {
+		err := errors.New("Error: Unsecure WebPage Context.")
+		return []byte{}, err
+	}
+
+	go subtle.Call("generateKey", wrapped_algorithm, wrapped_extractable, wrapped_usages).Call("then", on_success).Call("catch", on_failure)
 
 	state := <-channel
 

@@ -57,7 +57,14 @@ func Decrypt(iv []byte, key *CryptoKey, buffer []byte) ([]byte, error) {
 
 	defer on_failure.Release()
 
-	go js.Global().Get("window").Get("crypto").Get("subtle").Call("decrypt", wrapped_algorithm, wrapped_key, wrapped_buffer).Call("then", on_success).Call("catch", on_failure)
+	subtle := js.Global().Get("crypto").Get("subtle")
+
+	if subtle.IsNull() || subtle.IsUndefined() {
+		err := errors.New("Error: Unsecure WebPage Context.")
+		return []byte{}, err
+	}
+
+	go subtle.Call("decrypt", wrapped_algorithm, wrapped_key, wrapped_buffer).Call("then", on_success).Call("catch", on_failure)
 
 	state := <-channel
 
