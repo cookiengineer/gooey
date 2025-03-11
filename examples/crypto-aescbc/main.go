@@ -68,6 +68,33 @@ func main() {
 	element4.SetInnerHTML(details4)
 
 
+	// Step 5: Export Key
+	exported, err5 := aescbc.ExportKey("jwk", *key)
+
+	if err5 != nil {
+		console.Error(err5)
+	}
+
+	details5 := string(exported)
+	element5 := gooey.Document.QuerySelector("#exported-keydata")
+	element5.SetInnerHTML(details5)
+
+
+	// Step 6: Import Key
+	imported, err6 := aescbc.ImportKey("jwk", exported, true, []string{
+		"encrypt",
+		"decrypt",
+	})
+
+	if err6 != nil {
+		console.Error(err6)
+	}
+
+	details6, _ := json.MarshalIndent(imported, "", "\t")
+	element6 := gooey.Document.QuerySelector("#imported-cryptokey")
+	element6.SetInnerHTML(string(details6))
+
+
 	for true {
 
 		// Do Nothing

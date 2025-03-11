@@ -17,7 +17,7 @@ func ExportKey(format string, key CryptoKey) ([]byte, error) {
 
 	on_success := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-		if format == "jwt" {
+		if format == "jwk" {
 
 			// Promise fulfills with JSON Object
 			value  := js.Global().Get("JSON").Call("stringify", args[0])
