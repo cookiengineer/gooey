@@ -1,0 +1,38 @@
+
+textarea {
+	display: inline-block;
+	margin: 0px;
+	padding: 4px 8px;
+	color: var(--input-default-color);
+	background: var(--input-default-background);
+	font-family: 'vera-mono';
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+	border: 1px solid var(--input-default-border);
+	border-radius: 4px;
+	box-sizing: border-box;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	outline: unset;
+	cursor: text;
+}
+
+textarea:hover,
+textarea:focus {
+	color: var(--input-focus-color);
+	background: var(--input-focus-background);
+	border: 1px solid var(--palette-primary-background);
+	outline: unset;
+}
+
+textarea[disabled],
+textarea[disabled]:hover,
+textarea[disabled]:focus {
+	color: var(--input-disabled-color);
+	background: var(--input-disabled-background);
+	border: 1px solid var(--input-default-border);
+	cursor: not-allowed;
+}
+

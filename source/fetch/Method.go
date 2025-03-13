@@ -5,15 +5,15 @@ package fetch
 type Method string
 
 const (
-	MethodCONNECT Method = "CONNECT"
-	MethodDELETE  Method = "DELETE"
-	MethodGET     Method = "GET"
-	MethodHEAD    Method = "HEAD"
-	MethodOPTIONS Method = "OPTIONS"
-	MethodPATCH   Method = "PATCH"
-	MethodPOST    Method = "POST"
-	MethodPUT     Method = "PUT"
-	MethodTRACE   Method = "TRACE"
+	MethodConnect Method = "CONNECT"
+	MethodDelete  Method = "DELETE"
+	MethodGet     Method = "GET"
+	MethodHead    Method = "HEAD"
+	MethodOptions Method = "OPTIONS"
+	MethodPatch   Method = "PATCH"
+	MethodPost    Method = "POST"
+	MethodPut     Method = "PUT"
+	MethodTrace   Method = "TRACE"
 )
 
 func (method Method) String() string {

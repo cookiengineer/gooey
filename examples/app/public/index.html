@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Gooey App Example</title>
+
+		<!-- WebView -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src-elem 'self'">
+		<meta http-equiv="Content-Security-Policy" content="frame-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="worker-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="connect-src 'self'">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="manifest" href="/site.webmanifest" />
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/png" href="/design/favicon/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="/design/favicon/favicon.svg" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/design/favicon/apple-touch-icon.png" sizes="180x180" />
+
+		<!-- Design -->
+		<link rel="stylesheet" href="/design/index.css" />
+	</head>
+	<body>
+		<header>
+			<ul><li class="active"><a data-view="tasks" href="/index.html">Tasks</a></li><li><a data-view="settings" href="/settings.html">Settings</a></li></ul>
+		</header>
+		<main data-view="tasks">
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Title</th>
+						<th>Done?</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</main>
+		<footer>
+			<div></div>
+			<div><button data-action="create">Create Task</button></div>
+		</footer>
+		<dialog>
+			<article>
+				<button data-action="close"></button>
+				<h3>Create New Task</h3>
+				<fieldset>
+					<div>
+						<label for="dialog-name" data-type="title">Title</label>
+						<input id="dialog-name" data-name="title" type="text" placeholder="Leave a Star on GitHub"/>
+					</div>
+					<div>
+						<label for="dialog-done" data-type="confirm">Done?</label>
+						<input id="dialog-done" data-name="done" type="checkbox" title="Done already?"/>
+					</div>
+				</fieldset>
+				<footer>
+					<div><button class="secondary" data-action="cancel">Cancel</button></div>
+					<div><button class="primary" data-action="confirm">Create</button></div>
+				</footer>
+			</article>
+		</dialog>
+		<script src="wasm_exec.js"></script>
+		<script src="wasm_init.js"></script>
+	</body>
+</html>

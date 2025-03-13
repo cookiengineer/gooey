@@ -7,7 +7,7 @@ import "time"
 func main() {
 
 	response, err := fetch.Fetch("http://localhost:3000/api/test", &fetch.Request{
-		Method: fetch.MethodGET,
+		Method: fetch.MethodGet,
 		Mode:   fetch.ModeSameOrigin,
 	})
 

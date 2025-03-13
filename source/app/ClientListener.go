@@ -8,9 +8,9 @@ import "syscall/js"
 var client_listener_id uint = 0
 
 type ClientListener struct {
-	Id       uint                  `json:"id"`
+	Id       uint                   `json:"id"`
 	Callback ClientListenerCallback `json:"callback"`
-	Function *js.Func              `json:"function"`
+	Function *js.Func               `json:"function"`
 }
 
 type ClientListenerCallback func(string, *fetch.Response, error)

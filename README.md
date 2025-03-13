@@ -23,7 +23,6 @@ It bridges the gaps between Go, WebASM, Browser APIs, unified App Layouts and re
 - [app.Main](/source/app/Main.go)
 - [app.Client](/source/app/Client.go)
 - [app.ClientListener](/source/app/ClientListener.go)
-- [app.ClientSchema](/source/app/ClientSchema.go)
 - [app.Storage](/source/app/Storage.go)
 - [app.View](/source/app/View.go) interface
 - [app.BaseView](/source/app/BaseView.go) class
@@ -33,16 +32,6 @@ It bridges the gaps between Go, WebASM, Browser APIs, unified App Layouts and re
 - App Layouts always consist of `body > header`, `body > main`, and `body > footer` elements
 - App Views always consist of different `main > section[data-view=...]` elements
 - App Views optionally may contain `main > section[data-view=...] > aside` elements to represent sidebars
-
-**Web Forms**
-
-Note: This is currently work-in-progress
-
-- Web Forms are static elements
-- Web Forms with `enctype="application/json"` use a REST compatible API endpoint
-- Web Forms with an `action` URL are automatically validateable
-- Web Forms are serializable via `json.Marshal()` into a `struct`
-- Web Forms are fulfill an `interface` with `Validate() bool, err`
 
 
 ## Implementation Details
@@ -62,15 +51,16 @@ All examples are served on `http://localhost:3000` if you execute the `build.sh`
 These examples also serve as unit tests, because `go test` cannot generate binaries
 for the `syscall/js` platform.
 
-- [console](/examples/console/main.go)
-- [crypto-aescbc](/examples/crypto-aescbc/main.go)
-- [elements](/examples/elements/main.go)
-- [fetch](/examples/fetch/main.go)
-- [history](/examples/history/main.go)
-- [location](/examples/location/main.go)
-- [navigator](/examples/navigator/main.go)
-- [navigator-geolocation](/examples/navigator-geolocation/main.go)
-- [storages](/examples/storages/main.go)
+- [app](/examples/app)
+- [console](/examples/console)
+- [crypto-aescbc](/examples/crypto-aescbc)
+- [elements](/examples/elements)
+- [fetch](/examples/fetch)
+- [history](/examples/history)
+- [location](/examples/location)
+- [navigator](/examples/navigator)
+- [navigator-geolocation](/examples/navigator-geolocation)
+- [storages](/examples/storages)
 
 
 ## Projects

@@ -1,0 +1,181 @@
+
+input[type="date"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="file"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"] {
+	display: inline-block;
+	margin: 0px;
+	padding: 4px 8px;
+	color: var(--input-default-color);
+	background: var(--input-default-background);
+	font-family: 'vera-mono';
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+	border: 1px solid var(--input-default-border);
+	border-radius: 4px;
+	box-sizing: border-box;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	outline: unset;
+	cursor: text;
+}
+
+input[type="date"]:hover,
+input[type="datetime-local"]:hover,
+input[type="email"]:hover,
+input[type="file"]:hover,
+input[type="month"]:hover,
+input[type="number"]:hover,
+input[type="password"]:hover,
+input[type="search"]:hover,
+input[type="tel"]:hover,
+input[type="text"]:hover,
+input[type="time"]:hover,
+input[type="url"]:hover,
+input[type="week"]:hover,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="email"]:focus,
+input[type="file"]:focus,
+input[type="month"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="text"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+input[type="week"]:focus {
+	color: var(--input-focus-color);
+	background: var(--input-focus-background);
+	border: 1px solid var(--palette-primary-background);
+	outline: unset;
+}
+
+input[type="date"]:invalid,
+input[type="datetime-local"]:invalid,
+input[type="email"]:invalid,
+input[type="file"]:invalid,
+input[type="month"]:invalid,
+input[type="number"]:invalid,
+input[type="password"]:invalid,
+input[type="search"]:invalid,
+input[type="tel"]:invalid,
+input[type="text"]:invalid,
+input[type="time"]:invalid,
+input[type="url"]:invalid,
+input[type="week"]:invalid {
+	color: var(--input-invalid-color);
+	background: var(--input-invalid-background);
+	border: 1px solid var(--input-invalid-color);
+	outline: unset;
+}
+
+input[type="date"][disabled],
+input[type="datetime-local"][disabled],
+input[type="email"][disabled],
+input[type="file"][disabled],
+input[type="month"][disabled],
+input[type="number"][disabled],
+input[type="password"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="text"][disabled],
+input[type="time"][disabled],
+input[type="url"][disabled],
+input[type="week"][disabled],
+input[type="date"][disabled]:hover,
+input[type="datetime-local"][disabled]:hover,
+input[type="email"][disabled]:hover,
+input[type="file"][disabled]:hover,
+input[type="month"][disabled]:hover,
+input[type="number"][disabled]:hover,
+input[type="password"][disabled]:hover,
+input[type="search"][disabled]:hover,
+input[type="tel"][disabled]:hover,
+input[type="text"][disabled]:hover,
+input[type="time"][disabled]:hover,
+input[type="url"][disabled]:hover,
+input[type="week"][disabled]:hover,
+input[type="date"][disabled]:focus,
+input[type="datetime-local"][disabled]:focus,
+input[type="email"][disabled]:focus,
+input[type="file"][disabled]:focus,
+input[type="month"][disabled]:focus,
+input[type="number"][disabled]:focus,
+input[type="password"][disabled]:focus,
+input[type="search"][disabled]:focus,
+input[type="tel"][disabled]:focus,
+input[type="text"][disabled]:focus,
+input[type="time"][disabled]:focus,
+input[type="url"][disabled]:focus,
+input[type="week"][disabled]:focus {
+	color: var(--input-disabled-color);
+	background: var(--input-disabled-background);
+	border: 1px solid var(--input-default-border);
+	cursor: not-allowed;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 0px;
+	padding: 0px;
+	color: var(--input-default-color);
+	background: var(--input-default-background);
+	border: 1px solid var(--input-default-border);
+	border-radius: 4px;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	outline: unset;
+	transition: 250ms all ease-out;
+	cursor: pointer;
+}
+
+input[type="checkbox"]:hover,
+input[type="checkbox"]:focus,
+input[type="radio"]:hover,
+input[type="radio"]:focus {
+	color: var(--input-focus-color);
+	background: var(--input-focus-background);
+	transition: 250ms all ease-out;
+	cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+	background: var(--input-active-background);
+	cursor: no-drop;
+}
+
+input[type="radio"]:checked {
+	background: var(--input-active-background);
+	cursor: pointer;
+}
+
+input[type="checkbox"][disabled],
+input[type="checkbox"][disabled]:hover,
+input[type="checkbox"][disabled]:focus,
+input[type="checkbox"][disabled]:checked,
+input[type="radio"][disabled],
+input[type="radio"][disabled]:hover,
+input[type="radio"][disabled]:focus,
+input[type="radio"][disabled]:checked {
+	color: var(--input-disabled-color);
+	background: var(--input-disabled-background);
+	cursor: not-allowed;
+}
+

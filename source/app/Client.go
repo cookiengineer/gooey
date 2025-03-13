@@ -4,7 +4,14 @@ package app
 
 import "gooey/fetch"
 import "bytes"
+import "errors"
+import "strconv"
 import "strings"
+
+type client_state struct {
+	response *fetch.Response
+	err      error
+}
 
 type Client struct {
 	listeners map[string][]*ClientListener
@@ -82,14 +89,75 @@ func (client *Client) RemoveListener(path string, listener *ClientListener) bool
 
 }
 
-func (client *Client) Request(path string) {
+func (client *Client) Create(path string, payload []byte) (*fetch.Response, error) {
 
 	if strings.HasPrefix(path, "/api") {
 
-		go func(){
+		channel := make(chan *client_state)
+
+		go func() {
 
 			response, err := fetch.Fetch(path, &fetch.Request{
-				Method:      fetch.MethodGET,
+				Method:      fetch.MethodPost,
+				Mode:        fetch.ModeSameOrigin,
+				Cache:       fetch.CacheDefault,
+				Credentials: fetch.CredentialsOmit,
+				Redirect:    fetch.RedirectError,
+				Headers:     map[string]string{
+					"Accept":         "application/json",
+					"Content-Type":   "application/json",
+					"Content-Length": strconv.Itoa(len(payload)),
+				},
+				Body: bytes.NewReader(payload),
+			})
+
+			listeners, ok := client.listeners[path]
+
+			if ok == true {
+
+				if err == nil {
+
+					for l := 0; l < len(listeners); l++ {
+						listeners[l].Callback(path, response, nil)
+					}
+
+				} else {
+
+					for l := 0; l < len(listeners); l++ {
+						listeners[l].Callback(path, nil, err)
+					}
+
+				}
+
+			}
+
+			channel <- &client_state{
+				response: response,
+				err:      err,
+			}
+
+		}()
+
+		state := <-channel
+
+		return state.response, state.err
+
+	} else {
+		return nil, errors.New("Invalid Path: Expected /api/* prefix")
+	}
+
+}
+
+func (client *Client) Read(path string) (*fetch.Response, error) {
+
+	if strings.HasPrefix(path, "/api") {
+
+		channel := make(chan *client_state)
+
+		go func() {
+
+			response, err := fetch.Fetch(path, &fetch.Request{
+				Method:      fetch.MethodGet,
 				Mode:        fetch.ModeSameOrigin,
 				Cache:       fetch.CacheDefault,
 				Credentials: fetch.CredentialsOmit,
@@ -119,27 +187,41 @@ func (client *Client) Request(path string) {
 
 			}
 
+			channel <- &client_state{
+				response: response,
+				err:      err,
+			}
+
 		}()
 
+		state := <-channel
+
+		return state.response, state.err
+
+	} else {
+		return nil, errors.New("Invalid Path: Expected /api/* prefix")
 	}
 
 }
 
-func (client *Client) Send(path string, payload []byte) {
+func (client *Client) Update(path string, payload []byte) (*fetch.Response, error) {
 
 	if strings.HasPrefix(path, "/api") {
+
+		channel := make(chan *client_state)
 
 		go func() {
 
 			response, err := fetch.Fetch(path, &fetch.Request{
-				Method:      fetch.MethodPOST,
+				Method:      fetch.MethodPatch,
 				Mode:        fetch.ModeSameOrigin,
 				Cache:       fetch.CacheDefault,
 				Credentials: fetch.CredentialsOmit,
 				Redirect:    fetch.RedirectError,
 				Headers:     map[string]string{
-					"Accept":       "application/json",
-					"Content-Type": "application/json",
+					"Accept":         "application/json",
+					"Content-Type":   "application/json",
+					"Content-Length": strconv.Itoa(len(payload)),
 				},
 				Body: bytes.NewReader(payload),
 			})
@@ -164,8 +246,78 @@ func (client *Client) Send(path string, payload []byte) {
 
 			}
 
+			channel <- &client_state{
+				response: response,
+				err:      err,
+			}
+
 		}()
 
+		state := <-channel
+
+		return state.response, state.err
+
+	} else {
+		return nil, errors.New("Invalid Path: Expected /api/* prefix")
+	}
+
+}
+
+func (client *Client) Delete(path string, payload []byte) (*fetch.Response, error) {
+
+	if strings.HasPrefix(path, "/api") {
+
+		channel := make(chan *client_state)
+
+		go func() {
+
+			response, err := fetch.Fetch(path, &fetch.Request{
+				Method:      fetch.MethodDelete,
+				Mode:        fetch.ModeSameOrigin,
+				Cache:       fetch.CacheDefault,
+				Credentials: fetch.CredentialsOmit,
+				Redirect:    fetch.RedirectError,
+				Headers:     map[string]string{
+					"Accept":         "application/json",
+					"Content-Type":   "application/json",
+					"Content-Length": strconv.Itoa(len(payload)),
+				},
+				Body: bytes.NewReader(payload),
+			})
+
+			listeners, ok := client.listeners[path]
+
+			if ok == true {
+
+				if err == nil {
+
+					for l := 0; l < len(listeners); l++ {
+						listeners[l].Callback(path, response, nil)
+					}
+
+				} else {
+
+					for l := 0; l < len(listeners); l++ {
+						listeners[l].Callback(path, nil, err)
+					}
+
+				}
+
+			}
+
+			channel <- &client_state{
+				response: response,
+				err:      err,
+			}
+
+		}()
+
+		state := <-channel
+
+		return state.response, state.err
+
+	} else {
+		return nil, errors.New("Invalid Path: Expected /api/* prefix")
 	}
 
 }
