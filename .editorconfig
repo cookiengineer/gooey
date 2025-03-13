@@ -1,0 +1,37 @@
+root = true
+
+# go fmt removes final newline
+[*.go]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = lf
+insert_final_newline = false
+
+[*.{htm,html}]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = lf
+insert_final_newline = false
+
+[*.{js,json}]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = lf
+insert_final_newline = false
+
+[*.md]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = lf
+insert_final_newline = true
+
+[*.sh]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = lf
+insert_final_newline = true
