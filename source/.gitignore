@@ -1,0 +1,13 @@
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Ignore built main.wasm binaries
+*main.wasm
+
+# Ignore other files
+.DS_Store
