@@ -1,3 +1,5 @@
+//go:build wasm
+
 package dom
 
 import "strings"
@@ -323,19 +325,19 @@ func (element *Element) QueryParent(search string) *Element {
 
 	var result *Element = nil
 
-	value   := element.Value.Get("parentNode")
+	value := element.Value.Get("parentNode")
 	tagname := value.Get("tagName")
 
 	for !tagname.IsNull() && !tagname.IsUndefined() && tagname.String() != "BODY" {
 
 		tmp := strings.ToLower(tagname.String())
-		
+
 		if tmp == search {
 			parent := ToElement(value)
 			result = &parent
 			break
 		} else {
-			value   = value.Get("parentNode")
+			value = value.Get("parentNode")
 			tagname = value.Get("tagName")
 		}
 

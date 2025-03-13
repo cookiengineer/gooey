@@ -1,21 +1,23 @@
+//go:build wasm
+
 package xhr
 
 import "syscall/js"
 import "time"
 
 type XMLHttpRequest struct {
-	OnLoad          func(int, []byte) `json:"onload"`
-	OnError         func()            `json:"onerror"`
-	OnTimeout       func()            `json:"ontimeout"`
-	ReadyState      int               `json:"readyState"`
-	Response        []byte            `json:"response"`
-	ResponseURL     string            `json:"responseURL"`
-	Status          int               `json:"status"`
-	StatusText      string            `json:"statusText"`
-	Timeout         time.Duration     `json:"timeout"`
+	OnLoad      func(int, []byte) `json:"onload"`
+	OnError     func()            `json:"onerror"`
+	OnTimeout   func()            `json:"ontimeout"`
+	ReadyState  int               `json:"readyState"`
+	Response    []byte            `json:"response"`
+	ResponseURL string            `json:"responseURL"`
+	Status      int               `json:"status"`
+	StatusText  string            `json:"statusText"`
+	Timeout     time.Duration     `json:"timeout"`
 	// Upload not supportable without reimplementing Event API
-	WithCredentials bool          `json:"withCredentials"`
-	Value           *js.Value     `json:"value"`
+	WithCredentials bool      `json:"withCredentials"`
+	Value           *js.Value `json:"value"`
 }
 
 func NewXMLHttpRequest() XMLHttpRequest {
@@ -24,13 +26,13 @@ func NewXMLHttpRequest() XMLHttpRequest {
 
 	value := js.Global().Get("XMLHttpRequest").New()
 
-	xhr.OnLoad          = func(int, []byte){}
-	xhr.OnError         = func(){}
-	xhr.OnTimeout       = func(){}
-	xhr.ReadyState      = 0
-	xhr.Status          = 0
+	xhr.OnLoad = func(int, []byte) {}
+	xhr.OnError = func() {}
+	xhr.OnTimeout = func() {}
+	xhr.ReadyState = 0
+	xhr.Status = 0
 	xhr.WithCredentials = false
-	xhr.Value           = &value
+	xhr.Value = &value
 
 	return xhr
 
@@ -155,4 +157,3 @@ func (xhr *XMLHttpRequest) SendBytes(body []byte) {
 func (xhr *XMLHttpRequest) SetRequestHeader(header string, value string) {
 	xhr.Value.Call("setRequestHeader", header, value)
 }
-

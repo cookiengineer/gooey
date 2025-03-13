@@ -1,3 +1,5 @@
+//go:build wasm
+
 package crypto
 
 import "syscall/js"
@@ -15,4 +17,3 @@ func RandomUUID() string {
 	return result
 
 }
-

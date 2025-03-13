@@ -1,3 +1,5 @@
+//go:build wasm
+
 package geolocation
 
 import "syscall/js"
@@ -64,7 +66,7 @@ func ToGeolocationPosition(value js.Value) GeolocationPosition {
 	timestamp := value.Get("timestamp")
 
 	if !timestamp.IsNull() && !timestamp.IsUndefined() {
-		position.Timestamp = time.Unix(int64(timestamp.Int() / 1000), 0)
+		position.Timestamp = time.Unix(int64(timestamp.Int()/1000), 0)
 	}
 
 	return position

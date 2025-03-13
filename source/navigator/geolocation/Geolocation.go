@@ -1,3 +1,5 @@
+//go:build wasm
+
 package geolocation
 
 import "syscall/js"

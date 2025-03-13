@@ -1,3 +1,5 @@
+//go:build wasm
+
 package navigator
 
 import "syscall/js"
@@ -34,9 +36,8 @@ func init() {
 
 	navigator_value := js.Global().Get("navigator")
 
-
 	do_not_track := false
-	languages    := make([]string, 0)
+	languages := make([]string, 0)
 
 	tmp1 := navigator_value.Get("doNotTrack")
 
@@ -60,7 +61,6 @@ func init() {
 
 	}
 
-
 	Navigator = navigator{
 		AppCodeName:         navigator_value.Get("appCodeName").String(),
 		AppName:             navigator_value.Get("appName").String(),
@@ -83,4 +83,3 @@ func init() {
 	}
 
 }
-

@@ -1,3 +1,5 @@
+//go:build wasm
+
 package gooey
 
 import "gooey/dom"

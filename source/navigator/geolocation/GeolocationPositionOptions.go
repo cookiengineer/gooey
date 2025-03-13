@@ -1,3 +1,5 @@
+//go:build wasm
+
 package geolocation
 
 type GeolocationPositionOptions struct {
@@ -5,4 +7,3 @@ type GeolocationPositionOptions struct {
 	Timeout            uint `json:"timeout"`
 	EnableHighAccuracy bool `json:"enableHighAccuracy"`
 }
-

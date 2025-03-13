@@ -1,3 +1,5 @@
+//go:build wasm
+
 package fetch
 
 import "context"
@@ -17,7 +19,6 @@ type Request struct {
 	KeepAlive      bool              `json:"keepalive"`
 	Signal         context.Context
 }
-
 
 func (request *Request) MapToJS() map[string]any {
 
@@ -72,4 +73,3 @@ func (request *Request) MapToJS() map[string]any {
 	return result
 
 }
-

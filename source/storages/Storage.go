@@ -1,3 +1,5 @@
+//go:build wasm
+
 package storages
 
 import "strconv"
@@ -8,7 +10,7 @@ type Storage struct {
 }
 
 func (storage *Storage) Clear() {
-    js.Global().Get(storage.name).Call("clear")
+	js.Global().Get(storage.name).Call("clear")
 }
 
 func (storage *Storage) GetItem(key string) string {
@@ -385,4 +387,3 @@ func (storage *Storage) SetItem(key string, value any) {
 	}
 
 }
-

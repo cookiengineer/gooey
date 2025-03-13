@@ -1,3 +1,5 @@
+//go:build wasm
+
 package xhr
 
 import "syscall/js"
@@ -10,7 +12,6 @@ func (xhr *XMLHttpRequest) OpenSync(method Method, url string) {
 	}
 
 }
-
 
 func (xhr *XMLHttpRequest) SendSync() {
 

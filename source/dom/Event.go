@@ -1,3 +1,5 @@
+//go:build wasm
+
 package dom
 
 import "syscall/js"
@@ -11,8 +13,8 @@ type Event struct {
 	IsTrusted        bool       `json:"isTrusted"`
 	Target           *Element   `json:"target"`
 	// TimeStamp int `json:"timeStamp"`
-	Type             EventType  `json:"type"`
-	Value            *js.Value  `json:"value"`
+	Type  EventType `json:"type"`
+	Value *js.Value `json:"value"`
 }
 
 func ToEvent(value js.Value) Event {

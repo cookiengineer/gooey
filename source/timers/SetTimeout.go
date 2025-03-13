@@ -1,3 +1,5 @@
+//go:build wasm
+
 package timers
 
 import "syscall/js"

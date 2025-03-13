@@ -1,3 +1,5 @@
+//go:build wasm
+
 package fetch
 
 import "sort"
@@ -23,7 +25,7 @@ func (sorter headerSorter) Less(i, j int) bool {
 	return sorter.keyvalues[i].key < sorter.keyvalues[j].key
 }
 
-func sortHeaderKeyValues(headers Headers) ([]headerKeyValues) {
+func sortHeaderKeyValues(headers Headers) []headerKeyValues {
 
 	sorter := headerSorter{
 		keyvalues: make([]headerKeyValues, 0),

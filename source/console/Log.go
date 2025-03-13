@@ -1,3 +1,5 @@
+//go:build wasm
+
 package console
 
 import "encoding/json"
@@ -103,4 +105,3 @@ func Log(raw any) {
 	}
 
 }
-

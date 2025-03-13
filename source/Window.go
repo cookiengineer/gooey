@@ -1,3 +1,5 @@
+//go:build wasm
+
 package gooey
 
 import "gooey/dom"
@@ -295,4 +297,3 @@ func (win *window) ScrollTo(x uint, y uint) {
 	win.ScrollY = uint(win.Value.Get("scrollY").Int())
 
 }
-

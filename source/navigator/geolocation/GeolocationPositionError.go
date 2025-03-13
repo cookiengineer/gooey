@@ -1,3 +1,5 @@
+//go:build wasm
+
 package geolocation
 
 type GeolocationPositionError int
@@ -8,4 +10,3 @@ const (
 	GeolocationPositionErrorPositionUnavailable GeolocationPositionError = 2
 	GeolocationPositionErrorTimeout             GeolocationPositionError = 3
 )
-

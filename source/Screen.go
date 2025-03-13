@@ -1,3 +1,5 @@
+//go:build wasm
+
 package gooey
 
 import "gooey/dom"
@@ -129,4 +131,3 @@ func (screen *Screen) RemoveEventListener(typ dom.EventType, listener *dom.Event
 	return result
 
 }
-

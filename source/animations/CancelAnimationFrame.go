@@ -1,3 +1,5 @@
+//go:build wasm
+
 package animations
 
 import "syscall/js"

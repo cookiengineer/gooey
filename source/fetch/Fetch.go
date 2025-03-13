@@ -1,3 +1,5 @@
+//go:build wasm
+
 package fetch
 
 import "bytes"
@@ -136,7 +138,7 @@ func Fetch(url string, request *Request) (*Response, error) {
 
 	go state.response.Value.Call("arrayBuffer").Call("then", on_arraybuffer_success, on_arraybuffer_failure)
 
-	state = <- channel
+	state = <-channel
 
 	return state.response, state.err
 
