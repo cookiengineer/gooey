@@ -15,7 +15,6 @@ It bridges the gaps between Go, WebASM, Browser APIs, unified App Layouts and re
 
 - Static elements can never be removed from the DOM
 - Static elements can have DOM event listeners
-- Static elements always have an `id` property
 - Dynamic elements can be removed from the DOM
 - Dynamic elements should not have DOM event listeners
 
@@ -23,21 +22,17 @@ It bridges the gaps between Go, WebASM, Browser APIs, unified App Layouts and re
 
 - [app.Main](/source/app/Main.go)
 - [app.Client](/source/app/Client.go)
+- [app.ClientListener](/source/app/ClientListener.go)
+- [app.ClientSchema](/source/app/ClientSchema.go)
 - [app.Storage](/source/app/Storage.go)
 - [app.View](/source/app/View.go) interface
 - [app.BaseView](/source/app/BaseView.go) class
 
 **App Layout**
 
-- App Layout always consists of `header`, `main`, and `footer` elements
-- App Views are represented by different `main > section[data-view=...]` elements
-- App Views can contain `aside` elements representing the sidebar
-
-**Web Clients**
-
-- Web Clients are REST API clients using either [fetch](/source/fetch) or [xhr](/source/xhr)
-- Web Clients are fulfill an `interface` with `Validate() bool, err`
-- Web Clients are routable via a `map[URL]struct` for each supported route
+- App Layouts always consist of `body > header`, `body > main`, and `body > footer` elements
+- App Views always consist of different `main > section[data-view=...]` elements
+- App Views optionally may contain `main > section[data-view=...] > aside` elements to represent sidebars
 
 **Web Forms**
 
@@ -76,6 +71,7 @@ for the `syscall/js` platform.
 - [navigator](/examples/navigator/main.go)
 - [navigator-geolocation](/examples/navigator-geolocation/main.go)
 - [storages](/examples/storages/main.go)
+
 
 ## Projects
 
