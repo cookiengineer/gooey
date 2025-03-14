@@ -20,14 +20,14 @@ func main() {
 	console.Log(bytes)
 	console.GroupEnd("bytes")
 
-	// console.Error supports errors
+	// console supports errors
 	err := errors.New("This is an error with a custom message")
 
 	console.Group("error")
 	console.Error(err)
 	console.GroupEnd("error")
 
-	// console.Inspect supports js.Value instances
+	// console supports js.Value instances
 	js_value := js.Global().Get("Uint8Array").New(4)
 	js_value.SetIndex(0, 0x01)
 	js_value.SetIndex(1, 0x03)
@@ -38,7 +38,7 @@ func main() {
 	console.Log(js_value)
 	console.GroupEnd("js.Value")
 
-	// console.Inspect supports struct instances
+	// console supports struct instances
 	message := Message{
 		Id:    1337,
 		Name:  "cookiengineer",

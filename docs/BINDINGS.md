@@ -66,6 +66,15 @@ Fetch RequestInit Properties:
 - [x] `Referrer` has to be a `string` due to arbitrary URL values.
 - [x] [fetch/ReferrerPolicy](/source/fetch/ReferrerPolicy.go)
 
+**history**
+
+- [x] [history/EventListener](/source/history/EventListener.go)
+- [x] [history/EventPhase](/source/history/EventPhase.go)
+- [x] [history/EventType](/source/history/EventType.go)
+- [x] [history/History](/source/history/History.go)
+- [x] [history/HistoryState](/source/history/HistoryState.go)
+- [x] [history/PopStateEvent](/source/history/PopStateEvent.go)
+
 **location**
 
 - [x] [location/Location](/source/location/Location.go)

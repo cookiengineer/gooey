@@ -2,40 +2,60 @@ package main
 
 import "gooey"
 import "gooey/console"
+import "gooey/dom"
 import "gooey/history"
-import "gooey/location"
-import "gooey/timers"
+import "encoding/json"
 import "time"
 
-// Customizable History States
-type HistoryState struct {
-	Category uint `json:"category"`
-	Page     int  `json:"page"`
+func renderEvent(event history.PopStateEvent) string {
+
+	html := ""
+	html += "<li>"
+
+	data1, err1 := json.Marshal(history.History.State)
+	data2, err2 := json.Marshal(event)
+
+	if err1 == nil {
+		html += string(data1)
+	} else if err2 == nil {
+		html += string(data2)
+	} else {
+		html += "(PopStateEvent)"
+	}
+
+	html += "</li>"
+
+	return html
+
 }
 
 func main() {
 
-	element := gooey.Document.QuerySelector("#location")
+	list_events    := gooey.Document.QuerySelector("main ul")
+	button_back    := gooey.Document.QuerySelector("main button[data-action=\"back\"]")
+	button_forward := gooey.Document.QuerySelector("main button[data-action=\"forward\"]")
 
-	history.History.PushState(history.State{
-	})
+	history.History.AddEventListener(history.ToEventListener(func(event history.PopStateEvent) {
 
-	// TODO: Call history.PushState()
-	// TODO: Call history.PopState()
-	// TODO: Call history.Forward()
-	// TODO: Call history.Back()
-	// TODO: Call history.Go()
+		html := renderEvent(event)
+		list_events.InsertAdjacentHTML("beforeend", html)
 
+		console.Log("popstate event!")
+		console.Log(event)
 
-	tmp := location.Location.Href
+	}))
 
-	if tmp != "" {
-		element.SetInnerHTML("This page is located at \"" + tmp + "\"!")
-	}
+	button_back.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
+		history.History.Back()
+	}))
 
-	timers.SetTimeout(func() {
-		console.Inspect(location.Location)
-	}, 1000)
+	button_forward.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
+		history.History.Forward()
+	}))
+
+	history.History.PushState(&map[string]any{"page": 1}, "first page",  "/page-1.html")
+	history.History.PushState(&map[string]any{"page": 2}, "second page", "/page-2.html")
+	history.History.PushState(&map[string]any{"page": 3}, "third page", "/page-3.html")
 
 	for true {
 

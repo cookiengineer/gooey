@@ -41,10 +41,10 @@ func (event *PopStateEvent) PreventDefault() {
 	event.Value.Call("preventDefault")
 }
 
-func (event *Event) StopImmediatePropagation() {
+func (event *PopStateEvent) StopImmediatePropagation() {
 	event.Value.Call("stopImmediatePropagation")
 }
 
-func (event *Event) StopPropagation() {
+func (event *PopStateEvent) StopPropagation() {
 	event.Value.Call("stopPropagation")
 }

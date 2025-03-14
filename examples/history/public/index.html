@@ -7,7 +7,13 @@
 	</head>
 	<body>
 		<main>
-			<p id="location">This page is located at &lt;url&gt;!</p>
+			<h3>This Page is using the History API to modify the Browser's History</h3>
+			<div>
+				<button data-action="back">&lt; Back</button>
+				<button data-action="forward">Forward &gt;</button>
+			</div>
+			<p>Recent History Navigations:</p>
+			<ul></ul>
 		</main>
 		<script src="wasm_exec.js"></script>
 		<script src="wasm_init.js"></script>

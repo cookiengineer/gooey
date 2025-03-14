@@ -2,6 +2,8 @@
 
 package history
 
+import "syscall/js"
+
 type HistoryState struct {
 	State *map[string]any `json:"state"`
 	Title string          `json:"title"`

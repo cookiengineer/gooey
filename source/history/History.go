@@ -2,6 +2,7 @@
 
 package history
 
+import "fmt"
 import "syscall/js"
 
 var History history
@@ -19,7 +20,7 @@ func init() {
 	value := js.Global().Get("window").Get("history")
 
 	History = history{
-		listeners: make([]*EventListener),
+		listeners: make([]*EventListener, 0),
 		Value:     &value,
 	}
 
@@ -119,7 +120,7 @@ func (history *history) RemoveEventListener(listener *EventListener) bool {
 
 		}
 
-		history.listeners = make([]*EventListener)
+		history.listeners = make([]*EventListener, 0)
 
 		result = true
 
@@ -130,26 +131,89 @@ func (history *history) RemoveEventListener(listener *EventListener) bool {
 }
 
 func (history *history) Back() {
-	history.Value.Call("back")
+
+	if len(history.stack) > 0 {
+
+		if history.State != nil {
+
+			var index = -1
+
+			for s := 0; s < len(history.stack); s++ {
+
+				if history.stack[s] == history.State {
+					index = s
+					break
+				}
+
+			}
+
+			if index != -1 && index > 0 {
+				history.State = history.stack[index - 1]
+			} else {
+				history.State = nil
+			}
+
+		} else {
+
+			history.State = nil
+
+		}
+
+		history.Value.Call("back")
+
+	}
+
+
 }
 
 func (history *history) Forward() {
-	history.Value.Call("forward")
+
+	if len(history.stack) > 0 {
+
+		if history.State != nil {
+
+			var index = -1
+
+			for s := 0; s < len(history.stack); s++ {
+
+				if history.stack[s] == history.State {
+					index = s
+					break
+				}
+
+			}
+
+			if index != -1 && index < len(history.stack) - 1 {
+				history.State = history.stack[index + 1]
+			} else {
+				history.State = history.stack[0]
+			}
+
+		} else {
+
+			history.State = history.stack[0]
+
+		}
+
+		history.Value.Call("forward")
+
+	}
+
 }
 
 func (history *history) Go(delta int) {
 
-	if direction > 0 {
+	if delta > 0 {
 
 		wrapped_delta := js.ValueOf(delta)
 
-		fmt.Println(value)
+		fmt.Println(wrapped_delta)
 
-	} else if direction < 0 {
+	} else if delta < 0 {
 
 		// TODO: Negative direction / backwards
 
-	} else if direction == 0 {
+	} else if delta == 0 {
 
 		// TODO? Nothing?
 
@@ -159,16 +223,19 @@ func (history *history) Go(delta int) {
 
 func (history *history) PushState(statemap *map[string]any, title string, url string) bool {
 
+	var result bool = false
+
 	if title != "" && url != "" {
 
 		var state HistoryState
 
+
 		if statemap != nil {
 
-			wrapped_statemap := js.ValueOf(statemap)
+			wrapped_statemap := js.ValueOf(*statemap)
 
 			state = HistoryState{
-				State: &statemap,
+				State: statemap,
 				Title: title,
 				URL:   url,
 				value: &wrapped_statemap,
@@ -176,7 +243,7 @@ func (history *history) PushState(statemap *map[string]any, title string, url st
 
 		} else {
 
-			wrapped_statemap := js.ValueOf(nil)
+			wrapped_statemap := js.ValueOf(map[string]any{})
 
 			state = HistoryState{
 				State: nil,
@@ -190,13 +257,19 @@ func (history *history) PushState(statemap *map[string]any, title string, url st
 		history.State = &state
 		history.stack = append(history.stack, &state)
 
-		history.Value.Call("pushState", state.value, js.ValueOf(state.Title), js.ValueOf(state.URL))
+		history.Value.Call("pushState", *state.value, js.ValueOf(state.Title), js.ValueOf(state.URL))
+
+		result = true
 
 	}
 
+	return result
+
 }
 
-func (history *history) ReplaceState(state *map[string]any, title string, url string) bool {
+func (history *history) ReplaceState(statemap *map[string]any, title string, url string) bool {
+
+	var result bool = false
 
 	if title != "" && url != "" {
 
@@ -204,10 +277,10 @@ func (history *history) ReplaceState(state *map[string]any, title string, url st
 
 		if statemap != nil {
 
-			wrapped_statemap := js.ValueOf(statemap)
+			wrapped_statemap := js.ValueOf(*statemap)
 
 			state = HistoryState{
-				State: &statemap,
+				State: statemap,
 				Title: title,
 				URL:   url,
 				value: &wrapped_statemap,
@@ -215,7 +288,7 @@ func (history *history) ReplaceState(state *map[string]any, title string, url st
 
 		} else {
 
-			wrapped_statemap := js.ValueOf(nil)
+			wrapped_statemap := js.ValueOf(map[string]any{})
 
 			state = HistoryState{
 				State: nil,
@@ -229,8 +302,12 @@ func (history *history) ReplaceState(state *map[string]any, title string, url st
 		history.State = &state
 		history.stack[len(history.stack)-1] = &state
 
-		history.Value.Call("replaceState", state.value, js.ValueOf(state.Title), js.ValueOf(state.URL))
+		history.Value.Call("replaceState", *state.value, js.ValueOf(state.Title), js.ValueOf(state.URL))
+
+		result = true
 
 	}
+
+	return result
 
 }
