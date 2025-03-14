@@ -2,7 +2,6 @@
 
 package history
 
-import "fmt"
 import "syscall/js"
 
 var History history
@@ -205,17 +204,19 @@ func (history *history) Go(delta int) {
 
 	if delta > 0 {
 
-		wrapped_delta := js.ValueOf(delta)
-
-		fmt.Println(wrapped_delta)
+		for d := 0; d < delta; d++ {
+			history.Forward()
+		}
 
 	} else if delta < 0 {
 
-		// TODO: Negative direction / backwards
+		for d := delta; d < 0; d++ {
+			history.Back()
+		}
 
 	} else if delta == 0 {
 
-		// TODO? Nothing?
+		history.Value.Call("go", js.ValueOf(0))
 
 	}
 
