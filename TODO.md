@@ -1,9 +1,7 @@
 
-# TODO
+# Bindings
 
-## Bindings
-
-### Encoding API
+## Encoding API
 
 [Encoders and Decoders](https://encoding.spec.whatwg.org/#encoders-and-decoders):
 
@@ -16,7 +14,7 @@
 [CookieStore Object](https://developer.mozilla.org/en-US/docs/Web/API/CookieStore)
 
 
-### Navigator API
+## Navigator API
 
 [Navigator Object](https://html.spec.whatwg.org/multipage/system-state.html#the-navigator-object):
 
@@ -28,26 +26,13 @@
 - [Credentials API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/credentials)
 - [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/geolocation)
 - [Keyboard API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/keyboard)
-- [Language API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/language)
 - [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/permissions)
 - [Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/storage)
 - [VirtualKeyBoard API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/virtualKeyboard)
 - [Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate)
 
 
-### History API
-
-[History API](https://html.spec.whatwg.org/multipage/nav-history-apis.html#the-history-interface):
-
-- [ ] history/History
-- [ ] Back()
-- [ ] Forward()
-- [ ] Go()
-- [ ] PushState()
-- [ ] ReplaceState()
-
-
-### Canvas API
+## Canvas API
 
 - [ ] canvas/Canvas
 - [ ] canvas/CanvasRenderingContext2D
@@ -61,38 +46,40 @@
 - [ ] canvas/ImageBitmapRenderingContext
 
 
-### Crypto API
+## Crypto API
 
 [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
 
-- [x] Crypto
-- [ ] SubtleCrypto
-- [ ] CryptoKey
-- [ ] CryptoKeyPair
+### AES-GCM
 
-Crypto Dictionaries:
+- [ ] Maybe there's a use case for AES-GCM's `additionalData` and `tagLength` parameters of
+      the `AesGcmParams` object. If there is, the `aesgcm.Encrypt()` method needs to change.
 
-- [ ] AesCbcParams
-- [ ] AesCtrParams
-- [ ] AesGcmParams
-- [ ] AesKeyGenParams
+### AES-KW
 
-- [ ] EcKeyGenParams
-- [ ] EcKeyImportParams
-- [ ] EcdhKeyDeriveParams
-- [ ] EcdsaParams
-- [ ] HkdfParams
-- [ ] HmacImportParams
-- [ ] HmacKeyGenParams
-- [ ] Pbkdf2Params
+- [ ] Workflow might be different, and requires different `structs` to interact with `PBKDF2`
 
-- [ ] RsaHashedImportParams
-- [ ] RsaHashedKeyGenparams
-- [ ] RsaOaepParams
-- [ ] RsaPssParams
+### PBKDF2
+
+- [ ] Only supports `DeriveKey()` method.
+- [ ] See also [Pbkdf2Params](https://developer.mozilla.org/en-US/docs/Web/API/Pbkdf2Params)
+
+### ECDH / ECDSA
+
+- [ ] See also [EcKeyGenparams](https://developer.mozilla.org/en-US/docs/Web/API/EcKeyGenParams)
+- [ ] ECDSA can only be used to `Sign()`
+- [ ] ECDH can only be used to `DeriveKey()`
+- [ ] See also [sign](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign)
+- [ ] See also [deriveKey](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey)
+
+### Other
+
+- HMAC
+- RSA OAEP
+- RSA PSS
 
 
-### Web Forms API
+## Web Forms
 
 - [ ] xhr/FormData interface?
 - [ ] fetch/FormData interface?
