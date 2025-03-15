@@ -30,14 +30,28 @@ object not being implementable as a reusable struct that would make sense.
 - [x] [crypto/RandomUUID](/source/crypto/RandomUUID.go)
 
 - [x] [crypto/aescbc/CryptoKey](/source/crypto/aescbc/CryptoKey.go)
-- [x] [crypto/aescbc/Encrypt](/source/crypto/aescbc/Encrypt.go)
+- [x] [crypto/aescbc/CryptoKeyType](/source/crypto/aescbc/CryptoKeyType.go)
 - [x] [crypto/aescbc/Decrypt](/source/crypto/aescbc/Decrypt.go)
+- [x] [crypto/aescbc/Encrypt](/source/crypto/aescbc/Encrypt.go)
+- [x] [crypto/aescbc/ExportKey](/source/crypto/aescbc/ExportKey.go)
 - [x] [crypto/aescbc/GenerateKey](/source/crypto/aescbc/GenerateKey.go)
+- [x] [crypto/aescbc/ImportKey](/source/crypto/aescbc/ImportKey.go)
 
-- [ ] [crypto/aesgcm/CryptoKey](/source/crypto/aescbc/CryptoKey.go)
-- [ ] [crypto/aesgcm/Encrypt](/source/crypto/aescbc/Encrypt.go)
-- [ ] [crypto/aesgcm/Decrypt](/source/crypto/aescbc/Decrypt.go)
-- [ ] [crypto/aesgcm/Params](/source/crypto/aescbc/Params.go)
+- [x] [crypto/aesctr/CryptoKey](/source/crypto/aesctr/CryptoKey.go)
+- [x] [crypto/aesctr/CryptoKeyType](/source/crypto/aesctr/CryptoKeyType.go)
+- [x] [crypto/aesctr/Decrypt](/source/crypto/aesctr/Decrypt.go)
+- [x] [crypto/aesctr/Encrypt](/source/crypto/aesctr/Encrypt.go)
+- [x] [crypto/aesctr/ExportKey](/source/crypto/aesctr/ExportKey.go)
+- [x] [crypto/aesctr/GenerateKey](/source/crypto/aesctr/GenerateKey.go)
+- [x] [crypto/aesctr/ImportKey](/source/crypto/aesctr/ImportKey.go)
+
+- [x] [crypto/aesgcm/CryptoKey](/source/crypto/aesgcm/CryptoKey.go)
+- [x] [crypto/aesgcm/CryptoKeyType](/source/crypto/aesgcm/CryptoKeyType.go)
+- [x] [crypto/aesgcm/Decrypt](/source/crypto/aesgcm/Decrypt.go)
+- [x] [crypto/aesgcm/Encrypt](/source/crypto/aesgcm/Encrypt.go)
+- [x] [crypto/aesgcm/ExportKey](/source/crypto/aesgcm/ExportKey.go)
+- [x] [crypto/aesgcm/GenerateKey](/source/crypto/aesgcm/GenerateKey.go)
+- [x] [crypto/aesgcm/ImportKey](/source/crypto/aesgcm/ImportKey.go)
 
 **dom**
 
