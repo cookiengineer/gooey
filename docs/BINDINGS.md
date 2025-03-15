@@ -29,6 +29,8 @@ object not being implementable as a reusable struct that would make sense.
 - [x] [crypto/GetRandomValues](/source/crypto/GetRandomValues.go)
 - [x] [crypto/RandomUUID](/source/crypto/RandomUUID.go)
 
+**crypto/aescbc**
+
 - [x] [crypto/aescbc/CryptoKey](/source/crypto/aescbc/CryptoKey.go)
 - [x] [crypto/aescbc/CryptoKeyType](/source/crypto/aescbc/CryptoKeyType.go)
 - [x] [crypto/aescbc/Decrypt](/source/crypto/aescbc/Decrypt.go)
@@ -37,6 +39,8 @@ object not being implementable as a reusable struct that would make sense.
 - [x] [crypto/aescbc/GenerateKey](/source/crypto/aescbc/GenerateKey.go)
 - [x] [crypto/aescbc/ImportKey](/source/crypto/aescbc/ImportKey.go)
 
+**crypto/aesctr**
+
 - [x] [crypto/aesctr/CryptoKey](/source/crypto/aesctr/CryptoKey.go)
 - [x] [crypto/aesctr/CryptoKeyType](/source/crypto/aesctr/CryptoKeyType.go)
 - [x] [crypto/aesctr/Decrypt](/source/crypto/aesctr/Decrypt.go)
@@ -44,6 +48,8 @@ object not being implementable as a reusable struct that would make sense.
 - [x] [crypto/aesctr/ExportKey](/source/crypto/aesctr/ExportKey.go)
 - [x] [crypto/aesctr/GenerateKey](/source/crypto/aesctr/GenerateKey.go)
 - [x] [crypto/aesctr/ImportKey](/source/crypto/aesctr/ImportKey.go)
+
+**crypto/aesgcm**
 
 - [x] [crypto/aesgcm/CryptoKey](/source/crypto/aesgcm/CryptoKey.go)
 - [x] [crypto/aesgcm/CryptoKeyType](/source/crypto/aesgcm/CryptoKeyType.go)
@@ -99,6 +105,9 @@ The Navigator API is split up into separate sub-packages, due to most of the fea
 being available in at least one web browser.
 
 - [x] [navigator/Navigator](/source/navigator/Navigator.go)
+
+**navigator/geolocation**
+
 - [x] [navigator/geolocation/Geolocation](/source/navigator/geolocation/Geolocation.go)
 - [x] [navigator/geolocation/GeolocationPosition](/source/navigator/geolocation/GeolocationPosition.go)
 - [x] [navigator/geolocation/GeolocationPositionError](/source/navigator/geolocation/GeolocationPositionError.go)
