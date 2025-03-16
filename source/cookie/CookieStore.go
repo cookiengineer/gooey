@@ -13,115 +13,7 @@ import (
 	"syscall/js"
 )
 
-type cookieStore struct {
-	Value *js.Value `json:"value"`
-}
-
 var CookieStore cookieStore
-
-type SameSite string
-
-const (
-	Strict SameSite = "strict"
-	Lax    SameSite = "lax"
-	None   SameSite = "none"
-)
-
-func (s SameSite) ToString() string {
-	return string(s)
-}
-
-type DeleteOptions struct {
-	Name        string  `json:"name"`
-	Domain      *string `json:"domian"`
-	Path        *string `json:"path"`
-	Partitioned bool    `json:"partitioned"`
-}
-
-func (deleteOptions DeleteOptions) MapToJS() map[string]any {
-	mapped := make(map[string]any)
-
-	mapped["name"] = deleteOptions.Name
-
-	if deleteOptions.Domain != nil {
-		mapped["domain"] = *deleteOptions.Domain
-	}
-
-	path := "/"
-	if deleteOptions.Path != nil {
-		path = *deleteOptions.Path
-	}
-	mapped["path"] = path
-
-	mapped["partitioned"] = deleteOptions.Partitioned
-
-	return mapped
-}
-
-type GetOptions struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
-}
-
-func (getOptions GetOptions) MapToJS() map[string]any {
-	mapped := make(map[string]any)
-	mapped["name"] = getOptions.Name
-	mapped["url"] = getOptions.Url
-	return mapped
-}
-
-type SetOptions struct {
-	Domain      *string   `json:"domain"`
-	Expires     *int      `json:"expires"`
-	Name        string    `json:"name"`
-	Partitioned bool      `json:"partitioned"`
-	Path        *string   `json:"path"`
-	SameSite    *SameSite `json:"sameSite"`
-	Value       string    `json:"value"`
-}
-
-func (setOptions SetOptions) MapToJS() map[string]any {
-	mapped := make(map[string]any)
-
-	mapped["name"] = setOptions.Name
-	mapped["value"] = setOptions.Value
-
-	if setOptions.Domain != nil {
-		mapped["domain"] = *setOptions.Domain
-	}
-
-	mapped["expires"] = nil
-	if setOptions.Expires != nil {
-		mapped["expires"] = setOptions.Expires
-	}
-
-	mapped["partitioned"] = setOptions.Partitioned
-
-	path := "/"
-	if setOptions.Path != nil {
-		path = *setOptions.Path
-	}
-	mapped["path"] = path
-
-	sameSite := Strict
-	if setOptions.SameSite != nil {
-		sameSite = *setOptions.SameSite
-	}
-	mapped["sameSite"] = sameSite.ToString()
-
-	return mapped
-}
-
-type Cookie struct {
-	Domain      string   `json:"domain"`
-	Expires     int64    `json:"expires"`
-	Name        string   `json:"name"`
-	Partitioned bool     `json:"partitioned"`
-	Path        string   `json:"path"`
-	SameSite    SameSite `json:"sameSite"`
-	Secure      bool     `json:"secure"`
-	Value       string   `json:"value"`
-}
 
 func init() {
 	cookieStoreValue := js.Global().Get("cookieStore")
@@ -131,6 +23,10 @@ func init() {
 	CookieStore = cookieStore{
 		Value: &cookieStoreValue,
 	}
+}
+
+type cookieStore struct {
+	Value *js.Value `json:"value"`
 }
 
 func (cs *cookieStore) Delete(deleteOptions DeleteOptions) error {
