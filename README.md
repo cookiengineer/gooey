@@ -5,15 +5,16 @@
     <img width="256" height="256" src="https://raw.githubusercontent.com/cookiengineer/gooey/master/assets/gooey.jpg">
 </p>
 
-Gooey (GUI) is a Pure Go WebASM bindings framework. It bridges the gaps between Go, WebASM and Browser APIs.
+[Gooey](https://github.com/cookiengineer/gooey) (GUI) is a Pure Go WebASM bindings framework.
+It bridges the gaps between Go, WebASM and Browser APIs.
 
-On top of Gooey, there's the [Gooey Components](https://github.com/cookiengineer/gooey-components) framework,
-which offers ready-to-use Web Components to structure a Web Application that uses a local Web View for its UI.
+The [Gooey Components](https://github.com/cookiengineer/gooey-components) framework offers ready-to-use
+Web Components to structure a Web Application that uses a local Web View for its UI.
 
 
 ## Bindings
 
-- [docs/BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented bindings.
+- [BINDINGS.md](/BINDINGS.md) documents the state of implemented bindings.
 - [TODO.md](/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
 
 

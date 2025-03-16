@@ -1,9 +1,9 @@
 package main
 
-import "gooey"
-import "gooey/console"
-import "gooey/crypto"
-import "gooey/crypto/aescbc"
+import gooey "github.com/cookiengineer/gooey/pkg"
+import "github.com/cookiengineer/gooey/pkg/console"
+import "github.com/cookiengineer/gooey/pkg/crypto"
+import "github.com/cookiengineer/gooey/pkg/crypto/aescbc"
 import "encoding/hex"
 import "encoding/json"
 import "strings"

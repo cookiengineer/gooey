@@ -1,7 +1,7 @@
 package main
 
-import "gooey"
-import "gooey/dom"
+import gooey "github.com/cookiengineer/gooey/pkg"
+import "github.com/cookiengineer/gooey/pkg/dom"
 import "strconv"
 import "time"
 

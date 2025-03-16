@@ -1,9 +1,9 @@
 package main
 
-import "gooey"
-import "gooey/console"
-import "gooey/dom"
-import "gooey/history"
+import gooey "github.com/cookiengineer/gooey/pkg"
+import "github.com/cookiengineer/gooey/pkg/console"
+import "github.com/cookiengineer/gooey/pkg/dom"
+import "github.com/cookiengineer/gooey/pkg/history"
 import "encoding/json"
 import "time"
 

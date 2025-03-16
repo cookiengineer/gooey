@@ -1,8 +1,8 @@
 package main
 
-import "gooey"
-import "gooey/storages"
-import "gooey/timers"
+import "github.com/cookiengineer/gooey/pkg"
+import "github.com/cookiengineer/gooey/pkg/storages"
+import "github.com/cookiengineer/gooey/pkg/timers"
 import "strconv"
 import "time"
 

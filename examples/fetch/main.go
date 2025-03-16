@@ -1,6 +1,6 @@
 package main
 
-import "gooey/fetch"
+import "github.com/cookiengineer/gooey/pkg/fetch"
 import "fmt"
 import "time"
 

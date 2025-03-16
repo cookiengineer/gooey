@@ -1,12 +1,12 @@
 package main
 
-import "gooey/console"
-import "gooey/navigator"
+import "github.com/cookiengineer/gooey/pkg/console"
+import "github.com/cookiengineer/gooey/pkg/navigator"
 import "time"
 
 func main() {
 
-	console.Inspect(navigator.Navigator)
+	console.Log(navigator.Navigator)
 
 	for true {
 

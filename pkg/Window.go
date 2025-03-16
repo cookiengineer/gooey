@@ -2,7 +2,7 @@
 
 package gooey
 
-import "gooey/dom"
+import "github.com/cookiengineer/gooey/pkg/dom"
 import "syscall/js"
 
 var Window window

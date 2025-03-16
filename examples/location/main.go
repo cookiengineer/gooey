@@ -1,9 +1,9 @@
 package main
 
-import "gooey"
-import "gooey/console"
-import "gooey/location"
-import "gooey/timers"
+import "github.com/cookiengineer/gooey/pkg"
+import "github.com/cookiengineer/gooey/pkg/console"
+import "github.com/cookiengineer/gooey/pkg/location"
+import "github.com/cookiengineer/gooey/pkg/timers"
 import "time"
 
 func main() {

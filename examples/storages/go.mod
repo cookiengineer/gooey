@@ -2,7 +2,7 @@ module example
 
 go 1.23.5
 
-replace gooey => ../../source
+replace github.com/cookiengineer/gooey => ../../
 
-require gooey v0.0.0
+require github.com/cookiengineer/gooey v0.0.0
 

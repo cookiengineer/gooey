@@ -1,7 +1,7 @@
 package main
 
-import "gooey"
-import "gooey/navigator/geolocation"
+import "github.com/cookiengineer/gooey/pkg"
+import "github.com/cookiengineer/gooey/pkg/navigator/geolocation"
 import "strconv"
 import "time"
 
