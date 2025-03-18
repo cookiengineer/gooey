@@ -77,6 +77,22 @@ func (element *Element) AddEventListener(typ EventType, listener EventListener) 
 
 }
 
+func (element *Element) Append(child *Element) {
+
+	if element.Value != nil && child != nil && child.Value != nil {
+		element.Value.Call("append", *child.Value)
+	}
+
+}
+
+func (element *Element) Prepend(child *Element) {
+
+	if element.Value != nil && child != nil && child.Value != nil {
+		element.Value.Call("prepend", *child.Value)
+	}
+
+}
+
 func (element *Element) Remove() {
 	element.Value.Call("remove")
 }

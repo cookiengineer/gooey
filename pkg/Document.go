@@ -75,6 +75,59 @@ func (doc *document) AddEventListener(typ dom.EventType, listener dom.EventListe
 
 }
 
+func (doc *document) CreateElement(tagname string) *dom.Element {
+
+	var result *dom.Element = nil
+
+	value := doc.Value.Call("createElement", js.ValueOf(tagname))
+
+	if !value.IsNull() && !value.IsUndefined() {
+		element := dom.ToElement(value)
+		result = &element
+	}
+
+	return result
+
+}
+
+func (doc *document) QuerySelector(query string) *dom.Element {
+
+	var result *dom.Element = nil
+
+	value := doc.Value.Call("querySelector", query)
+
+	if !value.IsNull() && !value.IsUndefined() {
+		element := dom.ToElement(value)
+		result = &element
+	}
+
+	return result
+
+}
+
+func (doc *document) QuerySelectorAll(query string) []*dom.Element {
+
+	var result []*dom.Element
+
+	values := doc.Value.Call("querySelectorAll", query)
+
+	for v := 0; v < values.Length(); v++ {
+
+		value := values.Index(v)
+
+		if !value.IsNull() && !value.IsUndefined() {
+
+			element := dom.ToElement(value)
+			result = append(result, &element)
+
+		}
+
+	}
+
+	return result
+
+}
+
 func (doc *document) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
 	var result bool = false
@@ -131,44 +184,6 @@ func (doc *document) RemoveEventListener(typ dom.EventType, listener *dom.EventL
 			delete(doc.listeners, typ)
 
 			result = true
-
-		}
-
-	}
-
-	return result
-
-}
-
-func (doc *document) QuerySelector(query string) *dom.Element {
-
-	var result *dom.Element = nil
-
-	value := doc.Value.Call("querySelector", query)
-
-	if !value.IsNull() && !value.IsUndefined() {
-		element := dom.ToElement(value)
-		result = &element
-	}
-
-	return result
-
-}
-
-func (doc *document) QuerySelectorAll(query string) []*dom.Element {
-
-	var result []*dom.Element
-
-	values := doc.Value.Call("querySelectorAll", query)
-
-	for v := 0; v < values.Length(); v++ {
-
-		value := values.Index(v)
-
-		if !value.IsNull() && !value.IsUndefined() {
-
-			element := dom.ToElement(value)
-			result = append(result, &element)
 
 		}
 
