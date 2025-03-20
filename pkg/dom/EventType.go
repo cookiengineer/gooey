@@ -5,5 +5,6 @@ package dom
 type EventType string
 
 const (
-	EventTypeClick EventType = "click"
+	EventTypeChange EventType = "change"
+	EventTypeClick  EventType = "click"
 )
