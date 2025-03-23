@@ -21,7 +21,7 @@
 - [ui/Input](/components/ui/Input.go)
 - [ui/Label](/components/ui/Label.go)
 - [ ] [ui/Select](/components/ui/Select.go)
-- [ ] [ui/Textarea](/components/ui/Textarea.go)
+- [ui/Textarea](/components/ui/Textarea.go)
 - [ ] [ui/Toggle](/components/ui/Toggle.go)
 - [ ] [ui/Toggles](/components/ui/Toggles.go)
 

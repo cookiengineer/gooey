@@ -4,24 +4,21 @@ import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "strings"
 
-type Input struct {
-	Label    string    `json:"label"`
-	Type     InputType `json:"type"`
-	Value    string    `json:"value"`
-	Disabled bool      `json:"disabled"`
+type Textarea struct {
+	Label    string `json:"label"`
+	Value    string `json:"value"`
+	Disabled bool   `json:"disabled"`
 	Component
 }
 
-func NewInput(label string, value string, typ InputType) Input {
+func NewTextarea(label string, value string) Textarea {
 
-	var component Input
+	var component Textarea
 
-	element := bindings.Document.CreateElement("input")
-	element.SetAttribute("type", typ.String())
+	element := bindings.Document.CreateElement("textarea")
 
-	component.Label = strings.TrimSpace(label)
-	component.Type  = typ
-	component.Value = strings.TrimSpace(value)
+	component.Label = label
+	component.Value = value
 
 	component.Init(element)
 	component.Render()
@@ -30,9 +27,9 @@ func NewInput(label string, value string, typ InputType) Input {
 
 }
 
-func ToInput(element *dom.Element) Input {
+func ToTextarea(element *dom.Element) Textarea {
 
-	var component Input
+	var component Textarea
 
 	tmp := element.Value.Get("value")
 
@@ -51,17 +48,17 @@ func ToInput(element *dom.Element) Input {
 
 }
 
-func (component *Input) Disable() {
+func (component *Textarea) Disable() {
 	component.Disabled = true
 	component.Render()
 }
 
-func (component *Input) Enable() {
+func (component *Textarea) Enable() {
 	component.Disabled = false
 	component.Render()
 }
 
-func (component *Input) Render() {
+func (component *Textarea) Render() {
 
 	if component.Element != nil {
 
@@ -70,8 +67,6 @@ func (component *Input) Render() {
 		} else {
 			component.Element.RemoveAttribute("placeholder")
 		}
-
-		component.Element.SetAttribute("type", component.Type.String())
 
 		if component.Value != "" {
 			component.Element.Value.Set("value", component.Value)
@@ -89,23 +84,25 @@ func (component *Input) Render() {
 
 }
 
-func (component *Input) String() string {
+func (component *Textarea) String() string {
 
-	html := "<input type=\"" + component.Type.String() + "\""
+	html := "<textarea"
 
 	if component.Label != "" {
 		html += " placeholder=\"" + component.Label + "\""
-	}
-
-	if component.Value != "" {
-		html += " value=\"" + component.Value + "\""
 	}
 
 	if component.Disabled == true {
 		html += " disabled"
 	}
 
-	html += "/>"
+	html += ">"
+
+	if component.Value != "" {
+		html += component.Value
+	}
+
+	html += "</textarea>"
 
 	return html
 
