@@ -1,6 +1,6 @@
 package main
 
-import "github.com/cookiengineer/gooey/pkg/console"
+import "github.com/cookiengineer/gooey/bindings/console"
 import "errors"
 import "syscall/js"
 import "time"

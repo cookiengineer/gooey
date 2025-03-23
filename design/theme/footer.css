@@ -1,0 +1,74 @@
+
+body > footer {
+	position: fixed;
+	top: auto;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	z-index: 20;
+}
+
+footer {
+	display: flex;
+	width: auto;
+	height: 50px;
+	margin: 0px;
+	padding: 0px 16px;
+	line-height: 50px;
+	color: var(--footer-color);
+	background: var(--footer-background);
+	box-sizing: border-box;
+	justify-content: space-between;
+}
+
+footer div:first-of-type {
+	display: inline-block;
+	width: auto;
+	margin: 0px;
+	padding: 0px;
+	vertical-align: middle;
+	font-family: 'vera-mono';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+	text-align: left;
+	box-sizing: border-box;
+}
+
+footer div:last-of-type {
+	display: inline-block;
+	width: auto;
+	margin: 0px;
+	margin-left: auto;
+	padding: 0px;
+	vertical-align: middle;
+	text-align: right;
+	box-sizing: border-box;
+}
+
+footer button {
+	margin: 0px 0px 0px 8px;
+}
+
+footer button:first-of-type {
+	margin-left: 0px;
+}
+
+footer button[data-action="pull"],
+footer button[data-action="push"] {
+	color: var(--palette-primary-color);
+	background: var(--palette-primary-background);
+	cursor: pointer;
+}
+
+footer button[data-action="pull"][disabled],
+footer button[data-action="pull"][disabled]:hover,
+footer button[data-action="pull"][disabled]:focus,
+footer button[data-action="push"][disabled],
+footer button[data-action="push"][disabled]:hover,
+footer button[data-action="push"][disabled]:focus {
+	color: var(--button-disabled-color);
+	background: var(--button-disabled-background);
+	border: 1px solid var(--button-default-border);
+	cursor: not-allowed;
+}

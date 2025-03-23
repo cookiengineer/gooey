@@ -1,7 +1,7 @@
 package main
 
-import gooey "github.com/cookiengineer/gooey/pkg"
-import "github.com/cookiengineer/gooey/pkg/dom"
+import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "strconv"
 import "time"
 
@@ -9,7 +9,7 @@ func main() {
 
 	var count int = 0
 
-	var listener = dom.ToEventListener(func(event dom.Event) {
+	listener := dom.ToEventListener(func(event dom.Event) {
 
 		target := event.Target
 
@@ -29,15 +29,15 @@ func main() {
 
 	})
 
-	gooey.Document.AddEventListener("click", listener)
+	bindings.Document.AddEventListener("click", listener)
 
 	for true {
 
 		if count > 10 {
 
-			gooey.Document.RemoveEventListener("click", &listener)
+			bindings.Document.RemoveEventListener("click", &listener)
 
-			clickable := gooey.Document.QuerySelector("#clickable")
+			clickable := bindings.Document.QuerySelector("#clickable")
 			clickable.SetClassName("disabled")
 			clickable.SetInnerHTML("Stop clicking me!")
 

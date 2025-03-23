@@ -1,14 +1,14 @@
 package main
 
-import "github.com/cookiengineer/gooey/pkg"
-import "github.com/cookiengineer/gooey/pkg/storages"
-import "github.com/cookiengineer/gooey/pkg/timers"
+import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/storages"
+import "github.com/cookiengineer/gooey/bindings/timers"
 import "strconv"
 import "time"
 
 func main() {
 
-	element := gooey.Document.QuerySelector("#seconds")
+	element := bindings.Document.QuerySelector("#seconds")
 
 	var seconds int = 0
 

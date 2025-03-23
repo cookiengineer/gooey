@@ -1,7 +1,7 @@
 package main
 
-import "github.com/cookiengineer/gooey/pkg/console"
-import "github.com/cookiengineer/gooey/pkg/navigator"
+import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/navigator"
 import "time"
 
 func main() {

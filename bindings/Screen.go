@@ -1,8 +1,8 @@
 //go:build wasm
 
-package gooey
+package bindings
 
-import "github.com/cookiengineer/gooey/pkg/dom"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "syscall/js"
 
 type Screen struct {

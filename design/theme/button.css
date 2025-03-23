@@ -1,0 +1,100 @@
+
+button {
+	display: inline-block;
+	margin: 0px;
+	padding: 4px 8px;
+	color: var(--button-default-color);
+	background: var(--button-default-background);
+	border: 1px solid var(--button-default-border);
+	border-radius: 4px;
+	transition: 250ms all ease-out;
+	cursor: pointer;
+}
+
+button:hover,
+button:focus {
+	color: var(--button-focus-color);
+	background: var(--button-focus-background);
+	transition: 250ms all ease-out;
+}
+
+button.primary {
+	color: var(--palette-primary-color);
+	background: var(--palette-primary-background);
+	cursor: pointer;
+}
+
+button.secondary {
+	color: var(--palette-secondary-color);
+	background: var(--palette-secondary-background);
+	/* TODO: Red shade for deny action */
+	cursor: no-drop;
+}
+
+button[data-action]:before {
+	display: inline-block;
+	width: auto;
+	line-height: inherit;
+	margin: 0em 0.25em 0em 0em;
+	padding: 0px;
+	font-family: "icon";
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	text-align: center;
+	text-decoration: none;
+	text-transform: none;
+	font-smooth: antialiased;
+	speak: never;
+}
+
+button[data-action]:empty:before {
+	margin: 0px;
+}
+
+button[disabled],
+button[disabled]:hover,
+button[disabled]:focus,
+button[data-action][disabled],
+button[data-action][disabled]:hover,
+button[data-action][disabled]:focus,
+button.primary[disabled],
+button.primary[disabled]:hover,
+button.primary[disabled]:focus,
+button.secondary[disabled],
+button.secondary[disabled]:hover,
+button.secondary[disabled]:focus {
+	color: var(--button-disabled-color);
+	background: var(--button-disabled-background);
+	border: 1px solid var(--button-default-border);
+	cursor: not-allowed;
+}
+
+/* actions */
+button[data-action^="add"]:before            { content: '\e805'; }
+button[data-action^="add-user"]:before       { content: '\f234'; }
+button[data-action^="backup"]:before         { content: '\e807'; }
+button[data-action^="cancel"]:before         { content: '\e804'; }
+button[data-action^="close"]:before          { content: '\e804'; }
+button[data-action^="cloud"]:before          { content: '\e81a'; }
+button[data-action^="cloud-download"]:before { content: '\f0ed'; }
+button[data-action^="cloud-upload"]:before   { content: '\f0ee'; }
+button[data-action^="confirm"]:before        { content: '\e803'; }
+button[data-action^="edit"]:before           { content: '\e809'; }
+button[data-action^="redo"]:before           { content: '\e813'; }
+button[data-action^="undo"]:before           { content: '\e814'; }
+button[data-action^="refresh"]:before        { content: '\e815'; }
+button[data-action^="restore"]:before        { content: '\e808'; }
+button[data-action^="remove"]:before         { content: '\e806'; }
+button[data-action^="remove-user"]:before    { content: '\f235'; }
+button[data-action^="save"]:before           { content: '\e803'; }
+button[data-action^="sort"]:before           { content: '\f162'; }
+button[data-action^="share"]:before          { content: '\f1e0'; }
+button[data-action^="tweak"]:before          { content: '\e80e'; }
+
+/* directions */
+button[data-action$="-down"]:before          { content: '\e80f'; }
+button[data-action$="-left"]:before          { content: '\e810'; }
+button[data-action$="-right"]:before         { content: '\e811'; }
+button[data-action$="-up"]:before            { content: '\e812'; }
+

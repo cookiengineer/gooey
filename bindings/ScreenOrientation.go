@@ -1,6 +1,6 @@
 //go:build wasm
 
-package gooey
+package bindings
 
 type ScreenOrientation struct {
 	Angle uint   `json:"angle"`

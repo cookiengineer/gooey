@@ -1,9 +1,9 @@
 package main
 
-import gooey "github.com/cookiengineer/gooey/pkg"
-import "github.com/cookiengineer/gooey/pkg/console"
-import "github.com/cookiengineer/gooey/pkg/dom"
-import "github.com/cookiengineer/gooey/pkg/history"
+import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/bindings/history"
 import "encoding/json"
 import "time"
 
@@ -31,9 +31,9 @@ func renderEvent(event history.PopStateEvent) string {
 
 func main() {
 
-	list_events    := gooey.Document.QuerySelector("main ul")
-	button_back    := gooey.Document.QuerySelector("main button[data-action=\"back\"]")
-	button_forward := gooey.Document.QuerySelector("main button[data-action=\"forward\"]")
+	list_events    := bindings.Document.QuerySelector("main ul")
+	button_back    := bindings.Document.QuerySelector("main button[data-action=\"back\"]")
+	button_forward := bindings.Document.QuerySelector("main button[data-action=\"forward\"]")
 
 	history.History.AddEventListener(history.ToEventListener(func(event history.PopStateEvent) {
 

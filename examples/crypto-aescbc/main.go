@@ -1,9 +1,9 @@
 package main
 
-import gooey "github.com/cookiengineer/gooey/pkg"
-import "github.com/cookiengineer/gooey/pkg/console"
-import "github.com/cookiengineer/gooey/pkg/crypto"
-import "github.com/cookiengineer/gooey/pkg/crypto/aescbc"
+import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/crypto"
+import "github.com/cookiengineer/gooey/bindings/crypto/aescbc"
 import "encoding/hex"
 import "encoding/json"
 import "strings"
@@ -25,7 +25,7 @@ func main() {
 	}
 
 	details1, _ := json.MarshalIndent(key, "", "\t")
-	element1 := gooey.Document.QuerySelector("#generated-cryptokey")
+	element1 := bindings.Document.QuerySelector("#generated-cryptokey")
 	element1.SetInnerHTML(string(details1))
 
 	// Step 2: Generate IV (Initialization Vector)
@@ -36,7 +36,7 @@ func main() {
 		details2 = append(details2, "0x" + hex.EncodeToString([]byte{iv[i]}))
 	}
 
-	element2 := gooey.Document.QuerySelector("#generated-iv")
+	element2 := bindings.Document.QuerySelector("#generated-iv")
 	element2.SetInnerHTML(strings.Join(details2, " "))
 
 
@@ -52,7 +52,7 @@ func main() {
 		details3 = append(details3, "0x" + hex.EncodeToString([]byte{encrypted[e]}))
 	}
 
-	element3 := gooey.Document.QuerySelector("#encrypted-buffer")
+	element3 := bindings.Document.QuerySelector("#encrypted-buffer")
 	element3.SetInnerHTML(strings.Join(details3, " "))
 
 
@@ -64,7 +64,7 @@ func main() {
 	}
 
 	details4 := string(decrypted)
-	element4 := gooey.Document.QuerySelector("#decrypted-buffer")
+	element4 := bindings.Document.QuerySelector("#decrypted-buffer")
 	element4.SetInnerHTML(details4)
 
 
@@ -76,7 +76,7 @@ func main() {
 	}
 
 	details5 := string(exported)
-	element5 := gooey.Document.QuerySelector("#exported-keydata")
+	element5 := bindings.Document.QuerySelector("#exported-keydata")
 	element5.SetInnerHTML(details5)
 
 
@@ -91,7 +91,7 @@ func main() {
 	}
 
 	details6, _ := json.MarshalIndent(imported, "", "\t")
-	element6 := gooey.Document.QuerySelector("#imported-cryptokey")
+	element6 := bindings.Document.QuerySelector("#imported-cryptokey")
 	element6.SetInnerHTML(string(details6))
 
 

@@ -1,14 +1,14 @@
 package main
 
-import "github.com/cookiengineer/gooey/pkg"
-import "github.com/cookiengineer/gooey/pkg/console"
-import "github.com/cookiengineer/gooey/pkg/location"
-import "github.com/cookiengineer/gooey/pkg/timers"
+import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/location"
+import "github.com/cookiengineer/gooey/bindings/timers"
 import "time"
 
 func main() {
 
-	element := gooey.Document.QuerySelector("#location")
+	element := bindings.Document.QuerySelector("#location")
 
 	tmp := location.Location.Href
 
