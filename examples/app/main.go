@@ -12,19 +12,22 @@ func main() {
 
 	main := app.Main{}
 	main.Init(element)
-
-	view := element.GetAttribute("data-view")
-
-	if view == "tasks" {
-		main.SetView("tasks", views.NewTasks(&main))
-		main.ChangeView("tasks")
-	} else if view == "settings" {
-		// TODO: Quick Settings example
-		// main.SetView("settings", views.NewSettings(&main))
-		// main.ChangeView("settings")
-	}
+	main.SetView(views.NewTasks(&main))
+	main.ChangeView("tasks")
 
 	console.Log(main)
+
+	console.Group("Header Component")
+	console.Log(main.Header)
+	main.Header.Render()
+	console.Log(main.Header.String())
+	console.GroupEnd("Header Component")
+
+	// console.Group("Footer Component")
+	// console.Log(main.Footer)
+	// console.Log(main.Footer.Render())
+	// console.Log(main.Footer.String())
+	// console.GroupEnd("Footer Component")
 
 	for true {
 

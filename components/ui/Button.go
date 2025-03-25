@@ -2,13 +2,14 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Button struct {
 	Label    string `json:"label"`
 	Action   string `json:"action"`
 	Disabled bool   `json:"disabled"`
-	Component
+	components.Component
 }
 
 func NewButton(label string, action string) Button {

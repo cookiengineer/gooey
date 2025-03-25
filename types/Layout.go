@@ -7,3 +7,7 @@ const (
 	LayoutFlex Layout = "flex"
 	LayoutFlow Layout = "flow"
 )
+
+func (typ Layout) String() string {
+	return string(typ)
+}

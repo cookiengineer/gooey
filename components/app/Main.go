@@ -8,14 +8,14 @@ import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/components/layout"
 
 type Main struct {
-	Element *dom.Element               `json:"element"`
-	Client  *Client                    `json:"client"`
-	Header  *layout.Header             `json:"header"`
-	Footer  *layout.Footer             `json:"footer"`
-	Dialog  *layout.Dialog             `json:"dialog"`
-	Storage *Storage                   `json:"storage"`
-	View    interfaces.View            `json:"view"`
-	Views   map[string]interfaces.View `json:"views"`
+	Element *dom.Element    `json:"element"`
+	Client  *Client         `json:"client"`
+	Header  *layout.Header  `json:"header"`
+	Footer  *layout.Footer  `json:"footer"`
+	// TODO: Dialog  *layout.Dialog  `json:"dialog"`
+	Storage *Storage        `json:"storage"`
+	View    interfaces.View `json:"view"`
+	views   map[string]interfaces.View
 }
 
 func (main *Main) Init(element *dom.Element) {
@@ -27,11 +27,11 @@ func (main *Main) Init(element *dom.Element) {
 	main.Client  = &client
 	main.Storage = &storage
 	main.View    = nil
-	main.Views   = make(map[string]interfaces.View)
+	main.views   = make(map[string]interfaces.View)
 
 	header_element := bindings.Document.QuerySelector("body > header")
 	footer_element := bindings.Document.QuerySelector("body > footer")
-	dialog_element := bindings.Document.QuerySelector("body > dialog")
+	// TODO: dialog_element := bindings.Document.QuerySelector("body > dialog")
 
 	if header_element != nil {
 		header := layout.ToHeader(header_element)
@@ -47,12 +47,13 @@ func (main *Main) Init(element *dom.Element) {
 		main.Footer = nil
 	}
 
-	if dialog_element != nil {
-		dialog := layout.ToDialog(dialog_element)
-		main.Dialog = &dialog
-	} else {
-		main.Dialog = nil
-	}
+	// TODO: Dialog Integration
+	// if dialog_element != nil {
+	// 	dialog := layout.ToDialog(dialog_element)
+	// 	main.Dialog = &dialog
+	// } else {
+	// 	main.Dialog = nil
+	// }
 
 }
 
@@ -70,15 +71,10 @@ func (main *Main) Render() {
 		main.Footer.Render()
 	}
 
-	if main.Dialog != nil {
-		main.Dialog.Render()
-	}
-
-}
-
-func (main *Main) SetView(name string, view interfaces.View) {
-
-	main.Views[name] = view
+	// TODO
+	// if main.Dialog != nil {
+	// 	main.Dialog.Render()
+	// }
 
 }
 
@@ -86,7 +82,7 @@ func (main *Main) ChangeView(name string) bool {
 
 	var result bool = false
 
-	view, ok := main.Views[name]
+	view, ok := main.views[name]
 
 	if ok == true {
 
@@ -98,7 +94,7 @@ func (main *Main) ChangeView(name string) bool {
 		main.Element.SetAttribute("data-view", name)
 
 		if main.Header != nil {
-			main.Header.SetView(name)
+			main.Header.ChangeView(name)
 		}
 
 		main.View = view
@@ -112,3 +108,18 @@ func (main *Main) ChangeView(name string) bool {
 
 }
 
+func (main *Main) SetView(view interfaces.View) {
+
+	name, _, _ := view.Properties()
+
+	if name != "" {
+
+		main.views[name] = view
+
+		if main.Header != nil {
+			main.Header.SetView(view)
+		}
+
+	}
+
+}

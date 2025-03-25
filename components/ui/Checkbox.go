@@ -2,13 +2,14 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Checkbox struct {
 	Label    string `json:"label"`
 	Value    string `json:"value"`
 	Disabled bool   `json:"disabled"`
-	Component
+	components.Component
 }
 
 func NewCheckbox(label string, value string) Checkbox {
@@ -42,12 +43,12 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 }
 
-func (component *Button) Disable() {
+func (component *Checkbox) Disable() {
 	component.Disabled = true
 	component.Render()
 }
 
-func (component *Button) Enable() {
+func (component *Checkbox) Enable() {
 	component.Disabled = false
 	component.Render()
 }

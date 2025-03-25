@@ -1,4 +1,10 @@
 
+# Components
+
+## Layout Components
+
+- [ ] `Header.Render()` needs to be implemented
+
 # Bindings
 
 ## Encoding API

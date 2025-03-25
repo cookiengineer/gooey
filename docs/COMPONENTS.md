@@ -28,7 +28,7 @@
 **layout**
 
 - [ ] [layout/Aside](/components/layout/Aside.go)
-- [ ] [layout/Header](/components/layout/Header.go)
+- [layout/Header](/components/layout/Header.go)
 - [ ] [layout/Footer](/components/layout/Footer.go)
 - [ ] [layout/Dialog](/components/layout/Dialog.go)
 

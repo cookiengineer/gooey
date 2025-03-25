@@ -2,12 +2,13 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Label struct {
 	Label string `json:"label"`
 	Type  string `json:"type"`
-	Component
+	components.Component
 }
 
 func NewLabel(label string, typ string) Label {

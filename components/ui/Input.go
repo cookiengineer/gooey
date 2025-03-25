@@ -2,6 +2,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Input struct {
@@ -9,7 +10,7 @@ type Input struct {
 	Type     InputType `json:"type"`
 	Value    string    `json:"value"`
 	Disabled bool      `json:"disabled"`
-	Component
+	components.Component
 }
 
 func NewInput(label string, value string, typ InputType) Input {

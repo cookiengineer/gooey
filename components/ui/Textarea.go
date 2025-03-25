@@ -2,13 +2,14 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Textarea struct {
 	Label    string `json:"label"`
 	Value    string `json:"value"`
 	Disabled bool   `json:"disabled"`
-	Component
+	components.Component
 }
 
 func NewTextarea(label string, value string) Textarea {

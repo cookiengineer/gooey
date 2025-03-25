@@ -27,13 +27,14 @@ func NewTasks(main *app.Main) Tasks {
 	view.SetElement("header", bindings.Document.QuerySelector("header"))
 	view.SetElement("footer", bindings.Document.QuerySelector("footer"))
 
-	view.Init()
+	view.Init("tasks", "Tasks", "/index.html")
+	view.BindEvents()
 
 	return view
 
 }
 
-func (view Tasks) Init() {
+func (view Tasks) BindEvents() {
 
 	table  := view.GetElement("table")
 	dialog := view.GetElement("dialog")
