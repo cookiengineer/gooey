@@ -1,6 +1,6 @@
 package components
 
-import "github.com/cookiengineer/gooey/pkg/dom"
+import "github.com/cookiengineer/gooey/bindings/dom"
 
 var component_listener_id uint = 0
 

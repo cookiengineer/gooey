@@ -9,7 +9,7 @@ body > footer {
 }
 
 footer {
-	display: flex;
+	display: block flex;
 	width: auto;
 	height: 50px;
 	margin: 0px;
@@ -24,7 +24,7 @@ footer {
 footer div:first-of-type {
 	display: inline-block;
 	width: auto;
-	margin: 0px;
+	margin: 0px auto 0px 0px;
 	padding: 0px;
 	vertical-align: middle;
 	font-family: 'vera-mono';
@@ -35,15 +35,36 @@ footer div:first-of-type {
 	box-sizing: border-box;
 }
 
+footer div:first-of-type button[data-action] {
+	color: var(--palette-secondary-color);
+	background: var(--palette-secondary-background);
+	cursor: pointer;
+}
+
+footer div {
+	display: inline-block;
+	width: auto;
+	margin: 0px auto 0px auto;
+	padding: 0px;
+	vertical-align: middle;
+	text-align: center;
+	box-sizing: border-box;
+}
+
 footer div:last-of-type {
 	display: inline-block;
 	width: auto;
-	margin: 0px;
-	margin-left: auto;
+	margin: 0px 0px 0px auto;
 	padding: 0px;
 	vertical-align: middle;
 	text-align: right;
 	box-sizing: border-box;
+}
+
+footer div:last-of-type button[data-action] {
+	color: var(--palette-primary-color);
+	background: var(--palette-primary-background);
+	cursor: pointer;
 }
 
 footer button {
@@ -54,19 +75,12 @@ footer button:first-of-type {
 	margin-left: 0px;
 }
 
-footer button[data-action="pull"],
-footer button[data-action="push"] {
-	color: var(--palette-primary-color);
-	background: var(--palette-primary-background);
-	cursor: pointer;
-}
-
-footer button[data-action="pull"][disabled],
-footer button[data-action="pull"][disabled]:hover,
-footer button[data-action="pull"][disabled]:focus,
-footer button[data-action="push"][disabled],
-footer button[data-action="push"][disabled]:hover,
-footer button[data-action="push"][disabled]:focus {
+footer div:first-of-type button[data-action][disabled],
+footer div:first-of-type button[data-action][disabled]:hover,
+footer div:first-of-type button[data-action][disabled]:focus,
+footer div:last-of-type button[data-action][disabled],
+footer div:last-of-type button[data-action][disabled]:hover,
+footer div:last-of-type button[data-action][disabled]:focus {
 	color: var(--button-disabled-color);
 	background: var(--button-disabled-background);
 	border: 1px solid var(--button-default-border);

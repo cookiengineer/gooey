@@ -38,6 +38,10 @@ func (view View) GetElement(id string) *dom.Element {
 
 }
 
+func (view View) Render() {
+	// Render into dom Element
+}
+
 func (view View) SetElement(id string, element *dom.Element) {
 
 	if id != "" && element != nil {

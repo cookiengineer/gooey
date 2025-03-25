@@ -11,5 +11,6 @@ type View interface {
 	RemoveElement(string) bool
 	Enter() bool
 	Leave() bool
+	Render()
 }
 

@@ -1,17 +1,24 @@
 
-main {
+main section {
 	display: block;
-	position: fixed;
-	margin: 0px;
-	padding: 0px 16px;
-	top: 50px;
-	right: 0px;
-	bottom: 50px;
-	left: 0px;
-	color: var(--main-color);
-	background: var(--main-background);
-	overflow: hidden auto;
-	z-index: 10;
+	background: red;
+	/* TODO: Make sections visible 100% */
+}
+
+main section.active {
+	/* TODO: translate to 0,0 */
+}
+
+main section[data-layout="flex"] {
+	display: block flex;
+}
+
+main section[data-layout="flow"] {
+	display: block flow;
+}
+
+main section[data-layout="grid"] {
+	display: block grid;
 }
 
 main article {

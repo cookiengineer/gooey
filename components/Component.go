@@ -1,7 +1,7 @@
 package components
 
-import gooey "github.com/cookiengineer/gooey/pkg"
-import "github.com/cookiengineer/gooey/pkg/dom"
+import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/dom"
 
 type Component struct {
 	listeners map[string][]*ComponentListener `json:"listeners"`
@@ -15,7 +15,7 @@ func (component *Component) Init(element *dom.Element) {
 	if element != nil {
 		component.Element = element
 	} else {
-		component.Element = gooey.Document.CreateElement("gooey-component")
+		component.Element = bindings.Document.CreateElement("gooey-component")
 	}
 
 }

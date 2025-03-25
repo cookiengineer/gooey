@@ -27,15 +27,15 @@
 
 **layout**
 
-- [ ] [layout/Article](/components/layout/Article.go)
 - [ ] [layout/Aside](/components/layout/Aside.go)
-- [ ] [layout/Dialog](/components/layout/Dialog.go)
-- [ ] [layout/Fieldset](/components/layout/Fieldset.go)
-- [ ] [layout/Footer](/components/layout/Footer.go)
 - [ ] [layout/Header](/components/layout/Header.go)
+- [ ] [layout/Footer](/components/layout/Footer.go)
+- [ ] [layout/Dialog](/components/layout/Dialog.go)
 
 **content**
 
+- [ ] [content/Fieldset](/components/content/Fieldset.go)
+- [ ] [content/Article](/components/content/Article.go)
 - [ ] [content/BarChart](/components/content/BarChart.go)
 - [ ] [content/LineChart](/components/content/LineChart.go)
 - [ ] [content/PieChart](/components/content/PieChart.go)

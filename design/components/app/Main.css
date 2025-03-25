@@ -1,0 +1,16 @@
+
+main {
+	display: block;
+	position: fixed;
+	margin: 0px;
+	padding: 0px 16px;
+	top: 50px;
+	right: 0px;
+	bottom: 50px;
+	left: 0px;
+	color: var(--main-color);
+	background: var(--main-background);
+	overflow: hidden auto;
+	z-index: 10;
+}
+
