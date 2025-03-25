@@ -27,7 +27,6 @@ button.primary {
 button.secondary {
 	color: var(--palette-secondary-color);
 	background: var(--palette-secondary-background);
-	/* TODO: Red shade for deny action */
 	cursor: no-drop;
 }
 

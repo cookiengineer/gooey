@@ -4,6 +4,7 @@
 ## Layout Components
 
 - [ ] `Header.Render()` needs to be implemented
+- [ ] `app.View` CSS needs to be implemented in `/design/components/app/View.css`
 
 # Bindings
 
