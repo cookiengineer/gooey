@@ -23,12 +23,14 @@ For further details, take a look at the following files to get an overview:
 - [TODO.md](/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
 
 
-## (Native) Program Architecture
+## Program Architecture
 
 - Program serves a local Web UI and opens a webview pointing towards the UI.
 - Program uses `go:embed` to embed a `/public/*` folder that contains all assets.
 - Program uses a UI using `HTML`, `CSS`, and `WebASM`.
+- Program uses a Reactive MVC architecture, which allows a circular flow.
 
+![Reactive MVC Architecture](/assets/reactive-mvc.jpg)
 
 ## WebView Architecture
 
