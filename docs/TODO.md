@@ -1,6 +1,11 @@
 
 # Components
 
+## app.View
+
+- [ ] Element needs to be a `<section>` element
+- [ ] View needs a `Layout` property (flex, grid, flow)
+
 ## Layout Components
 
 - [ ] `Header.Render()` needs to be implemented

@@ -6,101 +6,106 @@ import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Textarea struct {
-	Label    string `json:"label"`
-	Value    string `json:"value"`
-	Disabled bool   `json:"disabled"`
-	components.Component
+	Label     string                `json:"label"`
+	Value     string                `json:"value"`
+	Disabled  bool                  `json:"disabled"`
+	Component *components.Component `json:"component"`
 }
 
 func NewTextarea(label string, value string) Textarea {
 
-	var component Textarea
+	var textarea Textarea
 
-	element := bindings.Document.CreateElement("textarea")
+	element   := bindings.Document.CreateElement("textarea")
+	component := components.NewComponent(element)
 
-	component.Label = label
-	component.Value = value
+	textarea.Component = &component
+	textarea.Label     = label
+	textarea.Value     = value
 
-	component.Init(element)
-	component.Render()
+	textarea.Component.InitEvent("change")
+	textarea.Render()
 
-	return component
+	return textarea
 
 }
 
 func ToTextarea(element *dom.Element) Textarea {
 
-	var component Textarea
+	var textarea Textarea
 
 	tmp := element.Value.Get("value")
 
 	if !tmp.IsNull() && !tmp.IsUndefined() {
-		component.Value = strings.TrimSpace(tmp.String())
+		textarea.Value = strings.TrimSpace(tmp.String())
 	} else {
-		component.Value = ""
+		textarea.Value = ""
 	}
 
-	component.Label    = strings.TrimSpace(element.GetAttribute("placeholder"))
-	component.Disabled = element.HasAttribute("disabled")
+	component := components.NewComponent(element)
 
-	component.Init(element)
+	textarea.Component = &component
+	textarea.Label     = strings.TrimSpace(element.GetAttribute("placeholder"))
+	textarea.Disabled  = element.HasAttribute("disabled")
 
-	return component
+	textarea.Component.InitEvent("change")
+
+	return textarea
 
 }
 
-func (component *Textarea) Disable() {
-	component.Disabled = true
-	component.Render()
+func (textarea *Textarea) Disable() {
+	textarea.Disabled = true
+	textarea.Render()
 }
 
-func (component *Textarea) Enable() {
-	component.Disabled = false
-	component.Render()
+func (textarea *Textarea) Enable() {
+	textarea.Disabled = false
+	textarea.Render()
 }
 
-func (component *Textarea) Render() {
+func (textarea *Textarea) Render() {
 
-	if component.Element != nil {
+	if textarea.Component.Element != nil {
 
-		if component.Label != "" {
-			component.Element.SetAttribute("placeholder", component.Label)
+		if textarea.Label != "" {
+			textarea.Component.Element.SetAttribute("placeholder", textarea.Label)
 		} else {
-			component.Element.RemoveAttribute("placeholder")
+			textarea.Component.Element.RemoveAttribute("placeholder")
 		}
 
-		if component.Value != "" {
-			component.Element.Value.Set("value", component.Value)
+		if textarea.Value != "" {
+			textarea.Component.Element.Value.Set("value", textarea.Value)
 		} else {
-			component.Element.Value.Set("value", "")
+			textarea.Component.Element.Value.Set("value", "")
 		}
 
-		if component.Disabled == true {
-			component.Element.SetAttribute("disabled", "")
+		if textarea.Disabled == true {
+			textarea.Component.Element.SetAttribute("disabled", "")
 		} else {
-			component.Element.RemoveAttribute("disabled")
+			textarea.Component.Element.RemoveAttribute("disabled")
 		}
 
 	}
 
 }
 
-func (component *Textarea) String() string {
+func (textarea *Textarea) String() string {
 
 	html := "<textarea"
 
-	if component.Label != "" {
-		html += " placeholder=\"" + component.Label + "\""
+	if textarea.Label != "" {
+		html += " placeholder=\"" + textarea.Label + "\""
 	}
 
-	if component.Disabled == true {
+	if textarea.Disabled == true {
 		html += " disabled"
 	}
 
 	html += ">"
 
-	if component.Value != "" {
-		html += component.Value
+	if textarea.Value != "" {
+		html += textarea.Value
 	}
 
 	html += "</textarea>"

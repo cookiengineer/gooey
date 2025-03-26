@@ -1,4 +1,4 @@
-package components
+package layout
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
@@ -12,13 +12,18 @@ type Footer struct {
 		Center []interfaces.Component `json:"center"`
 		Right  []interfaces.Component `json:"right"`
 	} `json:"layout"`
-	components.Component
+	Component *components.Component `json:"component"`
 }
+
+// TODO: NewFooter()
 
 func ToFooter(element *dom.Element) Footer {
 
 	var footer Footer
 
+	component := components.NewComponent(element)
+
+	footer.Component      = &component
 	footer.Layout         = types.LayoutFlex
 	footer.Content.Left   = make([]interfaces.Component, 0)
 	footer.Content.Center = make([]interfaces.Component, 0)
@@ -37,18 +42,21 @@ func ToFooter(element *dom.Element) Footer {
 	// TODO: Parse left, center and right <div> elements
 	// TODO: Parse children into components
 
-	footer.Init(element)
+	footer.Component.InitEvent("click")
+	footer.Component.InitEvent("action")
+
+
 
 	return footer
 
 }
 
-func (footer *Footer) SetContent(left []interfaces.Component, center []interfaces.Component, right []interfaces.Component) {
+func (footer *Footer) SetLeft(components []interfaces.Component) {
+	footer.Content.Left = components
+}
 
-	footer.Content.Left   = left
-	footer.Content.Center = center
-	footer.Content.Right  = right
-
+func (footer *Footer) SetRight(components []interfaces.Component) {
+	footer.Content.Right = components
 }
 
 func (footer *Footer) Render() {

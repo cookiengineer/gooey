@@ -6,92 +6,98 @@ import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Checkbox struct {
-	Label    string `json:"label"`
-	Value    string `json:"value"`
-	Disabled bool   `json:"disabled"`
-	components.Component
+	Label     string                `json:"label"`
+	Value     string                `json:"value"`
+	Disabled  bool                  `json:"disabled"`
+	Component *components.Component `json:"component"`
 }
 
 func NewCheckbox(label string, value string) Checkbox {
 
-	var component Checkbox
+	var checkbox Checkbox
 
-	element := bindings.Document.CreateElement("input")
+	element   := bindings.Document.CreateElement("input")
+	component := components.NewComponent(element)
+
 	element.SetAttribute("type", "checkbox")
 
-	component.Label = label
-	component.Value = strings.ToLower(value)
+	checkbox.Component = &component
+	checkbox.Label     = label
+	checkbox.Value     = strings.ToLower(value)
 
-	component.Init(element)
-	component.Render()
+	checkbox.Component.InitEvent("change")
+	checkbox.Render()
 
-	return component
+	return checkbox
 
 }
 
 func ToCheckbox(element *dom.Element) Checkbox {
 
-	var component Checkbox
+	var checkbox Checkbox
 
-	component.Label    = strings.TrimSpace(element.GetAttribute("title"))
-	component.Value    = strings.ToLower(element.GetAttribute("value"))
-	component.Disabled = element.HasAttribute("disabled")
+	component := components.NewComponent(element)
 
-	component.Init(element)
+	checkbox.Label     = strings.TrimSpace(element.GetAttribute("title"))
+	checkbox.Value     = strings.ToLower(element.GetAttribute("value"))
+	checkbox.Disabled  = element.HasAttribute("disabled")
+	checkbox.Component = &component
 
-	return component
+	checkbox.Component.InitEvent("change")
+
+	return checkbox
 
 }
 
-func (component *Checkbox) Disable() {
-	component.Disabled = true
-	component.Render()
+func (checkbox *Checkbox) Disable() {
+	checkbox.Disabled = true
+	checkbox.Render()
 }
 
-func (component *Checkbox) Enable() {
-	component.Disabled = false
-	component.Render()
+func (checkbox *Checkbox) Enable() {
+	checkbox.Disabled = false
+	checkbox.Render()
 }
 
-func (component *Checkbox) Render() {
+func (checkbox *Checkbox) Render() {
 
-	if component.Element != nil {
+	if checkbox.Component.Element != nil {
 
-		if component.Label != "" {
-			component.Element.SetAttribute("title", component.Label)
+		if checkbox.Label != "" {
+			checkbox.Component.Element.SetAttribute("title", checkbox.Label)
 		} else {
-			component.Element.RemoveAttribute("title")
+			checkbox.Component.Element.RemoveAttribute("title")
 		}
 
-		if component.Value != "" {
-			component.Element.SetAttribute("value", component.Value)
+		if checkbox.Value != "" {
+			checkbox.Component.Element.SetAttribute("value", checkbox.Value)
 		} else {
-			component.Element.RemoveAttribute("value")
+			checkbox.Component.Element.RemoveAttribute("value")
 		}
 
-		if component.Disabled == true {
-			component.Element.SetAttribute("disabled", "")
+		if checkbox.Disabled == true {
+			checkbox.Component.Element.SetAttribute("disabled", "")
 		} else {
-			component.Element.RemoveAttribute("disabled")
+			checkbox.Component.Element.RemoveAttribute("disabled")
 		}
 
 	}
 
 }
 
-func (component *Checkbox) String() string {
+func (checkbox *Checkbox) String() string {
 
 	html := "<input type=\"checkbox\""
 
-	if component.Label != "" {
-		html += " title=\"" + component.Label + "\""
+	if checkbox.Label != "" {
+		html += " title=\"" + checkbox.Label + "\""
 	}
 
-	if component.Value != "" {
-		html += " value=\"" + component.Value + "\""
+	if checkbox.Value != "" {
+		html += " value=\"" + checkbox.Value + "\""
 	}
 
-	if component.Disabled == true {
+	if checkbox.Disabled == true {
 		html += " disabled"
 	}
 

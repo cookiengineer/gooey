@@ -6,94 +6,100 @@ import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Button struct {
-	Label    string `json:"label"`
-	Action   string `json:"action"`
-	Disabled bool   `json:"disabled"`
-	components.Component
+	Label     string                `json:"label"`
+	Action    string                `json:"action"`
+	Disabled  bool                  `json:"disabled"`
+	Component *components.Component `json:"component"`
 }
 
 func NewButton(label string, action string) Button {
 
-	var component Button
+	var button Button
 
-	element := bindings.Document.CreateElement("button")
+	element   := bindings.Document.CreateElement("button")
+	component := components.NewComponent(element)
 
-	component.Label  = label
-	component.Action = strings.ToLower(action)
+	button.Component = &component
+	button.Label     = label
+	button.Action    = strings.ToLower(action)
+	button.Disabled  = false
 
-	component.Init(element)
-	component.Render()
+	button.Component.InitEvent("click")
+	button.Render()
 
-	return component
+	return button
 
 }
 
 func ToButton(element *dom.Element) Button {
 
-	var component Button
+	var button Button
 
-	component.Label    = strings.TrimSpace(element.TextContent)
-	component.Action   = strings.ToLower(element.GetAttribute("data-action"))
-	component.Disabled = element.HasAttribute("disabled")
+	component := components.NewComponent(element)
 
-	component.Init(element)
+	button.Component = &component
+	button.Label     = strings.TrimSpace(element.TextContent)
+	button.Action    = strings.ToLower(element.GetAttribute("data-action"))
+	button.Disabled  = element.HasAttribute("disabled")
 
-	return component
+	button.Component.InitEvent("click")
+
+	return button
 
 }
 
-func (component *Button) Disable() {
-	component.Disabled = true
-	component.Render()
+func (button *Button) Disable() {
+	button.Disabled = true
+	button.Render()
 }
 
-func (component *Button) Enable() {
-	component.Disabled = false
-	component.Render()
+func (button *Button) Enable() {
+	button.Disabled = false
+	button.Render()
 }
 
-func (component *Button) Render() {
+func (button *Button) Render() {
 
-	if component.Element != nil {
+	if button.Component.Element != nil {
 
-		if component.Label != "" {
-			component.Element.SetInnerHTML(component.Label)
+		if button.Label != "" {
+			button.Component.Element.SetInnerHTML(button.Label)
 		} else {
-			component.Element.SetInnerHTML("")
+			button.Component.Element.SetInnerHTML("")
 		}
 
-		if component.Action != "" {
-			component.Element.SetAttribute("data-action", component.Action)
+		if button.Action != "" {
+			button.Component.Element.SetAttribute("data-action", button.Action)
 		} else {
-			component.Element.RemoveAttribute("data-action")
+			button.Component.Element.RemoveAttribute("data-action")
 		}
 
-		if component.Disabled == true {
-			component.Element.SetAttribute("disabled", "")
+		if button.Disabled == true {
+			button.Component.Element.SetAttribute("disabled", "")
 		} else {
-			component.Element.RemoveAttribute("disabled")
+			button.Component.Element.RemoveAttribute("disabled")
 		}
 
 	}
 
 }
 
-func (component *Button) String() string {
+func (button *Button) String() string {
 
 	html := "<button"
 
-	if component.Action != "" {
-		html += " data-action=\"" + component.Action + "\""
+	if button.Action != "" {
+		html += " data-action=\"" + button.Action + "\""
 	}
 
-	if component.Disabled == true {
+	if button.Disabled == true {
 		html += " disabled"
 	}
 
 	html += ">"
 
-	if component.Label != "" {
-		html += component.Label
+	if button.Label != "" {
+		html += button.Label
 	}
 
 	html += "</button>"

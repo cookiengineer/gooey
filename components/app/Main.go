@@ -4,8 +4,9 @@ package app
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/layout"
+import "github.com/cookiengineer/gooey/interfaces"
 
 type Main struct {
 	Element *dom.Element    `json:"element"`
@@ -34,15 +35,29 @@ func (main *Main) Init(element *dom.Element) {
 	// TODO: dialog_element := bindings.Document.QuerySelector("body > dialog")
 
 	if header_element != nil {
+
 		header := layout.ToHeader(header_element)
 		main.Header = &header
+
+		main.Header.Component.AddEventListener("change-view", components.ToComponentListener(func(event string, attributes map[string]string) {
+
+			name, ok := attributes["name"]
+
+			if ok == true {
+				main.ChangeView(name)
+			}
+
+		}, false))
+
 	} else {
 		main.Header = nil
 	}
 
 	if footer_element != nil {
+
 		footer := layout.ToFooter(footer_element)
 		main.Footer = &footer
+
 	} else {
 		main.Footer = nil
 	}
@@ -110,7 +125,7 @@ func (main *Main) ChangeView(name string) bool {
 
 func (main *Main) SetView(view interfaces.View) {
 
-	name, _, _ := view.Properties()
+	name := view.GetProperty("Name")
 
 	if name != "" {
 

@@ -1,32 +1,44 @@
 package components
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 
 type Component struct {
-	listeners map[string][]*ComponentListener `json:"listeners"`
+	Listeners map[string][]*ComponentListener `json:"listeners"`
 	Element   *dom.Element                    `json:"element"`
 }
 
-func (component *Component) Init(element *dom.Element) {
+func NewComponent(element *dom.Element) Component {
 
-	component.listeners = make(map[string][]*ComponentListener, 0)
+	var component Component
 
-	if element != nil {
-		component.Element = element
-	} else {
-		component.Element = bindings.Document.CreateElement("gooey-component")
-	}
+	component.Element = element
+	component.Listeners = make(map[string][]*ComponentListener, 0)
+
+	return component
 
 }
 
 func (component *Component) InitEvent(event string) {
 
-	_, ok := component.listeners[event]
+	_, ok := component.Listeners[event]
 
 	if ok == false {
-		component.listeners[event] = make([]*ComponentListener, 0)
+		component.Listeners[event] = make([]*ComponentListener, 0)
 	}
+
+}
+
+func (component *Component) HasEvent(event string) bool {
+
+	var result bool
+
+	_, ok := component.Listeners[event]
+
+	if ok == true {
+		result = true
+	}
+
+	return result
 
 }
 
@@ -34,16 +46,34 @@ func (component *Component) AddEventListener(event string, listener ComponentLis
 
 	var result bool = false
 
-	_, ok := component.listeners[event]
+	_, ok := component.Listeners[event]
 
 	if ok == true {
 
-		if event == "click" || event == "change" {
+		if event == "click" {
 
 			if component.Element != nil {
 
-				wrapped_listener := dom.ToEventListener(func(_ dom.Event) {
-					component.FireEventListeners(event)
+				wrapped_listener := dom.ToEventListener(func(dom_event dom.Event) {
+
+					attributes := make(map[string]string)
+
+					if dom_event.Target != nil {
+
+						dom_event.Target.RefreshAttributes()
+
+						for key, val := range dom_event.Target.Attributes {
+							attributes[key] = val
+						}
+
+					}
+
+					component.FireEventListeners(event, attributes)
+
+					// XXX: This prevents <a> elements triggering History navigation
+					dom_event.PreventDefault()
+					dom_event.StopPropagation()
+
 				})
 
 				component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
@@ -51,11 +81,41 @@ func (component *Component) AddEventListener(event string, listener ComponentLis
 
 			}
 
-			component.listeners[event] = append(component.listeners[event], &listener)
+			component.Listeners[event] = append(component.Listeners[event], &listener)
+			result = true
+
+		} else if event == "change" {
+
+			if component.Element != nil {
+
+				wrapped_listener := dom.ToEventListener(func(dom_event dom.Event) {
+
+					attributes := make(map[string]string)
+
+					if dom_event.Target != nil {
+
+						dom_event.Target.RefreshAttributes()
+
+						for key, val := range dom_event.Target.Attributes {
+							attributes[key] = val
+						}
+
+					}
+
+					component.FireEventListeners(event, attributes)
+
+				})
+
+				component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
+				listener.Listener = &wrapped_listener
+
+			}
+
+			component.Listeners[event] = append(component.Listeners[event], &listener)
 			result = true
 
 		} else {
-			component.listeners[event] = append(component.listeners[event], &listener)
+			component.Listeners[event] = append(component.Listeners[event], &listener)
 			result = true
 		}
 
@@ -65,11 +125,11 @@ func (component *Component) AddEventListener(event string, listener ComponentLis
 
 }
 
-func (component *Component) FireEventListeners(event string) bool {
+func (component *Component) FireEventListeners(event string, attributes map[string]string) bool {
 
 	var result bool = false
 
-	listeners, ok := component.listeners[event]
+	listeners, ok := component.Listeners[event]
 
 	if ok == true {
 
@@ -78,7 +138,7 @@ func (component *Component) FireEventListeners(event string) bool {
 		for l := 0; l < len(listeners); l++ {
 
 			listener := listeners[l]
-			listener.Callback(event)
+			listener.Callback(event, attributes)
 
 			if listener.Once == true {
 				indexes = append(indexes, l)
@@ -92,7 +152,7 @@ func (component *Component) FireEventListeners(event string) bool {
 				listeners = append(listeners[:index], listeners[index+1:]...)
 			}
 
-			component.listeners[event] = listeners
+			component.Listeners[event] = listeners
 
 		}
 
@@ -108,7 +168,7 @@ func (component *Component) RemoveEventListener(event string, listener *Componen
 
 	if listener != nil {
 
-		listeners, ok := component.listeners[event]
+		listeners, ok := component.Listeners[event]
 
 		if ok == true {
 
@@ -125,13 +185,13 @@ func (component *Component) RemoveEventListener(event string, listener *Componen
 
 			if index != -1 {
 
-				listener := component.listeners[event][index]
+				listener := component.Listeners[event][index]
 
 				if component.Element != nil && listener.Listener != nil {
 					component.Element.RemoveEventListener(dom.EventType(event), listener.Listener)
 				}
 
-				component.listeners[event] = append(component.listeners[event][:index], component.listeners[event][index+1:]...)
+				component.Listeners[event] = append(component.Listeners[event][:index], component.Listeners[event][index+1:]...)
 				result = true
 
 			}
@@ -140,7 +200,7 @@ func (component *Component) RemoveEventListener(event string, listener *Componen
 
 	} else {
 
-		_, ok := component.listeners[event]
+		_, ok := component.Listeners[event]
 
 		if ok == true {
 
@@ -148,7 +208,7 @@ func (component *Component) RemoveEventListener(event string, listener *Componen
 				component.Element.RemoveEventListener(dom.EventType(event), nil)
 			}
 
-			component.listeners[event] = make([]*ComponentListener, 0)
+			component.Listeners[event] = make([]*ComponentListener, 0)
 			result = true
 
 		}
@@ -159,10 +219,3 @@ func (component *Component) RemoveEventListener(event string, listener *Componen
 
 }
 
-func (component *Component) Render() {
-	// Render into dom Element
-}
-
-func (component *Component) String() string {
-	return ""
-}

@@ -6,103 +6,109 @@ import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Input struct {
-	Label    string    `json:"label"`
-	Type     InputType `json:"type"`
-	Value    string    `json:"value"`
-	Disabled bool      `json:"disabled"`
-	components.Component
+	Label     string                `json:"label"`
+	Type      InputType             `json:"type"`
+	Value     string                `json:"value"`
+	Disabled  bool                  `json:"disabled"`
+	Component *components.Component `json:"component"`
 }
 
 func NewInput(label string, value string, typ InputType) Input {
 
-	var component Input
+	var input Input
 
-	element := bindings.Document.CreateElement("input")
+	element   := bindings.Document.CreateElement("input")
+	component := components.NewComponent(element)
+
 	element.SetAttribute("type", typ.String())
 
-	component.Label = strings.TrimSpace(label)
-	component.Type  = typ
-	component.Value = strings.TrimSpace(value)
+	input.Component = &component
+	input.Label     = strings.TrimSpace(label)
+	input.Type      = typ
+	input.Value     = strings.TrimSpace(value)
 
-	component.Init(element)
-	component.Render()
+	input.Component.InitEvent("change")
+	input.Render()
 
-	return component
+	return input
 
 }
 
 func ToInput(element *dom.Element) Input {
 
-	var component Input
+	var input Input
 
 	tmp := element.Value.Get("value")
 
 	if !tmp.IsNull() && !tmp.IsUndefined() {
-		component.Value = strings.TrimSpace(tmp.String())
+		input.Value = strings.TrimSpace(tmp.String())
 	} else {
-		component.Value = ""
+		input.Value = ""
 	}
 
-	component.Label    = strings.TrimSpace(element.GetAttribute("placeholder"))
-	component.Disabled = element.HasAttribute("disabled")
+	component := components.NewComponent(element)
 
-	component.Init(element)
+	input.Component = &component
+	input.Label     = strings.TrimSpace(element.GetAttribute("placeholder"))
+	input.Disabled  = element.HasAttribute("disabled")
 
-	return component
+	input.Component.InitEvent("change")
+
+	return input
 
 }
 
-func (component *Input) Disable() {
-	component.Disabled = true
-	component.Render()
+func (input *Input) Disable() {
+	input.Disabled = true
+	input.Render()
 }
 
-func (component *Input) Enable() {
-	component.Disabled = false
-	component.Render()
+func (input *Input) Enable() {
+	input.Disabled = false
+	input.Render()
 }
 
-func (component *Input) Render() {
+func (input *Input) Render() {
 
-	if component.Element != nil {
+	if input.Component.Element != nil {
 
-		if component.Label != "" {
-			component.Element.SetAttribute("placeholder", component.Label)
+		if input.Label != "" {
+			input.Component.Element.SetAttribute("placeholder", input.Label)
 		} else {
-			component.Element.RemoveAttribute("placeholder")
+			input.Component.Element.RemoveAttribute("placeholder")
 		}
 
-		component.Element.SetAttribute("type", component.Type.String())
+		input.Component.Element.SetAttribute("type", input.Type.String())
 
-		if component.Value != "" {
-			component.Element.Value.Set("value", component.Value)
+		if input.Value != "" {
+			input.Component.Element.Value.Set("value", input.Value)
 		} else {
-			component.Element.Value.Set("value", "")
+			input.Component.Element.Value.Set("value", "")
 		}
 
-		if component.Disabled == true {
-			component.Element.SetAttribute("disabled", "")
+		if input.Disabled == true {
+			input.Component.Element.SetAttribute("disabled", "")
 		} else {
-			component.Element.RemoveAttribute("disabled")
+			input.Component.Element.RemoveAttribute("disabled")
 		}
 
 	}
 
 }
 
-func (component *Input) String() string {
+func (input *Input) String() string {
 
-	html := "<input type=\"" + component.Type.String() + "\""
+	html := "<input type=\"" + input.Type.String() + "\""
 
-	if component.Label != "" {
-		html += " placeholder=\"" + component.Label + "\""
+	if input.Label != "" {
+		html += " placeholder=\"" + input.Label + "\""
 	}
 
-	if component.Value != "" {
-		html += " value=\"" + component.Value + "\""
+	if input.Value != "" {
+		html += " value=\"" + input.Value + "\""
 	}
 
-	if component.Disabled == true {
+	if input.Disabled == true {
 		html += " disabled"
 	}
 

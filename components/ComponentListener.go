@@ -11,7 +11,7 @@ type ComponentListener struct {
 	Listener *dom.EventListener        `json:"listener"`
 }
 
-type ComponentListenerCallback func(string)
+type ComponentListenerCallback func(string, map[string]string)
 
 func ToComponentListener(callback ComponentListenerCallback, once bool) ComponentListener {
 

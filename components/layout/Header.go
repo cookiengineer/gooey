@@ -25,25 +25,45 @@ type Header struct {
 		Left  []interfaces.Component `json:"left"`
 		Right []interfaces.Component `json:"right"`
 	} `json:"content"`
+	Component *components.Component `json:"component"`
 	views map[string]*header_view_item
-	components.Component
 }
 
-func NewHeader(view string, views []interfaces.View) Header {
+func NewHeader() Header {
 
 	var header Header
 
 	element := bindings.Document.CreateElement("header")
+	component := components.NewComponent(element)
 
+	element.SetAttribute("data-layout", types.LayoutFlex.String())
+
+	header.Component     = &component
 	header.Layout        = types.LayoutFlex
 	header.Content.Left  = make([]interfaces.Component, 0)
 	header.Content.Right = make([]interfaces.Component, 0)
-	header.View          = strings.ToLower(view)
+	header.View          = ""
 	header.views         = make(map[string]*header_view_item)
 
-	// TODO: Create <div></div><ul></ul><div></div> structure
+	header.Component.InitEvent("click")
+	header.Component.InitEvent("change-view")
 
-	header.Init(element)
+	header.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+
+		_, ok := attributes["data-view"]
+
+		if ok == true {
+
+			header.Component.FireEventListeners("change-view", map[string]string{
+				"name": attributes["data-view"],
+				"path": attributes["href"],
+			})
+
+		}
+
+	}, false))
+
+	header.Render()
 
 	return header
 
@@ -53,7 +73,10 @@ func ToHeader(element *dom.Element) Header {
 
 	var header Header
 
-	header.Layout        = types.LayoutFlex
+	component := components.NewComponent(element)
+
+	header.Component     = &component
+	header.Layout        = types.Layout(element.GetAttribute("data-layout"))
 	header.Content.Left  = make([]interfaces.Component, 0)
 	header.Content.Right = make([]interfaces.Component, 0)
 	header.views         = make(map[string]*header_view_item)
@@ -148,7 +171,23 @@ func ToHeader(element *dom.Element) Header {
 
 	}
 
-	header.Init(element)
+	header.Component.InitEvent("click")
+	header.Component.InitEvent("change-view")
+
+	header.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+
+		_, ok := attributes["data-view"]
+
+		if ok == true {
+
+			header.Component.FireEventListeners("change-view", map[string]string{
+				"name": attributes["data-view"],
+				"path": attributes["href"],
+			})
+
+		}
+
+	}, false))
 
 	return header
 
@@ -186,7 +225,7 @@ func (header *Header) ChangeView(name string) {
 
 func (header *Header) Render() {
 
-	if header.Element != nil {
+	if header.Component.Element != nil {
 
 		// TODO: Render first <div></div> for header.Content.Left
 
@@ -194,7 +233,7 @@ func (header *Header) Render() {
 
 		// TODO: Render second <div></div> for header.Content.Right
 
-		console.Warn(header.Element)
+		console.Warn(header.Component.Element)
 
 	}
 
@@ -202,7 +241,9 @@ func (header *Header) Render() {
 
 func (header *Header) SetView(view interfaces.View) {
 
-	name, label, path := view.Properties()
+	name  := view.GetProperty("Name")
+	label := view.GetProperty("Label")
+	path  := view.GetProperty("Path")
 
 	if name != "" && label != "" && path != "" {
 

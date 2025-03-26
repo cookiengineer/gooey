@@ -1,9 +1,8 @@
 package main
 
 import "github.com/cookiengineer/gooey/bindings"
-import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/components/app"
-import "example/views"
+import "example/controllers"
 import "time"
 
 func main() {
@@ -12,22 +11,18 @@ func main() {
 
 	main := app.Main{}
 	main.Init(element)
-	main.SetView(views.NewTasks(&main))
-	main.ChangeView("tasks")
 
-	console.Log(main)
+	controller_tasks    := controllers.NewTasks(&main)
+	controller_settings := controllers.NewSettings(&main)
 
-	console.Group("Header Component")
-	console.Log(main.Header)
-	main.Header.Render()
-	console.Log(main.Header.String())
-	console.GroupEnd("Header Component")
+	main.SetView(controller_tasks.View)
+	main.SetView(controller_settings.View)
 
-	// console.Group("Footer Component")
-	// console.Log(main.Footer)
-	// console.Log(main.Footer.Render())
-	// console.Log(main.Footer.String())
-	// console.GroupEnd("Footer Component")
+	view := element.GetAttribute("data-view")
+
+	if view != "" {
+		main.ChangeView(view)
+	}
 
 	for true {
 
