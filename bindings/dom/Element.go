@@ -280,16 +280,16 @@ func (element *Element) GetBoundingClientRect() *Rect {
 
 }
 
-func (element *Element) InsertAdjacentElement(position string, other Element) {
+func (element *Element) InsertAdjacentElement(position string, other *Element) {
 
 	if position == "beforebegin" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
 	} else if position == "afterbegin" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
 	} else if position == "beforeend" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
 	} else if position == "afterend" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), other.Value)
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
 	}
 
 }
@@ -311,13 +311,13 @@ func (element *Element) InsertAdjacentHTML(position string, value string) {
 func (element *Element) InsertAdjacentText(position string, value string) {
 
 	if position == "beforebegin" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
 	} else if position == "afterbegin" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
 	} else if position == "beforeend" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
 	} else if position == "afterend" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
 	}
 
 }
@@ -398,6 +398,18 @@ func (element *Element) QuerySelectorAll(query string) []*Element {
 	}
 
 	return result
+
+}
+
+func (element *Element) ReplaceChildren(children []*Element) {
+
+	values := make([]any, len(children))
+
+	for c, child := range children {
+		values[c] = *child.Value
+	}
+
+	element.Value.Call("replaceChildren", values...)
 
 }
 

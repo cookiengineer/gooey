@@ -13,7 +13,7 @@ type Main struct {
 	Client  *Client         `json:"client"`
 	Header  *layout.Header  `json:"header"`
 	Footer  *layout.Footer  `json:"footer"`
-	// TODO: Dialog  *layout.Dialog  `json:"dialog"`
+	Dialog  *layout.Dialog  `json:"dialog"`
 	Storage *Storage        `json:"storage"`
 	View    interfaces.View `json:"view"`
 	views   map[string]interfaces.View
@@ -32,7 +32,7 @@ func (main *Main) Init(element *dom.Element) {
 
 	header_element := bindings.Document.QuerySelector("body > header")
 	footer_element := bindings.Document.QuerySelector("body > footer")
-	// TODO: dialog_element := bindings.Document.QuerySelector("body > dialog")
+	dialog_element := bindings.Document.QuerySelector("body > dialog")
 
 	if header_element != nil {
 
@@ -62,13 +62,12 @@ func (main *Main) Init(element *dom.Element) {
 		main.Footer = nil
 	}
 
-	// TODO: Dialog Integration
-	// if dialog_element != nil {
-	// 	dialog := layout.ToDialog(dialog_element)
-	// 	main.Dialog = &dialog
-	// } else {
-	// 	main.Dialog = nil
-	// }
+	if dialog_element != nil {
+		dialog := layout.ToDialog(dialog_element)
+		main.Dialog = &dialog
+	} else {
+		main.Dialog = nil
+	}
 
 }
 
@@ -86,10 +85,9 @@ func (main *Main) Render() {
 		main.Footer.Render()
 	}
 
-	// TODO
-	// if main.Dialog != nil {
-	// 	main.Dialog.Render()
-	// }
+	if main.Dialog != nil {
+		main.Dialog.Render()
+	}
 
 }
 

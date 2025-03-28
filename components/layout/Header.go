@@ -33,7 +33,7 @@ func NewHeader() Header {
 
 	var header Header
 
-	element := bindings.Document.CreateElement("header")
+	element   := bindings.Document.CreateElement("header")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("data-layout", types.LayoutFlex.String())
@@ -47,12 +47,20 @@ func NewHeader() Header {
 
 	header.Component.InitEvent("click")
 	header.Component.InitEvent("change-view")
+	header.Component.InitEvent("action")
 
 	header.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
 
-		_, ok := attributes["data-view"]
+		_, ok1 := attributes["data-action"]
+		_, ok2 := attributes["data-view"]
 
-		if ok == true {
+		if ok1 == true {
+
+			header.Component.FireEventListeners("action", map[string]string{
+				"action": attributes["data-action"],
+			})
+
+		} else if ok2 == true {
 
 			header.Component.FireEventListeners("change-view", map[string]string{
 				"name": attributes["data-view"],
@@ -81,104 +89,24 @@ func ToHeader(element *dom.Element) Header {
 	header.Content.Right = make([]interfaces.Component, 0)
 	header.views         = make(map[string]*header_view_item)
 
-	children := element.QuerySelectorAll("div, ul")
-
-	if len(children) == 3 {
-
-		if children[0].TagName == "DIV" && children[1].TagName == "UL" && children[2].TagName == "DIV" {
-
-			buttons_left := children[0].QuerySelectorAll("button")
-
-			for _, button := range buttons_left {
-				component := ui.ToButton(button)
-				header.Content.Left = append(header.Content.Left, &component)
-			}
-
-			items_center := children[1].QuerySelectorAll("li")
-
-			for _, item := range items_center {
-
-				link := item.QuerySelector("a")
-
-				if link != nil {
-
-					view_item := header_view_item{
-						Name:    link.GetAttribute("data-view"),
-						Label:   strings.TrimSpace(link.TextContent),
-						Path:    link.GetAttribute("href"),
-						Element: item,
-					}
-
-					if view_item.Name != "" {
-
-						if item.ClassName == "active" {
-							header.View = view_item.Name
-							header.views[view_item.Name] = &view_item
-						} else {
-							header.views[view_item.Name] = &view_item
-						}
-
-					}
-
-				}
-
-			}
-
-			buttons_right := children[2].QuerySelectorAll("button")
-
-			for _, button := range buttons_right {
-				component := ui.ToButton(button)
-				header.Content.Right = append(header.Content.Right, &component)
-			}
-
-		}
-
-	} else if len(children) == 1 {
-
-		if children[0].TagName == "UL" {
-
-			items_center := children[0].QuerySelectorAll("li")
-
-			for _, item := range items_center {
-
-				link := item.QuerySelector("a")
-
-				if link != nil {
-
-					view_item := header_view_item{
-						Name:    link.GetAttribute("data-view"),
-						Label:   strings.TrimSpace(link.TextContent),
-						Path:    link.GetAttribute("href"),
-						Element: item,
-					}
-
-					if view_item.Name != "" {
-
-						if item.ClassName == "active" {
-							header.View = view_item.Name
-							header.views[view_item.Name] = &view_item
-						} else {
-							header.views[view_item.Name] = &view_item
-						}
-
-					}
-
-				}
-
-			}
-
-		}
-
-	}
+	header.Parse()
 
 	header.Component.InitEvent("click")
 	header.Component.InitEvent("change-view")
+	header.Component.InitEvent("action")
 
 	header.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
 
-		_, ok := attributes["data-view"]
+		_, ok1 := attributes["data-action"]
+		_, ok2 := attributes["data-view"]
 
-		if ok == true {
+		if ok1 == true {
+
+			header.Component.FireEventListeners("action", map[string]string{
+				"action": attributes["data-action"],
+			})
+
+		} else if ok2 == true {
 
 			header.Component.FireEventListeners("change-view", map[string]string{
 				"name": attributes["data-view"],
@@ -223,20 +151,125 @@ func (header *Header) ChangeView(name string) {
 
 }
 
-func (header *Header) Render() {
+func (header *Header) Parse() {
 
 	if header.Component.Element != nil {
 
-		// TODO: Render first <div></div> for header.Content.Left
+		tmp := header.Component.Element.QuerySelectorAll("div, ul")
 
-		// TODO: Render <ul></ul> for header.views
+		if len(tmp) == 3 && tmp[0].TagName == "DIV" && tmp[1].TagName == "UL" && tmp[2].TagName == "DIV" {
 
-		// TODO: Render second <div></div> for header.Content.Right
+			buttons_left := tmp[0].QuerySelectorAll("button")
 
-		console.Warn(header.Component.Element)
+			for _, button := range buttons_left {
+				component := ui.ToButton(button)
+				header.Content.Left = append(header.Content.Left, &component)
+			}
+
+			items_center := tmp[1].QuerySelectorAll("li")
+
+			for _, item := range items_center {
+
+				link := item.QuerySelector("a")
+
+				if link != nil {
+
+					view_item := header_view_item{
+						Name:    link.GetAttribute("data-view"),
+						Label:   strings.TrimSpace(link.TextContent),
+						Path:    link.GetAttribute("href"),
+						Element: item,
+					}
+
+					if view_item.Name != "" {
+
+						if item.ClassName == "active" {
+							header.View = view_item.Name
+							header.views[view_item.Name] = &view_item
+						} else {
+							header.views[view_item.Name] = &view_item
+						}
+
+					}
+
+				}
+
+			}
+
+			buttons_right := tmp[2].QuerySelectorAll("button")
+
+			for _, button := range buttons_right {
+				component := ui.ToButton(button)
+				header.Content.Right = append(header.Content.Right, &component)
+			}
+
+		} else {
+
+			console.Group("Header: Invalid Markup")
+			console.Error("Header: Expected <div></div><ul></ul><div></div>")
+			console.Error(header.Component.Element.InnerHTML)
+			console.GroupEnd("Header: Invalid Markup")
+
+		}
 
 	}
 
+}
+
+func (header *Header) Render() *dom.Element {
+
+	if header.Component.Element != nil {
+
+		tmp := header.Component.Element.QuerySelectorAll("div, ul")
+
+		if len(tmp) == 0 {
+			header.Component.Element.SetInnerHTML("<div></div><ul></ul><div></div>")
+			tmp = header.Component.Element.QuerySelectorAll("div, ul")
+		}
+
+		if len(tmp) == 3 {
+
+			buttons_left := make([]*dom.Element, 0)
+
+			for _, button := range header.Content.Left {
+				buttons_left = append(buttons_left, button.Render())
+			}
+
+			tmp[0].ReplaceChildren(buttons_left)
+
+			items_center := make([]*dom.Element, 0)
+
+			for _, item := range header.views {
+
+				item.Element.SetInnerHTML("<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>")
+				items_center = append(items_center, item.Element)
+
+			}
+
+			tmp[1].ReplaceChildren(items_center)
+
+			buttons_right := make([]*dom.Element, 0)
+
+			for _, button := range header.Content.Right {
+				buttons_right = append(buttons_right, button.Render())
+			}
+
+			tmp[2].ReplaceChildren(buttons_right)
+
+		}
+
+	}
+
+	return header.Component.Element
+
+}
+
+func (header *Header) SetLeft(components []interfaces.Component) {
+	header.Content.Left = components
+}
+
+func (header *Header) SetRight(components []interfaces.Component) {
+	header.Content.Right = components
 }
 
 func (header *Header) SetView(view interfaces.View) {
@@ -281,7 +314,6 @@ func (header *Header) String() string {
 	}
 
 	html += ">"
-
 	html += "<div>"
 
 	if len(header.Content.Left) > 0 {
@@ -293,7 +325,6 @@ func (header *Header) String() string {
 	}
 
 	html += "</div>"
-
 	html += "<ul>"
 
 	if len(header.views) > 0 {
@@ -325,7 +356,6 @@ func (header *Header) String() string {
 	}
 
 	html += "</ul>"
-
 	html += "<div>"
 
 	if len(header.Content.Right) > 0 {
@@ -337,6 +367,7 @@ func (header *Header) String() string {
 	}
 
 	html += "</div>"
+	html += "</header>"
 
 	return html
 

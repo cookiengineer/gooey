@@ -59,7 +59,7 @@ func (checkbox *Checkbox) Enable() {
 	checkbox.Render()
 }
 
-func (checkbox *Checkbox) Render() {
+func (checkbox *Checkbox) Render() *dom.Element {
 
 	if checkbox.Component.Element != nil {
 
@@ -82,6 +82,8 @@ func (checkbox *Checkbox) Render() {
 		}
 
 	}
+
+	return checkbox.Component.Element
 
 }
 

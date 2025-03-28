@@ -68,7 +68,7 @@ func (input *Input) Enable() {
 	input.Render()
 }
 
-func (input *Input) Render() {
+func (input *Input) Render() *dom.Element {
 
 	if input.Component.Element != nil {
 
@@ -93,6 +93,8 @@ func (input *Input) Render() {
 		}
 
 	}
+
+	return input.Component.Element
 
 }
 

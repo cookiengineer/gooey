@@ -58,7 +58,7 @@ func (button *Button) Enable() {
 	button.Render()
 }
 
-func (button *Button) Render() {
+func (button *Button) Render() *dom.Element {
 
 	if button.Component.Element != nil {
 
@@ -81,6 +81,8 @@ func (button *Button) Render() {
 		}
 
 	}
+
+	return button.Component.Element
 
 }
 

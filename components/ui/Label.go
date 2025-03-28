@@ -42,7 +42,7 @@ func ToLabel(element *dom.Element) Label {
 
 }
 
-func (label *Label) Render() {
+func (label *Label) Render() *dom.Element {
 
 	if label.Component.Element != nil {
 
@@ -55,6 +55,8 @@ func (label *Label) Render() {
 		}
 
 	}
+
+	return label.Component.Element
 
 }
 

@@ -64,7 +64,7 @@ func (textarea *Textarea) Enable() {
 	textarea.Render()
 }
 
-func (textarea *Textarea) Render() {
+func (textarea *Textarea) Render() *dom.Element {
 
 	if textarea.Component.Element != nil {
 
@@ -87,6 +87,8 @@ func (textarea *Textarea) Render() {
 		}
 
 	}
+
+	return textarea.Component.Element
 
 }
 
