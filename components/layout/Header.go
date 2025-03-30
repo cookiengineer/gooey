@@ -206,7 +206,7 @@ func (header *Header) Parse() {
 		} else {
 
 			console.Group("Header: Invalid Markup")
-			console.Error("Header: Expected <div></div><ul></ul><div></div>")
+			console.Error("Expected <div></div><ul></ul><div></div>")
 			console.Error(header.Component.Element.InnerHTML)
 			console.GroupEnd("Header: Invalid Markup")
 
@@ -229,32 +229,28 @@ func (header *Header) Render() *dom.Element {
 
 		if len(tmp) == 3 {
 
-			buttons_left := make([]*dom.Element, 0)
+			elements_left   := make([]*dom.Element, 0)
+			elements_center := make([]*dom.Element, 0)
+			elements_right  := make([]*dom.Element, 0)
 
-			for _, button := range header.Content.Left {
-				buttons_left = append(buttons_left, button.Render())
+			for _, component := range header.Content.Left {
+				elements_left = append(elements_left, component.Render())
 			}
-
-			tmp[0].ReplaceChildren(buttons_left)
-
-			items_center := make([]*dom.Element, 0)
 
 			for _, item := range header.views {
 
 				item.Element.SetInnerHTML("<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>")
-				items_center = append(items_center, item.Element)
+				elements_center = append(elements_center, item.Element)
 
 			}
 
-			tmp[1].ReplaceChildren(items_center)
-
-			buttons_right := make([]*dom.Element, 0)
-
-			for _, button := range header.Content.Right {
-				buttons_right = append(buttons_right, button.Render())
+			for _, component := range header.Content.Right {
+				elements_right = append(elements_right, component.Render())
 			}
 
-			tmp[2].ReplaceChildren(buttons_right)
+			tmp[0].ReplaceChildren(elements_left)
+			tmp[1].ReplaceChildren(elements_center)
+			tmp[2].ReplaceChildren(elements_right)
 
 		}
 
