@@ -151,6 +151,50 @@ func (header *Header) ChangeView(name string) {
 
 }
 
+func (header *Header) Disable() bool {
+
+	var result bool
+
+	if len(header.Content.Left) > 0 || len(header.Content.Right) > 0 {
+
+		for _, component := range header.Content.Left {
+			component.Disable()
+		}
+
+		for _, component := range header.Content.Right {
+			component.Disable()
+		}
+
+		result = true
+
+	}
+
+	return result
+
+}
+
+func (header *Header) Enable() bool {
+
+	var result bool
+
+	if len(header.Content.Left) > 0 || len(header.Content.Right) > 0 {
+
+		for _, component := range header.Content.Left {
+			component.Enable()
+		}
+
+		for _, component := range header.Content.Right {
+			component.Enable()
+		}
+
+		result = true
+
+	}
+
+	return result
+
+}
+
 func (header *Header) Parse() {
 
 	if header.Component.Element != nil {

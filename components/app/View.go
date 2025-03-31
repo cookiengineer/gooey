@@ -81,7 +81,7 @@ func (view *View) GetProperty(name string) string {
 
 func (view *View) RemoveComponent(name string) bool {
 
-	var result bool = false
+	var result bool
 
 	_, ok := view.Components[name]
 

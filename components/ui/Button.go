@@ -48,14 +48,22 @@ func ToButton(element *dom.Element) Button {
 
 }
 
-func (button *Button) Disable() {
+func (button *Button) Disable() bool {
+
 	button.Disabled = true
 	button.Render()
+
+	return true
+
 }
 
-func (button *Button) Enable() {
+func (button *Button) Enable() bool {
+
 	button.Disabled = false
 	button.Render()
+
+	return true
+
 }
 
 func (button *Button) Render() *dom.Element {

@@ -29,7 +29,7 @@ func NewClient() Client {
 
 func (client *Client) AddListener(path string, listener ClientListener) bool {
 
-	var result bool = false
+	var result bool
 
 	_, ok := client.listeners[path]
 
@@ -48,7 +48,7 @@ func (client *Client) AddListener(path string, listener ClientListener) bool {
 
 func (client *Client) RemoveListener(path string, listener *ClientListener) bool {
 
-	var result bool = false
+	var result bool
 
 	if listener != nil {
 

@@ -91,6 +91,50 @@ func ToFooter(element *dom.Element) Footer {
 
 }
 
+func (footer *Footer) Disable() bool {
+
+	var result bool
+
+	if len(footer.Content.Left) > 0 || len(footer.Content.Right) > 0 {
+
+		for _, component := range footer.Content.Left {
+			component.Disable()
+		}
+
+		for _, component := range footer.Content.Right {
+			component.Disable()
+		}
+
+		result = true
+
+	}
+
+	return result
+
+}
+
+func (footer *Footer) Enable() bool {
+
+	var result bool
+
+	if len(footer.Content.Left) > 0 || len(footer.Content.Right) > 0 {
+
+		for _, component := range footer.Content.Left {
+			component.Enable()
+		}
+
+		for _, component := range footer.Content.Right {
+			component.Enable()
+		}
+
+		result = true
+
+	}
+
+	return result
+
+}
+
 func (footer *Footer) Parse() {
 
 	if footer.Component.Element != nil {

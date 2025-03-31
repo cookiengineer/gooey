@@ -18,6 +18,30 @@ func NewComponent(element *dom.Element) Component {
 
 }
 
+func (component *Component) Disable() bool {
+
+	var result bool
+
+	if component.Element != nil {
+		component.Element.SetAttribute("disabled", "")
+	}
+
+	return result
+
+}
+
+func (component *Component) Enable() bool {
+
+	var result bool
+
+	if component.Element != nil {
+		component.Element.RemoveAttribute("disabled")
+	}
+
+	return result
+
+}
+
 func (component *Component) InitEvent(event string) {
 
 	_, ok := component.Listeners[event]
@@ -44,7 +68,7 @@ func (component *Component) HasEvent(event string) bool {
 
 func (component *Component) AddEventListener(event string, listener ComponentListener) bool {
 
-	var result bool = false
+	var result bool
 
 	_, ok := component.Listeners[event]
 
@@ -127,7 +151,7 @@ func (component *Component) AddEventListener(event string, listener ComponentLis
 
 func (component *Component) FireEventListeners(event string, attributes map[string]string) bool {
 
-	var result bool = false
+	var result bool
 
 	listeners, ok := component.Listeners[event]
 
@@ -164,7 +188,7 @@ func (component *Component) FireEventListeners(event string, attributes map[stri
 
 func (component *Component) RemoveEventListener(event string, listener *ComponentListener) bool {
 
-	var result bool = false
+	var result bool
 
 	if listener != nil {
 

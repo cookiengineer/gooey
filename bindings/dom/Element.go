@@ -37,7 +37,7 @@ func ToElement(value js.Value) Element {
 
 func (element *Element) AddEventListener(typ EventType, listener EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	wrapped_type := js.ValueOf(string(typ))
 	wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
@@ -99,7 +99,7 @@ func (element *Element) Remove() {
 
 func (element *Element) RemoveEventListener(typ EventType, listener *EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	if listener != nil {
 
@@ -210,7 +210,7 @@ func (element *Element) GetAttribute(name string) string {
 
 func (element *Element) SetAttribute(name string, value string) bool {
 
-	var result bool = false
+	var result bool
 
 	check := validateXMLName(name)
 
@@ -227,7 +227,7 @@ func (element *Element) SetAttribute(name string, value string) bool {
 
 func (element *Element) HasAttribute(name string) bool {
 
-	var result bool = false
+	var result bool
 
 	check := validateXMLName(name)
 
@@ -247,7 +247,7 @@ func (element *Element) HasAttribute(name string) bool {
 
 func (element *Element) RemoveAttribute(name string) bool {
 
-	var result bool = false
+	var result bool
 
 	check := validateXMLName(name)
 
@@ -415,7 +415,7 @@ func (element *Element) ReplaceChildren(children []*Element) {
 
 func (element *Element) SetClassName(value string) bool {
 
-	var result bool = false
+	var result bool
 
 	value = strings.TrimSpace(value)
 

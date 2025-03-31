@@ -78,7 +78,7 @@ func (history *history) getListenerById(id uint) *EventListener {
 
 func (history *history) RemoveEventListener(listener *EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	if listener != nil {
 
@@ -224,12 +224,11 @@ func (history *history) Go(delta int) {
 
 func (history *history) PushState(statemap *map[string]any, title string, url string) bool {
 
-	var result bool = false
+	var result bool
 
 	if title != "" && url != "" {
 
 		var state HistoryState
-
 
 		if statemap != nil {
 
@@ -270,7 +269,7 @@ func (history *history) PushState(statemap *map[string]any, title string, url st
 
 func (history *history) ReplaceState(statemap *map[string]any, title string, url string) bool {
 
-	var result bool = false
+	var result bool
 
 	if title != "" && url != "" {
 

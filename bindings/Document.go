@@ -34,7 +34,7 @@ type document struct {
 
 func (doc *document) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	wrapped_type := js.ValueOf(string(typ))
 	wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
@@ -130,7 +130,7 @@ func (doc *document) QuerySelectorAll(query string) []*dom.Element {
 
 func (doc *document) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	if listener != nil {
 

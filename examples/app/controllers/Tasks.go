@@ -1,6 +1,6 @@
 package controllers
 
-// import "example/actions"
+import "example/actions"
 import "example/schemas"
 // import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
@@ -43,6 +43,60 @@ func NewTasks(main *app.Main) Tasks {
 
 			if action == "create" {
 				controller.Main.Dialog.Show()
+			}
+
+		}
+
+	}, false))
+
+	controller.Main.Dialog.Component.AddEventListener("action", components.ToComponentListener(func(event string, attributes map[string]string) {
+
+		action, ok := attributes["action"]
+
+		if ok == true {
+
+			if action == "confirm" {
+
+				if len(controller.Main.Dialog.Content) > 0 {
+
+					// TODO: How to have dialogs with content.Fieldset?
+					// TODO: Maybe something like content.ToFieldset() is necessary?
+
+					fieldset := controller.Main.Dialog.Content[0]
+
+					title := fieldset.Get("title").String()
+					done  := fieldset.Get("done").Bool()
+
+					task := schemas.Task{
+						ID:    0,
+						Title: title,
+						Done:  done,
+					}
+
+					if task.Title != "" {
+
+						controller.Main.Dialog.Disable()
+
+						go func() {
+
+							actions.CreateTask(controller.Main.Client, &task)
+
+							controller.Main.Dialog.Enable()
+							controller.Main.Dialog.Hide()
+
+						}()
+
+					}
+
+				}
+
+				// TODO: Create Task
+				console.Log("Create Task Now!")
+
+			} else if action == "cancel" {
+
+				controller.Main.Dialog.Hide()
+
 			}
 
 		}
@@ -107,14 +161,6 @@ func NewTasks(main *app.Main) Tasks {
 // 	}
 // 
 // 	if dialog != nil {
-// 
-// 		dialog.QuerySelector("button[data-action=\"close\"]").AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-// 			view.CloseDialog()
-// 		}))
-// 
-// 		dialog.QuerySelector("button[data-action=\"cancel\"]").AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-// 			view.CloseDialog()
-// 		}))
 // 
 // 		dialog.QuerySelector("button[data-action=\"confirm\"]").AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
 // 

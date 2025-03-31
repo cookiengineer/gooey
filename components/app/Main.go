@@ -93,7 +93,7 @@ func (main *Main) Render() {
 
 func (main *Main) ChangeView(name string) bool {
 
-	var result bool = false
+	var result bool
 
 	view, ok := main.views[name]
 

@@ -49,14 +49,22 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 }
 
-func (checkbox *Checkbox) Disable() {
+func (checkbox *Checkbox) Disable() bool {
+
 	checkbox.Disabled = true
 	checkbox.Render()
+
+	return true
+
 }
 
-func (checkbox *Checkbox) Enable() {
+func (checkbox *Checkbox) Enable() bool {
+
 	checkbox.Disabled = false
 	checkbox.Render()
+
+	return true
+
 }
 
 func (checkbox *Checkbox) Render() *dom.Element {

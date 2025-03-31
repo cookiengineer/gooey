@@ -12,6 +12,7 @@ type Dialog struct {
 	Layout  types.Layout           `json:"layout"`
 	Title   string                 `json:"title"`
 	Content []interfaces.Component `json:"content"`
+	// TODO: Make Footer a *layout.Footer
 	Footer  struct {
 		Left  []interfaces.Component `json:"left"`
 		Right []interfaces.Component `json:"right"`
@@ -109,6 +110,50 @@ func ToDialog(element *dom.Element) Dialog {
 
 }
 
+func (dialog *Dialog) Disable() bool {
+
+	var result bool
+
+	if len(dialog.Footer.Left) > 0 || len(dialog.Footer.Right) > 0 {
+
+		for _, component := range dialog.Footer.Left {
+			component.Disable()
+		}
+
+		for _, component := range dialog.Footer.Right {
+			component.Disable()
+		}
+
+		result = true
+
+	}
+
+	return result
+
+}
+
+func (dialog *Dialog) Enable() bool {
+
+	var result bool
+
+	if len(dialog.Footer.Left) > 0 || len(dialog.Footer.Right) > 0 {
+
+		for _, component := range dialog.Footer.Left {
+			component.Enable()
+		}
+
+		for _, component := range dialog.Footer.Right {
+			component.Enable()
+		}
+
+		result = true
+
+	}
+
+	return result
+
+}
+
 func (dialog *Dialog) Hide() bool {
 
 	var result bool
@@ -167,7 +212,7 @@ func (dialog *Dialog) Render() *dom.Element {
 
 		if article != nil {
 
-			tmp := article.QuerySelector("h3, footer")
+			tmp := article.QuerySelectorAll("h3, footer")
 
 			if len(tmp) == 2 && tmp[0].TagName == "H3" && tmp[1].TagName == "FOOTER" {
 

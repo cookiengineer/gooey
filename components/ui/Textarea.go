@@ -54,14 +54,22 @@ func ToTextarea(element *dom.Element) Textarea {
 
 }
 
-func (textarea *Textarea) Disable() {
+func (textarea *Textarea) Disable() bool {
+
 	textarea.Disabled = true
 	textarea.Render()
+
+	return true
+
 }
 
-func (textarea *Textarea) Enable() {
+func (textarea *Textarea) Enable() bool {
+
 	textarea.Disabled = false
 	textarea.Render()
+
+	return true
+
 }
 
 func (textarea *Textarea) Render() *dom.Element {

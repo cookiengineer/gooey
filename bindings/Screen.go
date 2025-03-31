@@ -20,7 +20,7 @@ type Screen struct {
 
 func (screen *Screen) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	check := string(typ)
 
@@ -69,7 +69,7 @@ func (screen *Screen) AddEventListener(typ dom.EventType, listener dom.EventList
 
 func (screen *Screen) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	if listener != nil {
 

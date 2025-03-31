@@ -42,6 +42,14 @@ func ToLabel(element *dom.Element) Label {
 
 }
 
+func (label *Label) Disable() bool {
+	return false
+}
+
+func (label *Label) Enable() bool {
+	return false
+}
+
 func (label *Label) Render() *dom.Element {
 
 	if label.Component.Element != nil {

@@ -58,14 +58,22 @@ func ToInput(element *dom.Element) Input {
 
 }
 
-func (input *Input) Disable() {
+func (input *Input) Disable() bool {
+
 	input.Disabled = true
 	input.Render()
+
+	return true
+
 }
 
-func (input *Input) Enable() {
+func (input *Input) Enable() bool {
+
 	input.Disabled = false
 	input.Render()
+
+	return true
+
 }
 
 func (input *Input) Render() *dom.Element {

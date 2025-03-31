@@ -22,7 +22,7 @@ func (headers Headers) Get(key string) string {
 
 func (headers Headers) Has(key string) bool {
 
-	var result bool = false
+	var result bool
 
 	_, ok := headers[key]
 

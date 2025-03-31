@@ -107,7 +107,7 @@ func init() {
 
 func (win *window) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	check := string(typ)
 
@@ -156,7 +156,7 @@ func (win *window) AddEventListener(typ dom.EventType, listener dom.EventListene
 
 func (win *window) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
-	var result bool = false
+	var result bool
 
 	if listener != nil {
 
@@ -228,7 +228,7 @@ func (win *window) Close() {
 
 func (win *window) Confirm(message string) bool {
 
-	var result bool = false
+	var result bool
 
 	tmp := win.Value.Call("confirm", js.ValueOf(message))
 
