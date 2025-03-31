@@ -7,6 +7,7 @@ import "github.com/cookiengineer/gooey/bindings/console"
 // import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
+import "github.com/cookiengineer/gooey/components/content"
 // import "sort"
 // import "strconv"
 
@@ -25,15 +26,6 @@ func NewTasks(main *app.Main) Tasks {
 	controller.Main   = main
 	controller.Schema = &schemas.Tasks{}
 	controller.View   = &view
-
-	// view.SetComponent("header", main.Header)
-	// view.SetComponent("footer", main.Footer)
-
-	// TODO: This doesn't exist anymore
-	// view.SetElement("table",  bindings.Document.QuerySelector("main > table"))
-	// view.SetElement("dialog", bindings.Document.QuerySelector("dialog"))
-	// view.SetElement("header", bindings.Document.QuerySelector("header"))
-	// view.SetElement("footer", bindings.Document.QuerySelector("footer"))
 
 	controller.Main.Footer.Component.AddEventListener("action", components.ToComponentListener(func(event string, attributes map[string]string) {
 
@@ -62,30 +54,36 @@ func NewTasks(main *app.Main) Tasks {
 					// TODO: How to have dialogs with content.Fieldset?
 					// TODO: Maybe something like content.ToFieldset() is necessary?
 
-					fieldset := controller.Main.Dialog.Content[0]
+					fieldset, ok := controller.Main.Dialog.Content[0].(content.Fieldset)
 
-					title := fieldset.Get("title").String()
-					done  := fieldset.Get("done").Bool()
+					if ok == true {
 
-					task := schemas.Task{
-						ID:    0,
-						Title: title,
-						Done:  done,
-					}
+						title := fieldset.Get("title").String()
+						done  := fieldset.Get("done").Bool()
 
-					if task.Title != "" {
+						task := schemas.Task{
+							ID:    0,
+							Title: title,
+							Done:  done,
+						}
 
-						controller.Main.Dialog.Disable()
+						if task.Title != "" {
 
-						go func() {
+							controller.Main.Dialog.Disable()
 
-							actions.CreateTask(controller.Main.Client, &task)
+							go func() {
 
-							controller.Main.Dialog.Enable()
-							controller.Main.Dialog.Hide()
+								actions.CreateTask(controller.Main.Client, &task)
 
-						}()
+								controller.Main.Dialog.Enable()
+								controller.Main.Dialog.Hide()
 
+							}()
+
+						}
+
+					} else {
+						console.Error("PANIC: No Fieldset!")
 					}
 
 				}

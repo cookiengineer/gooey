@@ -1,6 +1,18 @@
 
 # Components
 
+- [ ] Create a `content.Table` component
+- [ ] Create a `content.Fieldset` component
+
+## layout/Dialog
+
+- [ ] `SetPrimaryAction(label string, action string)` method
+- [ ] `SetSecondaryAction(label string, action string)` method
+- [ ] Footer property should be a `layout.Footer`
+
+- [ ] `Dialog.Parse()` should parse fieldset, table, and other content elements
+- [ ] Content property should be an `interface.Component` (single component)
+
 ## app.View
 
 - [ ] Element needs to be a `<section>` element
@@ -8,7 +20,6 @@
 
 ## Layout Components
 
-- [ ] `Header.Render()` needs to be implemented
 - [ ] `app.View` CSS needs to be implemented in `/design/components/app/View.css`
 
 # Bindings
