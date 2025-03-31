@@ -229,6 +229,8 @@ func (header *Header) Render() *dom.Element {
 
 		if len(tmp) == 3 {
 
+			header.Component.Element.SetAttribute("data-layout", header.Layout.String())
+
 			elements_left   := make([]*dom.Element, 0)
 			elements_center := make([]*dom.Element, 0)
 			elements_right  := make([]*dom.Element, 0)
