@@ -4,15 +4,16 @@ import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
 
 type Dialog struct {
-	Layout  types.Layout           `json:"layout"`
-	Title   string                 `json:"title"`
-	Content []interfaces.Component `json:"content"`
-	// TODO: Make Footer a *layout.Footer
+	Layout  types.Layout          `json:"layout"`
+	Title   string                `json:"title"`
+	Content *interfaces.Component `json:"content"`
+	// TODO: Footer needs to be replaced with layout.Footer?
 	Footer  struct {
 		Left  []interfaces.Component `json:"left"`
 		Right []interfaces.Component `json:"right"`
@@ -32,7 +33,7 @@ func NewDialog() Dialog {
 	dialog.Component    = &component
 	dialog.Layout       = types.LayoutFlow
 	dialog.Title        = "Dialog"
-	dialog.Content      = make([]interfaces.Component, 0)
+	dialog.Content      = nil
 	dialog.Footer.Left  = make([]interfaces.Component, 0)
 	dialog.Footer.Right = make([]interfaces.Component, 0)
 
@@ -73,9 +74,9 @@ func ToDialog(element *dom.Element) Dialog {
 
 	component := components.NewComponent(element)
 
-	dialog.Component = &component
-	dialog.Layout    = types.Layout(element.GetAttribute("data-layout"))
-	dialog.Content      = make([]interfaces.Component, 0)
+	dialog.Component    = &component
+	dialog.Layout       = types.Layout(element.GetAttribute("data-layout"))
+	dialog.Content      = nil
 	dialog.Footer.Left  = make([]interfaces.Component, 0)
 	dialog.Footer.Right = make([]interfaces.Component, 0)
 
@@ -177,13 +178,30 @@ func (dialog *Dialog) Parse() {
 
 		if article != nil {
 
-			h3 := dialog.Component.Element.QuerySelector("h3")
+			h3 := article.QuerySelector("h3")
 
 			if h3 != nil {
 				dialog.Title = h3.TextContent
 			}
 
-			// TODO: Parse article into Content
+			element := article.QuerySelector("fieldset, table")
+
+			if element != nil {
+
+				if element.TagName == "FIELDSET" {
+
+					component := content.ToFieldset(element)
+					dialog.Content = &component
+
+				} else if element.TagName == "TABLE" {
+
+					component := content.ToTable(element)
+					dialog.Content = &component
+
+				}
+
+			}
+
 			// TODO: Parse footer into actions []string?
 
 		} else {

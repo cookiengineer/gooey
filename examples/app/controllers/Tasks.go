@@ -58,8 +58,8 @@ func NewTasks(main *app.Main) Tasks {
 
 					if ok == true {
 
-						title := fieldset.Get("title").String()
-						done  := fieldset.Get("done").Bool()
+						title := fieldset.ValueOf("title").String()
+						done  := fieldset.ValueOf("done").Bool()
 
 						task := schemas.Task{
 							ID:    0,
