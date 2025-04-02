@@ -10,14 +10,10 @@ import "github.com/cookiengineer/gooey/types"
 import "strings"
 
 type Dialog struct {
-	Layout  types.Layout          `json:"layout"`
-	Title   string                `json:"title"`
-	Content *interfaces.Component `json:"content"`
-	// TODO: Footer needs to be replaced with layout.Footer?
-	Footer  struct {
-		Left  []interfaces.Component `json:"left"`
-		Right []interfaces.Component `json:"right"`
-	} `json:"footer"`
+	Layout    types.Layout          `json:"layout"`
+	Title     string                `json:"title"`
+	Content   interfaces.Component  `json:"content"`
+	Footer    *Footer               `json:"footer"`
 	Component *components.Component `json:"component"`
 }
 
@@ -30,12 +26,11 @@ func NewDialog() Dialog {
 
 	element.SetAttribute("data-layout", types.LayoutFlow.String())
 
-	dialog.Component    = &component
-	dialog.Layout       = types.LayoutFlow
-	dialog.Title        = "Dialog"
-	dialog.Content      = nil
-	dialog.Footer.Left  = make([]interfaces.Component, 0)
-	dialog.Footer.Right = make([]interfaces.Component, 0)
+	dialog.Component = &component
+	dialog.Layout    = types.LayoutFlow
+	dialog.Title     = "Dialog"
+	dialog.Content   = nil
+	dialog.Footer    = nil
 
 	dialog.Component.InitEvent("click")
 	dialog.Component.InitEvent("action")
@@ -74,11 +69,10 @@ func ToDialog(element *dom.Element) Dialog {
 
 	component := components.NewComponent(element)
 
-	dialog.Component    = &component
-	dialog.Layout       = types.Layout(element.GetAttribute("data-layout"))
-	dialog.Content      = nil
-	dialog.Footer.Left  = make([]interfaces.Component, 0)
-	dialog.Footer.Right = make([]interfaces.Component, 0)
+	dialog.Component = &component
+	dialog.Layout    = types.Layout(element.GetAttribute("data-layout"))
+	dialog.Content   = nil
+	dialog.Footer    = nil
 
 	dialog.Parse()
 
@@ -107,6 +101,14 @@ func ToDialog(element *dom.Element) Dialog {
 
 	}, false))
 
+	dialog.Footer.Component.AddEventListener("action", components.ToComponentListener(func(event string, attributes map[string]string) {
+
+		dialog.Component.FireEventListeners("action", map[string]string{
+			"action": attributes["data-action"],
+		})
+
+	}, false))
+
 	return dialog
 
 }
@@ -115,16 +117,9 @@ func (dialog *Dialog) Disable() bool {
 
 	var result bool
 
-	if len(dialog.Footer.Left) > 0 || len(dialog.Footer.Right) > 0 {
+	if dialog.Footer != nil {
 
-		for _, component := range dialog.Footer.Left {
-			component.Disable()
-		}
-
-		for _, component := range dialog.Footer.Right {
-			component.Disable()
-		}
-
+		dialog.Footer.Disable()
 		result = true
 
 	}
@@ -137,16 +132,9 @@ func (dialog *Dialog) Enable() bool {
 
 	var result bool
 
-	if len(dialog.Footer.Left) > 0 || len(dialog.Footer.Right) > 0 {
+	if dialog.Footer != nil {
 
-		for _, component := range dialog.Footer.Left {
-			component.Enable()
-		}
-
-		for _, component := range dialog.Footer.Right {
-			component.Enable()
-		}
-
+		dialog.Footer.Enable()
 		result = true
 
 	}
@@ -178,31 +166,38 @@ func (dialog *Dialog) Parse() {
 
 		if article != nil {
 
-			h3 := article.QuerySelector("h3")
+			tmp1 := article.QuerySelector("h3")
 
-			if h3 != nil {
-				dialog.Title = h3.TextContent
+			if tmp1 != nil {
+				dialog.Title = tmp1.TextContent
 			}
 
-			element := article.QuerySelector("fieldset, table")
+			tmp2 := article.QuerySelector("fieldset, table")
 
-			if element != nil {
+			if tmp2 != nil {
 
-				if element.TagName == "FIELDSET" {
+				if tmp2.TagName == "FIELDSET" {
 
-					component := content.ToFieldset(element)
+					component := content.ToFieldset(tmp2)
 					dialog.Content = &component
 
-				} else if element.TagName == "TABLE" {
+				} else if tmp2.TagName == "TABLE" {
 
-					component := content.ToTable(element)
+					component := content.ToTable(tmp2)
 					dialog.Content = &component
 
 				}
 
 			}
 
-			// TODO: Parse footer into actions []string?
+			tmp3 := article.QuerySelector("footer")
+
+			if tmp3 != nil {
+
+				component := ToFooter(tmp3)
+				dialog.Footer = &component
+
+			}
 
 		} else {
 
@@ -230,13 +225,24 @@ func (dialog *Dialog) Render() *dom.Element {
 
 		if article != nil {
 
-			tmp := article.QuerySelectorAll("h3, footer")
+			tmp := article.QuerySelectorAll("button[data-action=\"close\"], h3, footer")
 
-			if len(tmp) == 2 && tmp[0].TagName == "H3" && tmp[1].TagName == "FOOTER" {
+			if len(tmp) == 3 && tmp[0].TagName == "BUTTON" && tmp[1].TagName == "H3" && tmp[2].TagName == "FOOTER" {
 
-				// TODO: Render title into h3
-				// TODO: Render Content into article
-				// TODO: Render actions into footer
+				elements := make([]*dom.Element, 0)
+
+				tmp[1].SetInnerHTML(dialog.Title)
+
+				elements = append(elements, tmp[0])
+				elements = append(elements, tmp[1])
+
+				if dialog.Content != nil {
+					elements = append(elements, dialog.Content.Render())
+				}
+
+				elements = append(elements, tmp[2])
+
+				article.ReplaceChildren(elements)
 
 			}
 

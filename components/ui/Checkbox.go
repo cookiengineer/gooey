@@ -6,6 +6,7 @@ import "github.com/cookiengineer/gooey/components"
 import "strings"
 
 type Checkbox struct {
+	Checked   bool                  `json:"checked"`
 	Label     string                `json:"label"`
 	Value     string                `json:"value"`
 	Disabled  bool                  `json:"disabled"`
@@ -21,11 +22,31 @@ func NewCheckbox(label string, value string) Checkbox {
 
 	element.SetAttribute("type", "checkbox")
 
+	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Component = &component
 	checkbox.Label     = label
 	checkbox.Value     = strings.ToLower(value)
 
 	checkbox.Component.InitEvent("change")
+
+	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+
+		checkbox.Checked = element.Value.Get("checked").Bool()
+		checkbox.Value   = element.Value.Get("value").String()
+
+		checked := "false"
+
+		if checkbox.Checked == true {
+			checked = "true"
+		}
+
+		checkbox.Component.FireEventListeners("change", map[string]string{
+			"checked": checked,
+			"value":   checkbox.Value,
+		})
+
+	}))
+
 	checkbox.Render()
 
 	return checkbox
@@ -38,12 +59,31 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 	component := components.NewComponent(element)
 
+	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Label     = strings.TrimSpace(element.GetAttribute("title"))
 	checkbox.Value     = strings.ToLower(element.GetAttribute("value"))
 	checkbox.Disabled  = element.HasAttribute("disabled")
 	checkbox.Component = &component
 
 	checkbox.Component.InitEvent("change")
+
+	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+
+		checkbox.Checked = element.Value.Get("checked").Bool()
+		checkbox.Value   = element.Value.Get("value").String()
+
+		checked := "false"
+
+		if checkbox.Checked == true {
+			checked = "true"
+		}
+
+		checkbox.Component.FireEventListeners("change", map[string]string{
+			"checked": checked,
+			"value":   checkbox.Value,
+		})
+
+	}))
 
 	return checkbox
 
@@ -105,6 +145,10 @@ func (checkbox *Checkbox) String() string {
 
 	if checkbox.Value != "" {
 		html += " value=\"" + checkbox.Value + "\""
+	}
+
+	if checkbox.Checked == true {
+		html += " checked"
 	}
 
 	if checkbox.Disabled == true {
