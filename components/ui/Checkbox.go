@@ -1,13 +1,18 @@
+//go:build wasm
+
 package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/types"
 import "strings"
+import "syscall/js"
 
 type Checkbox struct {
 	Checked   bool                  `json:"checked"`
 	Label     string                `json:"label"`
+	Type      types.Input           `json:"type"`
 	Value     string                `json:"value"`
 	Disabled  bool                  `json:"disabled"`
 	Component *components.Component `json:"component"`
@@ -25,6 +30,7 @@ func NewCheckbox(label string, value string) Checkbox {
 	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Component = &component
 	checkbox.Label     = label
+	checkbox.Type      = types.InputCheckbox
 	checkbox.Value     = strings.ToLower(value)
 
 	checkbox.Component.InitEvent("change")
@@ -61,6 +67,7 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Label     = strings.TrimSpace(element.GetAttribute("title"))
+	checkbox.Type      = types.InputCheckbox
 	checkbox.Value     = strings.ToLower(element.GetAttribute("value"))
 	checkbox.Disabled  = element.HasAttribute("disabled")
 	checkbox.Component = &component
@@ -158,5 +165,23 @@ func (checkbox *Checkbox) String() string {
 	html += "/>"
 
 	return html
+
+}
+
+func (checkbox *Checkbox) ToValue() js.Value {
+
+	var result js.Value
+
+	if checkbox.Component.Element != nil {
+
+		tmp := checkbox.Component.Element.Value.Get("value")
+
+		if !tmp.IsNull() && !tmp.IsUndefined() {
+			result = tmp
+		}
+
+	}
+
+	return result
 
 }

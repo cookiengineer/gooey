@@ -1,6 +1,14 @@
 
 # Components
 
+## content/Fieldset
+
+- Parse() out div elements, and then nested label, input, select, textarea elements into their equivalent components
+- Render() should automatically set forgotten `label for=...` attributes, and set forgotten `input id=...` attributes
+- How to map names for labels and fields? Should it be on `div data-name=`? or `input data-name=`?
+
+## ui.Input
+
 - [ ] Create a `content.Table` component
 - [ ] Create a `content.Fieldset` component
 
@@ -12,6 +20,12 @@
 
 - [ ] `Dialog.Parse()` should parse fieldset, table, and other content elements
 - [ ] Content property should be an `interface.Component` (single component)
+
+## ui.Choices
+
+- [ ] Needs a separate `<div>` element surrounding the `<input type="radio">` elements
+- [ ] Root element is the `div`, not any of the input radio elements.
+
 
 ## app.View
 

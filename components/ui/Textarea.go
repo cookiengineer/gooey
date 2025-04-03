@@ -1,12 +1,17 @@
+//go:build wasm
+
 package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/types"
 import "strings"
+import "syscall/js"
 
 type Textarea struct {
 	Label     string                `json:"label"`
+	Type      types.Input           `json:"type"`
 	Value     string                `json:"value"`
 	Disabled  bool                  `json:"disabled"`
 	Component *components.Component `json:"component"`
@@ -21,6 +26,7 @@ func NewTextarea(label string, value string) Textarea {
 
 	textarea.Component = &component
 	textarea.Label     = label
+	textarea.Type      = types.InputTextarea
 	textarea.Value     = value
 
 	textarea.Component.InitEvent("change")
@@ -57,6 +63,7 @@ func ToTextarea(element *dom.Element) Textarea {
 
 	textarea.Component = &component
 	textarea.Label     = strings.TrimSpace(element.GetAttribute("placeholder"))
+	textarea.Type      = types.InputTextarea
 	textarea.Disabled  = element.HasAttribute("disabled")
 
 	textarea.Component.InitEvent("change")
@@ -142,5 +149,23 @@ func (textarea *Textarea) String() string {
 	html += "</textarea>"
 
 	return html
+
+}
+
+func (textarea *Textarea) ToValue() js.Value {
+
+	var result js.Value
+
+	if textarea.Component.Element != nil {
+
+		tmp := textarea.Component.Element.Value.Get("value")
+
+		if !tmp.IsNull() && !tmp.IsUndefined() {
+			result = tmp
+		}
+
+	}
+
+	return result
 
 }

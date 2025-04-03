@@ -1,19 +1,23 @@
+//go:build wasm
+
 package ui
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/types"
 import "strings"
+import "syscall/js"
 
 type Input struct {
 	Label     string                `json:"label"`
-	Type      InputType             `json:"type"`
+	Type      types.Input           `json:"type"`
 	Value     string                `json:"value"`
 	Disabled  bool                  `json:"disabled"`
 	Component *components.Component `json:"component"`
 }
 
-func NewInput(label string, value string, typ InputType) Input {
+func NewInput(label string, value string, typ types.Input) Input {
 
 	var input Input
 
@@ -146,5 +150,23 @@ func (input *Input) String() string {
 	html += "/>"
 
 	return html
+
+}
+
+func (input *Input) ToValue() js.Value {
+
+	var result js.Value
+
+	if input.Component.Element != nil {
+
+		tmp := input.Component.Element.Value.Get("value")
+
+		if !tmp.IsNull() && !tmp.IsUndefined() {
+			result = tmp
+		}
+
+	}
+
+	return result
 
 }
