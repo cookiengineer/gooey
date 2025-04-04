@@ -1,6 +1,6 @@
 package content
 
-func toIdentifier(name string) string {
+func toIdentifier(value string) string {
 
 	filtered := ""
 	last_was_dash := false

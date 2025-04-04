@@ -39,7 +39,7 @@ func (main *Main) Init(element *dom.Element) {
 		header := layout.ToHeader(header_element)
 		main.Header = &header
 
-		main.Header.Component.AddEventListener("change-view", components.ToComponentListener(func(event string, attributes map[string]string) {
+		main.Header.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
 
 			name, ok := attributes["name"]
 

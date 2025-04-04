@@ -169,7 +169,7 @@ func (dialog *Dialog) Parse() {
 			tmp1 := article.QuerySelector("h3")
 
 			if tmp1 != nil {
-				dialog.Title = tmp1.TextContent
+				dialog.Title = strings.TrimSpace(tmp1.TextContent)
 			}
 
 			tmp2 := article.QuerySelector("fieldset, table")

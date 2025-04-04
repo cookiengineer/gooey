@@ -33,7 +33,7 @@ func NewInput(label string, value string, typ types.Input) Input {
 
 	input.Component.InitEvent("change")
 
-	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		input.Value = element.Value.Get("value").String()
 
@@ -69,7 +69,7 @@ func ToInput(element *dom.Element) Input {
 
 	input.Component.InitEvent("change")
 
-	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		input.Value = element.Value.Get("value").String()
 

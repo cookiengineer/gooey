@@ -31,7 +31,7 @@ func NewTextarea(label string, value string) Textarea {
 
 	textarea.Component.InitEvent("change")
 
-	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		textarea.Value = element.Value.Get("value").String()
 
@@ -68,7 +68,7 @@ func ToTextarea(element *dom.Element) Textarea {
 
 	textarea.Component.InitEvent("change")
 
-	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		textarea.Value = element.Value.Get("value").String()
 

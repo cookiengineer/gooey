@@ -35,7 +35,7 @@ func NewCheckbox(label string, value string) Checkbox {
 
 	checkbox.Component.InitEvent("change")
 
-	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		checkbox.Checked = element.Value.Get("checked").Bool()
 		checkbox.Value   = element.Value.Get("value").String()
@@ -74,7 +74,7 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 	checkbox.Component.InitEvent("change")
 
-	element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		checkbox.Checked = element.Value.Get("checked").Bool()
 		checkbox.Value   = element.Value.Get("value").String()

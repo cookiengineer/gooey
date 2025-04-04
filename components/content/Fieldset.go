@@ -1,9 +1,14 @@
+//go:build wasm
+
 package content
 
+import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
+import "strings"
 import "syscall/js"
 
 // Maybe field should be field.Label = ui.Label and field.Input = ui.Input?
@@ -17,9 +22,10 @@ type field struct {
 }
 
 type Fieldset struct {
-	Name   string   `json:"name"`
-	Label  string   `json:"label"`
-	fields []*field
+	Name      string                `json:"name"`
+	Label     string                `json:"label"`
+	Component *components.Component `json:"component"`
+	fields    []*field
 }
 
 func NewFieldset(name string, label string) Fieldset {
@@ -31,6 +37,33 @@ func NewFieldset(name string, label string) Fieldset {
 
 	element.SetAttribute("data-name", name)
 	element.SetAttribute("id", toIdentifier(name))
+
+	fieldset.Name      = strings.TrimSpace(name)
+	fieldset.Label     = strings.TrimSpace(label)
+	fieldset.Component = &component
+	fieldset.fields    = make([]*field, 0)
+
+	fieldset.Component.InitEvent("change")
+
+	fieldset.Render()
+
+	return fieldset
+
+}
+
+func ToFieldset(element *dom.Element) Fieldset {
+
+	var fieldset Fieldset
+
+	component := components.NewComponent(element)
+
+	fieldset.Name      = strings.TrimSpace(element.GetAttribute("data-name"))
+	fieldset.Component = &component
+	fieldset.fields    = make([]*field, 0)
+
+	fieldset.Parse()
+
+	fieldset.Component.InitEvent("change")
 
 	return fieldset
 
@@ -79,19 +112,23 @@ func (fieldset *Fieldset) Parse() {
 
 	if fieldset.Component.Element != nil {
 
-		divs := fieldset.Component.Element.QuerySelectorAll("div")
+		tmp1 := fieldset.Component.Element.QuerySelector("legend")
 
-		if len(divs) > 0 {
+		if tmp1 != nil {
+			fieldset.Label = strings.TrimSpace(tmp1.TextContent)
+		}
 
-			for _, div := range divs {
+		tmp2 := fieldset.Component.Element.QuerySelectorAll("div")
 
+		if len(tmp2) > 0 {
+
+			for _, div := range tmp2 {
+
+				name     := div.GetAttribute("data-name")
 				element1 := div.QuerySelector("label")
 				element2 := div.QuerySelector("input, select, textarea")
 
 				if element1 != nil && element2 != nil {
-
-					// TODO: checkbox
-					// TODO: radios
 
 					if element2.TagName == "INPUT" {
 
@@ -104,21 +141,48 @@ func (fieldset *Fieldset) Parse() {
 								label := ui.ToLabel(element1)
 								input := ui.ToCheckbox(element2)
 
-								// TODO: Add field
+								input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+									fieldset.Component.FireEventListeners("change", attributes)
+								}, false))
+
+								fieldset.fields = append(fieldset.fields, &field{
+									Name:  name,
+									Label: &label,
+									Input: &input,
+									Type:  input.Type,
+								})
 
 							} else if typ == "radio" {
 
 								label := ui.ToLabel(element1)
 								input := ui.ToChoices(div.QuerySelectorAll("input[type=\"radio\"]"))
 
-								// TODO: Add field
+								input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+									fieldset.Component.FireEventListeners("change", attributes)
+								}, false))
+
+								fieldset.fields = append(fieldset.fields, &field{
+									Name:  name,
+									Label: &label,
+									Input: &input,
+									Type:  input.Type,
+								})
 
 							} else {
 
 								label := ui.ToLabel(element1)
 								input := ui.ToInput(element2)
 
-								// TODO: Add field
+								input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+									fieldset.Component.FireEventListeners("change", attributes)
+								}, false))
+
+								fieldset.fields = append(fieldset.fields, &field{
+									Name:  name,
+									Label: &label,
+									Input: &input,
+									Type:  input.Type,
+								})
 
 							}
 
@@ -129,28 +193,42 @@ func (fieldset *Fieldset) Parse() {
 						label := ui.ToLabel(element1)
 						input := ui.ToSelect(element2)
 
-						// TODO: Add field
+						input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+							fieldset.Component.FireEventListeners("change", attributes)
+						}, false))
+
+						fieldset.fields = append(fieldset.fields, &field{
+							Name:  name,
+							Label: &label,
+							Input: &input,
+							Type:  input.Type,
+						})
 
 					} else if element2.TagName == "TEXTAREA" {
 
 						label := ui.ToLabel(element1)
 						input := ui.ToTextarea(element2)
 
-						// TODO: Add field
+						input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+							fieldset.Component.FireEventListeners("change", attributes)
+						}, false))
+
+						fieldset.fields = append(fieldset.fields, &field{
+							Name:  name,
+							Label: &label,
+							Input: &input,
+							Type:  input.Type,
+						})
 
 					}
 
 				}
-
-				// TODO: label
 
 			}
 
 		}
 
 	}
-
-	// TODO: Parse Fieldset <div> lines into elements
 
 }
 
@@ -187,6 +265,7 @@ func (fieldset *Fieldset) AddField(name string, typ types.Input, Label interface
 
 func (fieldset *Fieldset) TypeOf(name string) types.Input {
 
+	// TODO
 
 }
 
