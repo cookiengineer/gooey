@@ -27,11 +27,12 @@ func NewCheckbox(label string, value string) Checkbox {
 
 	element.SetAttribute("type", "checkbox")
 
-	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Component = &component
+	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Label     = label
 	checkbox.Type      = types.InputCheckbox
 	checkbox.Value     = strings.ToLower(value)
+	checkbox.Disabled  = false
 
 	checkbox.Component.InitEvent("change")
 
@@ -65,12 +66,12 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 	component := components.NewComponent(element)
 
+	checkbox.Component = &component
 	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Label     = strings.TrimSpace(element.GetAttribute("title"))
 	checkbox.Type      = types.InputCheckbox
 	checkbox.Value     = strings.ToLower(element.GetAttribute("value"))
 	checkbox.Disabled  = element.HasAttribute("disabled")
-	checkbox.Component = &component
 
 	checkbox.Component.InitEvent("change")
 

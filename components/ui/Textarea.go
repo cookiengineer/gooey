@@ -28,6 +28,7 @@ func NewTextarea(label string, value string) Textarea {
 	textarea.Label     = label
 	textarea.Type      = types.InputTextarea
 	textarea.Value     = value
+	textarea.Disabled  = false
 
 	textarea.Component.InitEvent("change")
 
