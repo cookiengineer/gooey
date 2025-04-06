@@ -19,6 +19,7 @@ type field struct {
 	Label interfaces.Component `json:"label"`
 	Input interfaces.Component `json:"input"`
 	Type  types.Input          `json:"type"`
+	ctype string // component type
 }
 
 type Fieldset struct {
@@ -69,11 +70,34 @@ func ToFieldset(element *dom.Element) Fieldset {
 
 }
 
+func (fieldset *Fieldset) AddField(name string, typ types.Input, Label interfaces.Component, Input interfaces.Component) {
+
+	if name != "" {
+
+		fieldset.fields = append(fieldset.fields, &field{
+			Name:  name,
+			Label: &label,
+			Input: &input,
+			Type:  typ,
+		})
+
+	}
+
+}
+
 func (fieldset *Fieldset) Disable() bool {
 
 	var result bool
 
-	// TODO: Disable all elements
+	if len(fieldset.fields) > 0 {
+
+		for _, field := range fieldset.fields {
+			field.Input.Disable()
+		}
+
+		result = true
+
+	}
 
 	return result
 
@@ -83,26 +107,15 @@ func (fieldset *Fieldset) Enable() bool {
 
 	var result bool
 
-	// TODO: Enable all elements
+	if len(fieldset.fields) > 0 {
 
-	return result
-
-}
-
-func (fieldset *Fieldset) ValueOf(name string) js.Value {
-
-	var result js.Value
-
-	for f := 0; f < len(fieldset.fields); f++ {
-
-		field := fieldset.fields[f]
-
-		if field.Name == name {
-			// TODO: Get value?
+		for _, field := range fieldset.fields {
+			field.Input.Enable()
 		}
 
-	}
+		result = true
 
+	}
 
 	return result
 
@@ -112,17 +125,17 @@ func (fieldset *Fieldset) Parse() {
 
 	if fieldset.Component.Element != nil {
 
-		tmp1 := fieldset.Component.Element.QuerySelector("legend")
+		legend := fieldset.Component.Element.QuerySelector("legend")
 
-		if tmp1 != nil {
-			fieldset.Label = strings.TrimSpace(tmp1.TextContent)
+		if legend != nil {
+			fieldset.Label = strings.TrimSpace(legend.TextContent)
 		}
 
-		tmp2 := fieldset.Component.Element.QuerySelectorAll("div")
+		divs := fieldset.Component.Element.QuerySelectorAll("div")
 
-		if len(tmp2) > 0 {
+		if len(divs) > 0 {
 
-			for _, div := range tmp2 {
+			for _, div := range divs {
 
 				name     := div.GetAttribute("data-name")
 				element1 := div.QuerySelector("label")
@@ -150,11 +163,12 @@ func (fieldset *Fieldset) Parse() {
 									Label: &label,
 									Input: &input,
 									Type:  input.Type,
+									ctype: "ui.Checkbox",
 								})
 
 							} else if typ == "radio" {
 
-								// TODO
+								// TODO: Support ui.RadioGroup
 								// label := ui.ToLabel(element1)
 								// input := ui.ToRadioGroup(div.QuerySelectorAll("input[type=\"radio\"]"))
 
@@ -167,6 +181,7 @@ func (fieldset *Fieldset) Parse() {
 								// 	Label: &label,
 								// 	Input: &input,
 								// 	Type:  input.Type,
+								//	ctype: "ui.RadioGroup",
 								// })
 
 							} else {
@@ -183,6 +198,7 @@ func (fieldset *Fieldset) Parse() {
 									Label: &label,
 									Input: &input,
 									Type:  input.Type,
+									ctype: "ui.Input",
 								})
 
 							}
@@ -203,6 +219,7 @@ func (fieldset *Fieldset) Parse() {
 							Label: &label,
 							Input: &input,
 							Type:  input.Type,
+							ctype: "ui.Select",
 						})
 
 					} else if element2.TagName == "TEXTAREA" {
@@ -219,6 +236,7 @@ func (fieldset *Fieldset) Parse() {
 							Label: &label,
 							Input: &input,
 							Type:  input.Type,
+							ctype: "ui.Textarea",
 						})
 
 					}
@@ -233,9 +251,66 @@ func (fieldset *Fieldset) Parse() {
 
 }
 
+func (fieldset *Fieldset) RemoveField(name string) bool {
+
+	var result bool
+
+	var index int = -1
+
+	for f := 0; f < len(fieldset.fields); f++ {
+
+		if fieldset.fields[f].Name == name {
+			index = f
+			break
+		}
+
+	}
+
+	if index != -1 {
+		fieldset.fields = append(fieldset.fields[:index], fieldset.fields[index+1:]...)
+		result = true
+	}
+
+	return result
+
+}
+
 func (fieldset *Fieldset) Render() *dom.Element {
 
-	// TOOD: Render() method
+	if fieldset.Component.Element != nil {
+
+		elements := make([]*dom.Element, 0)
+
+		if fieldset.Label != "" {
+
+			legend := fieldset.Component.QuerySelector("legend")
+
+			if legend != nil {
+				legend.SetInnerHTML(fieldset.Label)
+				elements = append(elements, legend)
+			}
+
+		}
+
+		for _, field := range fieldset.fields {
+
+			div := bindings.Document.CreateElement("div")
+
+			label := field.Label.Render()
+			input := field.Input.Render()
+
+			div.ReplaceChildren([]*dom.Element{
+				label,
+				input,
+			})
+
+			elements = append(elements, div)
+
+		}
+
+		fieldset.ReplaceChildren(elements)
+
+	}
 
 	return fieldset.Component.Element
 
@@ -244,6 +319,10 @@ func (fieldset *Fieldset) Render() *dom.Element {
 func (fieldset *Fieldset) String() string {
 
 	html := "<fieldset>"
+
+	if fieldset.Label != "" {
+		html += "<legend>" + fieldset.Label + "</legend>"
+	}
 
 	for _, field := range fieldset.fields {
 
@@ -260,21 +339,81 @@ func (fieldset *Fieldset) String() string {
 
 }
 
-func (fieldset *Fieldset) AddField(name string, typ types.Input, Label interfaces.Component, Input interfaces.Component) {
-
-}
-
 func (fieldset *Fieldset) TypeOf(name string) types.Input {
 
 	var result types.Input
 
-	// TODO
+	for _, field := range fieldset.fields {
+
+		if field.Name == name {
+			result = fieldset.Type
+			break
+		}
+
+	}
 
 	return result
 
 }
 
-// TODO: How to use Set/Get for type specific methods?
-// TODO: Maybe generic method makes more sense?
-// TODO: Fieldset.Set(name string, value bool || int || uint || string etc)
+func (fieldset *Fieldset) ValueOf(name string) js.Value {
+
+	var result js.Value
+
+	for _, field := range fieldset.fields {
+	
+		if field.Name == name {
+
+			if field.ctype == "ui.Checkbox" {
+
+				component, ok := field.Input.(ui.Checkbox)
+
+				if ok == true {
+					result = component.ToValue()
+				}
+
+			} else if field.ctype == "ui.Input" {
+
+				component, ok := field.Input.(ui.Input)
+
+				if ok == true {
+					result = component.ToValue()
+				}
+
+			} else if field.ctype == "ui.RadioGroup" {
+
+				// TODO: Support ui.RadioGroup
+				// component, ok := field.Input.(ui.Radio)
+
+				// if ok == true {
+				// 	result = component.ToValue()
+				// }
+
+			} else if field.ctype == "ui.Select" {
+
+				component, ok := field.Input.(ui.Select)
+
+				if ok == true {
+					result = component.ToValue()
+				}
+
+			} else if field.ctype == "ui.Textarea" {
+
+				component, ok := field.Input.(ui.Textarea)
+
+				if ok == true {
+					result = component.ToValue()
+				}
+
+			}
+
+			break
+
+		}
+
+	}
+
+	return result
+
+}
 
