@@ -36,8 +36,6 @@ func NewHeader() Header {
 	element   := bindings.Document.CreateElement("header")
 	component := components.NewComponent(element)
 
-	element.SetAttribute("data-layout", types.LayoutFlex.String())
-
 	header.Component     = &component
 	header.Layout        = types.LayoutFlex
 	header.Content.Left  = make([]interfaces.Component, 0)
@@ -94,7 +92,7 @@ func ToHeader(element *dom.Element) Header {
 	component := components.NewComponent(element)
 
 	header.Component     = &component
-	header.Layout        = types.Layout(element.GetAttribute("data-layout"))
+	header.Layout        = types.LayoutFlex
 	header.Content.Left  = make([]interfaces.Component, 0)
 	header.Content.Right = make([]interfaces.Component, 0)
 	header.views         = make(map[string]*header_view_item)
@@ -218,6 +216,12 @@ func (header *Header) Enable() bool {
 func (header *Header) Parse() {
 
 	if header.Component.Element != nil {
+
+		layout := header.Component.Element.GetAttribute("data-layout")
+
+		if layout != "" {
+			header.Layout = types.Layout(layout)
+		}
 
 		tmp := header.Component.Element.QuerySelectorAll("div, ul")
 

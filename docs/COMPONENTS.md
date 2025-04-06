@@ -32,8 +32,8 @@
 
 - [ ] [layout.Aside](/components/layout/Aside.go)
 - [layout.Dialog](/components/layout/Dialog.go)
-- [layout.Footer](/components/layout/Footer.go)
-- [layout.Header](/components/layout/Header.go) fires an `action` and `change-view` event.
+- [layout.Footer](/components/layout/Footer.go) fires an `action` event
+- [layout.Header](/components/layout/Header.go) fires an `action` and a `change-view` event
 
 **content**
 

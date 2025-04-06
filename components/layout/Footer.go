@@ -25,8 +25,6 @@ func NewFooter() Footer {
 	element   := bindings.Document.CreateElement("footer")
 	component := components.NewComponent(element)
 
-	element.SetAttribute("data-layout", types.LayoutFlex.String())
-
 	footer.Component      = &component
 	footer.Layout         = types.LayoutFlex
 	footer.Content.Left   = make([]interfaces.Component, 0)
@@ -63,7 +61,7 @@ func ToFooter(element *dom.Element) Footer {
 	component := components.NewComponent(element)
 
 	footer.Component      = &component
-	footer.Layout         = types.Layout(element.GetAttribute("data-layout"))
+	footer.Layout         = types.LayoutFlex
 	footer.Content.Left   = make([]interfaces.Component, 0)
 	footer.Content.Center = make([]interfaces.Component, 0)
 	footer.Content.Right  = make([]interfaces.Component, 0)
@@ -138,6 +136,12 @@ func (footer *Footer) Enable() bool {
 func (footer *Footer) Parse() {
 
 	if footer.Component.Element != nil {
+
+		layout := footer.Component.Element.GetAttribute("data-layout")
+
+		if layout != "" {
+			footer.Layout = types.Layout(layout)
+		}
 
 		tmp := footer.Component.Element.QuerySelectorAll("div")
 

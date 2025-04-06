@@ -21,6 +21,16 @@ footer {
 	justify-content: space-between;
 }
 
+footer[data-layout="grid"] {
+	display: grid;
+	justify-content: unset;
+}
+
+footer[data-layout="flow"] {
+	display: block flow-root;
+	justify-content: unset;
+}
+
 footer div:first-of-type {
 	display: inline-block;
 	width: auto;
