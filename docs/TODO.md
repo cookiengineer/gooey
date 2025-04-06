@@ -3,14 +3,12 @@
 
 ## content/Fieldset
 
-- Parse() out div elements, and then nested label, input, select, textarea elements into their equivalent components
-- Render() should automatically set forgotten `label for=...` attributes, and set forgotten `input id=...` attributes
-- How to map names for labels and fields? Should it be on `div data-name=`? or `input data-name=`?
+- [ ] Implement a `Reset()` method that resets all fields
+- [ ] `Render()` method should automatically set forgotten `label for=...` and `input id=...` attributes
 
-## ui.Input
+## content/Table
 
 - [ ] Create a `content.Table` component
-- [ ] Create a `content.Fieldset` component
 
 ## layout/Dialog
 
@@ -19,7 +17,6 @@
 - [ ] Footer property should be a `layout.Footer`
 
 - [ ] `Dialog.Parse()` should parse fieldset, table, and other content elements
-- [ ] Content property should be an `interface.Component` (single component)
 
 ## ui.Choices
 

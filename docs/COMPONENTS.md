@@ -37,7 +37,7 @@
 
 **content**
 
-- [ ] [content.Fieldset](/components/content/Fieldset.go)
+- [content.Fieldset](/components/content/Fieldset.go) fires a `change-field` event
 - [ ] [content.Article](/components/content/Article.go)
 - [ ] [content.Table](/components/content/Table.go)
 
