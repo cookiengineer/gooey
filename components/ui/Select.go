@@ -6,6 +6,7 @@ import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/types"
+import "slices"
 import "strings"
 import "syscall/js"
 
@@ -41,15 +42,32 @@ func NewSelect(label string, value string, values []string) Select {
 
 	}
 
-	self.Component.InitEvent("change")
+	self.Component.InitEvent("change-value")
 
 	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
-		// TODO: Get Value from select element and set self.Value
+		index   := self.Component.Element.Value.Get("selectedIndex").Int()
+		options := self.Component.Element.Value.Get("options")
 
-		self.Component.FireEventListeners("change", map[string]string{
-			"value": self.Value,
-		})
+		if !options.IsNull() && !options.IsUndefined() && index != -1 {
+
+			value := options.Index(index).Get("value")
+
+			if !value.IsNull() && !value.IsUndefined() {
+
+				if slices.Contains(self.Values, value.String()) {
+					self.Value = value.String()
+				}
+
+				self.Component.FireEventListeners("change-value", map[string]string{
+					"value": self.Value,
+				})
+
+			}
+
+		} else if index == -1 {
+			self.Value = ""
+		}
 
 	}))
 
@@ -66,23 +84,37 @@ func ToSelect(element *dom.Element) Select {
 	component := components.NewComponent(element)
 
 	self.Component = &component
-	// TODO: self.Label
+	self.Type      = types.InputText
 	self.Disabled  = element.HasAttribute("disabled")
-
-	// TODO: Value
-	// TODO: Values
 
 	self.Parse()
 
-	self.Component.InitEvent("change")
+	self.Component.InitEvent("change-value")
 
 	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
-		// TODO: Get Value from select element and set self.Value
+		index   := self.Component.Element.Value.Get("selectedIndex").Int()
+		options := self.Component.Element.Value.Get("options")
 
-		self.Component.FireEventListeners("change", map[string]string{
-			"value": self.Value,
-		})
+		if !options.IsNull() && !options.IsUndefined() && index != -1 {
+
+			value := options.Index(index).Get("value")
+
+			if !value.IsNull() && !value.IsUndefined() {
+
+				if slices.Contains(self.Values, value.String()) {
+					self.Value = value.String()
+				}
+
+				self.Component.FireEventListeners("change-value", map[string]string{
+					"value": self.Value,
+				})
+
+			}
+
+		} else if index == -1 {
+			self.Value = ""
+		}
 
 	}))
 
@@ -110,6 +142,42 @@ func (self *Select) Enable() bool {
 
 func (self *Select) Parse() {
 
+	if self.Component.Element != nil {
+
+		tmp := self.Component.Element.QuerySelector("option")
+
+		// First option element is the placeholder
+		if tmp != nil && tmp.GetAttribute("value") == "" {
+			self.Label = tmp.TextContent
+		} else {
+			self.Label = ""
+		}
+
+		elements := self.Component.Element.QuerySelectorAll("option")
+
+		value := ""
+		values := make([]string, 0)
+
+		for _, element := range elements {
+
+			tmp := element.GetAttribute("value")
+
+			if tmp != "" {
+
+				if element.HasAttribute("selected") {
+					value = tmp
+				}
+
+				values = append(values, tmp)
+
+			}
+
+		}
+
+		self.Value = value
+		self.Values = values
+
+	}
 
 }
 
@@ -117,15 +185,79 @@ func (self *Select) Render() *dom.Element {
 
 	if self.Component.Element != nil {
 
-		// TODO: Label property into an option value=""
-
-		// TODO: Set active value via Element.Value.Set("value", ...)
-
 		if self.Disabled == true {
 			self.Component.Element.SetAttribute("disabled", "")
 		} else {
 			self.Component.Element.RemoveAttribute("disabled")
 		}
+
+		elements := make(map[string]*dom.Element)
+
+		tmp := self.Component.Element.QuerySelectorAll("option")
+
+		for _, element := range tmp {
+
+			value := element.GetAttribute("value")
+
+			if slices.Contains(self.Values, value) {
+				elements[value] = element
+			}
+
+		}
+
+		children := make([]*dom.Element, 0)
+
+		if self.Label != "" {
+
+			placeholder := bindings.Document.CreateElement("option")
+			placeholder.SetAttribute("value", "")
+			placeholder.SetInnerHTML(self.Label)
+
+			children = append(children, placeholder)
+
+		}
+
+		for _, value := range self.Values {
+
+			element, ok := elements[value]
+
+			if ok == false {
+
+				element = bindings.Document.CreateElement("option")
+				element.SetAttribute("value", value)
+				element.SetInnerHTML(value)
+
+				if self.Value != "" {
+
+					if self.Value == value {
+						element.SetAttribute("selected", "")
+					} else {
+						element.RemoveAttribute("selected")
+					}
+
+				}
+
+				children = append(children, element)
+
+			} else {
+
+				if self.Value != "" {
+
+					if self.Value == value {
+						element.SetAttribute("selected", "")
+					} else {
+						element.RemoveAttribute("selected")
+					}
+
+				}
+
+				children = append(children, element)
+
+			}
+
+		}
+
+		self.Component.Element.ReplaceChildren(children)
 
 	}
 
@@ -173,3 +305,33 @@ func (self *Select) String() string {
 
 }
 
+func (self *Select) ToValue() js.Value {
+
+	var result js.Value
+
+	if self.Component.Element != nil {
+
+		index   := self.Component.Element.Value.Get("selectedIndex").Int()
+		options := self.Component.Element.Value.Get("options")
+
+		if !options.IsNull() && !options.IsUndefined() && index != -1 {
+
+			value := options.Index(index).Get("value")
+
+			if !value.IsNull() && !value.IsUndefined() {
+
+				if slices.Contains(self.Values, value.String()) {
+					result = value
+				}
+
+			}
+
+		} else if index == -1 {
+			result = js.ValueOf("")
+		}
+
+	}
+
+	return result
+
+}

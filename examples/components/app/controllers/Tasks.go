@@ -49,12 +49,9 @@ func NewTasks(main *app.Main) Tasks {
 
 			if action == "confirm" {
 
-				if len(controller.Main.Dialog.Content) > 0 {
+				if controller.Main.Dialog.Content != nil {
 
-					// TODO: How to have dialogs with content.Fieldset?
-					// TODO: Maybe something like content.ToFieldset() is necessary?
-
-					fieldset, ok := controller.Main.Dialog.Content[0].(content.Fieldset)
+					fieldset, ok := controller.Main.Dialog.Content.(*content.Fieldset)
 
 					if ok == true {
 
@@ -83,13 +80,10 @@ func NewTasks(main *app.Main) Tasks {
 						}
 
 					} else {
-						console.Error("PANIC: No Fieldset!")
+						console.Error("PANIC: Dialog has no Fieldset!")
 					}
 
 				}
-
-				// TODO: Create Task
-				console.Log("Create Task Now!")
 
 			} else if action == "cancel" {
 

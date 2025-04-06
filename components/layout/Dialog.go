@@ -35,7 +35,7 @@ func NewDialog() Dialog {
 	dialog.Component.InitEvent("click")
 	dialog.Component.InitEvent("action")
 
-	dialog.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		action, ok1 := attributes["data-action"]
 
@@ -79,7 +79,7 @@ func ToDialog(element *dom.Element) Dialog {
 	dialog.Component.InitEvent("click")
 	dialog.Component.InitEvent("action")
 
-	dialog.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		action, ok1 := attributes["data-action"]
 
@@ -101,7 +101,7 @@ func ToDialog(element *dom.Element) Dialog {
 
 	}, false))
 
-	dialog.Footer.Component.AddEventListener("action", components.ToComponentListener(func(event string, attributes map[string]string) {
+	dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		dialog.Component.FireEventListeners("action", map[string]string{
 			"action": attributes["data-action"],
@@ -183,8 +183,9 @@ func (dialog *Dialog) Parse() {
 
 				} else if tmp2.TagName == "TABLE" {
 
-					component := content.ToTable(tmp2)
-					dialog.Content = &component
+					// TODO
+					// component := content.ToTable(tmp2)
+					// dialog.Content = &component
 
 				}
 

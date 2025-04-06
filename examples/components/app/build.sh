@@ -15,7 +15,7 @@ if [[ "$?" == "0" ]]; then
 	cp "${GOROOT}/lib/wasm/wasm_exec.js" "${ROOT}/public/wasm_exec.js";
 
 	# Import Gooey Theme
-	cp -R "${ROOT}/../../design" "${ROOT}/public/design";
+	cp -R "${ROOT}/../../../design" "${ROOT}/public/design";
 
 	go run "${ROOT}/serve.go";
 

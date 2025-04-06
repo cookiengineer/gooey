@@ -17,7 +17,7 @@ func main() {
 	}
 
 	timers.SetTimeout(func() {
-		console.Inspect(location.Location)
+		console.Log(location.Location)
 	}, 1000)
 
 	for true {

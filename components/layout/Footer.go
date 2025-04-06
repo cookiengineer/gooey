@@ -36,7 +36,7 @@ func NewFooter() Footer {
 	footer.Component.InitEvent("click")
 	footer.Component.InitEvent("action")
 
-	footer.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		_, ok1 := attributes["data-action"]
 
@@ -73,7 +73,7 @@ func ToFooter(element *dom.Element) Footer {
 	footer.Component.InitEvent("click")
 	footer.Component.InitEvent("action")
 
-	footer.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		_, ok1 := attributes["data-action"]
 

@@ -34,7 +34,7 @@ func NewCheckbox(label string, value string) Checkbox {
 	checkbox.Value     = strings.ToLower(value)
 	checkbox.Disabled  = false
 
-	checkbox.Component.InitEvent("change")
+	checkbox.Component.InitEvent("change-value")
 
 	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
@@ -47,7 +47,7 @@ func NewCheckbox(label string, value string) Checkbox {
 			checked = "true"
 		}
 
-		checkbox.Component.FireEventListeners("change", map[string]string{
+		checkbox.Component.FireEventListeners("change-value", map[string]string{
 			"checked": checked,
 			"value":   checkbox.Value,
 		})
@@ -73,7 +73,7 @@ func ToCheckbox(element *dom.Element) Checkbox {
 	checkbox.Value     = strings.ToLower(element.GetAttribute("value"))
 	checkbox.Disabled  = element.HasAttribute("disabled")
 
-	checkbox.Component.InitEvent("change")
+	checkbox.Component.InitEvent("change-value")
 
 	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
@@ -86,7 +86,7 @@ func ToCheckbox(element *dom.Element) Checkbox {
 			checked = "true"
 		}
 
-		checkbox.Component.FireEventListeners("change", map[string]string{
+		checkbox.Component.FireEventListeners("change-value", map[string]string{
 			"checked": checked,
 			"value":   checkbox.Value,
 		})

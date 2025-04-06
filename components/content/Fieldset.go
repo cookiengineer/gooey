@@ -141,7 +141,7 @@ func (fieldset *Fieldset) Parse() {
 								label := ui.ToLabel(element1)
 								input := ui.ToCheckbox(element2)
 
-								input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+								input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
 									fieldset.Component.FireEventListeners("change", attributes)
 								}, false))
 
@@ -154,26 +154,27 @@ func (fieldset *Fieldset) Parse() {
 
 							} else if typ == "radio" {
 
-								label := ui.ToLabel(element1)
-								input := ui.ToChoices(div.QuerySelectorAll("input[type=\"radio\"]"))
+								// TODO
+								// label := ui.ToLabel(element1)
+								// input := ui.ToRadioGroup(div.QuerySelectorAll("input[type=\"radio\"]"))
 
-								input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
-									fieldset.Component.FireEventListeners("change", attributes)
-								}, false))
+								// input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
+								// 	fieldset.Component.FireEventListeners("change", attributes)
+								// }, false))
 
-								fieldset.fields = append(fieldset.fields, &field{
-									Name:  name,
-									Label: &label,
-									Input: &input,
-									Type:  input.Type,
-								})
+								// fieldset.fields = append(fieldset.fields, &field{
+								// 	Name:  name,
+								// 	Label: &label,
+								// 	Input: &input,
+								// 	Type:  input.Type,
+								// })
 
 							} else {
 
 								label := ui.ToLabel(element1)
 								input := ui.ToInput(element2)
 
-								input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+								input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
 									fieldset.Component.FireEventListeners("change", attributes)
 								}, false))
 
@@ -193,7 +194,7 @@ func (fieldset *Fieldset) Parse() {
 						label := ui.ToLabel(element1)
 						input := ui.ToSelect(element2)
 
-						input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+						input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
 							fieldset.Component.FireEventListeners("change", attributes)
 						}, false))
 
@@ -209,7 +210,7 @@ func (fieldset *Fieldset) Parse() {
 						label := ui.ToLabel(element1)
 						input := ui.ToTextarea(element2)
 
-						input.Component.AddEventListener("change", components.ToComponentListener(func(event string, attributes map[string]string) {
+						input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
 							fieldset.Component.FireEventListeners("change", attributes)
 						}, false))
 
@@ -265,7 +266,11 @@ func (fieldset *Fieldset) AddField(name string, typ types.Input, Label interface
 
 func (fieldset *Fieldset) TypeOf(name string) types.Input {
 
+	var result types.Input
+
 	// TODO
+
+	return result
 
 }
 

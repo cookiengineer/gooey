@@ -32,13 +32,13 @@ func NewInput(label string, value string, typ types.Input) Input {
 	input.Value     = strings.TrimSpace(value)
 	input.Disabled  = false
 
-	input.Component.InitEvent("change")
+	input.Component.InitEvent("change-value")
 
 	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		input.Value = element.Value.Get("value").String()
 
-		input.Component.FireEventListeners("change", map[string]string{
+		input.Component.FireEventListeners("change-value", map[string]string{
 			"value": input.Value,
 		})
 
@@ -69,13 +69,13 @@ func ToInput(element *dom.Element) Input {
 	input.Type      = types.Input(element.GetAttribute("type"))
 	input.Disabled  = element.HasAttribute("disabled")
 
-	input.Component.InitEvent("change")
+	input.Component.InitEvent("change-value")
 
 	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
 		input.Value = element.Value.Get("value").String()
 
-		input.Component.FireEventListeners("change", map[string]string{
+		input.Component.FireEventListeners("change-value", map[string]string{
 			"value": input.Value,
 		})
 

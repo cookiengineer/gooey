@@ -3,8 +3,8 @@ package components
 import "github.com/cookiengineer/gooey/bindings/dom"
 
 type Component struct {
-	Listeners map[string][]*ComponentListener `json:"listeners"`
-	Element   *dom.Element                    `json:"element"`
+	Listeners map[string][]*EventListener `json:"listeners"`
+	Element   *dom.Element                `json:"element"`
 }
 
 func NewComponent(element *dom.Element) Component {
@@ -12,7 +12,7 @@ func NewComponent(element *dom.Element) Component {
 	var component Component
 
 	component.Element = element
-	component.Listeners = make(map[string][]*ComponentListener, 0)
+	component.Listeners = make(map[string][]*EventListener, 0)
 
 	return component
 
@@ -47,7 +47,7 @@ func (component *Component) InitEvent(event string) {
 	_, ok := component.Listeners[event]
 
 	if ok == false {
-		component.Listeners[event] = make([]*ComponentListener, 0)
+		component.Listeners[event] = make([]*EventListener, 0)
 	}
 
 }
@@ -66,7 +66,7 @@ func (component *Component) HasEvent(event string) bool {
 
 }
 
-func (component *Component) AddEventListener(event string, listener ComponentListener) bool {
+func (component *Component) AddEventListener(event string, listener EventListener) bool {
 
 	var result bool
 
@@ -186,7 +186,7 @@ func (component *Component) FireEventListeners(event string, attributes map[stri
 
 }
 
-func (component *Component) RemoveEventListener(event string, listener *ComponentListener) bool {
+func (component *Component) RemoveEventListener(event string, listener *EventListener) bool {
 
 	var result bool
 
@@ -232,7 +232,7 @@ func (component *Component) RemoveEventListener(event string, listener *Componen
 				component.Element.RemoveEventListener(dom.EventType(event), nil)
 			}
 
-			component.Listeners[event] = make([]*ComponentListener, 0)
+			component.Listeners[event] = make([]*EventListener, 0)
 			result = true
 
 		}

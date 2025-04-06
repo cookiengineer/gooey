@@ -32,6 +32,7 @@ For further details, take a look at the following files to get an overview:
 
 ![Reactive MVC Architecture](/assets/reactive-mvc.jpg)
 
+
 ## WebView Architecture
 
 The HTML/DOM App Layout always consists of the following elements:
@@ -47,9 +48,8 @@ The CSS App Theme always uses semantic HTML as style rules:
 - Activity/Visibility states of elements are represented by the `class="active"` attribute.
 - All other element states are represented using `data-` attributes.
 
-The [/design](/design) folder contains a ready-to-use default theme. Just copy the design folder so
-that it is located at `/public/design/` and reachable as `/design/index.css`. Include the
-`<link rel="stylesheet" href="/design/index.css">` in your HTML files.
+The [/design](/design) folder contains a ready-to-use default theme.
+Copy it, modify it, and you're good to go.
 
 
 ## Examples
@@ -64,16 +64,22 @@ Important: These examples also serve as unit tests, because `go test` cannot gen
 binaries for the `syscall/js` platform. As soon as unit tests are available, the plan
 is to migrate towards go-integrated tests that are compatible with `go test`.
 
-- [console](/examples/console)
-- [crypto-aescbc](/examples/crypto-aescbc)
-- [elements](/examples/elements)
-- [fetch](/examples/fetch)
-- [history](/examples/history)
-- [location](/examples/location)
-- [navigator](/examples/navigator)
-- [navigator-geolocation](/examples/navigator-geolocation)
-- [storages](/examples/storages)
+**Bindings Examples**:
 
+- [console](/examples/bindings/console)
+- [crypto-aescbc](/examples/bindings/crypto-aescbc)
+- [dom](/examples/bindings/dom)
+- [fetch](/examples/bindings/fetch)
+- [history](/examples/bindings/history)
+- [location](/examples/bindings/location)
+- [navigator](/examples/bindings/navigator)
+- [navigator-geolocation](/examples/bindings/navigator-geolocation)
+- [storages](/examples/bindings/storages)
+
+**Components Examples**:
+
+- [app](/examples/components/app)
+- [ui](/examples/components/ui)
 
 # License
 

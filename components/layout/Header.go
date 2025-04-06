@@ -45,31 +45,41 @@ func NewHeader() Header {
 	header.View          = ""
 	header.views         = make(map[string]*header_view_item)
 
-	header.Component.InitEvent("click")
-	header.Component.InitEvent("change")
+	header.Component.InitEvent("change-view")
 	header.Component.InitEvent("action")
 
-	header.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+	header.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
 
-		_, ok1 := attributes["data-action"]
-		_, ok2 := attributes["data-view"]
+		if event.Target != nil {
 
-		if ok1 == true {
+			action := event.Target.GetAttribute("data-action")
+			view   := event.Target.GetAttribute("data-view")
+			path   := event.Target.GetAttribute("href")
 
-			header.Component.FireEventListeners("action", map[string]string{
-				"action": attributes["data-action"],
-			})
+			if action != "" {
 
-		} else if ok2 == true {
+				event.PreventDefault()
+				event.StopPropagation()
 
-			header.Component.FireEventListeners("change", map[string]string{
-				"name": attributes["data-view"],
-				"path": attributes["href"],
-			})
+				header.Component.FireEventListeners("action", map[string]string{
+					"action": action,
+				})
+
+			} else if view != "" && path != "" {
+
+				event.PreventDefault()
+				event.StopPropagation()
+
+				header.Component.FireEventListeners("change-view", map[string]string{
+					"name": view,
+					"path": path,
+				})
+
+			}
 
 		}
 
-	}, false))
+	}))
 
 	header.Render()
 
@@ -91,31 +101,41 @@ func ToHeader(element *dom.Element) Header {
 
 	header.Parse()
 
-	header.Component.InitEvent("click")
-	header.Component.InitEvent("change")
+	header.Component.InitEvent("change-view")
 	header.Component.InitEvent("action")
 
-	header.Component.AddEventListener("click", components.ToComponentListener(func(event string, attributes map[string]string) {
+	header.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
 
-		_, ok1 := attributes["data-action"]
-		_, ok2 := attributes["data-view"]
+		if event.Target != nil {
 
-		if ok1 == true {
+			action := event.Target.GetAttribute("data-action")
+			view   := event.Target.GetAttribute("data-view")
+			path   := event.Target.GetAttribute("href")
 
-			header.Component.FireEventListeners("action", map[string]string{
-				"action": attributes["data-action"],
-			})
+			if action != "" {
 
-		} else if ok2 == true {
+				event.PreventDefault()
+				event.StopPropagation()
 
-			header.Component.FireEventListeners("change", map[string]string{
-				"name": attributes["data-view"],
-				"path": attributes["href"],
-			})
+				header.Component.FireEventListeners("action", map[string]string{
+					"action": action,
+				})
+
+			} else if view != "" && path != "" {
+
+				event.PreventDefault()
+				event.StopPropagation()
+
+				header.Component.FireEventListeners("change-view", map[string]string{
+					"name": view,
+					"path": path,
+				})
+
+			}
 
 		}
 
-	}, false))
+	}))
 
 	return header
 

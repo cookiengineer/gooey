@@ -1,0 +1,37 @@
+
+select {
+	display: inline-block;
+	margin: 0px;
+	padding: 4px 8px;
+	color: var(--input-default-color);
+	background: var(--input-default-background);
+	font-family: 'vera-mono';
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+	border: 1px solid var(--input-default-border);
+	border-radius: 4px;
+	box-sizing: border-box;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	outline: unset;
+	cursor: pointer;
+}
+
+select option {
+	color: var(--input-default-color);
+	background: var(--input-default-background);
+	font-family: 'vera-mono';
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+}
+
+select option:not(:last-of-type) {
+	border-bottom: 1px solid var(--input-default-border);
+}
+
+@supports (appearance: base-select) {
+	/* TODO: base-select CSS once other Browsers have confirmed proposal */
+}
