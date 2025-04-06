@@ -22,7 +22,7 @@ header {
 }
 
 header[data-layout="grid"] {
-	display: grid;
+	display: block grid;
 	justify-content: unset;
 }
 

@@ -1,6 +1,6 @@
 
 dialog {
-	display: block;
+	display: block flow-root;
 	position: fixed;
 	width: 100%;
 	height: 100%;
@@ -16,6 +16,14 @@ dialog {
 	pointer-events: none;
 	opacity: 0;
 	z-index: 30;
+}
+
+dialog[data-layout="flex"] {
+	display: block flex;
+}
+
+dialog[data-layout="grid"] {
+	display: block grid;
 }
 
 dialog[open] {
