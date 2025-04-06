@@ -2,6 +2,8 @@
 @import url("./components/app/Main.css");
 @import url("./components/app/View.css");
 
+@import url("./components/content/Fieldset.css");
+
 @import url("./components/layout/Header.css");
 @import url("./components/layout/Footer.css");
 @import url("./components/layout/Aside.css");

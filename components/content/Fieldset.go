@@ -44,7 +44,7 @@ func NewFieldset(name string, label string) Fieldset {
 	fieldset.Component = &component
 	fieldset.fields    = make([]*field, 0)
 
-	fieldset.Component.InitEvent("change")
+	fieldset.Component.InitEvent("change-field")
 
 	fieldset.Render()
 
@@ -64,20 +64,20 @@ func ToFieldset(element *dom.Element) Fieldset {
 
 	fieldset.Parse()
 
-	fieldset.Component.InitEvent("change")
+	fieldset.Component.InitEvent("change-field")
 
 	return fieldset
 
 }
 
-func (fieldset *Fieldset) AddField(name string, typ types.Input, Label interfaces.Component, Input interfaces.Component) {
+func (fieldset *Fieldset) AddField(name string, typ types.Input, label interfaces.Component, input interfaces.Component) {
 
 	if name != "" {
 
 		fieldset.fields = append(fieldset.fields, &field{
 			Name:  name,
-			Label: &label,
-			Input: &input,
+			Label: label,
+			Input: input,
 			Type:  typ,
 		})
 
@@ -154,9 +154,18 @@ func (fieldset *Fieldset) Parse() {
 								label := ui.ToLabel(element1)
 								input := ui.ToCheckbox(element2)
 
-								input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
-									fieldset.Component.FireEventListeners("change", attributes)
-								}, false))
+								func(name string, input ui.Checkbox) {
+
+									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+
+										fieldset.Component.FireEventListeners("change-field", map[string]string{
+											"name":  name,
+											"value": attributes["value"],
+										})
+
+									}, false))
+
+								}(name, input)
 
 								fieldset.fields = append(fieldset.fields, &field{
 									Name:  name,
@@ -189,9 +198,18 @@ func (fieldset *Fieldset) Parse() {
 								label := ui.ToLabel(element1)
 								input := ui.ToInput(element2)
 
-								input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
-									fieldset.Component.FireEventListeners("change", attributes)
-								}, false))
+								func(name string, input ui.Input) {
+
+									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+
+										fieldset.Component.FireEventListeners("change-field", map[string]string{
+											"name":  name,
+											"value": attributes["value"],
+										})
+
+									}, false))
+
+								}(name, input)
 
 								fieldset.fields = append(fieldset.fields, &field{
 									Name:  name,
@@ -210,9 +228,18 @@ func (fieldset *Fieldset) Parse() {
 						label := ui.ToLabel(element1)
 						input := ui.ToSelect(element2)
 
-						input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
-							fieldset.Component.FireEventListeners("change", attributes)
-						}, false))
+						func(name string, input ui.Select) {
+
+							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+
+								fieldset.Component.FireEventListeners("change-field", map[string]string{
+									"name":  name,
+									"value": attributes["value"],
+								})
+
+							}, false))
+
+						}(name, input)
 
 						fieldset.fields = append(fieldset.fields, &field{
 							Name:  name,
@@ -227,9 +254,18 @@ func (fieldset *Fieldset) Parse() {
 						label := ui.ToLabel(element1)
 						input := ui.ToTextarea(element2)
 
-						input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
-							fieldset.Component.FireEventListeners("change", attributes)
-						}, false))
+						func(name string, input ui.Textarea) {
+
+							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+
+								fieldset.Component.FireEventListeners("change-field", map[string]string{
+									"name":  name,
+									"value": attributes["value"],
+								})
+
+							}, false))
+
+						}(name, input)
 
 						fieldset.fields = append(fieldset.fields, &field{
 							Name:  name,
@@ -283,7 +319,7 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 		if fieldset.Label != "" {
 
-			legend := fieldset.Component.QuerySelector("legend")
+			legend := fieldset.Component.Element.QuerySelector("legend")
 
 			if legend != nil {
 				legend.SetInnerHTML(fieldset.Label)
@@ -308,11 +344,21 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 		}
 
-		fieldset.ReplaceChildren(elements)
+		fieldset.Component.Element.ReplaceChildren(elements)
 
 	}
 
 	return fieldset.Component.Element
+
+}
+
+func (fieldset *Fieldset) Reset() bool {
+
+	var result bool
+
+	// TODO: Reset all field Input components to their default value
+
+	return result
 
 }
 
@@ -346,7 +392,7 @@ func (fieldset *Fieldset) TypeOf(name string) types.Input {
 	for _, field := range fieldset.fields {
 
 		if field.Name == name {
-			result = fieldset.Type
+			result = field.Type
 			break
 		}
 
@@ -366,7 +412,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 
 			if field.ctype == "ui.Checkbox" {
 
-				component, ok := field.Input.(ui.Checkbox)
+				component, ok := field.Input.(*ui.Checkbox)
 
 				if ok == true {
 					result = component.ToValue()
@@ -374,7 +420,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 
 			} else if field.ctype == "ui.Input" {
 
-				component, ok := field.Input.(ui.Input)
+				component, ok := field.Input.(*ui.Input)
 
 				if ok == true {
 					result = component.ToValue()
@@ -383,7 +429,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 			} else if field.ctype == "ui.RadioGroup" {
 
 				// TODO: Support ui.RadioGroup
-				// component, ok := field.Input.(ui.Radio)
+				// component, ok := field.Input.(*ui.Radio)
 
 				// if ok == true {
 				// 	result = component.ToValue()
@@ -391,7 +437,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 
 			} else if field.ctype == "ui.Select" {
 
-				component, ok := field.Input.(ui.Select)
+				component, ok := field.Input.(*ui.Select)
 
 				if ok == true {
 					result = component.ToValue()
@@ -399,7 +445,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 
 			} else if field.ctype == "ui.Textarea" {
 
-				component, ok := field.Input.(ui.Textarea)
+				component, ok := field.Input.(*ui.Textarea)
 
 				if ok == true {
 					result = component.ToValue()

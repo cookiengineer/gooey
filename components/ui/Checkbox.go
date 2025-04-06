@@ -10,10 +10,9 @@ import "strings"
 import "syscall/js"
 
 type Checkbox struct {
-	Checked   bool                  `json:"checked"`
 	Label     string                `json:"label"`
 	Type      types.Input           `json:"type"`
-	Value     string                `json:"value"`
+	Value     bool                  `json:"value"`
 	Disabled  bool                  `json:"disabled"`
 	Component *components.Component `json:"component"`
 }
@@ -28,28 +27,25 @@ func NewCheckbox(label string, value string) Checkbox {
 	element.SetAttribute("type", "checkbox")
 
 	checkbox.Component = &component
-	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Label     = label
 	checkbox.Type      = types.InputCheckbox
-	checkbox.Value     = strings.ToLower(value)
+	checkbox.Value     = false
 	checkbox.Disabled  = false
 
 	checkbox.Component.InitEvent("change-value")
 
 	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
-		checkbox.Checked = element.Value.Get("checked").Bool()
-		checkbox.Value   = element.Value.Get("value").String()
+		checkbox.Value = element.Value.Get("checked").Bool()
 
 		checked := "false"
 
-		if checkbox.Checked == true {
+		if checkbox.Value == true {
 			checked = "true"
 		}
 
 		checkbox.Component.FireEventListeners("change-value", map[string]string{
-			"checked": checked,
-			"value":   checkbox.Value,
+			"value": checked,
 		})
 
 	}))
@@ -67,28 +63,25 @@ func ToCheckbox(element *dom.Element) Checkbox {
 	component := components.NewComponent(element)
 
 	checkbox.Component = &component
-	checkbox.Checked   = element.Value.Get("checked").Bool()
 	checkbox.Label     = strings.TrimSpace(element.GetAttribute("title"))
 	checkbox.Type      = types.InputCheckbox
-	checkbox.Value     = strings.ToLower(element.GetAttribute("value"))
+	checkbox.Value     = element.Value.Get("checked").Bool()
 	checkbox.Disabled  = element.HasAttribute("disabled")
 
 	checkbox.Component.InitEvent("change-value")
 
 	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
 
-		checkbox.Checked = element.Value.Get("checked").Bool()
-		checkbox.Value   = element.Value.Get("value").String()
+		checkbox.Value = element.Value.Get("checked").Bool()
 
 		checked := "false"
 
-		if checkbox.Checked == true {
+		if checkbox.Value == true {
 			checked = "true"
 		}
 
 		checkbox.Component.FireEventListeners("change-value", map[string]string{
-			"checked": checked,
-			"value":   checkbox.Value,
+			"value": checked,
 		})
 
 	}))
@@ -125,10 +118,10 @@ func (checkbox *Checkbox) Render() *dom.Element {
 			checkbox.Component.Element.RemoveAttribute("title")
 		}
 
-		if checkbox.Value != "" {
-			checkbox.Component.Element.SetAttribute("value", checkbox.Value)
+		if checkbox.Value == true {
+			checkbox.Component.Element.Value.Set("checked", true)
 		} else {
-			checkbox.Component.Element.RemoveAttribute("value")
+			checkbox.Component.Element.Value.Set("checked", false)
 		}
 
 		if checkbox.Disabled == true {
@@ -151,11 +144,7 @@ func (checkbox *Checkbox) String() string {
 		html += " title=\"" + checkbox.Label + "\""
 	}
 
-	if checkbox.Value != "" {
-		html += " value=\"" + checkbox.Value + "\""
-	}
-
-	if checkbox.Checked == true {
+	if checkbox.Value == true {
 		html += " checked"
 	}
 
@@ -175,10 +164,16 @@ func (checkbox *Checkbox) ToValue() js.Value {
 
 	if checkbox.Component.Element != nil {
 
-		tmp := checkbox.Component.Element.Value.Get("value")
+		tmp := checkbox.Component.Element.Value.Get("checked")
 
 		if !tmp.IsNull() && !tmp.IsUndefined() {
-			result = tmp
+
+			if tmp.Bool() == true {
+				result = js.ValueOf(true)
+			} else {
+				result = js.ValueOf(false)
+			}
+
 		}
 
 	}

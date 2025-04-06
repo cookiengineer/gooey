@@ -79,6 +79,7 @@ is to migrate towards go-integrated tests that are compatible with `go test`.
 **Components Examples**:
 
 - [app](/examples/components/app)
+- [content-fieldset](/examples/components/content-fieldset)
 - [layout](/examples/components/layout)
 - [ui](/examples/components/ui)
 
