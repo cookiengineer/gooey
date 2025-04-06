@@ -24,8 +24,6 @@ func NewDialog() Dialog {
 	element   := bindings.Document.CreateElement("dialog")
 	component := components.NewComponent(element)
 
-	element.SetAttribute("data-layout", types.LayoutFlow.String())
-
 	dialog.Component = &component
 	dialog.Layout    = types.LayoutFlow
 	dialog.Title     = "Dialog"
@@ -70,7 +68,7 @@ func ToDialog(element *dom.Element) Dialog {
 	component := components.NewComponent(element)
 
 	dialog.Component = &component
-	dialog.Layout    = types.Layout(element.GetAttribute("data-layout"))
+	dialog.Layout    = types.LayoutFlow
 	dialog.Content   = nil
 	dialog.Footer    = nil
 
@@ -161,6 +159,12 @@ func (dialog *Dialog) Hide() bool {
 func (dialog *Dialog) Parse() {
 
 	if dialog.Component.Element != nil {
+
+		layout := dialog.Component.Element.GetAttribute("data-layout")
+
+		if layout != "" {
+			dialog.Layout = types.Layout(layout)
+		}
 
 		article := dialog.Component.Element.QuerySelector("article")
 
