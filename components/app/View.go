@@ -4,17 +4,18 @@ package app
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
 
 type View struct {
-	Element    *dom.Element                    `json:"element"`
-	Layout     types.Layout                    `json:"layout"`
-	Name       string                          `json:"name"`
-	Label      string                          `json:"label"`
-	Path       string                          `json:"path"`
-	Components map[string]interfaces.Component `json:"components"`
+	Element *dom.Element           `json:"element"`
+	Layout  types.Layout           `json:"layout"`
+	Name    string                 `json:"name"`
+	Label   string                 `json:"label"`
+	Path    string                 `json:"path"`
+	Content []interfaces.Component `json:"components"`
 }
 
 func NewView(name string, label string, path string) View {
@@ -22,43 +23,51 @@ func NewView(name string, label string, path string) View {
 	var view View
 
 	element := bindings.Document.CreateElement("section")
-	element.SetAttribute("data-layout", types.LayoutFlow.String())
 
 	view.Element = element
 	view.Name    = strings.ToLower(name)
 	view.Label   = label
 	view.Layout  = types.LayoutFlow
 	view.Path    = strings.ToLower(path)
+	view.Content = make([]interfaces.Component, 0)
 
-	view.Components = make(map[string]interfaces.Component)
+	return view
+
+}
+
+func ToView(element *dom.Element, label string, path string) View {
+
+	var view View
+
+	view.Element = element
+	view.Layout  = types.LayoutFlow
+	view.Label   = label
+	view.Path    = strings.ToLower(path)
+	view.Content = make([]interfaces.Component, 0)
+
+	view.Parse()
 
 	return view
 
 }
 
 func (view *View) Enter() bool {
+
+	if view.Element != nil {
+		view.Element.SetClassName("active")
+	}
+
 	return true
+
 }
 
 func (view *View) Leave() bool {
-	return true
-}
 
-func (view *View) GetComponent(name string) interfaces.Component {
-
-	var result interfaces.Component = nil
-
-	if name != "" {
-
-		tmp, ok := view.Components[name]
-
-		if ok == true {
-			result = tmp
-		}
-
+	if view.Element != nil {
+		view.Element.SetClassName("")
 	}
 
-	return result
+	return true
 
 }
 
@@ -79,33 +88,67 @@ func (view *View) GetProperty(name string) string {
 
 }
 
-func (view *View) RemoveComponent(name string) bool {
+func (view *View) Parse() {
 
-	var result bool
+	if view.Element != nil {
 
-	_, ok := view.Components[name]
+		name := view.Element.GetAttribute("data-name")
 
-	if ok == true {
-		delete(view.Components, name)
-		result = true
+		if name != "" {
+			view.Name = strings.ToLower(name)
+		}
+
+		layout := view.Element.GetAttribute("data-layout")
+
+		if layout != "" {
+			view.Layout = types.Layout(layout)
+		}
+
+		elements   := view.Element.Children()
+		components := make([]interfaces.Component, 0)
+
+		for _, element := range elements {
+
+			if element.TagName == "ARTICLE" {
+
+				component := content.ToArticle(element)
+				components = append(components, &component)
+
+			} else if element.TagName == "TABLE" {
+
+				component := content.ToTable(element)
+				components = append(components, &component)
+
+			}
+
+		}
+
+		view.Content = components
+
 	}
-
-	return result
 
 }
 
 func (view *View) Render() {
 
-	for _, component := range view.Components {
-		component.Render()
-	}
+	if view.Element != nil {
 
-}
+		if view.Name != "" {
+			view.Element.SetAttribute("data-name", strings.ToLower(view.Name))
+		}
 
-func (view *View) SetComponent(name string, component interfaces.Component) {
+		if view.Layout != types.LayoutFlow {
+			view.Element.SetAttribute("data-layout", view.Layout.String())
+		}
 
-	if name != "" {
-		view.Components[name] = component
+		elements := make([]*dom.Element, 0)
+
+		for _, component := range view.Content {
+			elements = append(elements, component.Render())
+		}
+
+		view.Element.ReplaceChildren(elements)
+
 	}
 
 }

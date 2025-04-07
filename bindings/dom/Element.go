@@ -322,6 +322,30 @@ func (element *Element) InsertAdjacentText(position string, value string) {
 
 }
 
+func (element *Element) Children() []*Element {
+
+	result := make([]*Element, 0)
+	value  := element.Value.Get("children")
+
+	if !value.IsNull() && !value.IsUndefined() {
+
+		for c := 0; c < value.Length(); c++ {
+
+			node := value.Index(c)
+
+			if !node.IsNull() && !node.IsUndefined() {
+				element := ToElement(node)
+				result = append(result, &element)
+			}
+
+		}
+
+	}
+
+	return result
+
+}
+
 func (element *Element) ParentNode() *Element {
 
 	var result *Element = nil

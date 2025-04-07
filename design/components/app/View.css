@@ -1,12 +1,24 @@
 
 main section {
-	display: block;
-	background: red;
-	/* TODO: Make sections visible 100% */
+	display: block flow-root;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	color: var(--main-color);
+	background: var(--main-background);
+	pointer-events: none;
+	transition: transform 250ms ease-out;
+	opacity: 0;
+	z-index: 0;
 }
 
 main section.active {
-	/* TODO: translate to 0,0 */
+	pointer-events: all;
+	transition: opacity 250ms ease-out;
+	opacity: 1;
+	z-index: 1;
 }
 
 main section[data-layout="flex"] {
@@ -14,7 +26,7 @@ main section[data-layout="flex"] {
 }
 
 main section[data-layout="flow"] {
-	display: block flow;
+	display: block flow-root;
 }
 
 main section[data-layout="grid"] {

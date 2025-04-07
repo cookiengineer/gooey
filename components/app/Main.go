@@ -4,6 +4,7 @@ package app
 
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/bindings/location"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/interfaces"
@@ -39,12 +40,28 @@ func (main *Main) Init(element *dom.Element) {
 		header := layout.ToHeader(header_element)
 		main.Header = &header
 
-		main.Header.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
+		main.Header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]string) {
 
-			name, ok := attributes["name"]
+			name, ok1 := attributes["name"]
+			path, ok2 := attributes["path"]
 
-			if ok == true {
-				main.ChangeView(name)
+			if ok1 == true && ok2 == true {
+
+				_, ok3 := main.views[name]
+
+				if ok3 == true {
+
+					// Single-page web app
+					main.ChangeView(name)
+
+				} else {
+
+					// TODO: History API integration?
+					// Multi-page web app
+					location.Location.Replace(path)
+
+				}
+
 			}
 
 		}, false))

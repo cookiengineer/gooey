@@ -79,6 +79,10 @@ dialog article button[data-action="close"]:before {
 	margin: 0px;
 }
 
+dialog article fieldset {
+	margin: 16px;
+}
+
 dialog article table {
 	margin: 16px;
 }

@@ -35,6 +35,7 @@ func main() {
 			} else if action == "confirm" {
 
 				bytes, err := json.MarshalIndent(map[string]any{
+					"type":    fieldset.ValueOf("type").String(),
 					"name":    fieldset.ValueOf("name").String(),
 					"email":   fieldset.ValueOf("email").String(),
 					"message": fieldset.ValueOf("message").String(),

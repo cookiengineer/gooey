@@ -36,6 +36,7 @@ header div:first-of-type {
 	width: auto;
 	margin: 0px auto 0px 0px;
 	padding: 0px;
+	line-height: 32px;
 	vertical-align: middle;
 	font-family: 'vera-mono';
 	font-weight: normal;
@@ -60,6 +61,7 @@ header div:last-of-type {
 	width: auto;
 	margin: 0px 0px 0px auto;
 	padding: 0px;
+	line-height: 32px;
 	vertical-align: middle;
 	text-align: right;
 	box-sizing: border-box;

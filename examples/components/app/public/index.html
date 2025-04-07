@@ -33,16 +33,44 @@
 			<div></div>
 		</header>
 		<main data-view="tasks">
-			<table>
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Title</th>
-						<th>Done?</th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
+			<section data-name="tasks" class="active">
+				<article>
+					<table>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Title</th>
+								<th>Done?</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</article>
+			</section>
+			<section data-name="settings">
+				<article>
+					<h3 data-type="settings">Settings</h3>
+					<fieldset data-name="settings">
+						<legend>Settings</legend>
+						<div data-name="user">
+							<label data-type="user">User</label>
+							<input type="text" placeholder="John Doe"/>
+						</div>
+						<div data-name="password">
+							<label data-type="password">Password</label>
+							<input type="password"/>
+						</div>
+						<div data-name="folder">
+							<label data-type="folder">Folder</label>
+							<input type="text" placeholder="/path/to/folder"/>
+						</div>
+						<div data-name="port">
+							<label data-type="port">Port</label>
+							<input type="number" min="1" max="65534" value="1234"/>
+						</div>
+					</fieldset>
+				</article>
+			</section>
 		</main>
 		<footer>
 			<div></div>
@@ -54,19 +82,19 @@
 				<button data-action="close"></button>
 				<h3>Create New Task</h3>
 				<fieldset>
-					<div>
-						<label for="dialog-name" data-type="title">Title</label>
-						<input id="dialog-name" data-name="title" type="text" placeholder="Leave a Star on GitHub"/>
+					<div data-name="title">
+						<label data-type="title">Title</label>
+						<input type="text" placeholder="Leave a Star on GitHub"/>
 					</div>
-					<div>
-						<label for="dialog-done" data-type="confirm">Done?</label>
-						<input id="dialog-done" data-name="done" type="checkbox" title="Done already?"/>
+					<div data-name="done">
+						<label data-type="confirm">Done?</label>
+						<input type="checkbox"/>
 					</div>
 				</fieldset>
 				<footer>
-					<div><button class="secondary" data-action="cancel">Cancel</button></div>
+					<div><button data-action="cancel">Cancel</button></div>
 					<div></div>
-					<div><button class="primary" data-action="confirm">Create</button></div>
+					<div><button data-action="confirm">Create</button></div>
 				</footer>
 			</article>
 		</dialog>

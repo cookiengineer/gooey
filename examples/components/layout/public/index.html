@@ -33,17 +33,43 @@
 			<div><button data-action="settings">Settings</button></div>
 		</header>
 		<main>
-			<h3>layout.Header</h3>
-			<p>layout.Header fires an <q>action</q> event and a <q>change-view</q> event (see console output).</p>
-			<br><br>
-			<h3>layout.Footer</h3>
-			<p>layout.Footer fires an <q>action</q> event (see console output).</p>
+			<article>
+				<h3>layout.Header</h3>
+				<p>layout.Header fires an <q>action</q> event and a <q>change-view</q> event (see console output).</p>
+				<hr>
+				<h3>layout.Footer</h3>
+				<p>layout.Footer fires an <q>action</q> event (see console output).</p>
+				<hr>
+				<h3>layout.Dialog</h3>
+				<p>layout.Dialog fires an <q>action</q> event (see console output).</p>
+			</article>
 		</main>
 		<footer>
 			<div><button data-action="cancel">Cancel</button></div>
 			<div></div>
 			<div><button data-action="confirm">Confirm</button></div>
 		</footer>
+		<dialog>
+			<article>
+				<button data-action="close"></button>
+				<h3>Settings Dialog</h3>
+				<fieldset data-name="settings">
+					<div data-name="name">
+						<label data-type="user">Name</label>
+						<input type="text" placeholder="John Doe"/>
+					</div>
+					<div data-name="email">
+						<label data-type="email">E-Mail</label>
+						<input type="email" placeholder="john_doe@example.com"/>
+					</div>
+				</fieldset>
+				<footer>
+					<div><button data-action="cancel">Cancel</button></div>
+					<div></div>
+					<div><button data-action="save">Save</button></div>
+				</footer>
+			</article>
+		</dialog>
 		<script src="wasm_exec.js"></script>
 		<script src="wasm_init.js"></script>
 	</body>

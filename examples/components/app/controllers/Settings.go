@@ -1,7 +1,7 @@
 package controllers
 
 import "example/schemas"
-// import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/components/app"
 
 type Settings struct {
@@ -14,7 +14,8 @@ func NewSettings(main *app.Main) Settings {
 
 	var controller Settings
 
-	view := app.NewView("settings", "Settings", "/settings.html")
+	element := bindings.Document.QuerySelector("section[data-name=\"settings\"]")
+	view    := app.ToView(element, "Settings", "/settings.html")
 
 	controller.Main   = main
 	controller.Schema = &schemas.Settings{}

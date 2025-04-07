@@ -2,7 +2,7 @@ package controllers
 
 import "example/actions"
 import "example/schemas"
-// import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 // import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
@@ -21,13 +21,14 @@ func NewTasks(main *app.Main) Tasks {
 
 	var controller Tasks
 
-	view := app.NewView("tasks", "Tasks", "/index.html")
+	element := bindings.Document.QuerySelector("section[data-name=\"tasks\"]")
+	view    := app.ToView(element, "Tasks", "/index.html")
 
 	controller.Main   = main
 	controller.Schema = &schemas.Tasks{}
 	controller.View   = &view
 
-	controller.Main.Footer.Component.AddEventListener("action", components.ToComponentListener(func(event string, attributes map[string]string) {
+	controller.Main.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		action, ok := attributes["action"]
 
@@ -41,7 +42,7 @@ func NewTasks(main *app.Main) Tasks {
 
 	}, false))
 
-	controller.Main.Dialog.Component.AddEventListener("action", components.ToComponentListener(func(event string, attributes map[string]string) {
+	controller.Main.Dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		action, ok := attributes["action"]
 
@@ -66,6 +67,7 @@ func NewTasks(main *app.Main) Tasks {
 
 						if task.Title != "" {
 
+							fieldset.Reset()
 							controller.Main.Dialog.Disable()
 
 							go func() {
@@ -87,6 +89,12 @@ func NewTasks(main *app.Main) Tasks {
 
 			} else if action == "cancel" {
 
+				fieldset, ok := controller.Main.Dialog.Content.(*content.Fieldset)
+
+				if ok == true {
+					fieldset.Reset()
+				}
+
 				controller.Main.Dialog.Hide()
 
 			}
@@ -95,16 +103,47 @@ func NewTasks(main *app.Main) Tasks {
 
 	}, false))
 
-	console.Log(controller)
+	controller.Update()
 
 	return controller
 
 }
 
-// func (view Tasks) Properties() (string, string, string) {
-// 	return "tasks", "Tasks", "/index.html"
-// }
-// 
+func (controller *Tasks) Update() {
+
+	if controller.Main != nil {
+
+		schema, err := actions.GetTasks(controller.Main.Client)
+
+		if err == nil {
+			controller.Schema = schema.Tasks
+			controller.Main.Storage.Write("tasks", schema)
+		}
+
+		controller.Render()
+
+	}
+
+}
+
+func (controller *Tasks) Render() {
+
+	article, ok1 := controller.View.Content.(*content.Article)
+
+	if ok1 == true {
+
+		table, ok2 := article.Content.(*content.Table)
+
+		if ok2 == true {
+
+			// TODO: Table.SetSomething()
+			// TODO: Table.Render()
+
+		}
+
+	}
+
+}
 // func (view Tasks) BindEvents() {
 // 
 // 	table  := view.GetElement("table")
@@ -213,18 +252,6 @@ func NewTasks(main *app.Main) Tasks {
 // 	return true
 // }
 // 
-// func (view Tasks) Refresh() {
-// 
-// 	schema, err := actions.GetTasks(view.Main.Client)
-// 
-// 	if err == nil {
-// 		view.Schema.Tasks = schema.Tasks
-// 		view.Main.Storage.Write("tasks", schema)
-// 	}
-// 
-// 	view.Render()
-// 
-// }
 // 
 // func (view Tasks) Render() {
 // 
@@ -279,26 +306,5 @@ func NewTasks(main *app.Main) Tasks {
 // 	return result
 // 
 // }
-// 
-// func (view Tasks) CloseDialog() {
-// 
-// 	dialog := view.GetElement("dialog")
-// 
-// 	if dialog != nil {
-// 
-// 		texts := dialog.QuerySelectorAll("input[type=\"text\"]")
-// 		bools := dialog.QuerySelectorAll("input[type=\"checkbox\"]")
-// 
-// 		for _, element := range texts {
-// 			element.Value.Set("value", "")
-// 		}
-// 
-// 		for _, element := range bools {
-// 			element.Value.Set("checked", false)
-// 		}
-// 
-// 		dialog.RemoveAttribute("open")
-// 
-// 	}
 // 
 // }
