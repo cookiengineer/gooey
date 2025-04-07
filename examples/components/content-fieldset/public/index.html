@@ -28,23 +28,23 @@
 	</head>
 	<body>
 		<main>
-			<fieldset>
+			<fieldset data-name="feedback">
 				<legend>Feedback Form Example</legend>
 				<div data-name="name">
-					<label for="feedback-name" data-type="user">Name</label>
-					<input id="feedback-name" type="text" placeholder="John Doe"/>
+					<label data-type="user">Name</label>
+					<input type="text" placeholder="John Doe"/>
 				</div>
 				<div data-name="email">
-					<label for="feedback-email" data-type="email">E-Mail</label>
-					<input id="feedback-email" type="email" placeholder="john_doe@example.com"/>
+					<label data-type="email">E-Mail</label>
+					<input type="email" placeholder="john_doe@example.com"/>
 				</div>
 				<div data-name="message">
-					<label for="feedback-message" data-type="text">Message</label>
-					<textarea id="feedback-message" placeholder="This is a message..."></textarea>
+					<label data-type="text">Message</label>
+					<textarea placeholder="This is a message..."></textarea>
 				</div>
 				<div data-name="tos">
-					<label for="feedback-tos" data-type="warning">Accept Terms of Service?</label>
-					<input id="feedback-tos" type="checkbox" value="accepted">
+					<label data-type="warning">Accept Terms of Service?</label>
+					<input type="checkbox" value="accepted">
 				</div>
 			</fieldset>
 			<h3>JSON Data</h3>

@@ -4,7 +4,6 @@
 ## content/Fieldset
 
 - [ ] Implement a `Reset()` method that resets all fields
-- [ ] `Render()` method should automatically set forgotten `label for=...` and `input id=...` attributes
 
 ## content/Table
 

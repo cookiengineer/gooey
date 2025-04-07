@@ -8,11 +8,14 @@ import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
+import "strconv"
 import "strings"
 import "syscall/js"
 
 // Maybe field should be field.Label = ui.Label and field.Input = ui.Input?
 // How to represent multiple choices with input type="radio" elements?
+
+var fieldset_count int = 0
 
 type field struct {
 	Name  string               `json:"name"`
@@ -36,10 +39,7 @@ func NewFieldset(name string, label string) Fieldset {
 	element   := bindings.Document.CreateElement("fieldset")
 	component := components.NewComponent(element)
 
-	element.SetAttribute("data-name", name)
-	element.SetAttribute("id", toIdentifier(name))
-
-	fieldset.Name      = strings.TrimSpace(name)
+	fieldset.Name      = strings.TrimSpace(strings.ToLower(name))
 	fieldset.Label     = strings.TrimSpace(label)
 	fieldset.Component = &component
 	fieldset.fields    = make([]*field, 0)
@@ -62,9 +62,15 @@ func ToFieldset(element *dom.Element) Fieldset {
 	fieldset.Component = &component
 	fieldset.fields    = make([]*field, 0)
 
-	fieldset.Parse()
+	if fieldset.Name == "" {
+		fieldset_count++
+		fieldset.Name = "fieldset-" + strconv.Itoa(fieldset_count)
+	}
 
 	fieldset.Component.InitEvent("change-field")
+
+	fieldset.Parse()
+	fieldset.Render()
 
 	return fieldset
 
@@ -317,6 +323,18 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 		elements := make([]*dom.Element, 0)
 
+		if fieldset.Name != "" {
+
+			fieldset.Component.Element.SetAttribute("data-name", strings.ToLower(fieldset.Name))
+			fieldset.Component.Element.SetAttribute("id", toIdentifier(strings.ToLower(fieldset.Name)))
+
+		} else {
+
+			fieldset.Component.Element.RemoveAttribute("data-name")
+			fieldset.Component.Element.RemoveAttribute("id")
+
+		}
+
 		if fieldset.Label != "" {
 
 			legend := fieldset.Component.Element.QuerySelector("legend")
@@ -332,8 +350,13 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 			div := bindings.Document.CreateElement("div")
 
+			id    := toIdentifier(strings.ToLower(fieldset.Name + "-" + field.Name))
 			label := field.Label.Render()
 			input := field.Input.Render()
+
+			div.SetAttribute("data-name", field.Name)
+			label.SetAttribute("for", id)
+			input.SetAttribute("id", id)
 
 			div.ReplaceChildren([]*dom.Element{
 				label,
