@@ -1,8 +1,7 @@
 package layout
 
-import "github.com/cookiengineer/gooey/bindings/console"
-
 import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
@@ -227,11 +226,12 @@ func (header *Header) Parse() {
 
 		if len(tmp) == 3 && tmp[0].TagName == "DIV" && tmp[1].TagName == "UL" && tmp[2].TagName == "DIV" {
 
-			buttons_left := tmp[0].QuerySelectorAll("button")
+			buttons_left    := tmp[0].QuerySelectorAll("button")
+			components_left := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_left {
 				component := ui.ToButton(button)
-				header.Content.Left = append(header.Content.Left, &component)
+				components_left = append(components_left, &component)
 			}
 
 			items_center := tmp[1].QuerySelectorAll("li")
@@ -264,12 +264,16 @@ func (header *Header) Parse() {
 
 			}
 
-			buttons_right := tmp[2].QuerySelectorAll("button")
+			buttons_right    := tmp[2].QuerySelectorAll("button")
+			components_right := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_right {
 				component := ui.ToButton(button)
-				header.Content.Right = append(header.Content.Right, &component)
+				components_right = append(components_right, &component)
 			}
+
+			header.Content.Left  = components_left
+			header.Content.Right = components_right
 
 		} else {
 

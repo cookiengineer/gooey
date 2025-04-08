@@ -1,6 +1,7 @@
 package components
 
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "strings"
 
 type Component struct {
 	Listeners map[string][]*EventListener `json:"listeners"`
@@ -36,30 +37,6 @@ func (component *Component) Enable() bool {
 
 	if component.Element != nil {
 		component.Element.RemoveAttribute("disabled")
-	}
-
-	return result
-
-}
-
-func (component *Component) InitEvent(event string) {
-
-	_, ok := component.Listeners[event]
-
-	if ok == false {
-		component.Listeners[event] = make([]*EventListener, 0)
-	}
-
-}
-
-func (component *Component) HasEvent(event string) bool {
-
-	var result bool
-
-	_, ok := component.Listeners[event]
-
-	if ok == true {
-		result = true
 	}
 
 	return result
@@ -186,6 +163,34 @@ func (component *Component) FireEventListeners(event string, attributes map[stri
 
 }
 
+func (component *Component) HasEvent(event string) bool {
+
+	var result bool
+
+	_, ok := component.Listeners[event]
+
+	if ok == true {
+		result = true
+	}
+
+	return result
+
+}
+
+func (component *Component) InitEvent(event string) {
+
+	_, ok := component.Listeners[event]
+
+	if ok == false {
+		component.Listeners[event] = make([]*EventListener, 0)
+	}
+
+}
+
+func (component *Component) Render() *dom.Element {
+	return component.Element
+}
+
 func (component *Component) RemoveEventListener(event string, listener *EventListener) bool {
 
 	var result bool
@@ -240,6 +245,32 @@ func (component *Component) RemoveEventListener(event string, listener *EventLis
 	}
 
 	return result
+
+}
+
+func (component *Component) String() string {
+
+	html := ""
+
+	if component.Element != nil {
+
+		tagname := strings.ToLower(component.Element.TagName)
+
+		html += "<" + tagname
+
+		// TODO: attributes?
+
+		// TODO: Is disabled attribute actually mapped as an attribute with value "" in the HTMLElement API?
+
+		html += ">"
+
+		// TODO: TextContent? InnerHTML?
+
+		html += "</" + tagname + ">"
+
+	}
+
+	return html
 
 }
 
