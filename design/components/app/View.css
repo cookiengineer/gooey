@@ -14,7 +14,7 @@ main section {
 	z-index: 0;
 }
 
-main section.active {
+main section[data-state="active"] {
 	pointer-events: all;
 	transition: opacity 250ms ease-out;
 	opacity: 1;

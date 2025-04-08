@@ -45,8 +45,12 @@ The HTML/DOM App Layout always consists of the following elements:
 
 The CSS App Theme always uses semantic HTML as style rules:
 
-- Activity/Visibility states of elements are represented by the `class="active"` attribute.
-- All other element states are represented using `data-` attributes.
+- UI Components are native to be Web Accessibility compatible.
+- Gooey CSS Theme is classless and instead based on `data-` attributes.
+- User-provided Themes can use CSS classes for better customization.
+- `data-action` influences the event flow (see Reactive MVC architecture).
+- `data-layout` influences the layout (`grid`, `flex`, `flow`)
+- `data-state` influences the activity/visibility (`active`)
 
 The [/design](/design) folder contains a ready-to-use default theme.
 Copy it, modify it, and you're good to go.

@@ -2,9 +2,11 @@
 
 package app
 
+import "fmt"
+
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
-import "github.com/cookiengineer/gooey/components/content"
+// import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
@@ -54,7 +56,7 @@ func ToView(element *dom.Element, label string, path string) View {
 func (view *View) Enter() bool {
 
 	if view.Element != nil {
-		view.Element.SetClassName("active")
+		view.Element.SetAttribute("data-state", "active")
 	}
 
 	return true
@@ -64,7 +66,7 @@ func (view *View) Enter() bool {
 func (view *View) Leave() bool {
 
 	if view.Element != nil {
-		view.Element.SetClassName("")
+		view.Element.RemoveAttribute("data-state")
 	}
 
 	return true
@@ -111,15 +113,17 @@ func (view *View) Parse() {
 
 			if element.TagName == "ARTICLE" {
 
-				component := content.ToArticle(element)
-				components = append(components, &component)
+				// component := content.ToArticle(element)
+				// components = append(components, &component)
 
 			} else if element.TagName == "TABLE" {
 
-				component := content.ToTable(element)
-				components = append(components, &component)
+				// component := content.ToTable(element)
+				// components = append(components, &component)
 
 			}
+
+			fmt.Println(element.TagName)
 
 		}
 

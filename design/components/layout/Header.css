@@ -117,11 +117,11 @@ header ul li:hover a {
 	color: var(--button-focus-color);
 }
 
-header ul li.active {
+header ul li[data-state="active"] {
 	background: var(--palette-primary-background);
 }
 
-header ul li.active a {
+header ul li[data-state="active"] a {
 	color: var(--palette-primary-color);
 }
 

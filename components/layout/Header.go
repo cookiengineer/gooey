@@ -150,13 +150,13 @@ func (header *Header) ChangeView(name string) {
 			if other_name == name {
 
 				if item.Element != nil {
-					item.Element.SetClassName("active")
+					item.Element.SetAttribute("data-state", "active")
 				}
 
 			} else {
 
 				if item.Element != nil {
-					item.Element.SetClassName("")
+					item.Element.RemoveAttribute("data-state")
 				}
 
 			}
