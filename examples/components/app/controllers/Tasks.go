@@ -8,6 +8,7 @@ import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
 import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/layout"
 // import "sort"
 // import "strconv"
 
@@ -128,18 +129,23 @@ func (controller *Tasks) Update() {
 
 func (controller *Tasks) Render() {
 
-	article, ok1 := controller.View.Content.(*content.Article)
+	for c := 0; c < len(controller.View.Content); c++ {
 
-	if ok1 == true {
+		article, ok1 := controller.View.Content[c].(*layout.Article)
 
-		table, ok2 := article.Content.(*content.Table)
+		if ok1 == true && len(article.Content) == 1 {
 
-		if ok2 == true {
+			table, ok2 := article.Content[0].(*content.Table)
 
-			// TODO: Table.SetSomething()
-			// TODO: Table.Render()
+			if ok2 == true {
+
+				// TODO: Table.SetSomething()
+				// TODO: Table.Render()
+
+			}
 
 		}
+
 
 	}
 

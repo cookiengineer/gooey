@@ -3,6 +3,8 @@ package layout
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 
@@ -63,24 +65,54 @@ func (article *Article) Parse() {
 			article.Layout = types.Layout(layout)
 		}
 
-		elements   := article.Component.Element.Children()
-		components := make([]interfaces.Component, 0)
+		elements := article.Component.Element.Children()
+		mapped   := make([]interfaces.Component, 0)
 
 		for _, element := range elements {
 
-			if element.TagName == "FIELDSET" {
+			switch element.TagName {
+			case "BUTTON":
+				component := ui.ToButton(element)
+				mapped = append(mapped, &component)
+			case "LABEL":
+				component := ui.ToLabel(element)
+				mapped = append(mapped, &component)
+			case "INPUT":
 
-			} else if element.TagName == "TABLE" {
+				typ := element.GetAttribute("type")
 
-				// TODO
+				if typ == "checkbox" {
+					component := ui.ToCheckbox(element)
+					mapped = append(mapped, &component)
+				} else if typ == "radio" {
 
-			} else {
-				components.ToComponent(element)
+					// TODO: Radio support
+
+				} else {
+					component := ui.ToInput(element)
+					mapped = append(mapped, &component)
+				}
+
+			case "FIELDSET":
+				component := content.ToFieldset(element)
+				mapped = append(mapped, &component)
+			case "SELECT":
+				component := ui.ToSelect(element)
+				mapped = append(mapped, &component)
+			case "TABLE":
+				component := content.ToTable(element)
+				mapped = append(mapped, &component)
+			case "TEXTAREA":
+				component := ui.ToTextarea(element)
+				mapped = append(mapped, &component)
+			default:
+				component := components.NewComponent(element)
+				mapped = append(mapped, &component)
 			}
 
 		}
 
-		// TODO: Parse elements into []Content
+		article.Content = mapped
 
 	}
 
