@@ -11,49 +11,47 @@
 - A pure Go Web UI Components framework that structures a Web Application, ready to be used in local Web Views.
 
 
-## Bindings vs. Components
+## Gooey Bindings vs. Gooey Components
 
 - The `github.com/cookiengineer/gooey/bindings` package contains all Web API Bindings.
 - The `github.com/cookiengineer/gooey/components` package contains all Web UI/UX Components.
 
-For further details, take a look at the following files to get an overview:
 
+## Motivation
+
+Problems in modern Web App Development:
+
+- Components are great as a separation of feature concept.
+- Components are bad for web accessibility (`aria-` property fatigue).
+- Frontend-to-Backend communication is always a problem.
+- Frontend Routers differ always from Backend Routers.
+- Frontend schema safety and validation is always implemented redundantly.
+- Backend schema safety and validation is great with `Marshal` / `Unmarshal`.
+
+Conclusions:
+
+- Let's use Go's types and schemas on the Frontend and the Backend.
+- Let's use Web Components for WebASM, which can also be used on the Backend.
+- Let's use Gooey to deploy local Apps via `webview/webview`.
+- Let's use Gooey to deploy online Web Apps online.
+
+
+## Documentation
+
+- [ARCHITECTURE.md](/docs/ARCHITECTURE.md) documents the architecture of a Gooey App.
 - [BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented web bindings.
 - [COMPONENTS.md](/docs/COMPONENTS.md) documents the state of implemented web components.
 - [TODO.md](/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
 
 
-## Program Architecture
+## Architecture
 
-- Program serves a local Web UI and opens a webview pointing towards the UI.
-- Program uses `go:embed` to embed a `/public/*` folder that contains all assets.
-- Program uses a UI using `HTML`, `CSS`, and `WebASM`.
-- Program uses a Reactive MVC architecture, which allows a circular flow.
+Gooey uses a Reactive MVC Architecture and embraces the use of a unidirectional
+flow, meaning it is a circular pattern of state management.
 
 ![Reactive MVC Architecture](/assets/reactive-mvc.jpg)
 
-
-## WebView Architecture
-
-The HTML/DOM App Layout always consists of the following elements:
-
-- `body > header`, represented by [layout/Header](/components/layout/Header.go)
-- `body > main`, represented by [app/Main](/components/app/Main.go)
-- `body > main > section[data-view=...]`, represented by [app/View](/components/app/View.go)
-- `body > main > section[data-view=...] > aside`, represented by [layout/Aside](/components/layout/Aside.go)
-- `body > footer`, represented by [layout/Footer](/components/layout/Footer.go)
-
-The CSS App Theme always uses semantic HTML as style rules:
-
-- UI Components are native to be Web Accessibility compatible.
-- Gooey CSS Theme is classless and instead based on `data-` attributes.
-- User-provided Themes can use CSS classes for better customization.
-- `data-action` influences the event flow (see Reactive MVC architecture).
-- `data-layout` influences the layout (`grid`, `flex`, `flow`)
-- `data-state` influences the activity/visibility (`active`)
-
-The [/design](/design) folder contains a ready-to-use default theme.
-Copy it, modify it, and you're good to go.
+The Gooey Framework and Program Architecture is documented more detailed in the `/docs` folder.
 
 
 ## Examples
@@ -86,6 +84,7 @@ is to migrate towards go-integrated tests that are compatible with `go test`.
 - [content-fieldset](/examples/components/content-fieldset)
 - [layout](/examples/components/layout)
 - [ui](/examples/components/ui)
+
 
 # License
 

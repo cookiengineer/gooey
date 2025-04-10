@@ -1,6 +1,28 @@
 
 # Components
 
+## Oauth Components
+
+- [ ] WebAuthN integrated login components
+- [ ] 2FA integrated login components
+- [ ] OpenAuth has best development experience
+- [ ] https://openauth.js.org/
+- [ ] Don't mix userdata with authentication
+- [ ] Implement support for keycloak service as example?
+
+## Remix and tanstack cookie handling
+
+## App Router? Server-Side?
+
+- [ ] Provide a server middleware for routing, auth and server-side rendering
+- [ ] How to map server-side routes?
+- [ ] Should ideally reuse the app.Main and app.View based workflow, meaning
+      there should be an implementation of the virtual DOM that's independent of
+      the `syscall/js` interfaces.
+- [ ] Server-side auth middleware should use `context`
+
+- [ ] OpenAPI on-the-fly generation?
+
 ## content/Fieldset
 
 - [ ] Implement a `Reset()` method that resets all fields
