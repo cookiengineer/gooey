@@ -11,6 +11,15 @@
 - Program uses a Reactive MVC architecture, which allows a circular flow.
 - Program uses on the frontend and backend side the same `struct` / [interfaces.Schema](/interfaces/Schema.go).
 
+## Frontend and Backend
+
+By default, Gooey embraces the use of a [REST Client](/components/app/Client.go)
+via the [Fetch API](/bindings/fetch) bindings. You can also integrate your own
+GraphQL client, given that it runs on the `syscall/js` platform.
+
+Note: At a later point, gooey wants to offer a centralized Frontend and Backend Router
+which can map the routes correctly to the views and REST APIs automatically.
+
 ## WebView HTML/DOM
 
 The HTML/DOM App Layout always consists of the following elements:

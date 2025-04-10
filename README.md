@@ -31,9 +31,22 @@ Problems in modern Web App Development:
 Conclusions:
 
 - Let's use Go's types and schemas on the Frontend and the Backend.
-- Let's use Web Components for WebASM, which can also be used on the Backend.
+- Let's use Gooey's Web Components for the Frontend via WebASM.
+- Let's use Gooey's Web Components for the Backend via Go's native builds.
 - Let's use Gooey to deploy local Apps via `webview/webview`.
 - Let's use Gooey to deploy online Web Apps online.
+
+
+## Architecture
+
+Gooey uses a Reactive MVC Architecture and embraces the use of a unidirectional
+flow, meaning it is a circular pattern of state management.
+
+This is a nice architecture pattern for deserialization and serialization of the
+Schemas into Views, because all custom application code lands in the controllers,
+which manage the Views, Storages and networking code.
+
+![Reactive MVC Architecture](/assets/reactive-mvc.jpg)
 
 
 ## Documentation
@@ -42,16 +55,6 @@ Conclusions:
 - [BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented web bindings.
 - [COMPONENTS.md](/docs/COMPONENTS.md) documents the state of implemented web components.
 - [TODO.md](/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
-
-
-## Architecture
-
-Gooey uses a Reactive MVC Architecture and embraces the use of a unidirectional
-flow, meaning it is a circular pattern of state management.
-
-![Reactive MVC Architecture](/assets/reactive-mvc.jpg)
-
-The Gooey Framework and Program Architecture is documented more detailed in the `/docs` folder.
 
 
 ## Examples
