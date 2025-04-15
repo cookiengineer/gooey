@@ -55,6 +55,11 @@ func NewTable(name string, labels []string, properties []string, selectable bool
 
 				if action == "select" {
 
+					row := event.Target.QueryParent("tr")
+
+					// TODO: check for td
+					// TODO: check for th
+
 					// TODO: select all for <thead><th><input type=checkbox></th>...</thead>
 					// TODO: select current for <tbody><td><input type=checkbox></td>...</tbody>
 
@@ -185,6 +190,26 @@ func (table *Table) Render() *dom.Element {
 	}
 
 	return table.Component.Element
+
+}
+
+func (table *Table) SetLabels(labels []string) bool {
+
+	var result bool
+
+	// TODO: Set and validate labels
+
+	return result
+
+}
+
+func (table *Table) SetProperties(properties []string) bool {
+
+	var result bool
+
+	// TODO: Set and validate properties
+
+	return result
 
 }
 
