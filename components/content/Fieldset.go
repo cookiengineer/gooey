@@ -17,7 +17,7 @@ import "syscall/js"
 
 var fieldset_count int = 0
 
-type field struct {
+type fieldset_field struct {
 	Name  string               `json:"name"`
 	Label interfaces.Component `json:"label"`
 	Input interfaces.Component `json:"input"`
@@ -29,7 +29,7 @@ type Fieldset struct {
 	Name      string                `json:"name"`
 	Label     string                `json:"label"`
 	Component *components.Component `json:"component"`
-	fields    []*field
+	fields    []*fieldset_field
 }
 
 func NewFieldset(name string, label string) Fieldset {
@@ -42,7 +42,7 @@ func NewFieldset(name string, label string) Fieldset {
 	fieldset.Name      = strings.TrimSpace(strings.ToLower(name))
 	fieldset.Label     = strings.TrimSpace(label)
 	fieldset.Component = &component
-	fieldset.fields    = make([]*field, 0)
+	fieldset.fields    = make([]*fieldset_field, 0)
 
 	fieldset.Component.InitEvent("change-field")
 
@@ -60,7 +60,7 @@ func ToFieldset(element *dom.Element) Fieldset {
 
 	fieldset.Name      = strings.TrimSpace(element.GetAttribute("data-name"))
 	fieldset.Component = &component
-	fieldset.fields    = make([]*field, 0)
+	fieldset.fields    = make([]*fieldset_field, 0)
 
 	if fieldset.Name == "" {
 		fieldset_count++
@@ -80,7 +80,7 @@ func (fieldset *Fieldset) AddField(name string, typ types.Input, label interface
 
 	if name != "" {
 
-		fieldset.fields = append(fieldset.fields, &field{
+		fieldset.fields = append(fieldset.fields, &fieldset_field{
 			Name:  name,
 			Label: label,
 			Input: input,
@@ -173,7 +173,7 @@ func (fieldset *Fieldset) Parse() {
 
 								}(name, input)
 
-								fieldset.fields = append(fieldset.fields, &field{
+								fieldset.fields = append(fieldset.fields, &fieldset_field{
 									Name:  name,
 									Label: &label,
 									Input: &input,
@@ -191,7 +191,7 @@ func (fieldset *Fieldset) Parse() {
 								// 	fieldset.Component.FireEventListeners("change", attributes)
 								// }, false))
 
-								// fieldset.fields = append(fieldset.fields, &field{
+								// fieldset.fields = append(fieldset.fields, &fieldset_field{
 								// 	Name:  name,
 								// 	Label: &label,
 								// 	Input: &input,
@@ -217,7 +217,7 @@ func (fieldset *Fieldset) Parse() {
 
 								}(name, input)
 
-								fieldset.fields = append(fieldset.fields, &field{
+								fieldset.fields = append(fieldset.fields, &fieldset_field{
 									Name:  name,
 									Label: &label,
 									Input: &input,
@@ -247,7 +247,7 @@ func (fieldset *Fieldset) Parse() {
 
 						}(name, input)
 
-						fieldset.fields = append(fieldset.fields, &field{
+						fieldset.fields = append(fieldset.fields, &fieldset_field{
 							Name:  name,
 							Label: &label,
 							Input: &input,
@@ -273,7 +273,7 @@ func (fieldset *Fieldset) Parse() {
 
 						}(name, input)
 
-						fieldset.fields = append(fieldset.fields, &field{
+						fieldset.fields = append(fieldset.fields, &fieldset_field{
 							Name:  name,
 							Label: &label,
 							Input: &input,

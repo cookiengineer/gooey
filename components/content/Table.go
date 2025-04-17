@@ -5,6 +5,7 @@ package content
 import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "strconv"
 import "strings"
 
 type TableData map[string]any
@@ -16,11 +17,7 @@ type Table struct {
 	Dataset    []TableData           `json:"dataset"`
 	Component  *components.Component `json:"component"`
 	Selectable bool                  `json:"selectable"`
-	selected   []bool                `json:"selected"`
-
-	// TODO: internal header
-	// TODO: internal footer
-
+	selected   []bool
 }
 
 func NewTable(name string, labels []string, properties []string, selectable bool) Table {
@@ -38,8 +35,7 @@ func NewTable(name string, labels []string, properties []string, selectable bool
 	table.Selectable = selectable
 	table.selected   = make([]bool, 0)
 
-	table.SetLabels(labels)
-	table.SetProperties(properties)
+	table.SetLabelsAndProperties(labels, properties)
 
 	table.Component.InitEvent("change-select")
 	table.Component.InitEvent("change-sort")
@@ -175,7 +171,11 @@ func (table *Table) Parse() {
 
 		}
 
-		// TODO
+		tbody := table.Component.Element.QuerySelector("tbody")
+
+		if tbody != nil {
+			// TODO: Parse out content/tabledata
+		}
 
 	}
 
@@ -185,7 +185,8 @@ func (table *Table) Render() *dom.Element {
 
 	if table.Component.Element != nil {
 
-		// TODO
+		// TODO: Typecast and render strings
+		// TODO: Write a helper method called renderValue() or something
 
 	}
 
@@ -193,21 +194,21 @@ func (table *Table) Render() *dom.Element {
 
 }
 
-func (table *Table) SetLabels(labels []string) bool {
-
-	var result bool
-
-	// TODO: Set and validate labels
-
-	return result
-
+func (table *Table) SetData(dataset []TableData) {
+	table.Dataset = dataset
 }
 
-func (table *Table) SetProperties(properties []string) bool {
+func (table *Table) SetLabelsAndProperties(labels []string, properties []string) bool {
 
 	var result bool
 
-	// TODO: Set and validate properties
+	if len(labels) == len(properties) {
+
+		table.Labels = labels
+		table.Properties = properties
+		result = true
+
+	}
 
 	return result
 
@@ -219,14 +220,59 @@ func (table *Table) String() string {
 	html += ">"
 
 	html += "<thead>"
+	html += "<tr>"
 
-	// TODO: Render table.Labels
+	if table.Selectable == true {
+		html += "<th><input type=\"checkbox\" data-action=\"select\"/></th>"
+	}
 
+	for l, label := range table.Labels {
+
+		property := table.Properties[l]
+
+		html += "<th data-property=\"" + property + "\">"
+		html += label
+		html += "</th>"
+
+	}
+
+	html += "</tr>"
 	html += "</thead>"
 
 	html += "<tbody>"
 
-	// TODO: Render table.Dataset via table.Properties
+	// TODO: Implement sorted rendering
+	// TODO: Presort the ids, and then render via table.Dataset[sorted_ids[i]]
+
+	for d := 0; d < len(table.Dataset); d++ {
+
+		html += "<tr data-id=\"" + strconv.FormatInt(int64(d), 10) + "\""
+
+		if table.selected[d] == true {
+			html += " data-select=\"true\""
+		}
+
+		html += ">"
+
+		if table.Selectable == true {
+			html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
+		}
+
+		for _, property := range table.Properties {
+
+			value, ok := table.Dataset[d][property]
+
+			if ok == true {
+				html += "<td>" + renderTableValue(value) + "</td>"
+			} else {
+				html += "<td></td>"
+			}
+
+		}
+
+		html += "</tr>"
+
+	}
 
 	html += "</tbody>"
 
