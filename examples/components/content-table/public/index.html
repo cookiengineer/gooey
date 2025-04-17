@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Gooey Table Example</title>
+
+		<!-- WebView -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src-elem 'self'">
+		<meta http-equiv="Content-Security-Policy" content="frame-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="worker-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="connect-src 'self'">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="manifest" href="/design/site.webmanifest" />
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/png" href="/design/favicon/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="/design/favicon/favicon.svg" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/design/favicon/apple-touch-icon.png" sizes="180x180" />
+
+		<!-- Design -->
+		<link rel="stylesheet" href="/design/index.css" />
+	</head>
+	<body>
+		<main>
+			<table data-selectable="true">
+				<thead>
+					<tr>
+						<th><input type="checkbox" data-action="select"/></th>
+						<th>Prename</th>
+						<th>Surname</th>
+						<th>Email</th>
+						<th>Age</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-id="0">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>John</td>
+						<td>Doe</td>
+						<td>johndoe@example.com</td>
+						<td>37</td>
+					</tr>
+					<tr data-id="1">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>John</td>
+						<td>Wick</td>
+						<td>john-wick@continental.hotel</td>
+						<td>60</td>
+					</tr>
+					<tr data-id="2">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Jane</td>
+						<td>Doe</td>
+						<td>janedoe@example.com</td>
+						<td>30</td>
+					</tr>
+					<tr data-id="3">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Jane</td>
+						<td>Austen</td>
+						<td>jane.austen@winchester.edu</td>
+						<td>41</td>
+					</tr>
+					<tr data-id="4" data-select="true">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Harold</td>
+						<td>Finch</td>
+						<td>harold.finch@ift.com</td>
+						<td>58</td>
+					</tr>
+					<tr data-id="5">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>John</td>
+						<td>Reese</td>
+						<td>john.reese@delta6.cia.gov</td>
+						<td>50</td>
+					</tr>
+					<tr data-id="6" data-select="true">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Samantha</td>
+						<td>Groves</td>
+						<td>r00t@b4dc0d3.io</td>
+						<td>36</td>
+					</tr>
+					<tr data-id="7">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Sameen</td>
+						<td>Shaw</td>
+						<td>i6a@isa.whitehouse.gov</td>
+						<td>51</td>
+					</tr>
+					<tr data-id="8">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Lionel</td>
+						<td>Fusco</td>
+						<td>fusconator@aol.com</td>
+						<td>62</td>
+					</tr>
+					<tr data-id="9">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>John</td>
+						<td>Greer</td>
+						<td>ceo@decima.technologies</td>
+						<td>74</td>
+					</tr>
+					<tr data-id="10">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Claire</td>
+						<td>Mahoney</td>
+						<td>asset508@decima.technologies</td>
+						<td>21</td>
+					</tr>
+					<tr data-id="11">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Martine</td>
+						<td>Rousseau</td>
+						<td>asset029@decima.technologies</td>
+						<td>35</td>
+					</tr>
+					<tr data-id="12">
+						<td><input type="checkbox" data-action="select"/></td>
+						<td>Jeremy</td>
+						<td>Lambert</td>
+						<td>asset401@decima.technologies</td>
+						<td>39</td>
+					</tr>
+				</tbody>
+				<tfoot>
+				</tfoot>
+			</table>
+		</main>
+		<footer>
+			<div><button data-action="cancel">Cancel</button></div>
+			<div></div>
+			<div><button data-action="confirm">Send</button></div>
+		</footer>
+		<script src="wasm_exec.js"></script>
+		<script src="wasm_init.js"></script>
+	</body>
+</html>
