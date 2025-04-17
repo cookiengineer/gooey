@@ -111,14 +111,20 @@ func ToTable(element *dom.Element) Table {
 	table.Labels     = make([]string, 0)
 	table.Properties = make([]string, 0)
 	table.Dataset    = make([]TableData, 0)
+	table.Selectable = element.HasAttribute("data-selectable")
+	table.selected   = make([]bool, 0)
 
 	table.Parse()
 
+	table.Component.InitEvent("change-select")
 	table.Component.InitEvent("change-sort")
 	table.Component.InitEvent("action")
 
-	// TODO: Table Content
-	// TODO: Table Dataset
+	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
+
+		// TODO: Port event listener from NewTable() when ready
+
+	}))
 
 	return table
 
@@ -128,6 +134,7 @@ func (table *Table) Disable() bool {
 
 	var result bool
 
+	// TODO: if table.Selectable then Disable input[type=checkbox] elements
 	// TODO: Disable footer elements
 
 	return result
@@ -138,6 +145,7 @@ func (table *Table) Enable() bool {
 
 	var result bool
 
+	// TODO: if table.Selectable then Enable input[type=checkbox] elements
 	// TODO: Enable footer elements
 
 	return result
