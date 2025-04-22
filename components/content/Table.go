@@ -15,13 +15,14 @@ type Table struct {
 	Name       string                `json:"name"`
 	Labels     []string              `json:"labels"`
 	Properties []string              `json:"properties"`
+	Types      []string              `json:"types"`
 	Dataset    []TableData           `json:"dataset"`
 	Component  *components.Component `json:"component"`
 	Selectable bool                  `json:"selectable"`
 	selected   []bool
 }
 
-func NewTable(name string, labels []string, properties []string, selectable bool) Table {
+func NewTable(name string, labels []string, properties []string, types []string, selectable bool) Table {
 
 	var table Table
 
@@ -32,11 +33,12 @@ func NewTable(name string, labels []string, properties []string, selectable bool
 	table.Name       = strings.TrimSpace(strings.ToLower(name))
 	table.Labels     = make([]string, 0)
 	table.Properties = make([]string, 0)
+	table.Types      = make([]string, 0)
 	table.Dataset    = make([]TableData, 0)
 	table.Selectable = selectable
 	table.selected   = make([]bool, 0)
 
-	table.SetLabelsAndProperties(labels, properties)
+	table.SetLabelsAndPropertiesAndTypes(labels, properties, types)
 
 	table.Component.InitEvent("change-select")
 	table.Component.InitEvent("change-sort")
@@ -111,6 +113,7 @@ func ToTable(element *dom.Element) Table {
 	table.Name       = ""
 	table.Labels     = make([]string, 0)
 	table.Properties = make([]string, 0)
+	table.Types      = make([]string, 0)
 	table.Dataset    = make([]TableData, 0)
 	table.Selectable = element.HasAttribute("data-selectable")
 	table.selected   = make([]bool, 0)
@@ -170,6 +173,7 @@ func (table *Table) Parse() {
 			elements   := thead.QuerySelectorAll("th")
 			labels     := make([]string, 0)
 			properties := make([]string, 0)
+			types      := make([]string, 0)
 			selectable := false
 
 			if len(elements) > 0 {
@@ -187,11 +191,17 @@ func (table *Table) Parse() {
 
 					label    := strings.TrimSpace(element.TextContent)
 					property := element.GetAttribute("data-property")
+					typ      := element.GetAttribute("data-type")
+
+					if typ == "" {
+						typ = "string"
+					}
 
 					if label != "" && property != "" {
 
 						labels     = append(labels, label)
 						properties = append(properties, property)
+						types      = append(types, typ)
 
 					}
 
@@ -201,6 +211,7 @@ func (table *Table) Parse() {
 
 			table.Labels     = labels
 			table.Properties = properties
+			table.Types      = types
 			table.Selectable = selectable
 
 		}
@@ -215,7 +226,19 @@ func (table *Table) Parse() {
 
 			for r, row := range rows {
 
-				id := row.GetAttribute("data-id")
+				var id int = -1
+
+				id_str := row.GetAttribute("data-id")
+
+				if id_str != "" {
+
+					tmp, err := strconv.ParseInt(id_str, 10, 0)
+
+					if err == nil {
+						id = int(tmp)
+					}
+
+				}
 
 				// TODO: map data-id to datasets[int id]
 
@@ -223,7 +246,6 @@ func (table *Table) Parse() {
 
 				if len(elements) > 0 {
 
-					data     := make(map[string]any)
 					checkbox := elements[0].QuerySelector("input[type=\"checkbox\"]")
 					values   := make(map[string]string)
 					types    := make(map[string]string)
@@ -234,11 +256,9 @@ func (table *Table) Parse() {
 
 					for e := 0; e < len(elements); e++ {
 
-						element := elements[e]
-
 						key := table.Properties[e]
-						typ := element.GetAttribute("data-type")
-						val := strings.TrimSpace(element.TextContent)
+						typ := table.Types[e]
+						val := strings.TrimSpace(elements[e].TextContent)
 
 						if key != "" && typ != "" && val != "" {
 							values[key] = val
@@ -248,7 +268,13 @@ func (table *Table) Parse() {
 					}
 
 					if len(values) == len(types) {
-						dataset = append(dataset, TableData(parseTableValues(values, types)))
+
+						if id != -1 && id >= 0 && id <= len(dataset) - 1 {
+							dataset[id] = TableData(parseTableValues(values, types))
+						} else {
+							dataset[r] = TableData(parseTableValues(values, types))
+						}
+
 					}
 
 				}
@@ -284,14 +310,16 @@ func (table *Table) SetData(dataset []TableData) {
 	table.Dataset = dataset
 }
 
-func (table *Table) SetLabelsAndProperties(labels []string, properties []string) bool {
+func (table *Table) SetLabelsAndPropertiesAndTypes(labels []string, properties []string, types []string) bool {
 
 	var result bool
 
-	if len(labels) == len(properties) {
+	if len(labels) == len(properties) && len(labels) == len(types) {
 
-		table.Labels = labels
+		table.Labels     = labels
 		table.Properties = properties
+		table.Types      = types
+
 		result = true
 
 	}
@@ -315,8 +343,9 @@ func (table *Table) String() string {
 	for l, label := range table.Labels {
 
 		property := table.Properties[l]
+		typ      := table.Types[l]
 
-		html += "<th data-property=\"" + property + "\">"
+		html += "<th data-property=\"" + property + "\" data-type=\"" + typ + "\">"
 		html += label
 		html += "</th>"
 
@@ -344,15 +373,14 @@ func (table *Table) String() string {
 			html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
 		}
 
-		values, types := renderTableValues(table.Dataset[d])
+		values, _ := renderTableValues(table.Dataset[d])
 
 		for _, property := range table.Properties {
 
-			val, ok1 := values[property]
-			typ, ok2 := types[property]
+			val, ok := values[property]
 
-			if ok1 == true && ok2 == true {
-				html += "<td data-type=\"" + typ + "\">" + val + "</td>"
+			if ok == true {
+				html += "<td>" + val + "</td>"
 			} else {
 				html += "<td></td>"
 			}
