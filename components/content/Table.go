@@ -3,6 +3,7 @@
 package content
 
 import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "strconv"
@@ -43,53 +44,53 @@ func NewTable(name string, labels []string, properties []string, selectable bool
 
 	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
 
-		if event.Target != nil {
+		// if event.Target != nil {
 
-			action := event.Target.GetAttribute("data-action")
+		// 	action := event.Target.GetAttribute("data-action")
 
-			if action != "" {
+		// 	if action != "" {
 
-				if action == "select" {
+		// 		if action == "select" {
 
-					row := event.Target.QueryParent("tr")
+		// 			row := event.Target.QueryParent("tr")
 
-					// TODO: check for td
-					// TODO: check for th
+		// 			// TODO: check for td
+		// 			// TODO: check for th
 
-					// TODO: select all for <thead><th><input type=checkbox></th>...</thead>
-					// TODO: select current for <tbody><td><input type=checkbox></td>...</tbody>
+		// 			// TODO: select all for <thead><th><input type=checkbox></th>...</thead>
+		// 			// TODO: select current for <tbody><td><input type=checkbox></td>...</tbody>
 
-					event.PreventDefault()
-					event.StopPropagation()
+		// 			event.PreventDefault()
+		// 			event.StopPropagation()
 
-					table.Render()
+		// 			table.Render()
 
-				} else if action == "sort" {
+		// 		} else if action == "sort" {
 
-					property := event.Target.GetAttribute("data-property")
-					sort     := event.Target.GetAttribute("data-sort")
+		// 			property := event.Target.GetAttribute("data-property")
+		// 			sort     := event.Target.GetAttribute("data-sort")
 
-					// TODO: Change sorting via property and sort direction
+		// 			// TODO: Change sorting via property and sort direction
 
-					event.PreventDefault()
-					event.StopPropagation()
+		// 			event.PreventDefault()
+		// 			event.StopPropagation()
 
-					table.Render()
+		// 			table.Render()
 
-				} else {
+		// 		} else {
 
-					event.PreventDefault()
-					event.StopPropagation()
+		// 			event.PreventDefault()
+		// 			event.StopPropagation()
 
-					table.Component.FireEventListeners("action", map[string]string{
-						"action": action,
-					})
+		// 			table.Component.FireEventListeners("action", map[string]string{
+		// 				"action": action,
+		// 			})
 
-				}
+		// 		}
 
-			}
+		// 	}
 
-		}
+		// }
 
 	}))
 
@@ -166,24 +167,101 @@ func (table *Table) Parse() {
 
 		if thead != nil {
 
-			elements := thead.QuerySelectorAll("th")
+			elements   := thead.QuerySelectorAll("th")
+			labels     := make([]string, 0)
+			properties := make([]string, 0)
+			selectable := false
 
-			for _, element := range elements {
+			if len(elements) > 0 {
 
-				label    := strings.TrimSpace(element.TextContent)
-				property := element.GetAttribute("data-property")
+				checkbox := elements[0].QuerySelector("input[type=\"checkbox\"]")
+
+				if checkbox != nil {
+					elements   = elements[1:]
+					selectable = true
+				}
+
+				for e := 0; e < len(elements); e++ {
+
+					element := elements[e]
+
+					label    := strings.TrimSpace(element.TextContent)
+					property := element.GetAttribute("data-property")
+
+					if label != "" && property != "" {
+
+						labels     = append(labels, label)
+						properties = append(properties, property)
+
+					}
+
+				}
 
 			}
 
-			// TODO: Parse out labels
+			table.Labels     = labels
+			table.Properties = properties
+			table.Selectable = selectable
 
 		}
 
 		tbody := table.Component.Element.QuerySelector("tbody")
 
 		if tbody != nil {
-			// TODO: Parse out content/tabledata
+
+			rows     := tbody.QuerySelectorAll("tr")
+			dataset  := make([]TableData, len(rows))
+			selected := make([]bool, len(rows))
+
+			for r, row := range rows {
+
+				id := row.GetAttribute("data-id")
+
+				// TODO: map data-id to datasets[int id]
+
+				elements := row.QuerySelectorAll("td")
+
+				if len(elements) > 0 {
+
+					data     := make(map[string]any)
+					checkbox := elements[0].QuerySelector("input[type=\"checkbox\"]")
+					values   := make(map[string]string)
+					types    := make(map[string]string)
+
+					if checkbox != nil {
+						elements = elements[1:]
+					}
+
+					for e := 0; e < len(elements); e++ {
+
+						element := elements[e]
+
+						key := table.Properties[e]
+						typ := element.GetAttribute("data-type")
+						val := strings.TrimSpace(element.TextContent)
+
+						if key != "" && typ != "" && val != "" {
+							values[key] = val
+							types[key]  = typ
+						}
+
+					}
+
+					if len(values) == len(types) {
+						dataset = append(dataset, TableData(parseTableValues(values, types)))
+					}
+
+				}
+
+				selected[r] = row.HasAttribute("data-select")
+
+			}
+
+			table.Dataset = dataset
+
 		}
+
+		console.Log(table)
 
 	}
 
@@ -266,12 +344,15 @@ func (table *Table) String() string {
 			html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
 		}
 
+		values, types := renderTableValues(table.Dataset[d])
+
 		for _, property := range table.Properties {
 
-			value, ok := table.Dataset[d][property]
+			val, ok1 := values[property]
+			typ, ok2 := types[property]
 
-			if ok == true {
-				html += "<td>" + renderTableValue(value) + "</td>"
+			if ok1 == true && ok2 == true {
+				html += "<td data-type=\"" + typ + "\">" + val + "</td>"
 			} else {
 				html += "<td></td>"
 			}
