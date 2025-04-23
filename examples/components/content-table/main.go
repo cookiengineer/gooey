@@ -24,6 +24,15 @@ func main() {
 
 	}, false))
 
+	table.Disable()
+
+	go func() {
+
+		time.Sleep(1 * time.Second)
+		table.Enable()
+
+	}()
+
 	for true {
 
 		// Do Nothing

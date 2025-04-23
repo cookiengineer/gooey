@@ -6,6 +6,9 @@ import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/interfaces"
+import "slices"
+import "sort"
 import "strconv"
 import "strings"
 
@@ -17,9 +20,18 @@ type Table struct {
 	Properties []string              `json:"properties"`
 	Types      []string              `json:"types"`
 	Dataset    []TableData           `json:"dataset"`
+	Footer     struct {
+		Content struct {
+			Left   []interfaces.Component `json:"left"`
+			Center []interfaces.Component `json:"center"`
+			Right  []interfaces.Component `json:"right"`
+		} `json:"content"`
+	} `json:"footer"`
 	Component  *components.Component `json:"component"`
 	Selectable bool                  `json:"selectable"`
 	selected   []bool
+	sorted     []int
+	sortby     string
 }
 
 func NewTable(name string, labels []string, properties []string, types []string, selectable bool) Table {
@@ -37,6 +49,12 @@ func NewTable(name string, labels []string, properties []string, types []string,
 	table.Dataset    = make([]TableData, 0)
 	table.Selectable = selectable
 	table.selected   = make([]bool, 0)
+	table.sorted     = make([]int, 0)
+	table.sortby     = ""
+
+	table.Footer.Content.Left   = make([]interfaces.Component, 0)
+	table.Footer.Content.Center = make([]interfaces.Component, 0)
+	table.Footer.Content.Right  = make([]interfaces.Component, 0)
 
 	table.SetLabelsAndPropertiesAndTypes(labels, properties, types)
 
@@ -46,58 +64,9 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
 
-		// if event.Target != nil {
-
-		// 	action := event.Target.GetAttribute("data-action")
-
-		// 	if action != "" {
-
-		// 		if action == "select" {
-
-		// 			row := event.Target.QueryParent("tr")
-
-		// 			// TODO: check for td
-		// 			// TODO: check for th
-
-		// 			// TODO: select all for <thead><th><input type=checkbox></th>...</thead>
-		// 			// TODO: select current for <tbody><td><input type=checkbox></td>...</tbody>
-
-		// 			event.PreventDefault()
-		// 			event.StopPropagation()
-
-		// 			table.Render()
-
-		// 		} else if action == "sort" {
-
-		// 			property := event.Target.GetAttribute("data-property")
-		// 			sort     := event.Target.GetAttribute("data-sort")
-
-		// 			// TODO: Change sorting via property and sort direction
-
-		// 			event.PreventDefault()
-		// 			event.StopPropagation()
-
-		// 			table.Render()
-
-		// 		} else {
-
-		// 			event.PreventDefault()
-		// 			event.StopPropagation()
-
-		// 			table.Component.FireEventListeners("action", map[string]string{
-		// 				"action": action,
-		// 			})
-
-		// 		}
-
-		// 	}
-
-		// }
+		// TODO: Backport click event handler from ToTable()
 
 	}))
-
-	// TODO: table.Data = []TableData?
-	// TableData = struct { Value: map[string]any }?
 
 	return table
 
@@ -117,6 +86,12 @@ func ToTable(element *dom.Element) Table {
 	table.Dataset    = make([]TableData, 0)
 	table.Selectable = element.HasAttribute("data-selectable")
 	table.selected   = make([]bool, 0)
+	table.sorted     = make([]int, 0)
+	table.sortby     = ""
+
+	table.Footer.Content.Left   = make([]interfaces.Component, 0)
+	table.Footer.Content.Center = make([]interfaces.Component, 0)
+	table.Footer.Content.Right  = make([]interfaces.Component, 0)
 
 	table.Parse()
 
@@ -126,7 +101,78 @@ func ToTable(element *dom.Element) Table {
 
 	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
 
-		// TODO: Port event listener from NewTable() when ready
+		if event.Target != nil {
+
+			action := event.Target.GetAttribute("data-action")
+
+			if action != "" {
+
+				if action == "select" {
+				} else if action == "sort" {
+
+					th := event.Target.QueryParent("th")
+
+					if th != nil {
+
+						property := event.Target.GetAttribute("data-property")
+						typ      := event.Target.GetAttribute("data-type")
+
+						event.PreventDefault()
+						event.StopPropagation()
+
+						if table.sortby != property {
+
+							tmp_sorted   := make([]int, len(table.Dataset))
+							tmp_selected := make([]bool, len(table.Dataset))
+
+							for s := 0; s < len(table.Dataset); s++ {
+								tmp_sorted[s] = s
+							}
+
+							sort.Slice(tmp_sorted, func(a int, b int) bool {
+
+								value_a, ok_a := table.Dataset[a][property]
+								value_b, ok_b := table.Dataset[b][property]
+
+								// TODO: typecast value into sortable/comparable value?
+
+								if ok_a == true && ok_b == true {
+									return value_a < value_b
+								} else {
+									return false
+								}
+
+							})
+
+							for _, id := range table.sorted {
+
+								if table.selected[id] == true {
+
+									index := slices.Index(tmp_sorted, id)
+
+									if index != -1 {
+										tmp_selected[index] = true
+									}
+
+								}
+
+							}
+
+							table.sortby   = property
+							table.sorted   = tmp_sorted
+							table.selected = tmp_selected
+
+							table.Render()
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
 
 	}))
 
@@ -138,8 +184,35 @@ func (table *Table) Disable() bool {
 
 	var result bool
 
-	// TODO: if table.Selectable then Disable input[type=checkbox] elements
-	// TODO: Disable footer elements
+	inputs := table.Component.Element.QuerySelectorAll("input[type=\"checkbox\"]")
+
+	if len(inputs) > 0 {
+
+		for _, element := range inputs {
+			element.SetAttribute("disabled", "")
+		}
+
+		result = true
+
+	}
+
+	if len(table.Footer.Content.Left) > 0 || len(table.Footer.Content.Center) > 0 || len(table.Footer.Content.Right) > 0 {
+
+		for _, component := range table.Footer.Content.Left {
+			component.Disable()
+		}
+
+		for _, component := range table.Footer.Content.Center {
+			component.Disable()
+		}
+
+		for _, component := range table.Footer.Content.Right {
+			component.Disable()
+		}
+
+		result = true
+
+	}
 
 	return result
 
@@ -149,8 +222,35 @@ func (table *Table) Enable() bool {
 
 	var result bool
 
-	// TODO: if table.Selectable then Enable input[type=checkbox] elements
-	// TODO: Enable footer elements
+	inputs := table.Component.Element.QuerySelectorAll("input[type=\"checkbox\"]")
+
+	if len(inputs) > 0 {
+
+		for _, element := range inputs {
+			element.RemoveAttribute("disabled")
+		}
+
+		result = true
+
+	}
+
+	if len(table.Footer.Content.Left) > 0 || len(table.Footer.Content.Center) > 0 || len(table.Footer.Content.Right) > 0 {
+
+		for _, component := range table.Footer.Content.Left {
+			component.Enable()
+		}
+
+		for _, component := range table.Footer.Content.Center {
+			component.Enable()
+		}
+
+		for _, component := range table.Footer.Content.Right {
+			component.Enable()
+		}
+
+		result = true
+
+	}
 
 	return result
 
@@ -222,6 +322,7 @@ func (table *Table) Parse() {
 
 			rows     := tbody.QuerySelectorAll("tr")
 			dataset  := make([]TableData, len(rows))
+			sorted   := make([]int, len(rows))
 			selected := make([]bool, len(rows))
 
 			for r, row := range rows {
@@ -238,9 +339,9 @@ func (table *Table) Parse() {
 						id = int(tmp)
 					}
 
+				} else {
+					id = int(r)
 				}
-
-				// TODO: map data-id to datasets[int id]
 
 				elements := row.QuerySelectorAll("td")
 
@@ -271,8 +372,10 @@ func (table *Table) Parse() {
 
 						if id != -1 && id >= 0 && id <= len(dataset) - 1 {
 							dataset[id] = TableData(parseTableValues(values, types))
+							sorted[r] = id
 						} else {
 							dataset[r] = TableData(parseTableValues(values, types))
+							sorted[r] = id
 						}
 
 					}
@@ -284,6 +387,7 @@ func (table *Table) Parse() {
 			}
 
 			table.Dataset = dataset
+			table.sorted = sorted
 
 		}
 
@@ -297,6 +401,8 @@ func (table *Table) Render() *dom.Element {
 
 	if table.Component.Element != nil {
 
+		console.Log(table.sortby)
+		console.Log(table.sorted)
 		// TODO: Typecast and render strings
 		// TODO: Write a helper method called renderValue() or something
 
@@ -346,7 +452,9 @@ func (table *Table) String() string {
 		typ      := table.Types[l]
 
 		html += "<th data-property=\"" + property + "\" data-type=\"" + typ + "\">"
+		html += "<label data-action=\"sort\">"
 		html += label
+		html += "</label>"
 		html += "</th>"
 
 	}
@@ -356,14 +464,13 @@ func (table *Table) String() string {
 
 	html += "<tbody>"
 
-	// TODO: Implement sorted rendering
-	// TODO: Presort the ids, and then render via table.Dataset[sorted_ids[i]]
+	for _, position := range table.sorted {
 
-	for d := 0; d < len(table.Dataset); d++ {
+		data := table.Dataset[position]
 
-		html += "<tr data-id=\"" + strconv.FormatInt(int64(d), 10) + "\""
+		html += "<tr data-id=\"" + strconv.FormatInt(int64(position), 10) + "\""
 
-		if table.selected[d] == true {
+		if table.selected[position] == true {
 			html += " data-select=\"true\""
 		}
 
@@ -373,7 +480,7 @@ func (table *Table) String() string {
 			html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
 		}
 
-		values, _ := renderTableValues(table.Dataset[d])
+		values, _ := renderTableValues(data)
 
 		for _, property := range table.Properties {
 

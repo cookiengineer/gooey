@@ -14,7 +14,7 @@ type Footer struct {
 		Left   []interfaces.Component `json:"left"`
 		Center []interfaces.Component `json:"center"`
 		Right  []interfaces.Component `json:"right"`
-	} `json:"layout"`
+	} `json:"content"`
 	Component *components.Component `json:"component"`
 }
 
