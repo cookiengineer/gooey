@@ -7,14 +7,8 @@
 
 [Gooey](https://github.com/cookiengineer/gooey) (GUI) is divided in two parts:
 
-- A pure Go WebASM bindings framework that bridges the gaps between Go, WebASM and Browser APIs.
-- A pure Go Web UI Components framework that structures a Web Application, ready to be used in local Web Views.
-
-
-## Gooey Bindings vs. Gooey Components
-
-- The `github.com/cookiengineer/gooey/bindings` package contains all Web API Bindings.
-- The `github.com/cookiengineer/gooey/components` package contains all Web UI/UX Components.
+- A pure Go WebASM [bindings](/bindings) framework that bridges the gaps between Go, WebASM and Browser APIs.
+- A pure Go Web UI [components](/components) framework that structures a Web Application, ready to be used in local Web Views.
 
 
 ## Motivation
@@ -30,11 +24,10 @@ Problems in modern Web App Development:
 
 Conclusions:
 
-- Let's use Go's types and schemas on the Frontend and the Backend.
-- Let's use Gooey's Web Components for the Frontend via WebASM.
-- Let's use Gooey's Web Components for the Backend via Go's native builds.
-- Let's use Gooey to deploy local Apps via `webview/webview`.
-- Let's use Gooey to deploy online Web Apps online.
+- Let's use Go's types and schemas on both the Frontend and the Backend.
+- Let's dynamic Web Components for the Frontend via WebASM.
+- Let's static Web Components for the Backend via Go's native builds to provide server-side rendering.
+- Let's deploy offline-first Apps via `webview/webview` and online Apps via webservers.
 
 
 ## Architecture
