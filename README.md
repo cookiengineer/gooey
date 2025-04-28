@@ -86,3 +86,9 @@ is to migrate towards go-integrated tests that are compatible with `go test`.
 
 This project is licensed under the [MIT](./LICENSE_MIT.txt) license.
 
+
+# Contributors
+
+- [cookiengineer](https://github.com/cookiengineer)
+- [utsavanand2](https://github.com/utsavanand2)
+

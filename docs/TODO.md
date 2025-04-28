@@ -72,11 +72,6 @@
 - [ ] encoding/TextEncoder
 
 
-## CookieStore API
-
-[CookieStore Object](https://developer.mozilla.org/en-US/docs/Web/API/CookieStore)
-
-
 ## Navigator API
 
 [Navigator Object](https://html.spec.whatwg.org/multipage/system-state.html#the-navigator-object):

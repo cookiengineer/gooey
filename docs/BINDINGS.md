@@ -21,6 +21,19 @@
 - [console.Log](/bindings/console/Log.go)
 - [console.Warn](/bindings/console/Warn.go)
 
+**cookiestore**
+
+The Cookiestore API is currently only fully supported in Chromium-based Web Views.
+
+- [cookiestore.Cookie](/bindings/cookiestore/Cookie.go)
+- [cookiestore.Delete](/bindings/cookiestore/Delete.go)
+- [cookiestore.DeleteOptions](/bindings/cookiestore/DeleteOptions.go)
+- [cookiestore.Get](/bindings/cookiestore/Get.go)
+- [cookiestore.GetOptions](/bindings/cookiestore/GetOptions.go)
+- [cookiestore.SameSite](/bindings/cookiestore/SameSite.go)
+- [cookiestore.Set](/bindings/cookiestore/Set.go)
+- [cookiestore.SetOptions](/bindings/cookiestore/SetOptions.go)
+
 **crypto**
 
 The Web Crypto API has been split up into separate sub-packages, due to the `algorithm` parameters
