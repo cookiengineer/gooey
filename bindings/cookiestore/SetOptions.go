@@ -34,7 +34,7 @@ func (options SetOptions) MapToJS() map[string]any {
 	}
 
 	if options.SameSite != nil {
-		mapped["samesite"] = *options.SameSite.String()
+		mapped["samesite"] = options.SameSite.String()
 	} else {
 		mapped["samesite"] = SameSiteStrict.String()
 	}

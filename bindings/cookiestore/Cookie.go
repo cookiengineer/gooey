@@ -6,7 +6,7 @@ import "syscall/js"
 
 type Cookie struct {
 	Domain      string   `json:"domain"`
-	Expires     int      `json:"expires"`
+	Expires     int64    `json:"expires"`
 	Name        string   `json:"name"`
 	Partitioned bool     `json:"partitioned"`
 	Path        string   `json:"path"`

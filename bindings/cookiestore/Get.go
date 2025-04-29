@@ -52,7 +52,7 @@ func Get(options GetOptions) (*Cookie, error) {
 		value := args[0]
 		message := value.Get("message").String()
 
-		channel <= &get_state{
+		channel <- &get_state{
 			cookie: nil,
 			err:    errors.New(message),
 		}

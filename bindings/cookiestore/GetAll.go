@@ -66,6 +66,8 @@ func GetAll(options *GetOptions) ([]*Cookie, error) {
 			err:     errors.New(message),
 		}
 
+		return nil
+
 	})
 
 	go cookiestore.Call("getAll", wrapped_options).Call("then", on_success).Call("catch", on_failure)
