@@ -3,13 +3,10 @@
 package content
 
 import "github.com/cookiengineer/gooey/bindings"
-import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/interfaces"
 import "bytes"
-import "fmt"
-import "slices"
 import "sort"
 import "strconv"
 import "strings"
@@ -124,15 +121,12 @@ func ToTable(element *dom.Element) Table {
 						// sort := th.GetAttribute("data-sort") // ascending || descending
 						// typ  := th.GetAttribute("data-type")
 
-						fmt.Println("Sorting by " + property)
-
 						event.PreventDefault()
 						event.StopPropagation()
 
 						if table.sortby != property {
 
-							tmp_sorted   := make([]int, len(table.Dataset))
-							tmp_selected := make([]bool, len(table.Dataset))
+							tmp_sorted := make([]int, len(table.Dataset))
 
 							for s := 0; s < len(table.Dataset); s++ {
 								tmp_sorted[s] = s
@@ -140,8 +134,8 @@ func ToTable(element *dom.Element) Table {
 
 							sort.Slice(tmp_sorted, func(a int, b int) bool {
 
-								value_a, ok_a := table.Dataset[a][property]
-								value_b, ok_b := table.Dataset[b][property]
+								value_a, ok_a := table.Dataset[tmp_sorted[a]][property]
+								value_b, ok_b := table.Dataset[tmp_sorted[b]][property]
 
 								if ok_a == true && ok_b == true {
 
@@ -264,29 +258,8 @@ func ToTable(element *dom.Element) Table {
 
 							})
 
-							for _, id := range table.sorted {
-
-								if table.selected[id] == true {
-
-									index := slices.Index(tmp_sorted, id)
-
-									if index != -1 {
-										tmp_selected[index] = true
-									}
-
-								}
-
-							}
-
-							table.sortby   = property
-							table.sorted   = tmp_sorted
-							table.selected = tmp_selected
-
-							fmt.Println(table.sorted)
-
-							for _, id := range table.sorted {
-								fmt.Println(table.Dataset[id])
-							}
+							table.sortby = property
+							table.sorted = tmp_sorted
 
 							table.Render()
 
@@ -498,17 +471,17 @@ func (table *Table) Parse() {
 
 						if id != -1 && id >= 0 && id <= len(dataset) - 1 {
 							dataset[id] = TableData(parseTableValues(values, types))
+							selected[id] = row.HasAttribute("data-select")
 							sorted[r] = id
 						} else {
 							dataset[r] = TableData(parseTableValues(values, types))
+							selected[r] = row.HasAttribute("data-select")
 							sorted[r] = id
 						}
 
 					}
 
 				}
-
-				selected[r] = row.HasAttribute("data-select")
 
 			}
 
@@ -518,8 +491,6 @@ func (table *Table) Parse() {
 
 		}
 
-		console.Log(table)
-
 	}
 
 }
@@ -528,10 +499,58 @@ func (table *Table) Render() *dom.Element {
 
 	if table.Component.Element != nil {
 
-		console.Log(table.sortby)
-		console.Log(table.sorted)
-		// TODO: Typecast and render strings
-		// TODO: Write a helper method called renderValue() or something
+		tbody := table.Component.Element.QuerySelector("tbody")
+
+		if tbody != nil {
+
+			elements := make([]*dom.Element, 0)
+
+			for _, position := range table.sorted {
+
+				data := table.Dataset[position]
+				tr   := bindings.Document.CreateElement("tr")
+
+				tr.SetAttribute("data-id", strconv.FormatInt(int64(position), 10))
+
+				if table.selected[position] == true {
+					tr.SetAttribute("data-select", "true")
+				}
+
+				html := ""
+
+				if table.Selectable == true {
+
+					if table.selected[position] == true {
+						html += "<td><input type=\"checkbox\" data-action=\"select\" checked/></td>"
+					} else {
+						html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
+					}
+
+				}
+
+				values, _ := renderTableValues(data)
+
+				for _, property := range table.Properties {
+
+					val, ok := values[property]
+
+					if ok == true {
+						html += "<td>" + val + "</td>"
+					} else {
+						html += "<td></td>"
+					}
+
+				}
+
+				tr.SetInnerHTML(html)
+
+				elements = append(elements, tr)
+
+			}
+
+			tbody.ReplaceChildren(elements)
+
+		}
 
 	}
 
@@ -604,7 +623,13 @@ func (table *Table) String() string {
 		html += ">"
 
 		if table.Selectable == true {
-			html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
+
+			if table.selected[position] == true {
+				html += "<td><input type=\"checkbox\" data-action=\"select\" checked/></td>"
+			} else {
+				html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
+			}
+
 		}
 
 		values, _ := renderTableValues(data)

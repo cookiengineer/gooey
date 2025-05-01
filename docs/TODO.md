@@ -34,7 +34,6 @@
 ## content/Table
 
 - [ ] Create a `content.Table` component
-- [ ] Sorting is currently broken and not really sorted? Fix the sort action event listener
 
 ## app/View
 
