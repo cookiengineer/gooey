@@ -1,0 +1,74 @@
+
+table {
+	display: table;
+	margin: 32px auto;
+	padding: 0px;
+	table-layout: fixed;
+	width: 100%;
+	height: auto;
+}
+
+table thead th {
+	margin: 0px;
+	padding: 4px 8px;
+	font-family: 'cantarell';
+	font-weight: bold;
+	font-size: 20px;
+	text-align: center;
+	line-height: 30px;
+	border: 0px solid transparent;
+	border-left: 1px solid var(--input-default-border);
+	border-bottom: 1px solid var(--input-default-border);
+	vertical-align: middle;
+}
+
+table tbody td {
+	margin: 0px;
+	padding: 4px 8px;
+	font-family: 'cantarell';
+	font-weight: normal;
+	font-size: 16px;
+	text-align: left;
+	line-height: 30px;
+	border: 0px solid transparent;
+	border-left: 1px solid var(--input-default-border);
+	border-bottom: 1px solid var(--input-default-border);
+}
+
+table[data-selectable="true"] thead th:first-of-type,
+table[data-selectable="true"] tbody td:first-of-type {
+	width: 32px;
+	text-align: center;
+}
+
+table[data-selectable="true"] thead th:first-of-type input[type="checkbox"] {
+	margin: 0px auto;
+	vertical-align: middle;
+	transform: translate(0px, -1px); /* WTF, Blink and WebKit, WTF? */
+	cursor: ns-resize;
+}
+
+table[data-selectable="true"] tbody td:first-of-type input[type="checkbox"] {
+	margin: 0px auto;
+	vertical-align: middle;
+	transform: translate(0px, -1px); /* WTF, Blink and WebKit, WTF? */
+	cursor: pointer;
+}
+
+table thead th:last-of-type,
+table tbody td:last-of-type {
+	border-right: 1px solid var(--input-default-border);
+}
+
+table tbody tr:hover td {
+	background: rgba(255,255,255,0.1);
+	transition: background 200ms ease-out;
+}
+
+table tbody tr[data-select="true"] td {
+	background: rgba(255,255,255,0.1);
+}
+
+table[data-selectable="true"] tbody td:first-of-type input[type="checkbox"]:checked {
+	cursor: no-drop;
+}
