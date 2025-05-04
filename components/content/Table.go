@@ -6,8 +6,6 @@ import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/interfaces"
-import "bytes"
-import "sort"
 import "strconv"
 import "strings"
 
@@ -63,7 +61,129 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
 
-		// TODO: Backport click event handler from ToTable()
+		if event.Target != nil {
+
+			action := event.Target.GetAttribute("data-action")
+
+			if action != "" {
+
+				if action == "select" {
+
+					th := event.Target.QueryParent("th")
+
+					if th != nil {
+
+						is_active := event.Target.Value.Get("checked").Bool()
+
+						if is_active == true {
+
+							for s := 0; s < len(table.selected); s++ {
+								table.selected[s] = true
+							}
+
+							table.Render()
+
+						} else {
+
+							for s := 0; s < len(table.selected); s++ {
+								table.selected[s] = false
+							}
+
+							table.Render()
+
+						}
+
+					} else {
+
+						is_active := event.Target.Value.Get("checked").Bool()
+						tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+
+						if is_active == true {
+
+							num, err := strconv.ParseInt(tmp, 10, 64)
+
+							if err == nil {
+
+								index := int(num)
+
+								if index >= 0 && index < len(table.Dataset) {
+
+									table.selected[index] = true
+									table.Render()
+
+								}
+
+							}
+
+						} else {
+
+							num, err := strconv.ParseInt(tmp, 10, 64)
+
+							if err == nil {
+
+								index := int(num)
+
+								if index >= 0 && index < len(table.Dataset) {
+
+									input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
+
+									if input != nil {
+										input.Value.Set("checked", false)
+									}
+
+									table.selected[index] = false
+									table.Render()
+
+								}
+
+							}
+
+						}
+
+						event.PreventDefault()
+						event.StopPropagation()
+
+					}
+
+				} else if action == "sort" {
+
+					thead := table.Component.Element.QuerySelector("thead")
+					th    := event.Target.QueryParent("th")
+
+					if thead != nil && th != nil {
+
+						property := th.GetAttribute("data-property")
+						labels   := thead.QuerySelectorAll("label")
+
+						for _, label := range labels {
+							label.RemoveAttribute("data-type")
+						}
+
+						if table.sortby != property {
+
+							label := th.QuerySelector("label")
+
+							if label != nil {
+								label.SetAttribute("data-type", "ascending")
+							}
+
+							table.sorted = sortTableDataset(table.Dataset, property)
+							table.sortby = property
+
+							table.Render()
+
+						}
+
+						event.PreventDefault()
+						event.StopPropagation()
+
+					}
+
+				}
+
+			}
+
+		}
 
 	}))
 
@@ -108,162 +228,113 @@ func ToTable(element *dom.Element) Table {
 
 				if action == "select" {
 
-					// TODO: Select the current row of the dataset
-
-				} else if action == "sort" {
-
 					th := event.Target.QueryParent("th")
 
 					if th != nil {
 
-						property := th.GetAttribute("data-property")
-						// TODO: Is this necessary for sorting?
-						// sort := th.GetAttribute("data-sort") // ascending || descending
-						// typ  := th.GetAttribute("data-type")
+						is_active := event.Target.Value.Get("checked").Bool()
 
-						event.PreventDefault()
-						event.StopPropagation()
+						if is_active == true {
 
-						if table.sortby != property {
-
-							tmp_sorted := make([]int, len(table.Dataset))
-
-							for s := 0; s < len(table.Dataset); s++ {
-								tmp_sorted[s] = s
+							for s := 0; s < len(table.selected); s++ {
+								table.selected[s] = true
 							}
 
-							sort.Slice(tmp_sorted, func(a int, b int) bool {
+							table.Render()
 
-								value_a, ok_a := table.Dataset[tmp_sorted[a]][property]
-								value_b, ok_b := table.Dataset[tmp_sorted[b]][property]
+						} else {
 
-								if ok_a == true && ok_b == true {
-
-									switch value_a.(type) {
-
-									case []byte:
-
-										tmp_a := value_a.([]byte)
-										tmp_b := value_b.([]byte)
-
-										return bytes.Compare(tmp_a, tmp_b) < 0
-
-									case bool:
-
-										tmp_a := value_a.(bool)
-										tmp_b := value_b.(bool)
-
-										if tmp_a == true && tmp_b == false {
-											return true
-										} else {
-											return false
-										}
-
-									case float32:
-
-										tmp_a := value_a.(float32)
-										tmp_b := value_b.(float32)
-
-										return tmp_a < tmp_b
-
-									case float64:
-
-										tmp_a := value_a.(float64)
-										tmp_b := value_b.(float64)
-
-										return tmp_a < tmp_b
-
-									case int:
-
-										tmp_a := value_a.(int)
-										tmp_b := value_b.(int)
-
-										return tmp_a < tmp_b
-
-									case int8:
-
-										tmp_a := value_a.(int8)
-										tmp_b := value_b.(int8)
-
-										return tmp_a < tmp_b
-
-									case int16:
-
-										tmp_a := value_a.(int16)
-										tmp_b := value_b.(int16)
-
-										return tmp_a < tmp_b
-
-									case int32:
-
-										tmp_a := value_a.(int32)
-										tmp_b := value_b.(int32)
-
-										return tmp_a < tmp_b
-
-									case int64:
-
-										tmp_a := value_a.(int64)
-										tmp_b := value_b.(int64)
-
-										return tmp_a < tmp_b
-
-									case string:
-
-										tmp_a := value_a.(string)
-										tmp_b := value_b.(string)
-
-										return tmp_a < tmp_b
-
-									case uint:
-
-										tmp_a := value_a.(uint)
-										tmp_b := value_b.(uint)
-
-										return tmp_a < tmp_b
-
-									case uint8:
-
-										tmp_a := value_a.(uint8)
-										tmp_b := value_b.(uint8)
-
-										return tmp_a < tmp_b
-
-									case uint16:
-
-										tmp_a := value_a.(uint16)
-										tmp_b := value_b.(uint16)
-
-										return tmp_a < tmp_b
-
-									case uint32:
-
-										tmp_a := value_a.(uint32)
-										tmp_b := value_b.(uint32)
-
-										return tmp_a < tmp_b
-
-									case uint64:
-
-										tmp_a := value_a.(uint64)
-										tmp_b := value_b.(uint64)
-
-										return tmp_a < tmp_b
-
-									}
-
-								}
-
-								return false
-
-							})
-
-							table.sortby = property
-							table.sorted = tmp_sorted
+							for s := 0; s < len(table.selected); s++ {
+								table.selected[s] = false
+							}
 
 							table.Render()
 
 						}
+
+					} else {
+
+						is_active := event.Target.Value.Get("checked").Bool()
+						tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+
+						if is_active == true {
+
+							num, err := strconv.ParseInt(tmp, 10, 64)
+
+							if err == nil {
+
+								index := int(num)
+
+								if index >= 0 && index < len(table.Dataset) {
+
+									table.selected[index] = true
+									table.Render()
+
+								}
+
+							}
+
+						} else {
+
+							num, err := strconv.ParseInt(tmp, 10, 64)
+
+							if err == nil {
+
+								index := int(num)
+
+								if index >= 0 && index < len(table.Dataset) {
+
+									input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
+
+									if input != nil {
+										input.Value.Set("checked", false)
+									}
+
+									table.selected[index] = false
+									table.Render()
+
+								}
+
+							}
+
+						}
+
+						event.PreventDefault()
+						event.StopPropagation()
+
+					}
+
+				} else if action == "sort" {
+
+					thead := table.Component.Element.QuerySelector("thead")
+					th    := event.Target.QueryParent("th")
+
+					if thead != nil && th != nil {
+
+						property := th.GetAttribute("data-property")
+						labels   := thead.QuerySelectorAll("label")
+
+						for _, label := range labels {
+							label.RemoveAttribute("data-type")
+						}
+
+						if table.sortby != property {
+
+							label := th.QuerySelector("label")
+
+							if label != nil {
+								label.SetAttribute("data-type", "ascending")
+							}
+
+							table.sorted = sortTableDataset(table.Dataset, property)
+							table.sortby = property
+
+							table.Render()
+
+						}
+
+						event.PreventDefault()
+						event.StopPropagation()
 
 					}
 
