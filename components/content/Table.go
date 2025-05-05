@@ -3,8 +3,10 @@
 package content
 
 import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strconv"
 import "strings"
@@ -65,121 +67,123 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 			action := event.Target.GetAttribute("data-action")
 
-			if action != "" {
+			if action == "select" {
 
-				if action == "select" {
+				th := event.Target.QueryParent("th")
 
-					th := event.Target.QueryParent("th")
+				if th != nil {
 
-					if th != nil {
+					is_active := event.Target.Value.Get("checked").Bool()
 
-						is_active := event.Target.Value.Get("checked").Bool()
+					if is_active == true {
 
-						if is_active == true {
+						for s := 0; s < len(table.selected); s++ {
+							table.selected[s] = true
+						}
 
-							for s := 0; s < len(table.selected); s++ {
-								table.selected[s] = true
+						table.Render()
+
+					} else {
+
+						for s := 0; s < len(table.selected); s++ {
+							table.selected[s] = false
+						}
+
+						table.Render()
+
+					}
+
+				} else {
+
+					is_active := event.Target.Value.Get("checked").Bool()
+					tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+
+					if is_active == true {
+
+						num, err := strconv.ParseInt(tmp, 10, 64)
+
+						if err == nil {
+
+							index := int(num)
+
+							if index >= 0 && index < len(table.Dataset) {
+
+								table.selected[index] = true
+								table.Render()
+
 							}
-
-							table.Render()
-
-						} else {
-
-							for s := 0; s < len(table.selected); s++ {
-								table.selected[s] = false
-							}
-
-							table.Render()
 
 						}
 
 					} else {
 
-						is_active := event.Target.Value.Get("checked").Bool()
-						tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+						num, err := strconv.ParseInt(tmp, 10, 64)
 
-						if is_active == true {
+						if err == nil {
 
-							num, err := strconv.ParseInt(tmp, 10, 64)
+							index := int(num)
 
-							if err == nil {
+							if index >= 0 && index < len(table.Dataset) {
 
-								index := int(num)
+								input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
 
-								if index >= 0 && index < len(table.Dataset) {
-
-									table.selected[index] = true
-									table.Render()
-
+								if input != nil {
+									input.Value.Set("checked", false)
 								}
 
-							}
-
-						} else {
-
-							num, err := strconv.ParseInt(tmp, 10, 64)
-
-							if err == nil {
-
-								index := int(num)
-
-								if index >= 0 && index < len(table.Dataset) {
-
-									input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
-
-									if input != nil {
-										input.Value.Set("checked", false)
-									}
-
-									table.selected[index] = false
-									table.Render()
-
-								}
+								table.selected[index] = false
+								table.Render()
 
 							}
 
 						}
-
-						event.PreventDefault()
-						event.StopPropagation()
 
 					}
 
-				} else if action == "sort" {
-
-					thead := table.Component.Element.QuerySelector("thead")
-					th    := event.Target.QueryParent("th")
-
-					if thead != nil && th != nil {
-
-						property := th.GetAttribute("data-property")
-						labels   := thead.QuerySelectorAll("label")
-
-						for _, label := range labels {
-							label.RemoveAttribute("data-type")
-						}
-
-						if table.sortby != property {
-
-							label := th.QuerySelector("label")
-
-							if label != nil {
-								label.SetAttribute("data-type", "ascending")
-							}
-
-							table.sorted = sortTableDataset(table.Dataset, property)
-							table.sortby = property
-
-							table.Render()
-
-						}
-
-						event.PreventDefault()
-						event.StopPropagation()
-
-					}
+					event.PreventDefault()
+					event.StopPropagation()
 
 				}
+
+			} else if action == "sort" {
+
+				thead := table.Component.Element.QuerySelector("thead")
+				th    := event.Target.QueryParent("th")
+
+				if thead != nil && th != nil {
+
+					property := th.GetAttribute("data-property")
+					labels   := thead.QuerySelectorAll("label")
+
+					for _, label := range labels {
+						label.RemoveAttribute("data-type")
+					}
+
+					if table.sortby != property {
+
+						label := th.QuerySelector("label")
+
+						if label != nil {
+							label.SetAttribute("data-type", "ascending")
+						}
+
+						table.sorted = sortTableDataset(table.Dataset, property)
+						table.sortby = property
+
+						table.Render()
+
+					}
+
+					event.PreventDefault()
+					event.StopPropagation()
+
+				}
+
+			} else if action != "" {
+
+				table.Component.FireEventListeners("action", map[string]string{
+					"action": action,
+				})
 
 			}
 
@@ -224,121 +228,123 @@ func ToTable(element *dom.Element) Table {
 
 			action := event.Target.GetAttribute("data-action")
 
-			if action != "" {
+			if action == "select" {
 
-				if action == "select" {
+				th := event.Target.QueryParent("th")
 
-					th := event.Target.QueryParent("th")
+				if th != nil {
 
-					if th != nil {
+					is_active := event.Target.Value.Get("checked").Bool()
 
-						is_active := event.Target.Value.Get("checked").Bool()
+					if is_active == true {
 
-						if is_active == true {
+						for s := 0; s < len(table.selected); s++ {
+							table.selected[s] = true
+						}
 
-							for s := 0; s < len(table.selected); s++ {
-								table.selected[s] = true
+						table.Render()
+
+					} else {
+
+						for s := 0; s < len(table.selected); s++ {
+							table.selected[s] = false
+						}
+
+						table.Render()
+
+					}
+
+				} else {
+
+					is_active := event.Target.Value.Get("checked").Bool()
+					tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+
+					if is_active == true {
+
+						num, err := strconv.ParseInt(tmp, 10, 64)
+
+						if err == nil {
+
+							index := int(num)
+
+							if index >= 0 && index < len(table.Dataset) {
+
+								table.selected[index] = true
+								table.Render()
+
 							}
-
-							table.Render()
-
-						} else {
-
-							for s := 0; s < len(table.selected); s++ {
-								table.selected[s] = false
-							}
-
-							table.Render()
 
 						}
 
 					} else {
 
-						is_active := event.Target.Value.Get("checked").Bool()
-						tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+						num, err := strconv.ParseInt(tmp, 10, 64)
 
-						if is_active == true {
+						if err == nil {
 
-							num, err := strconv.ParseInt(tmp, 10, 64)
+							index := int(num)
 
-							if err == nil {
+							if index >= 0 && index < len(table.Dataset) {
 
-								index := int(num)
+								input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
 
-								if index >= 0 && index < len(table.Dataset) {
-
-									table.selected[index] = true
-									table.Render()
-
+								if input != nil {
+									input.Value.Set("checked", false)
 								}
 
-							}
-
-						} else {
-
-							num, err := strconv.ParseInt(tmp, 10, 64)
-
-							if err == nil {
-
-								index := int(num)
-
-								if index >= 0 && index < len(table.Dataset) {
-
-									input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
-
-									if input != nil {
-										input.Value.Set("checked", false)
-									}
-
-									table.selected[index] = false
-									table.Render()
-
-								}
+								table.selected[index] = false
+								table.Render()
 
 							}
 
 						}
-
-						event.PreventDefault()
-						event.StopPropagation()
 
 					}
 
-				} else if action == "sort" {
-
-					thead := table.Component.Element.QuerySelector("thead")
-					th    := event.Target.QueryParent("th")
-
-					if thead != nil && th != nil {
-
-						property := th.GetAttribute("data-property")
-						labels   := thead.QuerySelectorAll("label")
-
-						for _, label := range labels {
-							label.RemoveAttribute("data-type")
-						}
-
-						if table.sortby != property {
-
-							label := th.QuerySelector("label")
-
-							if label != nil {
-								label.SetAttribute("data-type", "ascending")
-							}
-
-							table.sorted = sortTableDataset(table.Dataset, property)
-							table.sortby = property
-
-							table.Render()
-
-						}
-
-						event.PreventDefault()
-						event.StopPropagation()
-
-					}
+					event.PreventDefault()
+					event.StopPropagation()
 
 				}
+
+			} else if action == "sort" {
+
+				thead := table.Component.Element.QuerySelector("thead")
+				th    := event.Target.QueryParent("th")
+
+				if thead != nil && th != nil {
+
+					property := th.GetAttribute("data-property")
+					labels   := thead.QuerySelectorAll("label")
+
+					for _, label := range labels {
+						label.RemoveAttribute("data-type")
+					}
+
+					if table.sortby != property {
+
+						label := th.QuerySelector("label")
+
+						if label != nil {
+							label.SetAttribute("data-type", "ascending")
+						}
+
+						table.sorted = sortTableDataset(table.Dataset, property)
+						table.sortby = property
+
+						table.Render()
+
+					}
+
+					event.PreventDefault()
+					event.StopPropagation()
+
+				}
+
+			} else if action != "" {
+
+				table.Component.FireEventListeners("action", map[string]string{
+					"action": action,
+				})
 
 			}
 
@@ -560,6 +566,67 @@ func (table *Table) Parse() {
 			table.sorted = sorted
 			table.selected = selected
 
+		} else {
+
+			console.Group("Table Body: Invalid Markup")
+			console.Error("Expected <tr>...</tr>")
+			console.GroupEnd("Table Body: Invalid Markup")
+
+		}
+
+		tfoot := table.Component.Element.QuerySelector("tfoot")
+
+		if tfoot != nil {
+
+			tmp := tfoot.QuerySelectorAll("td")
+
+			if len(tmp) == 3 {
+
+				buttons_left := tmp[0].QuerySelectorAll("button")
+
+				for _, button := range buttons_left {
+					component := ui.ToButton(button)
+					table.Footer.Content.Left = append(table.Footer.Content.Left, &component)
+				}
+
+				elements_center := tmp[1].QuerySelectorAll("button, label, input")
+
+				for _, element := range elements_center {
+
+					if element.TagName == "BUTTON" {
+
+						component := ui.ToButton(element)
+						table.Footer.Content.Center = append(table.Footer.Content.Center, &component)
+
+					} else if element.TagName == "LABEL" {
+
+						component := ui.ToLabel(element)
+						table.Footer.Content.Center = append(table.Footer.Content.Center, &component)
+
+					} else if element.TagName == "INPUT" {
+
+						component := ui.ToInput(element)
+						table.Footer.Content.Center = append(table.Footer.Content.Center, &component)
+
+					}
+
+				}
+
+				buttons_right := tmp[2].QuerySelectorAll("button")
+
+				for _, button := range buttons_right {
+					component := ui.ToButton(button)
+					table.Footer.Content.Right = append(table.Footer.Content.Right, &component)
+				}
+
+			} else {
+
+				console.Group("Table Footer: Invalid Markup")
+				console.Error("Expected <tr><td></td><td colspan></td><td></td></tr>")
+				console.GroupEnd("Table Footer: Invalid Markup")
+
+			}
+
 		}
 
 	}
@@ -623,6 +690,53 @@ func (table *Table) Render() *dom.Element {
 
 		}
 
+		tfoot := table.Component.Element.QuerySelector("tfoot")
+
+		if tfoot != nil && len(table.Labels) >= 3 {
+
+			tmp := tfoot.QuerySelectorAll("td")
+
+			if len(tmp) == 0 {
+				tfoot.SetInnerHTML("<tr><td></td><td></td><td></td></tr>")
+				tmp = tfoot.QuerySelectorAll("td")
+			}
+
+			if len(tmp) == 3 {
+
+				elements_left   := make([]*dom.Element, 0)
+				elements_center := make([]*dom.Element, 0)
+				elements_right  := make([]*dom.Element, 0)
+
+				for _, component := range table.Footer.Content.Left {
+					elements_left = append(elements_left, component.Render())
+				}
+
+				for _, component := range table.Footer.Content.Center {
+					elements_center = append(elements_center, component.Render())
+				}
+
+				for _, component := range table.Footer.Content.Right {
+					elements_right = append(elements_right, component.Render())
+				}
+
+				colspan := len(table.Labels) - 2
+
+				if table.Selectable == true {
+					tmp[0].SetAttribute("colspan", "2")
+				} else {
+					tmp[0].RemoveAttribute("colspan")
+				}
+
+				tmp[1].SetAttribute("colspan", strconv.Itoa(colspan))
+
+				tmp[0].ReplaceChildren(elements_left)
+				tmp[1].ReplaceChildren(elements_center)
+				tmp[2].ReplaceChildren(elements_right)
+
+			}
+
+		}
+
 	}
 
 	return table.Component.Element
@@ -631,6 +745,18 @@ func (table *Table) Render() *dom.Element {
 
 func (table *Table) SetData(dataset []TableData) {
 	table.Dataset = dataset
+}
+
+func (table *Table) SetCenter(components []interfaces.Component) {
+	table.Footer.Content.Center = components
+}
+
+func (table *Table) SetLeft(components []interfaces.Component) {
+	table.Footer.Content.Left = components
+}
+
+func (table *Table) SetRight(components []interfaces.Component) {
+	table.Footer.Content.Right = components
 }
 
 func (table *Table) SetLabelsAndPropertiesAndTypes(labels []string, properties []string, types []string) bool {
@@ -724,9 +850,51 @@ func (table *Table) String() string {
 	html += "</tbody>"
 
 	html += "<tfoot>"
+	html += "<tr>"
+	html += "<td"
 
-	// TODO: Render table actions?
+	if table.Selectable == true {
+		html += " colspan=\"2\""
+	}
 
+	html += ">"
+
+	if len(table.Footer.Content.Left) > 0 {
+
+		for _, component := range table.Footer.Content.Left {
+			html += component.String()
+		}
+
+	}
+
+	html += "</td>"
+	html += "<td"
+
+	if len(table.Labels) >= 3 {
+		html += " colspan=\"" + strconv.Itoa(len(table.Labels) - 2) + "\""
+	}
+
+	if len(table.Footer.Content.Center) > 0 {
+
+		for _, component := range table.Footer.Content.Center {
+			html += component.String()
+		}
+
+	}
+
+	html += "</td>"
+	html += "<td>"
+
+	if len(table.Footer.Content.Right) > 0 {
+
+		for _, component := range table.Footer.Content.Right {
+			html += component.String()
+		}
+
+	}
+
+	html += "</td>"
+	html += "</tr>"
 	html += "</tfoot>"
 
 	html += "</table>"
