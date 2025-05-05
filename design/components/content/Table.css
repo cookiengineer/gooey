@@ -72,3 +72,44 @@ table tbody tr[data-select="true"] td {
 table[data-selectable="true"] tbody td:first-of-type input[type="checkbox"]:checked {
 	cursor: no-drop;
 }
+
+table tfoot {
+	height: 50px;
+	margin: 0px;
+	padding: 0px 16px;
+	line-height: 50px;
+	color: var(--footer-color);
+	background: var(--footer-background);
+}
+
+table tfoot tr td:first-of-type {
+	width: auto;
+	margin: 0px;
+	padding: 0px 0px 0px 16px;
+	vertical-align: middle;
+	text-align: left;
+}
+
+table tfoot tr td[colspan]:not(:first-of-type):not(:last-of-type) {
+	width: auto;
+	margin: 0px;
+	padding: 0px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+table tfoot tr td:last-of-type {
+	width: auto;
+	margin: 0px;
+	padding: 0px 16px 0px 0px;
+	vertical-align: middle;
+	text-align: right;
+}
+
+table tfoot tr td button {
+	margin: 0px 0px 0px 8px;
+}
+
+table tfoot tr td button:first-of-type {
+	margin-left: 0px;
+}
