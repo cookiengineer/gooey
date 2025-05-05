@@ -22,6 +22,36 @@ table thead th {
 	vertical-align: middle;
 }
 
+table thead th label[data-action="sort"]:before {
+	display: inline-block;
+	content: '\f162';
+	width: 1em;
+	line-height: inherit;
+	margin: 0px;
+	padding: 0px 0.25em;
+	font-family: "icon";
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	text-align: center;
+	text-decoration: none;
+	text-transform: none;
+	font-smooth: antialiased;
+	opacity: 0;
+	speak: never;
+	transition: all 200ms ease-out;
+}
+
+table thead th:not([data-sort]) label[data-action="sort"]:hover:before {
+	opacity: 1;
+	transition: all 200ms ease-out;
+}
+
+table thead th[data-sort="ascending"] label[data-action="sort"]:before  {
+	opacity: 1;
+	content: '\f162';
+}
+
 table tbody td {
 	margin: 0px;
 	padding: 4px 8px;
@@ -113,3 +143,4 @@ table tfoot tr td button {
 table tfoot tr td button:first-of-type {
 	margin-left: 0px;
 }
+

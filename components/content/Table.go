@@ -153,19 +153,15 @@ func NewTable(name string, labels []string, properties []string, types []string,
 				if thead != nil && th != nil {
 
 					property := th.GetAttribute("data-property")
-					labels   := thead.QuerySelectorAll("label")
+					ths      := thead.QuerySelectorAll("th")
 
-					for _, label := range labels {
-						label.RemoveAttribute("data-type")
+					for _, th := range ths {
+						th.RemoveAttribute("data-sort")
 					}
 
 					if table.sortby != property {
 
-						label := th.QuerySelector("label")
-
-						if label != nil {
-							label.SetAttribute("data-type", "ascending")
-						}
+						th.SetAttribute("data-sort", "ascending")
 
 						table.sorted = sortTableDataset(table.Dataset, property)
 						table.sortby = property
@@ -314,19 +310,15 @@ func ToTable(element *dom.Element) Table {
 				if thead != nil && th != nil {
 
 					property := th.GetAttribute("data-property")
-					labels   := thead.QuerySelectorAll("label")
+					ths      := thead.QuerySelectorAll("th")
 
-					for _, label := range labels {
-						label.RemoveAttribute("data-type")
+					for _, th := range ths {
+						th.RemoveAttribute("data-sort")
 					}
 
 					if table.sortby != property {
 
-						label := th.QuerySelector("label")
-
-						if label != nil {
-							label.SetAttribute("data-type", "ascending")
-						}
+						th.SetAttribute("data-sort", "ascending")
 
 						table.sorted = sortTableDataset(table.Dataset, property)
 						table.sortby = property
@@ -794,7 +786,13 @@ func (table *Table) String() string {
 		property := table.Properties[l]
 		typ      := table.Types[l]
 
-		html += "<th data-property=\"" + property + "\" data-type=\"" + typ + "\">"
+		html += "<th data-property=\"" + property + "\" data-type=\"" + typ + "\""
+
+		if table.sortby == property {
+			html += " data-sort=\"ascending\""
+		}
+
+		html += ">"
 		html += "<label data-action=\"sort\">"
 		html += label
 		html += "</label>"

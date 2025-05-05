@@ -31,10 +31,6 @@
 
 - [ ] Create a `content.Article` component
 
-## content/Table
-
-- [ ] Create a `content.Table` component
-
 ## app/View
 
 - [ ] Integrate the History API in the fallback case, instead of using `location.Location.Replace()`
