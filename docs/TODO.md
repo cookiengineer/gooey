@@ -41,8 +41,6 @@
 - [ ] `SetSecondaryAction(label string, action string)` method
 - [ ] Footer property should be a `layout.Footer`
 
-- [ ] `Dialog.Parse()` should parse fieldset, table, and other content elements
-
 ## ui.Choices
 
 - [ ] Needs a separate `<div>` element surrounding the `<input type="radio">` elements

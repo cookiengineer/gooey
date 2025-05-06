@@ -187,9 +187,8 @@ func (dialog *Dialog) Parse() {
 
 				} else if tmp2.TagName == "TABLE" {
 
-					// TODO
-					// component := content.ToTable(tmp2)
-					// dialog.Content = &component
+					component := content.ToTable(tmp2)
+					dialog.Content = &component
 
 				}
 
