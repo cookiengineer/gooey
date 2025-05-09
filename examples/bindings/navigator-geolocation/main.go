@@ -1,17 +1,17 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/bindings/navigator/geolocation"
 import "strconv"
 import "time"
 
 func main() {
 
-	element_latitude := bindings.Document.QuerySelector("#latitude")
-	element_longitude := bindings.Document.QuerySelector("#longitude")
-	element_altitude := bindings.Document.QuerySelector("#altitude")
-	element_accuracy := bindings.Document.QuerySelector("#accuracy")
-	element_error := bindings.Document.QuerySelector("#error")
+	element_latitude := dom.Document.QuerySelector("#latitude")
+	element_longitude := dom.Document.QuerySelector("#longitude")
+	element_altitude := dom.Document.QuerySelector("#altitude")
+	element_accuracy := dom.Document.QuerySelector("#accuracy")
+	element_error := dom.Document.QuerySelector("#error")
 
 	geolocation.Geolocation.GetCurrentPosition(func(position geolocation.GeolocationPosition) {
 

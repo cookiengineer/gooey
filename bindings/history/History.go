@@ -25,35 +25,39 @@ func init() {
 
 }
 
-func (history *history) AddEventListener(listener EventListener) bool {
+func (history *history) AddEventListener(listener *EventListener) bool {
 
-	wrapped_type     := js.ValueOf("popstate")
-	wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
+	if listener != nil {
 
-		if len(args) > 0 {
+		wrapped_type     := js.ValueOf("popstate")
+		wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-			event := args[0]
+			if len(args) > 0 {
 
-			if !event.IsNull() && !event.IsUndefined() {
+				event := args[0]
 
-				// TODO: How to get the state map now?
+				if !event.IsNull() && !event.IsUndefined() {
 
-				wrapped_event := ToPopStateEvent(event)
-				listener.Callback(wrapped_event)
+					// TODO: How to get the state map now?
+
+					wrapped_event := ToPopStateEvent(event)
+					listener.Callback(wrapped_event)
+
+				}
 
 			}
 
-		}
+			return nil
 
-		return nil
+		})
+		wrapped_capture := js.ValueOf(true)
 
-	})
-	wrapped_capture := js.ValueOf(true)
+		js.Global().Get("window").Call("addEventListener", wrapped_type, wrapped_callback, wrapped_capture)
 
-	js.Global().Get("window").Call("addEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+		listener.Function = &wrapped_callback
+		history.listeners = append(history.listeners, listener)
 
-	listener.Function = &wrapped_callback
-	history.listeners = append(history.listeners, &listener)
+	}
 
 	return true
 

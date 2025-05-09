@@ -31,43 +31,47 @@ type document struct {
 	Value     *js.Value                      `json:"value"`
 }
 
-func (doc *document) AddEventListener(typ EventType, listener EventListener) bool {
+func (doc *document) AddEventListener(typ EventType, listener *EventListener) bool {
 
 	var result bool
 
-	wrapped_type := js.ValueOf(string(typ))
-	wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
+	if listener != nil {
 
-		if len(args) > 0 {
+		wrapped_type := js.ValueOf(string(typ))
+		wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-			event := args[0]
+			if len(args) > 0 {
 
-			if !event.IsNull() && !event.IsUndefined() {
+				event := args[0]
 
-				wrapped_event := ToEvent(event)
-				listener.Callback(wrapped_event)
+				if !event.IsNull() && !event.IsUndefined() {
+
+					wrapped_event := ToEvent(event)
+					listener.Callback(wrapped_event)
+
+				}
 
 			}
 
+			return nil
+
+		})
+		wrapped_capture := js.ValueOf(true)
+
+		doc.Value.Call("addEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+		listener.Function = &wrapped_callback
+
+		_, ok := doc.listeners[typ]
+
+		if ok == true {
+			doc.listeners[typ] = append(doc.listeners[typ], listener)
+			result = true
+		} else {
+			doc.listeners[typ] = make([]*EventListener, 0)
+			doc.listeners[typ] = append(doc.listeners[typ], listener)
+			result = true
 		}
 
-		return nil
-
-	})
-	wrapped_capture := js.ValueOf(true)
-
-	doc.Value.Call("addEventListener", wrapped_type, wrapped_callback, wrapped_capture)
-	listener.Function = &wrapped_callback
-
-	_, ok := doc.listeners[typ]
-
-	if ok == true {
-		doc.listeners[typ] = append(doc.listeners[typ], &listener)
-		result = true
-	} else {
-		doc.listeners[typ] = make([]*EventListener, 0)
-		doc.listeners[typ] = append(doc.listeners[typ], &listener)
-		result = true
 	}
 
 	return result

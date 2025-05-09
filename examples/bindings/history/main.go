@@ -1,13 +1,12 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/bindings/history"
 import "encoding/json"
 import "time"
 
-func renderEvent(event history.PopStateEvent) string {
+func renderEvent(event *history.PopStateEvent) string {
 
 	html := ""
 	html += "<li>"
@@ -31,11 +30,11 @@ func renderEvent(event history.PopStateEvent) string {
 
 func main() {
 
-	list_events    := bindings.Document.QuerySelector("main ul")
-	button_back    := bindings.Document.QuerySelector("main button[data-action=\"back\"]")
-	button_forward := bindings.Document.QuerySelector("main button[data-action=\"forward\"]")
+	list_events    := dom.Document.QuerySelector("main ul")
+	button_back    := dom.Document.QuerySelector("main button[data-action=\"back\"]")
+	button_forward := dom.Document.QuerySelector("main button[data-action=\"forward\"]")
 
-	history.History.AddEventListener(history.ToEventListener(func(event history.PopStateEvent) {
+	history.History.AddEventListener(history.ToEventListener(func(event *history.PopStateEvent) {
 
 		html := renderEvent(event)
 		list_events.InsertAdjacentHTML("beforeend", html)
@@ -45,11 +44,11 @@ func main() {
 
 	}))
 
-	button_back.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
+	button_back.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
 		history.History.Back()
 	}))
 
-	button_forward.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
+	button_forward.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
 		history.History.Forward()
 	}))
 

@@ -66,6 +66,7 @@ is to migrate towards go-integrated tests that are compatible with `go test`.
 
 - [console](/examples/bindings/console)
 - [crypto-aescbc](/examples/bindings/crypto-aescbc)
+- [cookiestore](/examples/bindings/cookiestore)
 - [dom](/examples/bindings/dom)
 - [fetch](/examples/bindings/fetch)
 - [history](/examples/bindings/history)

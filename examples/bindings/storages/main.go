@@ -1,6 +1,6 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/bindings/storages"
 import "github.com/cookiengineer/gooey/bindings/timers"
 import "strconv"
@@ -8,7 +8,7 @@ import "time"
 
 func main() {
 
-	element := bindings.Document.QuerySelector("#seconds")
+	element := dom.Document.QuerySelector("#seconds")
 
 	var seconds int = 0
 

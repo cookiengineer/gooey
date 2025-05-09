@@ -1,24 +1,21 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/bindings/location"
-import "github.com/cookiengineer/gooey/bindings/timers"
+import "encoding/json"
 import "time"
 
 func main() {
 
-	element := bindings.Document.QuerySelector("#location")
+	element := dom.Document.QuerySelector("#location")
+	details, err := json.MarshalIndent(location.Location, "", "\t")
 
-	tmp := location.Location.Href
-
-	if tmp != "" {
-		element.SetInnerHTML("This page is located at \"" + tmp + "\"!")
+	if err == nil {
+		element.SetInnerHTML(string(details))
 	}
 
-	timers.SetTimeout(func() {
-		console.Log(location.Location)
-	}, 1000)
+	console.Log(location.Location)
 
 	for true {
 
