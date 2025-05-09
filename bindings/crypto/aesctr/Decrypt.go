@@ -14,22 +14,22 @@ func Decrypt(counter []byte, length uint, key *CryptoKey, buffer []byte) ([]byte
 
 		channel := make(chan *decrypt_state)
 
-		algorithm             := make(map[string]any)
-		wrapped_algorithm     := js.ValueOf(algorithm)
+		algorithm := make(map[string]any)
+		wrapped_algorithm := js.ValueOf(algorithm)
 		wrapped_counter_array := js.Global().Get("Uint8Array").New(len(counter))
 		js.CopyBytesToJS(wrapped_counter_array, counter)
 		wrapped_algorithm.Set("name", "AES-CTR")
 		wrapped_algorithm.Set("counter", wrapped_counter_array)
 		wrapped_algorithm.Set("length", js.ValueOf(length))
 
-		wrapped_key    := *key.Value
+		wrapped_key := *key.Value
 		wrapped_buffer := js.Global().Get("Uint8Array").New(len(buffer))
 
 		js.CopyBytesToJS(wrapped_buffer, buffer)
 
 		on_success := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-			array  := js.Global().Get("Uint8Array").New(args[0])
+			array := js.Global().Get("Uint8Array").New(args[0])
 			buffer := make([]byte, array.Get("byteLength").Int())
 			js.CopyBytesToGo(buffer, array)
 
@@ -80,4 +80,3 @@ func Decrypt(counter []byte, length uint, key *CryptoKey, buffer []byte) ([]byte
 	}
 
 }
-

@@ -17,7 +17,7 @@ func ImportKey(format string, keydata []byte, extractable bool, usages []string)
 		key := ToCryptoKey(args[0])
 
 		channel <- &importkey_state{
-			key: &key,
+			key: key,
 			err: nil,
 		}
 
@@ -29,7 +29,7 @@ func ImportKey(format string, keydata []byte, extractable bool, usages []string)
 
 	on_failure := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-		value   := args[0]
+		value := args[0]
 		message := value.Get("message").String()
 
 		channel <- &importkey_state{
@@ -52,13 +52,13 @@ func ImportKey(format string, keydata []byte, extractable bool, usages []string)
 
 	if format == "jwk" {
 
-		wrapped_format    := js.ValueOf(format)
-		wrapped_keydata   := js.Global().Get("JSON").Call("parse", string(keydata))
+		wrapped_format := js.ValueOf(format)
+		wrapped_keydata := js.Global().Get("JSON").Call("parse", string(keydata))
 		wrapped_algorithm := js.ValueOf(map[string]any{
 			"name": "AES-CTR",
 		})
 		wrapped_extractable := js.ValueOf(extractable)
-		wrapped_usages      := js.Global().Get("Array").New(len(usages))
+		wrapped_usages := js.Global().Get("Array").New(len(usages))
 
 		for u := 0; u < len(usages); u++ {
 			wrapped_usages.SetIndex(u, usages[u])
@@ -66,19 +66,19 @@ func ImportKey(format string, keydata []byte, extractable bool, usages []string)
 
 		go subtle.Call("importKey", wrapped_format, wrapped_keydata, wrapped_algorithm, wrapped_extractable, wrapped_usages).Call("then", on_success).Call("catch", on_failure)
 
-		state := <- channel
+		state := <-channel
 
 		return state.key, state.err
 
 	} else {
 
-		wrapped_format    := js.ValueOf(format)
-		wrapped_keydata   := js.Global().Get("Uint8Array").New(len(keydata))
+		wrapped_format := js.ValueOf(format)
+		wrapped_keydata := js.Global().Get("Uint8Array").New(len(keydata))
 		wrapped_algorithm := js.ValueOf(map[string]any{
 			"name": "AES-CTR",
 		})
 		wrapped_extractable := js.ValueOf(extractable)
-		wrapped_usages      := js.Global().Get("Array").New(len(usages))
+		wrapped_usages := js.Global().Get("Array").New(len(usages))
 
 		js.CopyBytesToJS(wrapped_keydata, keydata)
 
@@ -88,7 +88,7 @@ func ImportKey(format string, keydata []byte, extractable bool, usages []string)
 
 		go subtle.Call("importKey", wrapped_format, wrapped_keydata, wrapped_algorithm, wrapped_extractable, wrapped_usages).Call("then", on_success).Call("catch", on_failure)
 
-		state := <- channel
+		state := <-channel
 
 		return state.key, state.err
 

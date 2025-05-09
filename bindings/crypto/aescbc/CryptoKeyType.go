@@ -7,4 +7,3 @@ const (
 	CryptoKeyTypePrivate CryptoKeyType = "private"
 	CryptoKeyTypePublic  CryptoKeyType = "public"
 )
-

@@ -12,21 +12,21 @@ func Decrypt(iv []byte, key *CryptoKey, buffer []byte) ([]byte, error) {
 
 	channel := make(chan *decrypt_state)
 
-	algorithm         := make(map[string]any)
+	algorithm := make(map[string]any)
 	wrapped_algorithm := js.ValueOf(algorithm)
-	wrapped_iv_array  := js.Global().Get("Uint8Array").New(len(iv))
+	wrapped_iv_array := js.Global().Get("Uint8Array").New(len(iv))
 	js.CopyBytesToJS(wrapped_iv_array, iv)
 	wrapped_algorithm.Set("name", "AES-CBC")
-	wrapped_algorithm.Set("iv",   wrapped_iv_array)
+	wrapped_algorithm.Set("iv", wrapped_iv_array)
 
-	wrapped_key    := *key.Value
+	wrapped_key := *key.Value
 	wrapped_buffer := js.Global().Get("Uint8Array").New(len(buffer))
 
 	js.CopyBytesToJS(wrapped_buffer, buffer)
 
 	on_success := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-		array  := js.Global().Get("Uint8Array").New(args[0])
+		array := js.Global().Get("Uint8Array").New(args[0])
 		buffer := make([]byte, array.Get("byteLength").Int())
 		js.CopyBytesToGo(buffer, array)
 
@@ -71,4 +71,3 @@ func Decrypt(iv []byte, key *CryptoKey, buffer []byte) ([]byte, error) {
 	return state.buffer, state.err
 
 }
-

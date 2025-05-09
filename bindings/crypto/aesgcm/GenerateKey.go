@@ -17,7 +17,7 @@ func GenerateKey(length int, extractable bool, usages []string) (*CryptoKey, err
 		"length": length,
 	})
 	wrapped_extractable := js.ValueOf(extractable)
-	wrapped_usages      := js.Global().Get("Array").New(len(usages))
+	wrapped_usages := js.Global().Get("Array").New(len(usages))
 
 	for u := 0; u < len(usages); u++ {
 		wrapped_usages.SetIndex(u, usages[u])
@@ -28,7 +28,7 @@ func GenerateKey(length int, extractable bool, usages []string) (*CryptoKey, err
 		key := ToCryptoKey(args[0])
 
 		channel <- &generatekey_state{
-			key: &key,
+			key: key,
 			err: nil,
 		}
 
@@ -40,7 +40,7 @@ func GenerateKey(length int, extractable bool, usages []string) (*CryptoKey, err
 
 	on_failure := js.FuncOf(func(this js.Value, args []js.Value) any {
 
-		value   := args[0]
+		value := args[0]
 		message := value.Get("message").String()
 
 		channel <- &generatekey_state{
