@@ -81,6 +81,13 @@ footer button:first-of-type {
 	margin-left: 0px;
 }
 
+footer label {
+	font-family: 'cantarell';
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+}
+
 footer div:first-of-type button[data-action][disabled],
 footer div:first-of-type button[data-action][disabled]:hover,
 footer div:first-of-type button[data-action][disabled]:focus,

@@ -30,7 +30,7 @@ func Get(options GetOptions) (*Cookie, error) {
 			cookie := ToCookie(value)
 
 			channel <- &get_state{
-				cookie: &cookie,
+				cookie: cookie,
 				err:    nil,
 			}
 

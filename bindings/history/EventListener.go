@@ -12,9 +12,9 @@ type EventListener struct {
 	Function *js.Func              `json:"function"`
 }
 
-type EventListenerCallback func(PopStateEvent)
+type EventListenerCallback func(*PopStateEvent)
 
-func ToEventListener(callback EventListenerCallback) EventListener {
+func ToEventListener(callback EventListenerCallback) *EventListener {
 
 	var listener EventListener
 
@@ -23,6 +23,6 @@ func ToEventListener(callback EventListenerCallback) EventListener {
 
 	event_listener_id += 1
 
-	return listener
+	return &listener
 
 }

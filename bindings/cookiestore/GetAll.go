@@ -39,7 +39,7 @@ func GetAll(options *GetOptions) ([]*Cookie, error) {
 				cookie := ToCookie(value)
 
 				if cookie.Name != "" && cookie.Value != "" {
-					cookies = append(cookies, &cookie)
+					cookies = append(cookies, cookie)
 				}
 
 			}

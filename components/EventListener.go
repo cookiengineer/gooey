@@ -13,7 +13,7 @@ type EventListener struct {
 
 type EventListenerCallback func(string, map[string]string)
 
-func ToEventListener(callback EventListenerCallback, once bool) EventListener {
+func ToEventListener(callback EventListenerCallback, once bool) *EventListener {
 
 	var listener EventListener
 
@@ -24,6 +24,6 @@ func ToEventListener(callback EventListenerCallback, once bool) EventListener {
 
 	component_listener_id += 1
 
-	return listener
+	return &listener
 
 }

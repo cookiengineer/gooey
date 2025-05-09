@@ -2,7 +2,6 @@
 
 package ui
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/types"
@@ -21,7 +20,7 @@ func NewInput(label string, value string, typ types.Input) Input {
 
 	var input Input
 
-	element   := bindings.Document.CreateElement("input")
+	element   := dom.Document.CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", typ.String())
@@ -34,7 +33,7 @@ func NewInput(label string, value string, typ types.Input) Input {
 
 	input.Component.InitEvent("change-value")
 
-	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		input.Value = element.Value.Get("value").String()
 
@@ -50,7 +49,7 @@ func NewInput(label string, value string, typ types.Input) Input {
 
 }
 
-func ToInput(element *dom.Element) Input {
+func ToInput(element *dom.Element) *Input {
 
 	var input Input
 
@@ -71,7 +70,7 @@ func ToInput(element *dom.Element) Input {
 
 	input.Component.InitEvent("change-value")
 
-	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		input.Value = element.Value.Get("value").String()
 
@@ -81,7 +80,7 @@ func ToInput(element *dom.Element) Input {
 
 	}))
 
-	return input
+	return &input
 
 }
 

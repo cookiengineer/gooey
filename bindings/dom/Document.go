@@ -1,8 +1,7 @@
 //go:build wasm
 
-package bindings
+package dom
 
-import "github.com/cookiengineer/gooey/bindings/dom"
 import "syscall/js"
 
 var Document document
@@ -10,29 +9,29 @@ var Document document
 func init() {
 
 	doc := js.Global().Get("document")
-	html := dom.ToElement(doc.Call("querySelector", "html"))
-	head := dom.ToElement(doc.Get("head"))
-	body := dom.ToElement(doc.Get("body"))
+	html := ToElement(doc.Call("querySelector", "html"))
+	head := ToElement(doc.Get("head"))
+	body := ToElement(doc.Get("body"))
 
 	Document = document{
-		listeners: make(map[dom.EventType][]*dom.EventListener),
-		Element:   &html,
-		Head:      &head,
-		Body:      &body,
+		listeners: make(map[EventType][]*EventListener),
+		Element:   html,
+		Head:      head,
+		Body:      body,
 		Value:     &doc,
 	}
 
 }
 
 type document struct {
-	listeners map[dom.EventType][]*dom.EventListener `json:"listeners"`
-	Element   *dom.Element                           `json:"element"`
-	Head      *dom.Element                           `json:"head"`
-	Body      *dom.Element                           `json:"body"`
-	Value     *js.Value                              `json:"value"`
+	listeners map[EventType][]*EventListener `json:"listeners"`
+	Element   *Element                       `json:"element"`
+	Head      *Element                       `json:"head"`
+	Body      *Element                       `json:"body"`
+	Value     *js.Value                      `json:"value"`
 }
 
-func (doc *document) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
+func (doc *document) AddEventListener(typ EventType, listener EventListener) bool {
 
 	var result bool
 
@@ -45,7 +44,7 @@ func (doc *document) AddEventListener(typ dom.EventType, listener dom.EventListe
 
 			if !event.IsNull() && !event.IsUndefined() {
 
-				wrapped_event := dom.ToEvent(event)
+				wrapped_event := ToEvent(event)
 				listener.Callback(wrapped_event)
 
 			}
@@ -66,7 +65,7 @@ func (doc *document) AddEventListener(typ dom.EventType, listener dom.EventListe
 		doc.listeners[typ] = append(doc.listeners[typ], &listener)
 		result = true
 	} else {
-		doc.listeners[typ] = make([]*dom.EventListener, 0)
+		doc.listeners[typ] = make([]*EventListener, 0)
 		doc.listeners[typ] = append(doc.listeners[typ], &listener)
 		result = true
 	}
@@ -75,39 +74,37 @@ func (doc *document) AddEventListener(typ dom.EventType, listener dom.EventListe
 
 }
 
-func (doc *document) CreateElement(tagname string) *dom.Element {
+func (doc *document) CreateElement(tagname string) *Element {
 
-	var result *dom.Element = nil
+	var result *Element = nil
 
 	value := doc.Value.Call("createElement", js.ValueOf(tagname))
 
 	if !value.IsNull() && !value.IsUndefined() {
-		element := dom.ToElement(value)
-		result = &element
+		result = ToElement(value)
 	}
 
 	return result
 
 }
 
-func (doc *document) QuerySelector(query string) *dom.Element {
+func (doc *document) QuerySelector(query string) *Element {
 
-	var result *dom.Element = nil
+	var result *Element = nil
 
 	value := doc.Value.Call("querySelector", query)
 
 	if !value.IsNull() && !value.IsUndefined() {
-		element := dom.ToElement(value)
-		result = &element
+		result = ToElement(value)
 	}
 
 	return result
 
 }
 
-func (doc *document) QuerySelectorAll(query string) []*dom.Element {
+func (doc *document) QuerySelectorAll(query string) []*Element {
 
-	var result []*dom.Element
+	var result []*Element
 
 	values := doc.Value.Call("querySelectorAll", query)
 
@@ -116,10 +113,7 @@ func (doc *document) QuerySelectorAll(query string) []*dom.Element {
 		value := values.Index(v)
 
 		if !value.IsNull() && !value.IsUndefined() {
-
-			element := dom.ToElement(value)
-			result = append(result, &element)
-
+			result = append(result, ToElement(value))
 		}
 
 	}
@@ -128,7 +122,7 @@ func (doc *document) QuerySelectorAll(query string) []*dom.Element {
 
 }
 
-func (doc *document) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
+func (doc *document) RemoveEventListener(typ EventType, listener *EventListener) bool {
 
 	var result bool
 

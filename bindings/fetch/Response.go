@@ -17,7 +17,7 @@ type Response struct {
 	Value      *js.Value
 }
 
-func ToResponse(value js.Value) Response {
+func ToResponse(value js.Value) *Response {
 
 	var response Response
 
@@ -50,6 +50,6 @@ func ToResponse(value js.Value) Response {
 	response.BodyUsed = value.Get("bodyUsed").Bool()
 	response.Value = &value
 
-	return response
+	return &response
 
 }

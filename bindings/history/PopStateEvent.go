@@ -17,7 +17,7 @@ type PopStateEvent struct {
 	// TODO: State *any `json:"state"`
 }
 
-func ToPopStateEvent(value js.Value) PopStateEvent {
+func ToPopStateEvent(value js.Value) *PopStateEvent {
 
 	var event PopStateEvent
 
@@ -33,7 +33,7 @@ func ToPopStateEvent(value js.Value) PopStateEvent {
 
 	// TODO: Target?
 
-	return event
+	return &event
 
 }
 

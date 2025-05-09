@@ -1,6 +1,5 @@
 package ui
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "strings"
@@ -15,7 +14,7 @@ func NewLabel(lbl string, typ string) Label {
 
 	var label Label
 
-	element   := bindings.Document.CreateElement("label")
+	element   := dom.Document.CreateElement("label")
 	component := components.NewComponent(element)
 
 	label.Component = &component
@@ -28,7 +27,7 @@ func NewLabel(lbl string, typ string) Label {
 
 }
 
-func ToLabel(element *dom.Element) Label {
+func ToLabel(element *dom.Element) *Label {
 
 	var label Label
 
@@ -38,7 +37,7 @@ func ToLabel(element *dom.Element) Label {
 	label.Label     = strings.TrimSpace(element.TextContent)
 	label.Type      = element.GetAttribute("data-type")
 
-	return label
+	return &label
 
 }
 

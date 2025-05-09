@@ -1,6 +1,5 @@
 package ui
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "strings"
@@ -16,7 +15,7 @@ func NewButton(label string, action string) Button {
 
 	var button Button
 
-	element   := bindings.Document.CreateElement("button")
+	element   := dom.Document.CreateElement("button")
 	component := components.NewComponent(element)
 
 	button.Component = &component
@@ -31,7 +30,7 @@ func NewButton(label string, action string) Button {
 
 }
 
-func ToButton(element *dom.Element) Button {
+func ToButton(element *dom.Element) *Button {
 
 	var button Button
 
@@ -44,7 +43,7 @@ func ToButton(element *dom.Element) Button {
 
 	button.Component.InitEvent("click")
 
-	return button
+	return &button
 
 }
 

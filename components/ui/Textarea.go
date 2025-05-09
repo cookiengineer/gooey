@@ -2,7 +2,6 @@
 
 package ui
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/types"
@@ -21,7 +20,7 @@ func NewTextarea(label string, value string) Textarea {
 
 	var textarea Textarea
 
-	element   := bindings.Document.CreateElement("textarea")
+	element   := dom.Document.CreateElement("textarea")
 	component := components.NewComponent(element)
 
 	textarea.Component = &component
@@ -32,7 +31,7 @@ func NewTextarea(label string, value string) Textarea {
 
 	textarea.Component.InitEvent("change-value")
 
-	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		textarea.Value = element.Value.Get("value").String()
 
@@ -48,7 +47,7 @@ func NewTextarea(label string, value string) Textarea {
 
 }
 
-func ToTextarea(element *dom.Element) Textarea {
+func ToTextarea(element *dom.Element) *Textarea {
 
 	var textarea Textarea
 
@@ -69,7 +68,7 @@ func ToTextarea(element *dom.Element) Textarea {
 
 	textarea.Component.InitEvent("change-value")
 
-	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		textarea.Value = element.Value.Get("value").String()
 
@@ -79,7 +78,7 @@ func ToTextarea(element *dom.Element) Textarea {
 
 	}))
 
-	return textarea
+	return &textarea
 
 }
 

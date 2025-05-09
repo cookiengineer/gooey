@@ -43,7 +43,7 @@ func (component *Component) Enable() bool {
 
 }
 
-func (component *Component) AddEventListener(event string, listener EventListener) bool {
+func (component *Component) AddEventListener(event string, listener *EventListener) bool {
 
 	var result bool
 
@@ -55,7 +55,7 @@ func (component *Component) AddEventListener(event string, listener EventListene
 
 			if component.Element != nil {
 
-				wrapped_listener := dom.ToEventListener(func(dom_event dom.Event) {
+				wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
 
 					attributes := make(map[string]string)
 
@@ -78,18 +78,18 @@ func (component *Component) AddEventListener(event string, listener EventListene
 				})
 
 				component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
-				listener.Listener = &wrapped_listener
+				listener.Listener = wrapped_listener
 
 			}
 
-			component.Listeners[event] = append(component.Listeners[event], &listener)
+			component.Listeners[event] = append(component.Listeners[event], listener)
 			result = true
 
 		} else if event == "change" {
 
 			if component.Element != nil {
 
-				wrapped_listener := dom.ToEventListener(func(dom_event dom.Event) {
+				wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
 
 					attributes := make(map[string]string)
 
@@ -108,15 +108,15 @@ func (component *Component) AddEventListener(event string, listener EventListene
 				})
 
 				component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
-				listener.Listener = &wrapped_listener
+				listener.Listener = wrapped_listener
 
 			}
 
-			component.Listeners[event] = append(component.Listeners[event], &listener)
+			component.Listeners[event] = append(component.Listeners[event], listener)
 			result = true
 
 		} else {
-			component.Listeners[event] = append(component.Listeners[event], &listener)
+			component.Listeners[event] = append(component.Listeners[event], listener)
 			result = true
 		}
 

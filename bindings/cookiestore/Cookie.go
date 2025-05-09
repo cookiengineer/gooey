@@ -15,7 +15,7 @@ type Cookie struct {
 	Value       string   `json:"value"`
 }
 
-func ToCookie(value js.Value) Cookie {
+func ToCookie(value js.Value) *Cookie {
 
 	var cookie Cookie
 
@@ -61,6 +61,6 @@ func ToCookie(value js.Value) Cookie {
 	// cookie.Path        = value.Get("path").String()
 	// cookie.Secure      = value.Get("secure").Bool()
 
-	return cookie
+	return &cookie
 
 }

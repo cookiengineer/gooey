@@ -16,7 +16,7 @@ type Element struct {
 	Value       *js.Value                      `json:"value"`
 }
 
-func ToElement(value js.Value) Element {
+func ToElement(value js.Value) *Element {
 
 	var element Element
 
@@ -31,11 +31,11 @@ func ToElement(value js.Value) Element {
 	element.Attributes = make(map[string]string)
 	element.RefreshAttributes()
 
-	return element
+	return &element
 
 }
 
-func (element *Element) AddEventListener(typ EventType, listener EventListener) bool {
+func (element *Element) AddEventListener(typ EventType, listener *EventListener) bool {
 
 	var result bool
 
@@ -65,11 +65,11 @@ func (element *Element) AddEventListener(typ EventType, listener EventListener) 
 	_, ok := element.listeners[typ]
 
 	if ok == true {
-		element.listeners[typ] = append(element.listeners[typ], &listener)
+		element.listeners[typ] = append(element.listeners[typ], listener)
 		result = true
 	} else {
 		element.listeners[typ] = make([]*EventListener, 0)
-		element.listeners[typ] = append(element.listeners[typ], &listener)
+		element.listeners[typ] = append(element.listeners[typ], listener)
 		result = true
 	}
 
@@ -272,8 +272,7 @@ func (element *Element) GetBoundingClientRect() *Rect {
 	value := element.Value.Call("getBoundingClientRect")
 
 	if !value.IsNull() && !value.IsUndefined() {
-		rect := ToRect(value)
-		result = &rect
+		result = ToRect(value)
 	}
 
 	return result
@@ -334,8 +333,7 @@ func (element *Element) Children() []*Element {
 			node := value.Index(c)
 
 			if !node.IsNull() && !node.IsUndefined() {
-				element := ToElement(node)
-				result = append(result, &element)
+				result = append(result, ToElement(node))
 			}
 
 		}
@@ -353,8 +351,7 @@ func (element *Element) ParentNode() *Element {
 	value := element.Value.Get("parentNode")
 
 	if !value.IsNull() && !value.IsUndefined() {
-		parent := ToElement(value)
-		result = &parent
+		result = ToElement(value)
 	}
 
 	return result
@@ -373,8 +370,7 @@ func (element *Element) QueryParent(search string) *Element {
 		tmp := strings.ToLower(tagname.String())
 
 		if tmp == search {
-			parent := ToElement(value)
-			result = &parent
+			result = ToElement(value)
 			break
 		} else {
 			value = value.Get("parentNode")
@@ -394,8 +390,7 @@ func (element *Element) QuerySelector(query string) *Element {
 	value := element.Value.Call("querySelector", query)
 
 	if !value.IsNull() && !value.IsUndefined() {
-		child := ToElement(value)
-		result = &child
+		result = ToElement(value)
 	}
 
 	return result
@@ -413,10 +408,7 @@ func (element *Element) QuerySelectorAll(query string) []*Element {
 		value := values.Index(v)
 
 		if !value.IsNull() && !value.IsUndefined() {
-
-			child := ToElement(value)
-			result = append(result, &child)
-
+			result = append(result, ToElement(value))
 		}
 
 	}

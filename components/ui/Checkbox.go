@@ -2,7 +2,6 @@
 
 package ui
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/types"
@@ -21,7 +20,7 @@ func NewCheckbox(label string, value string) Checkbox {
 
 	var checkbox Checkbox
 
-	element   := bindings.Document.CreateElement("input")
+	element   := dom.Document.CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", "checkbox")
@@ -34,7 +33,7 @@ func NewCheckbox(label string, value string) Checkbox {
 
 	checkbox.Component.InitEvent("change-value")
 
-	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		checkbox.Value = element.Value.Get("checked").Bool()
 
@@ -56,7 +55,7 @@ func NewCheckbox(label string, value string) Checkbox {
 
 }
 
-func ToCheckbox(element *dom.Element) Checkbox {
+func ToCheckbox(element *dom.Element) *Checkbox {
 
 	var checkbox Checkbox
 
@@ -70,7 +69,7 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 	checkbox.Component.InitEvent("change-value")
 
-	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		checkbox.Value = element.Value.Get("checked").Bool()
 
@@ -86,7 +85,7 @@ func ToCheckbox(element *dom.Element) Checkbox {
 
 	}))
 
-	return checkbox
+	return &checkbox
 
 }
 

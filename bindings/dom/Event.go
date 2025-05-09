@@ -17,7 +17,7 @@ type Event struct {
 	Value *js.Value `json:"value"`
 }
 
-func ToEvent(value js.Value) Event {
+func ToEvent(value js.Value) *Event {
 
 	var event Event
 
@@ -28,13 +28,11 @@ func ToEvent(value js.Value) Event {
 	event.EventPhase = EventPhase(value.Get("eventPhase").Int())
 	event.IsTrusted = value.Get("isTrusted").Bool()
 	event.Type = EventType(value.Get("type").String())
+	event.Target = ToElement(value.Get("target"))
 
-	target := ToElement(value.Get("target"))
-
-	event.Target = &target
 	event.Value = &value
 
-	return event
+	return &event
 
 }
 

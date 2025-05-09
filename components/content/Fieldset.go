@@ -2,7 +2,6 @@
 
 package content
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
@@ -36,7 +35,7 @@ func NewFieldset(name string, label string) Fieldset {
 
 	var fieldset Fieldset
 
-	element   := bindings.Document.CreateElement("fieldset")
+	element   := dom.Document.CreateElement("fieldset")
 	component := components.NewComponent(element)
 
 	fieldset.Name      = strings.TrimSpace(strings.ToLower(name))
@@ -52,7 +51,7 @@ func NewFieldset(name string, label string) Fieldset {
 
 }
 
-func ToFieldset(element *dom.Element) Fieldset {
+func ToFieldset(element *dom.Element) *Fieldset {
 
 	var fieldset Fieldset
 
@@ -72,7 +71,7 @@ func ToFieldset(element *dom.Element) Fieldset {
 	fieldset.Parse()
 	fieldset.Render()
 
-	return fieldset
+	return &fieldset
 
 }
 
@@ -160,7 +159,7 @@ func (fieldset *Fieldset) Parse() {
 								label := ui.ToLabel(element1)
 								input := ui.ToCheckbox(element2)
 
-								func(name string, input ui.Checkbox) {
+								func(name string, input *ui.Checkbox) {
 
 									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
 
@@ -175,8 +174,8 @@ func (fieldset *Fieldset) Parse() {
 
 								fieldset.fields = append(fieldset.fields, &fieldset_field{
 									Name:  name,
-									Label: &label,
-									Input: &input,
+									Label: label,
+									Input: input,
 									Type:  input.Type,
 									ctype: "ui.Checkbox",
 								})
@@ -204,7 +203,7 @@ func (fieldset *Fieldset) Parse() {
 								label := ui.ToLabel(element1)
 								input := ui.ToInput(element2)
 
-								func(name string, input ui.Input) {
+								func(name string, input *ui.Input) {
 
 									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
 
@@ -219,8 +218,8 @@ func (fieldset *Fieldset) Parse() {
 
 								fieldset.fields = append(fieldset.fields, &fieldset_field{
 									Name:  name,
-									Label: &label,
-									Input: &input,
+									Label: label,
+									Input: input,
 									Type:  input.Type,
 									ctype: "ui.Input",
 								})
@@ -234,7 +233,7 @@ func (fieldset *Fieldset) Parse() {
 						label := ui.ToLabel(element1)
 						input := ui.ToSelect(element2)
 
-						func(name string, input ui.Select) {
+						func(name string, input *ui.Select) {
 
 							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
 
@@ -249,8 +248,8 @@ func (fieldset *Fieldset) Parse() {
 
 						fieldset.fields = append(fieldset.fields, &fieldset_field{
 							Name:  name,
-							Label: &label,
-							Input: &input,
+							Label: label,
+							Input: input,
 							Type:  input.Type,
 							ctype: "ui.Select",
 						})
@@ -260,7 +259,7 @@ func (fieldset *Fieldset) Parse() {
 						label := ui.ToLabel(element1)
 						input := ui.ToTextarea(element2)
 
-						func(name string, input ui.Textarea) {
+						func(name string, input *ui.Textarea) {
 
 							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
 
@@ -275,8 +274,8 @@ func (fieldset *Fieldset) Parse() {
 
 						fieldset.fields = append(fieldset.fields, &fieldset_field{
 							Name:  name,
-							Label: &label,
-							Input: &input,
+							Label: label,
+							Input: input,
 							Type:  input.Type,
 							ctype: "ui.Textarea",
 						})
@@ -348,8 +347,7 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 		for _, field := range fieldset.fields {
 
-			div := bindings.Document.CreateElement("div")
-
+			div   := dom.Document.CreateElement("div")
 			id    := toIdentifier(strings.ToLower(fieldset.Name + "-" + field.Name))
 			label := field.Label.Render()
 			input := field.Input.Render()

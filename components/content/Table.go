@@ -2,7 +2,6 @@
 
 package content
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
@@ -37,7 +36,7 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 	var table Table
 
-	element   := bindings.Document.CreateElement("table")
+	element   := dom.Document.CreateElement("table")
 	component := components.NewComponent(element)
 
 	table.Component  = &component
@@ -57,141 +56,13 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 	table.SetLabelsAndPropertiesAndTypes(labels, properties, types)
 
-	table.Component.InitEvent("change-select")
-	table.Component.InitEvent("change-sort")
-	table.Component.InitEvent("action")
-
-	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-
-		if event.Target != nil {
-
-			action := event.Target.GetAttribute("data-action")
-
-			if action == "select" {
-
-				th := event.Target.QueryParent("th")
-
-				if th != nil {
-
-					is_active := event.Target.Value.Get("checked").Bool()
-
-					if is_active == true {
-
-						for s := 0; s < len(table.selected); s++ {
-							table.selected[s] = true
-						}
-
-						table.Render()
-
-					} else {
-
-						for s := 0; s < len(table.selected); s++ {
-							table.selected[s] = false
-						}
-
-						table.Render()
-
-					}
-
-				} else {
-
-					is_active := event.Target.Value.Get("checked").Bool()
-					tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
-
-					if is_active == true {
-
-						num, err := strconv.ParseInt(tmp, 10, 64)
-
-						if err == nil {
-
-							index := int(num)
-
-							if index >= 0 && index < len(table.Dataset) {
-
-								table.selected[index] = true
-								table.Render()
-
-							}
-
-						}
-
-					} else {
-
-						num, err := strconv.ParseInt(tmp, 10, 64)
-
-						if err == nil {
-
-							index := int(num)
-
-							if index >= 0 && index < len(table.Dataset) {
-
-								input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
-
-								if input != nil {
-									input.Value.Set("checked", false)
-								}
-
-								table.selected[index] = false
-								table.Render()
-
-							}
-
-						}
-
-					}
-
-					event.PreventDefault()
-					event.StopPropagation()
-
-				}
-
-			} else if action == "sort" {
-
-				thead := table.Component.Element.QuerySelector("thead")
-				th    := event.Target.QueryParent("th")
-
-				if thead != nil && th != nil {
-
-					property := th.GetAttribute("data-property")
-					ths      := thead.QuerySelectorAll("th")
-
-					for _, th := range ths {
-						th.RemoveAttribute("data-sort")
-					}
-
-					if table.sortby != property {
-
-						th.SetAttribute("data-sort", "ascending")
-
-						table.sorted = sortTableDataset(table.Dataset, property)
-						table.sortby = property
-
-						table.Render()
-
-					}
-
-					event.PreventDefault()
-					event.StopPropagation()
-
-				}
-
-			} else if action != "" {
-
-				table.Component.FireEventListeners("action", map[string]string{
-					"action": action,
-				})
-
-			}
-
-		}
-
-	}))
+	table.init_events()
 
 	return table
 
 }
 
-func ToTable(element *dom.Element) Table {
+func ToTable(element *dom.Element) *Table {
 
 	var table Table
 
@@ -213,138 +84,9 @@ func ToTable(element *dom.Element) Table {
 	table.Footer.Content.Right  = make([]interfaces.Component, 0)
 
 	table.Parse()
+	table.init_events()
 
-	table.Component.InitEvent("change-select")
-	table.Component.InitEvent("change-sort")
-	table.Component.InitEvent("action")
-
-	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-
-		if event.Target != nil {
-
-			action := event.Target.GetAttribute("data-action")
-
-			if action == "select" {
-
-				th := event.Target.QueryParent("th")
-
-				if th != nil {
-
-					is_active := event.Target.Value.Get("checked").Bool()
-
-					if is_active == true {
-
-						for s := 0; s < len(table.selected); s++ {
-							table.selected[s] = true
-						}
-
-						table.Render()
-
-					} else {
-
-						for s := 0; s < len(table.selected); s++ {
-							table.selected[s] = false
-						}
-
-						table.Render()
-
-					}
-
-				} else {
-
-					is_active := event.Target.Value.Get("checked").Bool()
-					tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
-
-					if is_active == true {
-
-						num, err := strconv.ParseInt(tmp, 10, 64)
-
-						if err == nil {
-
-							index := int(num)
-
-							if index >= 0 && index < len(table.Dataset) {
-
-								table.selected[index] = true
-								table.Render()
-
-							}
-
-						}
-
-					} else {
-
-						num, err := strconv.ParseInt(tmp, 10, 64)
-
-						if err == nil {
-
-							index := int(num)
-
-							if index >= 0 && index < len(table.Dataset) {
-
-								input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
-
-								if input != nil {
-									input.Value.Set("checked", false)
-								}
-
-								table.selected[index] = false
-								table.Render()
-
-							}
-
-						}
-
-					}
-
-					event.PreventDefault()
-					event.StopPropagation()
-
-				}
-
-			} else if action == "sort" {
-
-				thead := table.Component.Element.QuerySelector("thead")
-				th    := event.Target.QueryParent("th")
-
-				if thead != nil && th != nil {
-
-					property := th.GetAttribute("data-property")
-					ths      := thead.QuerySelectorAll("th")
-
-					for _, th := range ths {
-						th.RemoveAttribute("data-sort")
-					}
-
-					if table.sortby != property {
-
-						th.SetAttribute("data-sort", "ascending")
-
-						table.sorted = sortTableDataset(table.Dataset, property)
-						table.sortby = property
-
-						table.Render()
-
-					}
-
-					event.PreventDefault()
-					event.StopPropagation()
-
-				}
-
-			} else if action != "" {
-
-				table.Component.FireEventListeners("action", map[string]string{
-					"action": action,
-				})
-
-			}
-
-		}
-
-	}))
-
-	return table
+	return &table
 
 }
 
@@ -421,6 +163,138 @@ func (table *Table) Enable() bool {
 	}
 
 	return result
+
+}
+
+func (table *Table) init_events() {
+
+	table.Component.InitEvent("action")
+
+	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
+
+		if event.Target != nil {
+
+			action := event.Target.GetAttribute("data-action")
+
+			if action == "select" {
+
+				th := event.Target.QueryParent("th")
+
+				if th != nil {
+
+					is_active := event.Target.Value.Get("checked").Bool()
+
+					if is_active == true {
+
+						for s := 0; s < len(table.selected); s++ {
+							table.selected[s] = true
+						}
+
+						table.Render()
+
+					} else {
+
+						for s := 0; s < len(table.selected); s++ {
+							table.selected[s] = false
+						}
+
+						table.Render()
+
+					}
+
+				} else {
+
+					is_active := event.Target.Value.Get("checked").Bool()
+					tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+
+					if is_active == true {
+
+						num, err := strconv.ParseInt(tmp, 10, 64)
+
+						if err == nil {
+
+							index := int(num)
+
+							if index >= 0 && index < len(table.Dataset) {
+
+								table.selected[index] = true
+								table.Render()
+
+							}
+
+						}
+
+					} else {
+
+						num, err := strconv.ParseInt(tmp, 10, 64)
+
+						if err == nil {
+
+							index := int(num)
+
+							if index >= 0 && index < len(table.Dataset) {
+
+								input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
+
+								if input != nil {
+									input.Value.Set("checked", false)
+								}
+
+								table.selected[index] = false
+								table.Render()
+
+							}
+
+						}
+
+					}
+
+					event.PreventDefault()
+					event.StopPropagation()
+
+				}
+
+			} else if action == "sort" {
+
+				thead := table.Component.Element.QuerySelector("thead")
+				th    := event.Target.QueryParent("th")
+
+				if thead != nil && th != nil {
+
+					property := th.GetAttribute("data-property")
+					ths      := thead.QuerySelectorAll("th")
+
+					for _, th := range ths {
+						th.RemoveAttribute("data-sort")
+					}
+
+					if table.sortby != property {
+
+						th.SetAttribute("data-sort", "ascending")
+
+						table.sorted = sortTableDataset(table.Dataset, property)
+						table.sortby = property
+
+						table.Render()
+
+					}
+
+					event.PreventDefault()
+					event.StopPropagation()
+
+				}
+
+			} else if action != "" {
+
+				table.Component.FireEventListeners("action", map[string]string{
+					"action": action,
+				})
+
+			}
+
+		}
+
+	}))
 
 }
 
@@ -577,8 +451,7 @@ func (table *Table) Parse() {
 				buttons_left := tmp[0].QuerySelectorAll("button")
 
 				for _, button := range buttons_left {
-					component := ui.ToButton(button)
-					table.Footer.Content.Left = append(table.Footer.Content.Left, &component)
+					table.Footer.Content.Left = append(table.Footer.Content.Left, ui.ToButton(button))
 				}
 
 				elements_center := tmp[1].QuerySelectorAll("button, label, input")
@@ -586,20 +459,11 @@ func (table *Table) Parse() {
 				for _, element := range elements_center {
 
 					if element.TagName == "BUTTON" {
-
-						component := ui.ToButton(element)
-						table.Footer.Content.Center = append(table.Footer.Content.Center, &component)
-
+						table.Footer.Content.Center = append(table.Footer.Content.Center, ui.ToButton(element))
 					} else if element.TagName == "LABEL" {
-
-						component := ui.ToLabel(element)
-						table.Footer.Content.Center = append(table.Footer.Content.Center, &component)
-
+						table.Footer.Content.Center = append(table.Footer.Content.Center, ui.ToLabel(element))
 					} else if element.TagName == "INPUT" {
-
-						component := ui.ToInput(element)
-						table.Footer.Content.Center = append(table.Footer.Content.Center, &component)
-
+						table.Footer.Content.Center = append(table.Footer.Content.Center, ui.ToInput(element))
 					}
 
 				}
@@ -607,8 +471,7 @@ func (table *Table) Parse() {
 				buttons_right := tmp[2].QuerySelectorAll("button")
 
 				for _, button := range buttons_right {
-					component := ui.ToButton(button)
-					table.Footer.Content.Right = append(table.Footer.Content.Right, &component)
+					table.Footer.Content.Right = append(table.Footer.Content.Right, ui.ToButton(button))
 				}
 
 			} else {
@@ -638,7 +501,7 @@ func (table *Table) Render() *dom.Element {
 			for _, position := range table.sorted {
 
 				data := table.Dataset[position]
-				tr   := bindings.Document.CreateElement("tr")
+				tr   := dom.Document.CreateElement("tr")
 
 				tr.SetAttribute("data-id", strconv.FormatInt(int64(position), 10))
 
@@ -732,6 +595,86 @@ func (table *Table) Render() *dom.Element {
 	}
 
 	return table.Component.Element
+
+}
+
+func (table *Table) Add(data TableData) {
+
+	table.Dataset  = append(table.Dataset, data)
+	table.selected = append(table.selected, false)
+	table.sorted   = append(table.sorted, len(table.Dataset) - 1)
+
+}
+
+func (table *Table) Deselect(indexes []int) {
+
+	for _, index := range indexes {
+		table.selected[index] = false
+	}
+
+}
+
+func (table *Table) Remove(indexes []int) {
+
+	dataset  := make([]TableData, 0)
+	selected := make([]bool, 0)
+	sorted   := make([]int, 0)
+
+	for d, data := range table.Dataset {
+
+		found := false
+		is_selected := table.selected[d]
+
+		for _, index := range indexes {
+
+			if d == index {
+				found = true
+				break
+			}
+
+		}
+
+		if found == false {
+			dataset  = append(dataset, data)
+			selected = append(selected, is_selected)
+		}
+
+	}
+
+	for d := 0; d < len(dataset); d++ {
+		sorted = append(sorted, d)
+	}
+
+	table.Dataset  = dataset
+	table.selected = selected
+	table.sortby   = ""
+	table.sorted   = sorted
+
+}
+
+func (table *Table) Select(indexes []int) {
+
+	for _, index := range indexes {
+		table.selected[index] = true
+	}
+
+}
+
+func (table *Table) Selected() ([]int, []TableData) {
+
+	result_indexes := make([]int, 0)
+	result_dataset := make([]TableData, 0)
+
+	for s, value := range table.selected {
+
+		if value == true {
+			result_indexes = append(result_indexes, s)
+			result_dataset = append(result_dataset, table.Dataset[s])
+		}
+
+	}
+
+	return result_indexes, result_dataset
 
 }
 

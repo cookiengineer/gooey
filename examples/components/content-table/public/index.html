@@ -25,10 +25,11 @@
 
 		<!-- Design -->
 		<link rel="stylesheet" href="/design/index.css" />
+		<link rel="stylesheet" href="/custom/index.css" />
 	</head>
 	<body>
 		<main>
-			<table data-selectable="true">
+			<table data-name="candidates" data-selectable="true">
 				<thead>
 					<tr>
 						<th><input type="checkbox" data-action="select"/></th>
@@ -144,6 +145,18 @@
 						</td>
 					</tr>
 				</tfoot>
+			</table>
+			<table data-name="interviews">
+				<thead>
+					<tr>
+						<th data-property="prename"><label data-action="sort">Prename</label></th>
+						<th data-property="surname"><label data-action="sort">Surname</label></th>
+						<th data-property="email"><label data-action="sort">Email</label></th>
+						<th data-property="age" data-type="int"><label data-action="sort">Age</label></th>
+						<th data-property="invited" data-type="bool"><label data-action="sort">Invited</label></th>
+					</tr>
+				</thead>
+				<tbody></tbody>
 			</table>
 		</main>
 		<footer>

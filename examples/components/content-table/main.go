@@ -1,35 +1,81 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings"
-import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/content"
 import "time"
 
 func main() {
 
-	table := content.ToTable(bindings.Document.QuerySelector("table"))
-	table.Component.AddEventListener("change-select", components.ToEventListener(func(event string, attributes map[string]string) {
+	table1 := content.ToTable(dom.Document.QuerySelector("table[data-name=\"candidates\"]"))
+	table2 := content.ToTable(dom.Document.QuerySelector("table[data-name=\"interviews\"]"))
 
-		console.Group("table change-select event")
-		console.Log(attributes)
-		console.GroupEnd("table change-select event")
+	table1.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+
+		if event == "action" {
+
+			action, ok := attributes["action"]
+
+			if ok == true {
+
+				if action == "accept" {
+
+					indexes, dataset := table1.Selected()
+
+					for d := 0; d < len(dataset); d++ {
+
+						data := dataset[d]
+						data["invited"] = true
+
+						table2.Add(data)
+
+					}
+
+					table1.Deselect(indexes)
+					table1.Remove(indexes)
+
+					table1.Render()
+					table2.Render()
+
+					table2.Component.Element.SetClassName("visible")
+
+				} else if action == "deny" {
+
+					indexes, dataset := table1.Selected()
+
+					for d := 0; d < len(dataset); d++ {
+
+						data := dataset[d]
+						data["invited"] = false
+
+						table2.Add(data)
+
+					}
+
+					table1.Deselect(indexes)
+					table1.Remove(indexes)
+
+					table1.Render()
+					table2.Render()
+
+					table2.Component.Element.SetClassName("visible")
+
+				}
+
+			}
+
+		}
 
 	}, false))
-	table.Component.AddEventListener("change-sort", components.ToEventListener(func(event string, attributes map[string]string) {
 
-		console.Group("table change-sort event")
-		console.Log(attributes)
-		console.GroupEnd("table change-sort event")
-
-	}, false))
-
-	table.Disable()
+	table1.Disable()
+	table2.Disable()
 
 	go func() {
 
-		time.Sleep(1 * time.Second)
-		table.Enable()
+		time.Sleep(500 * time.Millisecond)
+		table1.Enable()
+		table2.Enable()
 
 	}()
 

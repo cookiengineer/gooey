@@ -2,7 +2,6 @@
 
 package ui
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/types"
@@ -23,7 +22,7 @@ func NewSelect(label string, value string, values []string) Select {
 
 	var self Select
 
-	element   := bindings.Document.CreateElement("select")
+	element   := dom.Document.CreateElement("select")
 	component := components.NewComponent(element)
 
 	self.Component = &component
@@ -44,7 +43,7 @@ func NewSelect(label string, value string, values []string) Select {
 
 	self.Component.InitEvent("change-value")
 
-	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		index   := self.Component.Element.Value.Get("selectedIndex").Int()
 		options := self.Component.Element.Value.Get("options")
@@ -77,7 +76,7 @@ func NewSelect(label string, value string, values []string) Select {
 
 }
 
-func ToSelect(element *dom.Element) Select {
+func ToSelect(element *dom.Element) *Select {
 
 	var self Select
 
@@ -91,7 +90,7 @@ func ToSelect(element *dom.Element) Select {
 
 	self.Component.InitEvent("change-value")
 
-	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ dom.Event) {
+	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
 		index   := self.Component.Element.Value.Get("selectedIndex").Int()
 		options := self.Component.Element.Value.Get("options")
@@ -118,7 +117,7 @@ func ToSelect(element *dom.Element) Select {
 
 	}))
 
-	return self
+	return &self
 
 }
 
@@ -209,7 +208,7 @@ func (self *Select) Render() *dom.Element {
 
 		if self.Label != "" {
 
-			placeholder := bindings.Document.CreateElement("option")
+			placeholder := dom.Document.CreateElement("option")
 			placeholder.SetAttribute("value", "")
 			placeholder.SetInnerHTML(self.Label)
 
@@ -223,7 +222,7 @@ func (self *Select) Render() *dom.Element {
 
 			if ok == false {
 
-				element = bindings.Document.CreateElement("option")
+				element = dom.Document.CreateElement("option")
 				element.SetAttribute("value", value)
 				element.SetInnerHTML(value)
 

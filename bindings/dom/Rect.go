@@ -16,7 +16,7 @@ type Rect struct {
 	Value  *js.Value `json:"value"`
 }
 
-func ToRect(value js.Value) Rect {
+func ToRect(value js.Value) *Rect {
 
 	var rect Rect
 
@@ -30,6 +30,6 @@ func ToRect(value js.Value) Rect {
 	rect.Left = value.Get("left").Int()
 	rect.Value = &value
 
-	return rect
+	return &rect
 
 }

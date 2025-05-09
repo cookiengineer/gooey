@@ -72,7 +72,7 @@ func Fetch(url string, request *Request) (*Response, error) {
 		response := ToResponse(args[0])
 
 		channel <- &fetch_state{
-			response: &response,
+			response: response,
 			err:      nil,
 		}
 
