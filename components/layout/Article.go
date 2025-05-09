@@ -1,6 +1,5 @@
 package layout
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/content"
@@ -18,7 +17,7 @@ func NewArticle() Article {
 
 	var article Article
 
-	element   := bindings.Document.CreateElement("article")
+	element   := dom.Document.CreateElement("article")
 	component := components.NewComponent(element)
 
 	article.Layout    = types.LayoutFlow
@@ -31,7 +30,7 @@ func NewArticle() Article {
 
 }
 
-func ToArticle(element *dom.Element) Article {
+func ToArticle(element *dom.Element) *Article {
 
 	var article Article
 
@@ -43,7 +42,7 @@ func ToArticle(element *dom.Element) Article {
 
 	article.Parse()
 
-	return article
+	return &article
 
 }
 
@@ -72,39 +71,31 @@ func (article *Article) Parse() {
 
 			switch element.TagName {
 			case "BUTTON":
-				component := ui.ToButton(element)
-				mapped = append(mapped, &component)
+				mapped = append(mapped, ui.ToButton(element))
 			case "LABEL":
-				component := ui.ToLabel(element)
-				mapped = append(mapped, &component)
+				mapped = append(mapped, ui.ToLabel(element))
 			case "INPUT":
 
 				typ := element.GetAttribute("type")
 
 				if typ == "checkbox" {
-					component := ui.ToCheckbox(element)
-					mapped = append(mapped, &component)
+					mapped = append(mapped, ui.ToCheckbox(element))
 				} else if typ == "radio" {
 
 					// TODO: Radio support
 
 				} else {
-					component := ui.ToInput(element)
-					mapped = append(mapped, &component)
+					mapped = append(mapped, ui.ToInput(element))
 				}
 
 			case "FIELDSET":
-				component := content.ToFieldset(element)
-				mapped = append(mapped, &component)
+				mapped = append(mapped, content.ToFieldset(element))
 			case "SELECT":
-				component := ui.ToSelect(element)
-				mapped = append(mapped, &component)
+				mapped = append(mapped, ui.ToSelect(element))
 			case "TABLE":
-				component := content.ToTable(element)
-				mapped = append(mapped, &component)
+				mapped = append(mapped, content.ToTable(element))
 			case "TEXTAREA":
-				component := ui.ToTextarea(element)
-				mapped = append(mapped, &component)
+				mapped = append(mapped, ui.ToTextarea(element))
 			default:
 				component := components.NewComponent(element)
 				mapped = append(mapped, &component)

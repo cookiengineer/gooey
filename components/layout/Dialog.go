@@ -1,6 +1,5 @@
 package layout
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
@@ -21,7 +20,7 @@ func NewDialog() Dialog {
 
 	var dialog Dialog
 
-	element   := bindings.Document.CreateElement("dialog")
+	element   := dom.Document.CreateElement("dialog")
 	component := components.NewComponent(element)
 
 	dialog.Component = &component
@@ -30,38 +29,14 @@ func NewDialog() Dialog {
 	dialog.Content   = nil
 	dialog.Footer    = nil
 
-	dialog.Component.InitEvent("click")
-	dialog.Component.InitEvent("action")
-
-	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
-
-		action, ok1 := attributes["data-action"]
-
-		if ok1 == true {
-
-			if action == "close" {
-
-				dialog.Hide()
-
-			} else {
-
-				dialog.Component.FireEventListeners("action", map[string]string{
-					"action": attributes["data-action"],
-				})
-
-			}
-
-		}
-
-	}, false))
-
+	dialog.init_events()
 	dialog.Render()
 
 	return dialog
 
 }
 
-func ToDialog(element *dom.Element) Dialog {
+func ToDialog(element *dom.Element) *Dialog {
 
 	var dialog Dialog
 
@@ -73,41 +48,9 @@ func ToDialog(element *dom.Element) Dialog {
 	dialog.Footer    = nil
 
 	dialog.Parse()
+	dialog.init_events()
 
-	dialog.Component.InitEvent("click")
-	dialog.Component.InitEvent("action")
-
-	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
-
-		action, ok1 := attributes["data-action"]
-
-		if ok1 == true {
-
-			if action == "close" {
-
-				dialog.Hide()
-
-			} else {
-
-				dialog.Component.FireEventListeners("action", map[string]string{
-					"action": attributes["data-action"],
-				})
-
-			}
-
-		}
-
-	}, false))
-
-	dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
-
-		dialog.Component.FireEventListeners("action", map[string]string{
-			"action": attributes["data-action"],
-		})
-
-	}, false))
-
-	return dialog
+	return &dialog
 
 }
 
@@ -156,6 +99,43 @@ func (dialog *Dialog) Hide() bool {
 
 }
 
+func (dialog *Dialog) init_events() {
+
+	dialog.Component.InitEvent("click")
+	dialog.Component.InitEvent("action")
+
+	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
+
+		action, ok1 := attributes["data-action"]
+
+		if ok1 == true {
+
+			if action == "close" {
+
+				dialog.Hide()
+
+			} else {
+
+				dialog.Component.FireEventListeners("action", map[string]string{
+					"action": attributes["data-action"],
+				})
+
+			}
+
+		}
+
+	}, false))
+
+	dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+
+		dialog.Component.FireEventListeners("action", map[string]string{
+			"action": attributes["data-action"],
+		})
+
+	}, false))
+
+}
+
 func (dialog *Dialog) Parse() {
 
 	if dialog.Component.Element != nil {
@@ -181,15 +161,9 @@ func (dialog *Dialog) Parse() {
 			if tmp2 != nil {
 
 				if tmp2.TagName == "FIELDSET" {
-
-					component := content.ToFieldset(tmp2)
-					dialog.Content = &component
-
+					dialog.Content = content.ToFieldset(tmp2)
 				} else if tmp2.TagName == "TABLE" {
-
-					component := content.ToTable(tmp2)
-					dialog.Content = &component
-
+					dialog.Content = content.ToTable(tmp2)
 				}
 
 			}
@@ -197,10 +171,7 @@ func (dialog *Dialog) Parse() {
 			tmp3 := article.QuerySelector("footer")
 
 			if tmp3 != nil {
-
-				component := ToFooter(tmp3)
-				dialog.Footer = &component
-
+				dialog.Footer = ToFooter(tmp3)
 			}
 
 		} else {

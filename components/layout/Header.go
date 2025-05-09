@@ -1,6 +1,5 @@
 package layout
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
@@ -32,7 +31,7 @@ func NewHeader() Header {
 
 	var header Header
 
-	element   := bindings.Document.CreateElement("header")
+	element   := dom.Document.CreateElement("header")
 	component := components.NewComponent(element)
 
 	header.Component     = &component
@@ -42,49 +41,14 @@ func NewHeader() Header {
 	header.View          = ""
 	header.views         = make(map[string]*header_view_item)
 
-	header.Component.InitEvent("change-view")
-	header.Component.InitEvent("action")
-
-	header.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-
-		if event.Target != nil {
-
-			action := event.Target.GetAttribute("data-action")
-			view   := event.Target.GetAttribute("data-view")
-			path   := event.Target.GetAttribute("href")
-
-			if action != "" {
-
-				event.PreventDefault()
-				event.StopPropagation()
-
-				header.Component.FireEventListeners("action", map[string]string{
-					"action": action,
-				})
-
-			} else if view != "" && path != "" {
-
-				event.PreventDefault()
-				event.StopPropagation()
-
-				header.Component.FireEventListeners("change-view", map[string]string{
-					"name": view,
-					"path": path,
-				})
-
-			}
-
-		}
-
-	}))
-
+	header.init_events()
 	header.Render()
 
 	return header
 
 }
 
-func ToHeader(element *dom.Element) Header {
+func ToHeader(element *dom.Element) *Header {
 
 	var header Header
 
@@ -97,44 +61,9 @@ func ToHeader(element *dom.Element) Header {
 	header.views         = make(map[string]*header_view_item)
 
 	header.Parse()
+	header.init_events()
 
-	header.Component.InitEvent("change-view")
-	header.Component.InitEvent("action")
-
-	header.Component.Element.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-
-		if event.Target != nil {
-
-			action := event.Target.GetAttribute("data-action")
-			view   := event.Target.GetAttribute("data-view")
-			path   := event.Target.GetAttribute("href")
-
-			if action != "" {
-
-				event.PreventDefault()
-				event.StopPropagation()
-
-				header.Component.FireEventListeners("action", map[string]string{
-					"action": action,
-				})
-
-			} else if view != "" && path != "" {
-
-				event.PreventDefault()
-				event.StopPropagation()
-
-				header.Component.FireEventListeners("change-view", map[string]string{
-					"name": view,
-					"path": path,
-				})
-
-			}
-
-		}
-
-	}))
-
-	return header
+	return &header
 
 }
 
@@ -212,6 +141,46 @@ func (header *Header) Enable() bool {
 
 }
 
+func (header *Header) init_events() {
+
+	header.Component.InitEvent("change-view")
+	header.Component.InitEvent("action")
+
+	header.Component.Element.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
+
+		if event.Target != nil {
+
+			action := event.Target.GetAttribute("data-action")
+			view   := event.Target.GetAttribute("data-view")
+			path   := event.Target.GetAttribute("href")
+
+			if action != "" {
+
+				event.PreventDefault()
+				event.StopPropagation()
+
+				header.Component.FireEventListeners("action", map[string]string{
+					"action": action,
+				})
+
+			} else if view != "" && path != "" {
+
+				event.PreventDefault()
+				event.StopPropagation()
+
+				header.Component.FireEventListeners("change-view", map[string]string{
+					"name": view,
+					"path": path,
+				})
+
+			}
+
+		}
+
+	}))
+
+}
+
 func (header *Header) Parse() {
 
 	if header.Component.Element != nil {
@@ -230,8 +199,7 @@ func (header *Header) Parse() {
 			components_left := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_left {
-				component := ui.ToButton(button)
-				components_left = append(components_left, &component)
+				components_left = append(components_left, ui.ToButton(button))
 			}
 
 			items_center := tmp[1].QuerySelectorAll("li")
@@ -268,8 +236,7 @@ func (header *Header) Parse() {
 			components_right := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_right {
-				component := ui.ToButton(button)
-				components_right = append(components_right, &component)
+				components_right = append(components_right, ui.ToButton(button))
 			}
 
 			header.Content.Left  = components_left
@@ -366,7 +333,7 @@ func (header *Header) SetView(view interfaces.View) {
 				Name:    name,
 				Label:   label,
 				Path:    path,
-				Element: bindings.Document.CreateElement("li"),
+				Element: dom.Document.CreateElement("li"),
 			}
 
 			header.views[name] = &item

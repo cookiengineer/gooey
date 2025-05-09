@@ -1,6 +1,5 @@
 package layout
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
@@ -22,7 +21,7 @@ func NewFooter() Footer {
 
 	var footer Footer
 
-	element   := bindings.Document.CreateElement("footer")
+	element   := dom.Document.CreateElement("footer")
 	component := components.NewComponent(element)
 
 	footer.Component      = &component
@@ -31,30 +30,14 @@ func NewFooter() Footer {
 	footer.Content.Center = make([]interfaces.Component, 0)
 	footer.Content.Right  = make([]interfaces.Component, 0)
 
-	footer.Component.InitEvent("click")
-	footer.Component.InitEvent("action")
-
-	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
-
-		_, ok1 := attributes["data-action"]
-
-		if ok1 == true {
-
-			footer.Component.FireEventListeners("action", map[string]string{
-				"action": attributes["data-action"],
-			})
-
-		}
-
-	}, false))
-
+	footer.init_events()
 	footer.Render()
 
 	return footer
 
 }
 
-func ToFooter(element *dom.Element) Footer {
+func ToFooter(element *dom.Element) *Footer {
 
 	var footer Footer
 
@@ -67,25 +50,9 @@ func ToFooter(element *dom.Element) Footer {
 	footer.Content.Right  = make([]interfaces.Component, 0)
 
 	footer.Parse()
+	footer.init_events()
 
-	footer.Component.InitEvent("click")
-	footer.Component.InitEvent("action")
-
-	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
-
-		_, ok1 := attributes["data-action"]
-
-		if ok1 == true {
-
-			footer.Component.FireEventListeners("action", map[string]string{
-				"action": attributes["data-action"],
-			})
-
-		}
-
-	}, false))
-
-	return footer
+	return &footer
 
 }
 
@@ -133,6 +100,27 @@ func (footer *Footer) Enable() bool {
 
 }
 
+func (footer *Footer) init_events() {
+
+	footer.Component.InitEvent("click")
+	footer.Component.InitEvent("action")
+
+	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
+
+		_, ok1 := attributes["data-action"]
+
+		if ok1 == true {
+
+			footer.Component.FireEventListeners("action", map[string]string{
+				"action": attributes["data-action"],
+			})
+
+		}
+
+	}, false))
+
+}
+
 func (footer *Footer) Parse() {
 
 	if footer.Component.Element != nil {
@@ -150,8 +138,7 @@ func (footer *Footer) Parse() {
 			buttons_left := tmp[0].QuerySelectorAll("button")
 
 			for _, button := range buttons_left {
-				component := ui.ToButton(button)
-				footer.Content.Left = append(footer.Content.Left, &component)
+				footer.Content.Left = append(footer.Content.Left, ui.ToButton(button))
 			}
 
 			elements_center := tmp[1].QuerySelectorAll("button, label, input")
@@ -159,20 +146,11 @@ func (footer *Footer) Parse() {
 			for _, element := range elements_center {
 
 				if element.TagName == "BUTTON" {
-
-					component := ui.ToButton(element)
-					footer.Content.Center = append(footer.Content.Center, &component)
-
+					footer.Content.Center = append(footer.Content.Center, ui.ToButton(element))
 				} else if element.TagName == "LABEL" {
-
-					component := ui.ToLabel(element)
-					footer.Content.Center = append(footer.Content.Center, &component)
-
+					footer.Content.Center = append(footer.Content.Center, ui.ToLabel(element))
 				} else if element.TagName == "INPUT" {
-
-					component := ui.ToInput(element)
-					footer.Content.Center = append(footer.Content.Center, &component)
-
+					footer.Content.Center = append(footer.Content.Center, ui.ToInput(element))
 				}
 
 			}
@@ -180,8 +158,7 @@ func (footer *Footer) Parse() {
 			buttons_right := tmp[2].QuerySelectorAll("button")
 
 			for _, button := range buttons_right {
-				component := ui.ToButton(button)
-				footer.Content.Right = append(footer.Content.Right, &component)
+				footer.Content.Right = append(footer.Content.Right, ui.ToButton(button))
 			}
 
 		} else {

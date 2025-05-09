@@ -1,7 +1,7 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/layout"
@@ -10,9 +10,9 @@ import "time"
 
 func main() {
 
-	pre := bindings.Document.QuerySelector("pre")
+	pre := dom.Document.QuerySelector("pre")
 
-	fieldset := content.ToFieldset(bindings.Document.QuerySelector("fieldset"))
+	fieldset := content.ToFieldset(dom.Document.QuerySelector("fieldset"))
 	fieldset.Component.AddEventListener("change-field", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		console.Group("fieldset change-field event")
@@ -21,7 +21,7 @@ func main() {
 
 	}, false))
 
-	footer := layout.ToFooter(bindings.Document.QuerySelector("footer"))
+	footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
 	footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		action, ok := attributes["action"]
