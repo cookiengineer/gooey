@@ -47,77 +47,81 @@ func (component *Component) AddEventListener(event string, listener *EventListen
 
 	var result bool
 
-	_, ok := component.Listeners[event]
+	if listener != nil {
 
-	if ok == true {
+		_, ok := component.Listeners[event]
 
-		if event == "click" {
+		if ok == true {
 
-			if component.Element != nil {
+			if event == "click" {
 
-				wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
+				if component.Element != nil {
 
-					attributes := make(map[string]string)
+					wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
 
-					if dom_event.Target != nil {
+						attributes := make(map[string]string)
 
-						dom_event.Target.RefreshAttributes()
+						if dom_event.Target != nil {
 
-						for key, val := range dom_event.Target.Attributes {
-							attributes[key] = val
+							dom_event.Target.RefreshAttributes()
+
+							for key, val := range dom_event.Target.Attributes {
+								attributes[key] = val
+							}
+
 						}
 
-					}
+						component.FireEventListeners(event, attributes)
 
-					component.FireEventListeners(event, attributes)
+						// XXX: This prevents <a> elements triggering History navigation
+						dom_event.PreventDefault()
+						dom_event.StopPropagation()
 
-					// XXX: This prevents <a> elements triggering History navigation
-					dom_event.PreventDefault()
-					dom_event.StopPropagation()
+					})
 
-				})
+					component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
+					listener.Listener = wrapped_listener
 
-				component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
-				listener.Listener = wrapped_listener
+				}
 
-			}
+				component.Listeners[event] = append(component.Listeners[event], listener)
+				result = true
 
-			component.Listeners[event] = append(component.Listeners[event], listener)
-			result = true
+			} else if event == "change" {
 
-		} else if event == "change" {
+				if component.Element != nil {
 
-			if component.Element != nil {
+					wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
 
-				wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
+						attributes := make(map[string]string)
 
-					attributes := make(map[string]string)
+						if dom_event.Target != nil {
 
-					if dom_event.Target != nil {
+							dom_event.Target.RefreshAttributes()
 
-						dom_event.Target.RefreshAttributes()
+							for key, val := range dom_event.Target.Attributes {
+								attributes[key] = val
+							}
 
-						for key, val := range dom_event.Target.Attributes {
-							attributes[key] = val
 						}
 
-					}
+						component.FireEventListeners(event, attributes)
 
-					component.FireEventListeners(event, attributes)
+					})
 
-				})
+					component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
+					listener.Listener = wrapped_listener
 
-				component.Element.AddEventListener(dom.EventType(event), wrapped_listener)
-				listener.Listener = wrapped_listener
+				}
 
+				component.Listeners[event] = append(component.Listeners[event], listener)
+				result = true
+
+			} else {
+				component.Listeners[event] = append(component.Listeners[event], listener)
+				result = true
 			}
 
-			component.Listeners[event] = append(component.Listeners[event], listener)
-			result = true
-
-		} else {
-			component.Listeners[event] = append(component.Listeners[event], listener)
-			result = true
 		}
 
 	}
