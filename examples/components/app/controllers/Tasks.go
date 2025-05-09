@@ -2,9 +2,8 @@ package controllers
 
 import "example/actions"
 import "example/schemas"
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
-// import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
 import "github.com/cookiengineer/gooey/components/content"
@@ -22,12 +21,12 @@ func NewTasks(main *app.Main) Tasks {
 
 	var controller Tasks
 
-	element := bindings.Document.QuerySelector("section[data-name=\"tasks\"]")
+	element := dom.Document.QuerySelector("section[data-name=\"tasks\"]")
 	view    := app.ToView(element, "Tasks", "/index.html")
 
 	controller.Main   = main
 	controller.Schema = &schemas.Tasks{}
-	controller.View   = &view
+	controller.View   = view
 
 	controller.Main.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 

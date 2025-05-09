@@ -1,14 +1,14 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/console"
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/layout"
 import "time"
 
 func main() {
 
-	layout_dialog := layout.ToDialog(bindings.Document.QuerySelector("dialog"))
+	layout_dialog := layout.ToDialog(dom.Document.QuerySelector("dialog"))
 	layout_dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		action, ok := attributes["action"]
@@ -26,7 +26,7 @@ func main() {
 
 	}, false))
 
-	layout_header := layout.ToHeader(bindings.Document.QuerySelector("header"))
+	layout_header := layout.ToHeader(dom.Document.QuerySelector("header"))
 	layout_header.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		console.Group("header action event")
@@ -53,7 +53,7 @@ func main() {
 
 	}, false))
 
-	layout_footer := layout.ToFooter(bindings.Document.QuerySelector("footer"))
+	layout_footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
 	layout_footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
 
 		console.Group("footer action event")

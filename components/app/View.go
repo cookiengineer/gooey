@@ -2,11 +2,9 @@
 
 package app
 
-import "fmt"
-
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
-// import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
@@ -24,7 +22,7 @@ func NewView(name string, label string, path string) View {
 
 	var view View
 
-	element := bindings.Document.CreateElement("section")
+	element := dom.Document.CreateElement("section")
 
 	view.Element = element
 	view.Name    = strings.ToLower(name)
@@ -37,7 +35,7 @@ func NewView(name string, label string, path string) View {
 
 }
 
-func ToView(element *dom.Element, label string, path string) View {
+func ToView(element *dom.Element, label string, path string) *View {
 
 	var view View
 
@@ -49,7 +47,7 @@ func ToView(element *dom.Element, label string, path string) View {
 
 	view.Parse()
 
-	return view
+	return &view
 
 }
 
@@ -94,16 +92,16 @@ func (view *View) Parse() {
 
 	if view.Element != nil {
 
-		name := view.Element.GetAttribute("data-name")
+		tmp_name := view.Element.GetAttribute("data-name")
 
-		if name != "" {
-			view.Name = strings.ToLower(name)
+		if tmp_name != "" {
+			view.Name = strings.ToLower(tmp_name)
 		}
 
-		layout := view.Element.GetAttribute("data-layout")
+		tmp_layout := view.Element.GetAttribute("data-layout")
 
-		if layout != "" {
-			view.Layout = types.Layout(layout)
+		if tmp_layout != "" {
+			view.Layout = types.Layout(tmp_layout)
 		}
 
 		elements   := view.Element.Children()
@@ -112,18 +110,10 @@ func (view *View) Parse() {
 		for _, element := range elements {
 
 			if element.TagName == "ARTICLE" {
-
-				// component := content.ToArticle(element)
-				// components = append(components, &component)
-
+				components = append(components, layout.ToArticle(element))
 			} else if element.TagName == "TABLE" {
-
-				// component := content.ToTable(element)
-				// components = append(components, &component)
-
+				components = append(components, content.ToTable(element))
 			}
-
-			fmt.Println(element.TagName)
 
 		}
 

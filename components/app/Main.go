@@ -2,7 +2,6 @@
 
 package app
 
-import "github.com/cookiengineer/gooey/bindings"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/bindings/location"
 import "github.com/cookiengineer/gooey/components"
@@ -31,15 +30,13 @@ func (main *Main) Init(element *dom.Element) {
 	main.View    = nil
 	main.views   = make(map[string]interfaces.View)
 
-	header_element := bindings.Document.QuerySelector("body > header")
-	footer_element := bindings.Document.QuerySelector("body > footer")
-	dialog_element := bindings.Document.QuerySelector("body > dialog")
+	header_element := dom.Document.QuerySelector("body > header")
+	footer_element := dom.Document.QuerySelector("body > footer")
+	dialog_element := dom.Document.QuerySelector("body > dialog")
 
 	if header_element != nil {
 
-		header := layout.ToHeader(header_element)
-		main.Header = &header
-
+		main.Header = layout.ToHeader(header_element)
 		main.Header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]string) {
 
 			name, ok1 := attributes["name"]
@@ -71,17 +68,13 @@ func (main *Main) Init(element *dom.Element) {
 	}
 
 	if footer_element != nil {
-
-		footer := layout.ToFooter(footer_element)
-		main.Footer = &footer
-
+		main.Footer = layout.ToFooter(footer_element)
 	} else {
 		main.Footer = nil
 	}
 
 	if dialog_element != nil {
-		dialog := layout.ToDialog(dialog_element)
-		main.Dialog = &dialog
+		main.Dialog = layout.ToDialog(dialog_element)
 	} else {
 		main.Dialog = nil
 	}
