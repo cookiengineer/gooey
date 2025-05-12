@@ -1,6 +1,23 @@
 
 # Components
 
+## cookiestore Example
+
+## content/BarChart
+
+- [ ] number can be `float32`, `float64`, `int`, `int8`, `int16`, `int32`, `int64`, `uint` ...
+- [ ] ChartData map[string]number
+- [ ] Labels []string
+- [ ] Properties []string
+
+## content/PieChart
+
+- [ ] Same properties as BarChart, probably
+
+## content/LineChart
+
+- [ ] Same properties as BarChart, probably
+
 ## Oauth Components
 
 - [ ] WebAuthN integrated login components
