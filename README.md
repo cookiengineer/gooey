@@ -25,8 +25,8 @@ Problems in modern Web App Development:
 Conclusions:
 
 - Let's use Go's types and schemas on both the Frontend and the Backend.
-- Let's dynamic Web Components for the Frontend via WebASM.
-- Let's static Web Components for the Backend via Go's native builds to provide server-side rendering.
+- Let's use dynamic Web Components for the Frontend via WebASM.
+- Let's use static Web Components for the Backend via Go's native builds to provide server-side rendering.
 - Let's deploy offline-first Apps via `webview/webview` and online Apps via webservers.
 
 
@@ -47,7 +47,7 @@ which manage the Views, Storages and networking code.
 - [ARCHITECTURE.md](/docs/ARCHITECTURE.md) documents the architecture of a Gooey App.
 - [BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented web bindings.
 - [COMPONENTS.md](/docs/COMPONENTS.md) documents the state of implemented web components.
-- [TODO.md](/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
+- [TODO.md](/docs/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
 
 
 ## Examples
