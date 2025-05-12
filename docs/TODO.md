@@ -64,15 +64,6 @@
 - [ ] Root element is the `div`, not any of the input radio elements.
 
 
-## app.View
-
-- [ ] Element needs to be a `<section>` element
-- [ ] View needs a `Layout` property (flex, grid, flow)
-
-## Layout Components
-
-- [ ] `app.View` CSS needs to be implemented in `/design/components/app/View.css`
-
 # Bindings
 
 ## Encoding API
