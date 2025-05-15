@@ -5,6 +5,7 @@
 
 ## content/BarChart
 
+- [ ] Use a `<figure>` element as a wrapper
 - [ ] number can be `float32`, `float64`, `int`, `int8`, `int16`, `int32`, `int64`, `uint` ...
 - [ ] ChartData map[string]number
 - [ ] Labels []string
@@ -12,10 +13,12 @@
 
 ## content/PieChart
 
+- [ ] Use a `<figure>` element as a wrapper
 - [ ] Same properties as BarChart, probably
 
 ## content/LineChart
 
+- [ ] Use a `<figure>` element as a wrapper
 - [ ] Same properties as BarChart, probably
 
 ## Oauth Components
