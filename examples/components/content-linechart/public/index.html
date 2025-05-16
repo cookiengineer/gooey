@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Gooey Line Chart Example</title>
+
+		<!-- WebView -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src-elem 'self'">
+		<meta http-equiv="Content-Security-Policy" content="frame-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="worker-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="connect-src 'self'">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="manifest" href="/design/site.webmanifest" />
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/png" href="/design/favicon/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="/design/favicon/favicon.svg" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/design/favicon/apple-touch-icon.png" sizes="180x180" />
+
+		<!-- Design -->
+		<link rel="stylesheet" href="/design/index.css" />
+		<link rel="stylesheet" href="/custom/index.css" />
+	</head>
+	<body>
+		<main>
+			<figure data-name="performance" data-type="line-chart">
+				<datalist>
+					<data data-property="john-reese" data-type="int" value="10,13,15,12,8,4,4">John Reese</data>
+					<data data-property="john-wick" data-type="int" value="8,9,10,11,12,13,13">John Wick</data>
+					<data data-property="harold-finch" data-type="int" value="10,10,10,15,13,5,5">Harold Finch</data>
+				</datalist>
+				<svg>
+					<path data-property="john-reese"/>
+					<path data-property="john-wick"/>
+					<path data-property="harold-finch"/>
+				</svg>
+				<figcaption>Closed Issues in the last week</figcaption>
+			</figure>
+		</main>
+		<script src="wasm_exec.js"></script>
+		<script src="wasm_init.js"></script>
+	</body>
+</html>

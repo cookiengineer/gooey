@@ -1,0 +1,10 @@
+
+table[data-name="interviews"] {
+	opacity: 0;
+	transition: all 200ms ease-out;
+}
+
+table[data-name="interviews"].visible {
+	opacity: 1;
+	transition: all 200ms ease-out;
+}

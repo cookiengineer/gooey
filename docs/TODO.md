@@ -1,6 +1,11 @@
 
 # Components
 
+## components/Document
+
+- [ ] Implement a Parse() and Render() method for server-side usage that uses `String()` on all components
+
+
 ## cookiestore Example
 
 ## content/BarChart

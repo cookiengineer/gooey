@@ -55,7 +55,6 @@ func NewTable(name string, labels []string, properties []string, types []string,
 	table.Footer.Content.Right  = make([]interfaces.Component, 0)
 
 	table.SetLabelsAndPropertiesAndTypes(labels, properties, types)
-
 	table.init_events()
 
 	return table
@@ -715,6 +714,11 @@ func (table *Table) SetLabelsAndPropertiesAndTypes(labels []string, properties [
 func (table *Table) String() string {
 
 	html := "<table"
+
+	if table.Name != "" {
+		html += " data-name=\"" + table.Name + "\""
+	}
+
 	html += ">"
 
 	html += "<thead>"
