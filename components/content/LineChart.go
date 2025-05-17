@@ -6,7 +6,7 @@ import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 // import "github.com/cookiengineer/gooey/interfaces"
-// import "strconv"
+import "strconv"
 import "strings"
 
 // TODO: Custom numeric type
@@ -23,6 +23,10 @@ type LineChart struct {
 	Types      []string              `json:"types"`
 	Dataset    []ChartData           `json:"dataset"`
 	Component  *components.Component `json:"component"`
+	ViewBox    struct {
+		Width  int `json:"width"`
+		Height int `json:"height"`
+	} `json:"viewbox"`
 }
 
 func NewLineChart(name string, labels []string, properties []string, types []string) LineChart {
@@ -39,8 +43,12 @@ func NewLineChart(name string, labels []string, properties []string, types []str
 	chart.Types      = make([]string, 0)
 	chart.Dataset    = make([]ChartData, 0)
 
+	chart.ViewBox.Width  = 512
+	chart.ViewBox.Height = 256
+
 	chart.SetLabelsAndPropertiesAndTypes(labels, properties, types)
 	chart.init_events()
+	chart.Render()
 
 	return chart
 
@@ -59,8 +67,12 @@ func ToLineChart(element *dom.Element) *LineChart {
 	chart.Types      = make([]string, 0)
 	chart.Dataset    = make([]ChartData, 0)
 
+	chart.ViewBox.Width  = 512
+	chart.ViewBox.Height = 256
+
 	chart.Parse()
 	chart.init_events()
+	chart.Render()
 
 	return &chart
 
@@ -121,6 +133,45 @@ func (chart *LineChart) Parse() {
 
 		if datalist != nil && svg != nil {
 
+			viewbox := svg.GetAttribute("viewBox")
+			tmp1    := strings.Split(viewbox, " ")
+
+			if len(tmp1) == 4 {
+
+				if tmp1[0] == "0" && tmp1[1] == "0" {
+
+					width,  err1 := strconv.ParseInt(tmp1[2], 10, 64)
+					height, err2 := strconv.ParseInt(tmp1[3], 10, 64)
+
+					if err1 == nil && err2 == nil {
+						chart.ViewBox.Width  = int(width)
+						chart.ViewBox.Height = int(height)
+					}
+
+				} else {
+					chart.ViewBox.Width  = int(512)
+					chart.ViewBox.Height = int(256)
+				}
+
+			} else {
+
+				tmp2 := svg.GetAttribute("width")
+				tmp3 := svg.GetAttribute("height")
+
+				if tmp2 != "" && tmp3 != "" {
+
+					width,  err1 := strconv.ParseInt(tmp2, 10, 64)
+					height, err2 := strconv.ParseInt(tmp3, 10, 64)
+
+					if err1 == nil && err2 == nil {
+						chart.ViewBox.Width  = int(width)
+						chart.ViewBox.Height = int(height)
+					}
+
+				}
+
+			}
+
 			elements   := datalist.QuerySelectorAll("data")
 			dataset    := make([]ChartData, 0)
 			labels     := make([]string, 0)
@@ -169,23 +220,15 @@ func (chart *LineChart) Parse() {
 			chart.Properties = properties
 			chart.Dataset    = dataset
 
-			tmp := make([]string, 0)
+			tmp2 := make([]string, 0)
 
 			for _, property := range properties {
-				tmp = append(tmp, types[property])
+				tmp2 = append(tmp2, types[property])
 			}
 
-			chart.Types = tmp
+			chart.Types = tmp2
 
 			console.Log(chart)
-
-		}
-
-		caption := chart.Component.Element.QuerySelector("figcaption")
-
-		if caption != nil {
-
-			// TODO: Parse out caption to label?
 
 		}
 
@@ -197,19 +240,52 @@ func (chart *LineChart) Render() *dom.Element {
 
 	if chart.Component.Element != nil {
 
+		chart.Component.Element.SetAttribute("data-name", chart.Name)
+		chart.Component.Element.SetAttribute("data-type", "line-chart")
+
 		svg := chart.Component.Element.QuerySelector("svg")
 
 		if svg != nil {
 
-			// TODO
+			svg.SetAttribute("viewBox", strings.Join([]string{
+				"0",
+				"0",
+				strconv.Itoa(chart.ViewBox.Width),
+				strconv.Itoa(chart.ViewBox.Height),
+			}, " "))
 
-		}
+			svg.SetAttribute("width",  strconv.Itoa(chart.ViewBox.Width))
+			svg.SetAttribute("height", strconv.Itoa(chart.ViewBox.Height))
 
-		caption := chart.Component.Element.QuerySelector("figcaption")
+			if len(chart.Dataset) > 0 {
 
-		if caption != nil {
+				min_value, max_value := calculateChartValuesToMinMax(chart.Dataset, chart.Properties)
 
-			// TODO
+				paths := make([]*dom.Element, len(chart.Properties))
+
+				for p, property := range chart.Properties {
+
+					path := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "path")
+					path.SetAttribute("data-property", property)
+
+					path_description := renderChartValuesToPath(
+						chart.ViewBox.Width,
+						chart.ViewBox.Height,
+						min_value,
+						max_value,
+						chart.Dataset,
+						property,
+					)
+
+					path.SetAttribute("d", path_description)
+
+					paths[p] = path
+
+				}
+
+				svg.ReplaceChildren(paths)
+
+			}
 
 		}
 

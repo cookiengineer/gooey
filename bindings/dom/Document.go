@@ -92,6 +92,21 @@ func (doc *document) CreateElement(tagname string) *Element {
 
 }
 
+func (doc *document) CreateElementNS(url string, tagname string) *Element {
+
+	var result *Element = nil
+
+	value := doc.Value.Call("createElementNS", js.ValueOf(url), js.ValueOf(tagname))
+
+	if !value.IsNull() && !value.IsUndefined() {
+		result = ToElement(value)
+	}
+
+	return result
+
+}
+
+
 func (doc *document) QuerySelector(query string) *Element {
 
 	var result *Element = nil
