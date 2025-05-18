@@ -1,20 +1,98 @@
-package content
+package data
 
 import "bytes"
 import "sort"
 
-func sortTableDataset(dataset []TableData, property string) []int {
+type Dataset []*Data
 
-	result := make([]int, len(dataset))
+func NewDataset(length int) Dataset {
+	return Dataset(make([]*Data, length))
+}
 
-	for d := 0; d < len(dataset); d++ {
+func ToDataset(entries []Data) Dataset {
+
+	var dataset Dataset = Dataset(make([]*Data, len(entries)))
+
+	for e := 0; e < len(entries); e++ {
+		entry := entries[e]
+		dataset[e] = &entry
+	}
+
+	return dataset
+
+}
+
+func (dataset *Dataset) Add(data Data) bool {
+	*dataset = append(*dataset, &data)
+	return true
+}
+
+func (dataset *Dataset) Get(index int) *Data {
+
+	var result *Data
+
+	if dataset != nil && index >= 0 && index < len(*dataset) {
+		result = (*dataset)[index]
+	}
+
+	return result
+
+}
+
+func (dataset *Dataset) Has(index int) bool {
+
+	if dataset != nil && index >= 0 && index < len(*dataset) {
+		return true
+	}
+
+	return false
+
+}
+
+func (dataset *Dataset) HasProperty(index int, property string) bool {
+
+	if dataset != nil && index >= 0 && index < len(*dataset) {
+
+		data := (*dataset)[index]
+		_, ok2 := (*data)[property]
+
+		if ok2 == true {
+			return true
+		}
+
+	}
+
+	return false
+
+}
+
+func (dataset *Dataset) Length() int {
+	return len(*dataset)
+}
+
+func (dataset *Dataset) Set(index int, data Data) bool {
+
+	if dataset != nil && index >= 0 && index < len(*dataset) {
+		(*dataset)[index] = &data
+		return true
+	}
+
+	return false
+
+}
+
+func (dataset *Dataset) SortByProperty(property string) []int {
+
+	result := make([]int, len(*dataset))
+
+	for d, _ := range *dataset {
 		result[d] = d
 	}
 
 	sort.Slice(result, func(a int, b int) bool {
 
-		value_a, ok_a := dataset[result[a]][property]
-		value_b, ok_b := dataset[result[b]][property]
+		value_a, ok_a := (*(*dataset)[result[a]])[property]
+		value_b, ok_b := (*(*dataset)[result[b]])[property]
 
 		if ok_a == true && ok_b == true {
 

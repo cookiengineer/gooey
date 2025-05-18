@@ -5,23 +5,17 @@ package content
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/data"
 // import "github.com/cookiengineer/gooey/interfaces"
 import "strconv"
 import "strings"
-
-// TODO: Custom numeric type
-// TODO: uint
-// TODO: string? could rendered as different entries
-// type numeric float32 | float64 | int | int8 | int16 | int32 | int64
-
-type ChartData map[string]any
 
 type LineChart struct {
 	Name       string                `json:"name"`
 	Labels     []string              `json:"labels"`
 	Properties []string              `json:"properties"`
 	Types      []string              `json:"types"`
-	Dataset    []ChartData           `json:"dataset"`
+	Dataset    *data.Dataset         `json:"dataset"`
 	Component  *components.Component `json:"component"`
 	ViewBox    struct {
 		Width  int `json:"width"`
@@ -35,13 +29,14 @@ func NewLineChart(name string, labels []string, properties []string, types []str
 
 	element   := dom.Document.CreateElement("figure")
 	component := components.NewComponent(element)
+	dataset   := data.NewDataset(0)
 
+	chart.Dataset    = &dataset
 	chart.Component  = &component
 	chart.Name       = strings.TrimSpace(strings.ToLower(name))
 	chart.Labels     = make([]string, 0)
 	chart.Properties = make([]string, 0)
 	chart.Types      = make([]string, 0)
-	chart.Dataset    = make([]ChartData, 0)
 
 	chart.ViewBox.Width  = 512
 	chart.ViewBox.Height = 256
@@ -59,13 +54,14 @@ func ToLineChart(element *dom.Element) *LineChart {
 	var chart LineChart
 
 	component := components.NewComponent(element)
+	dataset   := data.NewDataset(0)
 
+	chart.Dataset    = &dataset
 	chart.Component  = &component
 	chart.Name       = ""
 	chart.Labels     = make([]string, 0)
 	chart.Properties = make([]string, 0)
 	chart.Types      = make([]string, 0)
-	chart.Dataset    = make([]ChartData, 0)
 
 	chart.ViewBox.Width  = 512
 	chart.ViewBox.Height = 256
@@ -173,7 +169,7 @@ func (chart *LineChart) Parse() {
 			}
 
 			elements   := datalist.QuerySelectorAll("data")
-			dataset    := make([]ChartData, 0)
+			dataset    := data.NewDataset(0)
 			labels     := make([]string, 0)
 			properties := make([]string, 0)
 			types      := make(map[string]string, 0)
@@ -211,14 +207,14 @@ func (chart *LineChart) Parse() {
 			if len(values) > 0 && len(values[0]) == len(types) {
 
 				for _, val := range values {
-					dataset = append(dataset, ChartData(parseChartValues(val, types)))
+					dataset.Add(data.ParseData(val, types))
 				}
 
 			}
 
+			chart.Dataset    = &dataset
 			chart.Labels     = labels
 			chart.Properties = properties
-			chart.Dataset    = dataset
 
 			tmp2 := make([]string, 0)
 
@@ -257,9 +253,9 @@ func (chart *LineChart) Render() *dom.Element {
 			svg.SetAttribute("width",  strconv.Itoa(chart.ViewBox.Width))
 			svg.SetAttribute("height", strconv.Itoa(chart.ViewBox.Height))
 
-			if len(chart.Dataset) > 0 {
+			if chart.Dataset.Length() > 0 {
 
-				min_value, max_value := calculateChartValuesToMinMax(chart.Dataset, chart.Properties)
+				min_value, max_value := calculateChartDatasetMinMax(chart.Dataset, chart.Properties)
 
 				paths := make([]*dom.Element, len(chart.Properties))
 
@@ -268,12 +264,12 @@ func (chart *LineChart) Render() *dom.Element {
 					path := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "path")
 					path.SetAttribute("data-property", property)
 
-					path_description := renderChartValuesToPath(
+					path_description := renderChartDatasetToPath(
+						chart.Dataset,
 						chart.ViewBox.Width,
 						chart.ViewBox.Height,
 						min_value,
 						max_value,
-						chart.Dataset,
 						property,
 					)
 
@@ -295,15 +291,15 @@ func (chart *LineChart) Render() *dom.Element {
 
 }
 
-func (chart *LineChart) Add(data ChartData) {
-	chart.Dataset = append(chart.Dataset, data)
+func (chart *LineChart) Add(data data.Data) bool {
+	return chart.Dataset.Add(data)
 }
 
 func (chart *LineChart) Remove(indexes []int) {
 
-	dataset := make([]ChartData, 0)
+	entries := make([]data.Data, 0)
 
-	for d, data := range chart.Dataset {
+	for d, data := range *chart.Dataset {
 
 		found := false
 
@@ -317,17 +313,24 @@ func (chart *LineChart) Remove(indexes []int) {
 		}
 
 		if found == false {
-			dataset = append(dataset, data)
+			entries = append(entries, *data)
 		}
 
 	}
 
-	chart.Dataset = dataset
+	dataset := data.ToDataset(entries)
+
+	chart.Dataset = &dataset
 
 }
 
-func (chart *LineChart) SetData(dataset []ChartData) {
-	chart.Dataset = dataset
+func (chart *LineChart) SetDataset(dataset data.Dataset) {
+	chart.Dataset = &dataset
+}
+
+func (chart *LineChart) SetData(entries []data.Data) {
+	dataset := data.ToDataset(entries)
+	chart.Dataset = &dataset
 }
 
 func (chart *LineChart) SetLabelsAndPropertiesAndTypes(labels []string, properties []string, types []string) bool {
@@ -351,15 +354,30 @@ func (chart *LineChart) SetLabelsAndPropertiesAndTypes(labels []string, properti
 func (chart *LineChart) String() string {
 
 	html := "<figure"
-	html += " data-type=\"line-chart\""
 
 	if chart.Name != "" {
 		html += " data-name=\"" + chart.Name + "\""
 	}
 
+	html += " data-type=\"line-chart\""
 	html += ">"
 
-	// TODO
+
+	for position := 0; position < chart.Dataset.Length(); position++ {
+
+		data := *chart.Dataset.Get(position)
+
+		// TODO: Generate <data> entries for each property
+		// Needs to be collected in something like map[property][]int or something?
+
+		console.Log(data)
+
+	}
+
+
+	// TODO: Render <datalist>
+	// TODO: Render <svg>
+	// TODO: Render <figcaption>
 
 	html += "</figure>"
 

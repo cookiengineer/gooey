@@ -1,17 +1,19 @@
 package content
 
+import "github.com/cookiengineer/gooey/components/data"
 import "math"
 
-func calculateChartValuesToMinMax(dataset []ChartData, properties []string) (int64, int64) {
+func calculateChartDatasetMinMax(dataset *data.Dataset, properties []string) (int64, int64) {
 
 	var min_value int64 = 0
 	var max_value int64 = 0
 
 	for _, property := range properties {
 
-		for d := 0; d < len(dataset); d++ {
+		for index := 0; index < dataset.Length(); index++ {
 
-			val, ok := dataset[d][property]
+			data    := dataset.Get(index)
+			val, ok := (*data)[property]
 
 			if ok == true {
 

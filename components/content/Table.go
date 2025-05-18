@@ -6,18 +6,17 @@ import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/data"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strconv"
 import "strings"
 
-type TableData map[string]any
-
 type Table struct {
-	Name       string                `json:"name"`
-	Labels     []string              `json:"labels"`
-	Properties []string              `json:"properties"`
-	Types      []string              `json:"types"`
-	Dataset    []TableData           `json:"dataset"`
+	Name       string        `json:"name"`
+	Labels     []string      `json:"labels"`
+	Properties []string      `json:"properties"`
+	Types      []string      `json:"types"`
+	Dataset    *data.Dataset `json:"dataset"`
 	Footer     struct {
 		Content struct {
 			Left   []interfaces.Component `json:"left"`
@@ -38,13 +37,14 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 	element   := dom.Document.CreateElement("table")
 	component := components.NewComponent(element)
+	dataset   := data.NewDataset(0)
 
+	table.Dataset    = &dataset
 	table.Component  = &component
 	table.Name       = strings.TrimSpace(strings.ToLower(name))
 	table.Labels     = make([]string, 0)
 	table.Properties = make([]string, 0)
 	table.Types      = make([]string, 0)
-	table.Dataset    = make([]TableData, 0)
 	table.Selectable = selectable
 	table.selected   = make([]bool, 0)
 	table.sorted     = make([]int, 0)
@@ -66,13 +66,14 @@ func ToTable(element *dom.Element) *Table {
 	var table Table
 
 	component := components.NewComponent(element)
+	dataset   := data.NewDataset(0)
 
+	table.Dataset    = &dataset
 	table.Component  = &component
 	table.Name       = ""
 	table.Labels     = make([]string, 0)
 	table.Properties = make([]string, 0)
 	table.Types      = make([]string, 0)
-	table.Dataset    = make([]TableData, 0)
 	table.Selectable = element.HasAttribute("data-selectable")
 	table.selected   = make([]bool, 0)
 	table.sorted     = make([]int, 0)
@@ -214,7 +215,7 @@ func (table *Table) init_events() {
 
 							index := int(num)
 
-							if index >= 0 && index < len(table.Dataset) {
+							if index >= 0 && index < table.Dataset.Length() {
 
 								table.selected[index] = true
 								table.Render()
@@ -231,7 +232,7 @@ func (table *Table) init_events() {
 
 							index := int(num)
 
-							if index >= 0 && index < len(table.Dataset) {
+							if index >= 0 && index < table.Dataset.Length() {
 
 								input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
 
@@ -271,7 +272,7 @@ func (table *Table) init_events() {
 
 						th.SetAttribute("data-sort", "ascending")
 
-						table.sorted = sortTableDataset(table.Dataset, property)
+						table.sorted = table.Dataset.SortByProperty(property)
 						table.sortby = property
 
 						table.Render()
@@ -362,7 +363,7 @@ func (table *Table) Parse() {
 		if tbody != nil {
 
 			rows     := tbody.QuerySelectorAll("tr")
-			dataset  := make([]TableData, len(rows))
+			dataset  := data.NewDataset(len(rows))
 			sorted   := make([]int, len(rows))
 			selected := make([]bool, len(rows))
 
@@ -411,12 +412,12 @@ func (table *Table) Parse() {
 
 					if len(values) == len(types) {
 
-						if id != -1 && id >= 0 && id <= len(dataset) - 1 {
-							dataset[id] = TableData(parseTableValues(values, types))
+						if id != -1 && id >= 0 && id < dataset.Length() {
+							dataset.Set(id, data.ParseData(values, types))
 							selected[id] = row.HasAttribute("data-select")
 							sorted[r] = id
 						} else {
-							dataset[r] = TableData(parseTableValues(values, types))
+							dataset.Set(id, data.ParseData(values, types))
 							selected[r] = row.HasAttribute("data-select")
 							sorted[r] = id
 						}
@@ -427,7 +428,7 @@ func (table *Table) Parse() {
 
 			}
 
-			table.Dataset = dataset
+			table.Dataset = &dataset
 			table.sorted = sorted
 			table.selected = selected
 
@@ -499,7 +500,7 @@ func (table *Table) Render() *dom.Element {
 
 			for _, position := range table.sorted {
 
-				data := table.Dataset[position]
+				data := table.Dataset.Get(position)
 				tr   := dom.Document.CreateElement("tr")
 
 				tr.SetAttribute("data-id", strconv.FormatInt(int64(position), 10))
@@ -520,7 +521,7 @@ func (table *Table) Render() *dom.Element {
 
 				}
 
-				values, _ := renderTableValues(data)
+				values, _ := renderTableData(data)
 
 				for _, property := range table.Properties {
 
@@ -597,11 +598,19 @@ func (table *Table) Render() *dom.Element {
 
 }
 
-func (table *Table) Add(data TableData) {
+func (table *Table) Add(data data.Data) bool {
 
-	table.Dataset  = append(table.Dataset, data)
-	table.selected = append(table.selected, false)
-	table.sorted   = append(table.sorted, len(table.Dataset) - 1)
+	var result bool = false
+
+	if table.Dataset.Add(data) == true {
+
+		table.selected = append(table.selected, false)
+		table.sorted   = append(table.sorted, table.Dataset.Length() - 1)
+		result = true
+
+	}
+
+	return result
 
 }
 
@@ -615,11 +624,11 @@ func (table *Table) Deselect(indexes []int) {
 
 func (table *Table) Remove(indexes []int) {
 
-	dataset  := make([]TableData, 0)
+	entries  := make([]data.Data, 0)
 	selected := make([]bool, 0)
 	sorted   := make([]int, 0)
 
-	for d, data := range table.Dataset {
+	for d, data := range *table.Dataset {
 
 		found := false
 		is_selected := table.selected[d]
@@ -634,17 +643,19 @@ func (table *Table) Remove(indexes []int) {
 		}
 
 		if found == false {
-			dataset  = append(dataset, data)
+			entries  = append(entries, *data)
 			selected = append(selected, is_selected)
 		}
 
 	}
 
-	for d := 0; d < len(dataset); d++ {
-		sorted = append(sorted, d)
+	for e := 0; e < len(entries); e++ {
+		sorted = append(sorted, e)
 	}
 
-	table.Dataset  = dataset
+	dataset := data.ToDataset(entries)
+
+	table.Dataset  = &dataset
 	table.selected = selected
 	table.sortby   = ""
 	table.sorted   = sorted
@@ -659,16 +670,22 @@ func (table *Table) Select(indexes []int) {
 
 }
 
-func (table *Table) Selected() ([]int, []TableData) {
+func (table *Table) Selected() ([]int, []data.Data) {
 
 	result_indexes := make([]int, 0)
-	result_dataset := make([]TableData, 0)
+	result_dataset := make([]data.Data, 0)
 
 	for s, value := range table.selected {
 
 		if value == true {
-			result_indexes = append(result_indexes, s)
-			result_dataset = append(result_dataset, table.Dataset[s])
+
+			data := table.Dataset.Get(s)
+
+			if data != nil {
+				result_indexes = append(result_indexes, s)
+				result_dataset = append(result_dataset, *data)
+			}
+
 		}
 
 	}
@@ -677,8 +694,13 @@ func (table *Table) Selected() ([]int, []TableData) {
 
 }
 
-func (table *Table) SetData(dataset []TableData) {
-	table.Dataset = dataset
+func (table *Table) SetDataset(dataset data.Dataset) {
+	table.Dataset = &dataset
+}
+
+func (table *Table) SetData(entries []data.Data) {
+	dataset := data.ToDataset(entries)
+	table.Dataset = &dataset
 }
 
 func (table *Table) SetCenter(components []interfaces.Component) {
@@ -754,7 +776,7 @@ func (table *Table) String() string {
 
 	for _, position := range table.sorted {
 
-		data := table.Dataset[position]
+		data := table.Dataset.Get(position)
 
 		html += "<tr data-id=\"" + strconv.FormatInt(int64(position), 10) + "\""
 
@@ -774,7 +796,7 @@ func (table *Table) String() string {
 
 		}
 
-		values, _ := renderTableValues(data)
+		values, _ := renderTableData(data)
 
 		for _, property := range table.Properties {
 

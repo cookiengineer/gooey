@@ -1,13 +1,14 @@
 package content
 
+import "github.com/cookiengineer/gooey/components/data"
 import "strconv"
 
-func renderTableValues(values map[string]any) (map[string]string, map[string]string) {
+func renderTableData(data *data.Data) (map[string]string, map[string]string) {
 
 	result_values := make(map[string]string)
 	result_types  := make(map[string]string)
 
-	for key, val := range values {
+	for key, val := range *data {
 
 		switch tmp := val.(type) {
 		case []byte:

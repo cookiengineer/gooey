@@ -1,11 +1,13 @@
-package content
+package data
 
 import "strconv"
 import "strings"
 
-func parseTableValues(values map[string]string, types map[string]string) map[string]any {
+type Data map[string]any
 
-	result := make(map[string]any)
+func ParseData(values map[string]string, types map[string]string) Data {
+
+	var result Data = Data(map[string]any{})
 
 	if len(values) == len(types) {
 
