@@ -285,6 +285,14 @@ func (chart *LineChart) Render() *dom.Element {
 
 		}
 
+		figcaption := chart.Component.Element.QuerySelector("figcaption")
+
+		if figcaption != nil {
+
+			// TODO: Render figcaption labels
+
+		}
+
 	}
 
 	return chart.Component.Element
@@ -362,23 +370,59 @@ func (chart *LineChart) String() string {
 	html += " data-type=\"line-chart\""
 	html += ">"
 
+	html += "<datalist>"
 
-	for position := 0; position < chart.Dataset.Length(); position++ {
+	values, _ := chart.Dataset.Join(",")
 
-		data := *chart.Dataset.Get(position)
+	for p, property := range chart.Properties {
 
-		// TODO: Generate <data> entries for each property
-		// Needs to be collected in something like map[property][]int or something?
+		value := values[property]
+		label := chart.Labels[p]
+		typ   := chart.Types[p]
 
-		console.Log(data)
+		html += "<data"
+		html += " data-property=\"" + property + "\""
+		html += " data-type=\"" + typ + "\""
+		html += " value=\"" + value + "\""
+		html += ">"
+		html += label
+		html += "</data>"
 
 	}
 
+	html += "</datalist>"
+	html += "<svg"
+	html += " viewbox=\"0 0 " + strconv.Itoa(chart.ViewBox.Width) + " " + strconv.Itoa(chart.ViewBox.Height) + "\""
+	html += " width=\"" + strconv.Itoa(chart.ViewBox.Width) + "\""
+	html += " height=\"" + strconv.Itoa(chart.ViewBox.Height) + "\""
+	html += ">"
 
-	// TODO: Render <datalist>
-	// TODO: Render <svg>
+	min_value, max_value := calculateChartDatasetMinMax(chart.Dataset, chart.Properties)
+
+	for _, property := range chart.Properties {
+
+		path_description := renderChartDatasetToPath(
+			chart.Dataset,
+			chart.ViewBox.Width,
+			chart.ViewBox.Height,
+			min_value,
+			max_value,
+			property,
+		)
+
+		html += "<path"
+		html += " data-property=\"" + property + "\""
+		html += " d=\"" + path_description + "\""
+		html += "/>"
+
+	}
+
+	html += "</svg>"
+	html += "<figcaption>"
+
 	// TODO: Render <figcaption>
 
+	html += "</figcaption>"
 	html += "</figure>"
 
 	return html

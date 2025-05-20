@@ -500,8 +500,7 @@ func (table *Table) Render() *dom.Element {
 
 			for _, position := range table.sorted {
 
-				data := table.Dataset.Get(position)
-				tr   := dom.Document.CreateElement("tr")
+				tr := dom.Document.CreateElement("tr")
 
 				tr.SetAttribute("data-id", strconv.FormatInt(int64(position), 10))
 
@@ -521,7 +520,7 @@ func (table *Table) Render() *dom.Element {
 
 				}
 
-				values, _ := renderTableData(data)
+				values, _ := table.Dataset.Get(position).Render()
 
 				for _, property := range table.Properties {
 
@@ -776,8 +775,6 @@ func (table *Table) String() string {
 
 	for _, position := range table.sorted {
 
-		data := table.Dataset.Get(position)
-
 		html += "<tr data-id=\"" + strconv.FormatInt(int64(position), 10) + "\""
 
 		if table.selected[position] == true {
@@ -796,7 +793,7 @@ func (table *Table) String() string {
 
 		}
 
-		values, _ := renderTableData(data)
+		values, _ := table.Dataset.Get(position).Render()
 
 		for _, property := range table.Properties {
 

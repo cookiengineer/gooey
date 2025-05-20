@@ -1,5 +1,6 @@
 package main
 
+import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/content"
 import "time"
@@ -16,6 +17,8 @@ func main() {
 		chart.Enable()
 
 	}()
+
+	console.Log(chart.String())
 
 	for true {
 

@@ -66,8 +66,58 @@ func (dataset *Dataset) HasProperty(index int, property string) bool {
 
 }
 
+func (dataset *Dataset) Join(separator string) (map[string]string, map[string]string) {
+
+	result_values := make(map[string]string)
+	result_types  := make(map[string]string)
+
+	for d := 0; d < len(*dataset); d++ {
+
+		tmp_values, tmp_types := (*dataset)[d].Render()
+
+		if d == 0 {
+			result_types = tmp_types
+		}
+
+		for key, val := range tmp_values {
+
+			if result_values[key] == "" {
+				result_values[key] = val
+			} else {
+				result_values[key] = result_values[key] + separator + val
+			}
+
+		}
+
+	}
+
+	return result_values, result_types
+
+}
+
 func (dataset *Dataset) Length() int {
 	return len(*dataset)
+}
+
+func (dataset *Dataset) Render() ([]map[string]string, map[string]string) {
+
+	result_values := make([]map[string]string, 0)
+	result_types  := make(map[string]string)
+
+	for d := 0; d < len(*dataset); d++ {
+
+		tmp_values, tmp_types := (*dataset)[d].Render()
+
+		if d == 0 {
+			result_types = tmp_types
+		}
+
+		result_values = append(result_values, tmp_values)
+
+	}
+
+	return result_values, result_types
+
 }
 
 func (dataset *Dataset) Set(index int, data Data) bool {
