@@ -47,3 +47,32 @@ body {
 
 }
 
+:root {
+
+	/* primary color rgb(85 170 238) */
+	/* primary color hsl(207 81.8% 63.3%) */
+
+	--palette-1-color:  rgb( 85,169,238);  /* hsl(207, 81.8, 63.3); */
+	--palette-2-color:  rgb( 93, 85,238);  /* hsl(243, 81.8, 63.3); */
+	--palette-3-color:  rgb(184, 85,238);  /* hsl(279, 81.8, 63.3); */
+	--palette-4-color:  rgb(238, 85,200);  /* hsl(315, 81.8, 63.3); */
+	--palette-5-color:  rgb(238, 85,108);  /* hsl(351, 81.8, 63.3); */
+	--palette-6-color:  rgb(238, 85, 87);  /* hsl(387, 81.8, 63.3); */
+	--palette-7-color:  rgb(230,238, 85);  /* hsl(63,  81.8, 63.3); */
+	--palette-8-color:  rgb(138,238, 85);  /* hsl(99,  81.8, 63.3); */
+	--palette-9-color:  rgb( 85,238,123);  /* hsl(135, 81.8, 63.3); */
+	--palette-10-color: rgb( 85,238,215); /* hsl(171, 81.8, 63.3); */
+
+	--palette-1-background:  rgba( 85,169,238,0.5);
+	--palette-2-background:  rgba( 93, 85,238,0.5);
+	--palette-3-background:  rgba(184, 85,238,0.5);
+	--palette-4-background:  rgba(238, 85,200,0.5);
+	--palette-5-background:  rgba(238, 85,108,0.5);
+	--palette-6-background:  rgba(238, 85, 87,0.5);
+	--palette-7-background:  rgba(230,238, 85,0.5);
+	--palette-8-background:  rgba(138,238, 85,0.5);
+	--palette-9-background:  rgba( 85,238,123,0.5);
+	--palette-10-background: rgba( 85,238,215,0.5);
+
+}
+

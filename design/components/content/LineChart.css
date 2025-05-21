@@ -20,19 +20,62 @@ figure[data-type="line-chart"] figcaption {
 	text-align: center;
 }
 
-figure[data-type="line-chart"] svg path:nth-of-type(1) { stroke: rgb(255,0,0); fill: rgba(255,0,0,0.2); }
-figure[data-type="line-chart"] svg path:nth-of-type(2) { stroke: rgb(0,255,0); fill: rgba(0,255,0,0.2); }
-figure[data-type="line-chart"] svg path:nth-of-type(3) { stroke: rgb(0,0,255); fill: rgba(0,0,255,0.2); }
-
-figure[data-type="line-chart"] svg path {
+figure[data-type="line-chart"] svg g {
+	opacity: 0.25;
 	z-index: 10;
-	opacity: 0.5;
 	transition: all 200ms ease-out;
 }
 
-figure[data-type="line-chart"] svg path:hover {
-	z-index: 20;
+figure[data-type="line-chart"] svg g[data-state="active"] {
 	opacity: 1;
+	z-index: 20;
 	transition: all 200ms ease-out;
 }
+
+figure[data-type="line-chart"] svg g text {
+	font-family: "vera-mono";
+	font-weight: normal;
+	font-style: normal;
+	fill: var(--main-color);
+}
+
+figure[data-type="line-chart"] figcaption label {
+	display: inline-block;
+	margin: 0px;
+	padding: 0px 8px;
+	font-family: "cantarell";
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+}
+
+figure[data-type="line-chart"] figcaption label:before {
+	width: auto;
+	height: auto;
+	margin: 0px 4px 0px 0px;
+	content: "\2588";
+	font-size: 16px;
+}
+
+figure[data-type="line-chart"] svg g[data-palette="1"] path  { stroke: var(--palette-1-color);  fill: var(--palette-1-color);  }
+figure[data-type="line-chart"] svg g[data-palette="2"] path  { stroke: var(--palette-2-color);  fill: var(--palette-2-color);  }
+figure[data-type="line-chart"] svg g[data-palette="3"] path  { stroke: var(--palette-3-color);  fill: var(--palette-3-color);  }
+figure[data-type="line-chart"] svg g[data-palette="4"] path  { stroke: var(--palette-4-color);  fill: var(--palette-4-color);  }
+figure[data-type="line-chart"] svg g[data-palette="5"] path  { stroke: var(--palette-5-color);  fill: var(--palette-5-color);  }
+figure[data-type="line-chart"] svg g[data-palette="6"] path  { stroke: var(--palette-6-color);  fill: var(--palette-6-color);  }
+figure[data-type="line-chart"] svg g[data-palette="7"] path  { stroke: var(--palette-7-color);  fill: var(--palette-7-color);  }
+figure[data-type="line-chart"] svg g[data-palette="8"] path  { stroke: var(--palette-8-color);  fill: var(--palette-8-color);  }
+figure[data-type="line-chart"] svg g[data-palette="9"] path  { stroke: var(--palette-9-color);  fill: var(--palette-9-color);  }
+figure[data-type="line-chart"] svg g[data-palette="10"] path { stroke: var(--palette-10-color); fill: var(--palette-10-color); }
+
+figure[data-type="line-chart"] figcaption label[data-palette="1"]:before  { color: var(--palette-1-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="2"]:before  { color: var(--palette-2-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="3"]:before  { color: var(--palette-3-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="4"]:before  { color: var(--palette-4-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="5"]:before  { color: var(--palette-5-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="6"]:before  { color: var(--palette-6-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="7"]:before  { color: var(--palette-7-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="8"]:before  { color: var(--palette-8-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="9"]:before  { color: var(--palette-9-color);  }
+figure[data-type="line-chart"] figcaption label[data-palette="10"]:before { color: var(--palette-10-color); }
 

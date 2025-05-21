@@ -1,24 +1,57 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/data"
 import "time"
 
 func main() {
 
-	chart := content.ToLineChart(dom.Document.QuerySelector("figure[data-type=\"line-chart\"]"))
-
-	chart.Disable()
+	performance_chart := content.ToLineChart(dom.Document.QuerySelector("figure[data-name=\"performance\"]"))
+	performance_chart.Disable()
 
 	go func() {
 
 		time.Sleep(500 * time.Millisecond)
-		chart.Enable()
+		performance_chart.Enable()
 
 	}()
 
-	console.Log(chart.String())
+	activity_chart := content.ToLineChart(dom.Document.QuerySelector("figure[data-name=\"activity\"]"))
+	activity_dataset := data.ToDataset([]data.Data{
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
+	})
+	activity_chart.SetDataset(activity_dataset)
+
+	var index int = 0
+
+	listener := dom.ToEventListener(func(event *dom.Event) {
+
+		index++
+
+		if index >= 10 {
+			index = 0
+		}
+
+		activity_chart.Dataset.Set(index, data.Data(map[string]any{
+			"mouse-x": int(event.Value.Get("clientX").Int()),
+			"mouse-y": int(event.Value.Get("clientY").Int()),
+		}))
+
+		activity_chart.Render()
+
+	})
+
+	dom.Document.AddEventListener("mousemove", listener)
 
 	for true {
 

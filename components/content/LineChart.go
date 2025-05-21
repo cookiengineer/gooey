@@ -102,10 +102,38 @@ func (chart *LineChart) init_events() {
 
 		if event.Target != nil {
 
-			label := event.Target.GetAttribute("data-label")
+			if event.Target.TagName == "LABEL" {
 
-			if label != "" {
-				// TODO: Tooltip integration
+				property := event.Target.GetAttribute("data-property")
+
+				if property != "" {
+
+					svg    := chart.Component.Element.QuerySelector("svg")
+					layers := chart.Component.Element.QuerySelectorAll("svg g")
+
+					var foreground *dom.Element = nil
+
+					background := make([]*dom.Element, 0)
+
+					for _, layer := range layers {
+
+						if layer.GetAttribute("data-name") == property {
+							layer.SetAttribute("data-state", "active")
+							foreground = layer
+						} else {
+							layer.RemoveAttribute("data-state")
+							background = append(background, layer)
+						}
+
+					}
+
+					if svg != nil {
+						svg.ReplaceChildren(background)
+						svg.Append(foreground)
+					}
+
+				}
+
 			}
 
 		}
@@ -257,14 +285,24 @@ func (chart *LineChart) Render() *dom.Element {
 
 				min_value, max_value := calculateChartDatasetMinMax(chart.Dataset, chart.Properties)
 
-				paths := make([]*dom.Element, len(chart.Properties))
+				layers := make([]*dom.Element, len(chart.Properties))
 
 				for p, property := range chart.Properties {
 
-					path := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "path")
-					path.SetAttribute("data-property", property)
+					layer := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "g")
+					layer.SetAttribute("data-name", property)
+					layer.SetAttribute("data-palette", strconv.Itoa(p+1))
 
-					path_description := renderChartDatasetToPath(
+					layer.Append(renderChartDatasetToPath(
+						chart.Dataset,
+						chart.ViewBox.Width,
+						chart.ViewBox.Height,
+						min_value,
+						max_value,
+						property,
+					))
+
+					path_texts := renderChartDatasetToTexts(
 						chart.Dataset,
 						chart.ViewBox.Width,
 						chart.ViewBox.Height,
@@ -273,13 +311,15 @@ func (chart *LineChart) Render() *dom.Element {
 						property,
 					)
 
-					path.SetAttribute("d", path_description)
+					for _, text := range path_texts {
+						layer.Append(text)
+					}
 
-					paths[p] = path
+					layers[p] = layer
 
 				}
 
-				svg.ReplaceChildren(paths)
+				svg.ReplaceChildren(layers)
 
 			}
 
@@ -289,7 +329,20 @@ func (chart *LineChart) Render() *dom.Element {
 
 		if figcaption != nil {
 
-			// TODO: Render figcaption labels
+			labels := make([]*dom.Element, len(chart.Properties))
+
+			for p, property := range chart.Properties {
+
+				label := dom.Document.CreateElement("label")
+				label.SetAttribute("data-palette", strconv.Itoa(p+1))
+				label.SetAttribute("data-property", property)
+				label.SetInnerHTML(chart.Labels[p])
+
+				labels[p] = label
+
+			}
+
+			figcaption.ReplaceChildren(labels)
 
 		}
 
@@ -399,9 +452,11 @@ func (chart *LineChart) String() string {
 
 	min_value, max_value := calculateChartDatasetMinMax(chart.Dataset, chart.Properties)
 
+	// TODO: Fix this
+
 	for _, property := range chart.Properties {
 
-		path_description := renderChartDatasetToPath(
+		path := renderChartDatasetToPath(
 			chart.Dataset,
 			chart.ViewBox.Width,
 			chart.ViewBox.Height,
@@ -411,8 +466,8 @@ func (chart *LineChart) String() string {
 		)
 
 		html += "<path"
-		html += " data-property=\"" + property + "\""
-		html += " d=\"" + path_description + "\""
+		html += " data-property=\"" + path.GetAttribute("data-property") + "\""
+		html += " d=\"" + path.GetAttribute("d") + "\""
 		html += "/>"
 
 	}
@@ -420,7 +475,9 @@ func (chart *LineChart) String() string {
 	html += "</svg>"
 	html += "<figcaption>"
 
-	// TODO: Render <figcaption>
+	for p, property := range chart.Properties {
+		html += "<label data-property=\"" + property + "\">" + chart.Labels[p] + "</label>"
+	}
 
 	html += "</figcaption>"
 	html += "</figure>"

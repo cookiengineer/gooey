@@ -292,3 +292,118 @@ func (data *Data) Render() (map[string]string, map[string]string) {
 
 }
 
+func (data *Data) RenderProperty(property string) (string, string) {
+
+	result_value := ""
+	result_type  := ""
+
+	if property != "" {
+
+		val, ok := (*data)[property]
+
+		if ok == true {
+
+			switch tmp := val.(type) {
+			case []byte:
+
+				result := ""
+
+				for t := 0; t < len(tmp); t++ {
+
+					hex := strconv.FormatUint(uint64(tmp[t]), 16)
+
+					if len(hex) == 1 {
+						result += "0x0" + hex
+					} else {
+						result += "0x" + hex
+					}
+
+					if t < len(tmp) - 1 {
+						result += " "
+					}
+
+				}
+
+				result_type  = "bytes"
+				result_value = result
+
+			case bool:
+
+				result_type  = "bool"
+				result_value = strconv.FormatBool(tmp)
+
+			case float32:
+
+				result_type  = "float32"
+				result_value = strconv.FormatFloat(float64(tmp), 'g', -1, 32)
+
+			case float64:
+
+				result_type  = "float64"
+				result_value = strconv.FormatFloat(float64(tmp), 'g', -1, 64)
+
+			case int:
+
+				result_type  = "int"
+				result_value = strconv.FormatInt(int64(tmp), 10)
+
+			case int8:
+
+				result_type  = "int8"
+				result_value = strconv.FormatInt(int64(tmp), 10)
+
+			case int16:
+
+				result_type  = "int16"
+				result_value = strconv.FormatInt(int64(tmp), 10)
+
+			case int32:
+
+				result_type  = "int32"
+				result_value = strconv.FormatInt(int64(tmp), 10)
+
+			case int64:
+
+				result_type  = "int64"
+				result_value = strconv.FormatInt(tmp, 10)
+
+			case string:
+
+				result_type  = "string"
+				result_value = tmp
+
+			case uint:
+
+				result_type  = "uint"
+				result_value = strconv.FormatUint(uint64(tmp), 10)
+
+			case uint8:
+
+				result_type  = "uint8"
+				result_value = strconv.FormatUint(uint64(tmp), 10)
+
+			case uint16:
+
+				result_type  = "uint16"
+				result_value = strconv.FormatUint(uint64(tmp), 10)
+
+			case uint32:
+
+				result_type  = "uint32"
+				result_value = strconv.FormatUint(uint64(tmp), 10)
+
+			case uint64:
+
+				result_type  = "uint64"
+				result_value = strconv.FormatUint(tmp, 10)
+
+			}
+
+		}
+
+	}
+
+	return result_value, result_type
+
+}
+
