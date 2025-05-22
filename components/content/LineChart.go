@@ -2,16 +2,15 @@
 
 package content
 
-import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/data"
-// import "github.com/cookiengineer/gooey/interfaces"
 import "strconv"
 import "strings"
 
 type LineChart struct {
 	Name       string                `json:"name"`
+	Disabled   bool                  `json:"disabled"`
 	Labels     []string              `json:"labels"`
 	Properties []string              `json:"properties"`
 	Types      []string              `json:"types"`
@@ -76,21 +75,19 @@ func ToLineChart(element *dom.Element) *LineChart {
 
 func (chart *LineChart) Disable() bool {
 
-	var result bool
+	chart.Disabled = true
+	chart.Render()
 
-	// TODO: Can <figure> element have custom attributes like disabled?
-
-	return result
+	return true
 
 }
 
 func (chart *LineChart) Enable() bool {
 
-	var result bool
+	chart.Disabled = false
+	chart.Render()
 
-	// TODO: Can <figure> element have custom attributes like disabled?
-
-	return result
+	return true
 
 }
 
@@ -100,7 +97,7 @@ func (chart *LineChart) init_events() {
 
 	chart.Component.Element.AddEventListener("mousemove", dom.ToEventListener(func(event *dom.Event) {
 
-		if event.Target != nil {
+		if chart.Disabled == false && event.Target != nil {
 
 			if event.Target.TagName == "LABEL" {
 
