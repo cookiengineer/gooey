@@ -1,11 +1,6 @@
 
 # Components
 
-## content/LineChart
-
-- [ ] LineChart doesn't render when dataset's X/Y position is larger than width/height,
-      because delta x/y is represented with an `int` at the moment. How to fix this?
-
 ## components/Document
 
 - [ ] Implement a Parse() and Render() method for server-side usage that uses `String()` on all components
@@ -16,15 +11,23 @@
 ## content/BarChart
 
 - [ ] Use a `<figure>` element as a wrapper
-- [ ] number can be `float32`, `float64`, `int`, `int8`, `int16`, `int32`, `int64`, `uint` ...
-- [ ] ChartData map[string]number
+- [ ] chart.Data is a data.Data instance
 - [ ] Labels []string
 - [ ] Properties []string
 
 ## content/PieChart
 
 - [ ] Use a `<figure>` element as a wrapper
-- [ ] Same properties as BarChart, probably
+- [ ] chart.Data is a data.Data instance
+- [ ] Labels []string
+- [ ] Properties []string
+
+## content/RadialChart
+
+- [ ] chart.Dataset is data.Dataset instance
+- [ ] Labels []string
+- [ ] Properties []string
+
 
 ## Oauth Components
 
