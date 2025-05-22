@@ -288,16 +288,7 @@ func (chart *LineChart) Render() *dom.Element {
 					layer.SetAttribute("data-name", property)
 					layer.SetAttribute("data-palette", strconv.Itoa(p+1))
 
-					layer.Append(renderChartDatasetToPath(
-						chart.Dataset,
-						chart.ViewBox.Width,
-						chart.ViewBox.Height,
-						min_value,
-						max_value,
-						property,
-					))
-
-					path_texts := renderChartDatasetToTexts(
+					path, texts := renderLineChartDataset(
 						chart.Dataset,
 						chart.ViewBox.Width,
 						chart.ViewBox.Height,
@@ -306,8 +297,16 @@ func (chart *LineChart) Render() *dom.Element {
 						property,
 					)
 
-					for _, text := range path_texts {
-						layer.Append(text)
+					if path != nil {
+						layer.Append(path)
+					}
+
+					for _, text := range texts {
+
+						if text != nil {
+							layer.Append(text)
+						}
+
 					}
 
 					layers[p] = layer
@@ -454,7 +453,7 @@ func (chart *LineChart) String() string {
 		html += " data-palette=\"" + strconv.Itoa(p+1) + "\""
 		html += ">"
 
-		path := renderChartDatasetToPath(
+		path, texts := renderLineChartDataset(
 			chart.Dataset,
 			chart.ViewBox.Width,
 			chart.ViewBox.Height,
@@ -466,15 +465,6 @@ func (chart *LineChart) String() string {
 		html += "<path"
 		html += " d=\"" + path.GetAttribute("d") + "\""
 		html += "/>"
-
-		texts := renderChartDatasetToTexts(
-			chart.Dataset,
-			chart.ViewBox.Width,
-			chart.ViewBox.Height,
-			min_value,
-			max_value,
-			property,
-		)
 
 		for _, text := range texts {
 

@@ -3,6 +3,7 @@ package content
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/data"
 import "strconv"
+import "strings"
 
 func renderTextAt(x int, y int, label string) *dom.Element {
 
@@ -17,8 +18,9 @@ func renderTextAt(x int, y int, label string) *dom.Element {
 
 }
 
-func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min_value int64, max_value int64, property string) []*dom.Element {
+func renderLineChartDataset(dataset *data.Dataset, width int, height int, min_value int64, max_value int64, property string) (*dom.Element, []*dom.Element) {
 
+	path    := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "path")
 	texts   := make([]*dom.Element, 0)
 	delta_x := float64(width)
 	delta_y := float64(height)
@@ -34,6 +36,10 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 	if min_value < 0 {
 		delta_y = float64(float64(height) / (float64(max_value) + float64(float64(-1) * float64(min_value))))
 	}
+
+	description := make([]string, 0)
+
+	description = append(description, "M0," + strconv.Itoa(height + 1))
 
 	for index := 0; index < dataset.Length(); index++ {
 
@@ -57,6 +63,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 					pos_y := 0
 					label := strconv.FormatBool(value)
 
+					description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 					texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 				} else if value == false {
@@ -65,6 +72,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 					pos_y := height
 					label := strconv.FormatBool(value)
 
+					description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 					texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 				}
@@ -76,6 +84,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatFloat(float64(value), 'g', -1, 32)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case float64:
@@ -85,6 +94,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatFloat(value, 'g', -1, 32)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case int:
@@ -94,6 +104,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case int8:
@@ -103,6 +114,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case int16:
@@ -112,6 +124,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case int32:
@@ -121,6 +134,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case int64:
@@ -130,6 +144,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(value, 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case uint:
@@ -139,6 +154,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case uint8:
@@ -148,6 +164,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case uint16:
@@ -157,6 +174,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case uint32:
@@ -166,6 +184,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			case uint64:
@@ -175,6 +194,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(value, 10)
 
+				description = append(description, "L" + strconv.Itoa(pos_x) + "," + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
 
 			}
@@ -182,6 +202,10 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 		}
 
 	}
+
+	description = append(description, "L" + strconv.Itoa(width - 1) + "," + strconv.Itoa(height + 1))
+
+	path.SetAttribute("d", strings.Join(description, " ") + " Z")
 
 	if len(texts) > 0 {
 		texts[0].SetAttribute("text-anchor", "start")
@@ -191,6 +215,6 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 		texts[len(texts)-1].SetAttribute("text-anchor", "end")
 	}
 
-	return texts
+	return path, texts
 
 }
