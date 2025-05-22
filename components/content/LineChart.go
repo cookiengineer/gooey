@@ -252,8 +252,6 @@ func (chart *LineChart) Parse() {
 
 			chart.Types = tmp2
 
-			console.Log(chart)
-
 		}
 
 	}
@@ -452,9 +450,12 @@ func (chart *LineChart) String() string {
 
 	min_value, max_value := calculateChartDatasetMinMax(chart.Dataset, chart.Properties)
 
-	// TODO: Fix this
+	for p, property := range chart.Properties {
 
-	for _, property := range chart.Properties {
+		html += "<g"
+		html += " data-name=\"" + property + "\""
+		html += " data-palette=\"" + strconv.Itoa(p+1) + "\""
+		html += ">"
 
 		path := renderChartDatasetToPath(
 			chart.Dataset,
@@ -466,9 +467,32 @@ func (chart *LineChart) String() string {
 		)
 
 		html += "<path"
-		html += " data-property=\"" + path.GetAttribute("data-property") + "\""
 		html += " d=\"" + path.GetAttribute("d") + "\""
 		html += "/>"
+
+		texts := renderChartDatasetToTexts(
+			chart.Dataset,
+			chart.ViewBox.Width,
+			chart.ViewBox.Height,
+			min_value,
+			max_value,
+			property,
+		)
+
+		for _, text := range texts {
+
+			html += "<text"
+			html += " text-anchor=\"" + text.GetAttribute("text-anchor") + "\""
+			html += " dominant-baseline=\"" + text.GetAttribute("dominant-baseline") + "\""
+			html += " x=\"" + text.GetAttribute("x") + "\""
+			html += " y=\"" + text.GetAttribute("y") + "\""
+			html += ">"
+			html += text.InnerHTML
+			html += "</text>"
+
+		}
+
+		html += "</g>"
 
 	}
 
