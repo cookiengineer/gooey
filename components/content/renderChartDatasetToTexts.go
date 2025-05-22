@@ -20,19 +20,19 @@ func renderTextAt(x int, y int, label string) *dom.Element {
 func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min_value int64, max_value int64, property string) []*dom.Element {
 
 	texts   := make([]*dom.Element, 0)
-	delta_x := int(width)
-	delta_y := int(height)
+	delta_x := float64(width)
+	delta_y := float64(height)
 
 	if dataset.Length() > 1 {
-		delta_x = int(width / (dataset.Length() - 1))
+		delta_x = float64(float64(width) / (float64(dataset.Length()) - float64(1)))
 	}
 
 	if max_value > 0 {
-		delta_y = int(int64(height) / max_value)
+		delta_y = float64(float64(height) / float64(max_value))
 	}
 
 	if min_value < 0 {
-		delta_y = int(int64(height) / (int64(max_value) + int64(-1 * min_value)))
+		delta_y = float64(float64(height) / (float64(max_value) + float64(float64(-1) * float64(min_value))))
 	}
 
 	for index := 0; index < dataset.Length(); index++ {
@@ -53,7 +53,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 
 				if value == true {
 
-					pos_x := int(delta_x * index)
+					pos_x := int(delta_x * float64(index))
 					pos_y := 0
 					label := strconv.FormatBool(value)
 
@@ -61,7 +61,7 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 
 				} else if value == false {
 
-					pos_x := int(delta_x * index)
+					pos_x := int(delta_x * float64(index))
 					pos_y := height
 					label := strconv.FormatBool(value)
 
@@ -72,8 +72,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case float32:
 
 				value := val.(float32)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(float32(delta_y) * (value - float32(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatFloat(float64(value), 'g', -1, 32)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -81,8 +81,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case float64:
 
 				value := val.(float64)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(float64(delta_y) * (value - float64(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatFloat(value, 'g', -1, 32)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -90,8 +90,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case int:
 
 				value := val.(int)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(int(delta_y) * (value - int(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -99,8 +99,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case int8:
 
 				value := val.(int8)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(int8(delta_y) * (value - int8(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -108,8 +108,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case int16:
 
 				value := val.(int16)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(int16(delta_y) * (value - int16(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -117,8 +117,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case int32:
 
 				value := val.(int32)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(int32(delta_y) * (value - int32(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(int64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -126,8 +126,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case int64:
 
 				value := val.(int64)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(int64(delta_y) * (value - int64(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatInt(value, 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -135,8 +135,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case uint:
 
 				value := val.(uint)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(uint(delta_y) * (value - uint(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -144,8 +144,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case uint8:
 
 				value := val.(uint8)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(uint8(delta_y) * (value - uint8(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -153,8 +153,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case uint16:
 
 				value := val.(uint16)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(uint16(delta_y) * (value - uint16(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -162,8 +162,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case uint32:
 
 				value := val.(uint32)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(uint32(delta_y) * (value - uint32(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(uint64(value), 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
@@ -171,8 +171,8 @@ func renderChartDatasetToTexts(dataset *data.Dataset, width int, height int, min
 			case uint64:
 
 				value := val.(uint64)
-				pos_x := int(delta_x * index)
-				pos_y := height - int(uint64(delta_y) * (value - uint64(min_value)))
+				pos_x := int(delta_x * float64(index))
+				pos_y := height - int(delta_y * (float64(value) - float64(min_value)))
 				label := strconv.FormatUint(value, 10)
 
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
