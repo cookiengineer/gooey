@@ -259,9 +259,10 @@ func (chart *PieChart) Render() *dom.Element {
 
 			if len(*chart.Data) > 0 {
 
-				min_value, max_value := calculateChartDataMinMax(chart.Data, chart.Properties)
-
-				layers := make([]*dom.Element, len(chart.Properties))
+				min_value := int64(0)
+				max_value := sumChartData(chart.Data, chart.Properties)
+				layers    := make([]*dom.Element, len(chart.Properties))
+				offset    := 0.0
 
 				for p, property := range chart.Properties {
 
@@ -269,18 +270,20 @@ func (chart *PieChart) Render() *dom.Element {
 					layer.SetAttribute("data-property", property)
 					layer.SetAttribute("data-palette", strconv.Itoa(p+1))
 
-					path, text := renderPieChartData(
+					path, text, percentage := renderPieChartData(
 						chart.Data,
 						chart.ViewBox.Width,
 						chart.ViewBox.Height,
 						min_value,
 						max_value,
 						property,
+						offset,
 					)
 
 					if path != nil && text != nil {
 						layer.Append(path)
 						layer.Append(text)
+						offset += percentage
 					}
 
 					layers[p] = layer
@@ -384,7 +387,9 @@ func (chart *PieChart) String() string {
 	html += " height=\"" + strconv.Itoa(chart.ViewBox.Height) + "\""
 	html += ">"
 
-	min_value, max_value := calculateChartDataMinMax(chart.Data, chart.Properties)
+	min_value := int64(0)
+	max_value := sumChartData(chart.Data, chart.Properties)
+	offset    := 0.0
 
 	for p, property := range chart.Properties {
 
@@ -393,13 +398,14 @@ func (chart *PieChart) String() string {
 		html += " data-palette=\"" + strconv.Itoa(p+1) + "\""
 		html += ">"
 
-		path, text := renderPieChartData(
+		path, text, percentage := renderPieChartData(
 			chart.Data,
 			chart.ViewBox.Width,
 			chart.ViewBox.Height,
 			min_value,
 			max_value,
 			property,
+			offset,
 		)
 
 		html += "<path"
@@ -416,6 +422,8 @@ func (chart *PieChart) String() string {
 		html += "</text>"
 
 		html += "</g>"
+
+		offset += percentage
 
 	}
 

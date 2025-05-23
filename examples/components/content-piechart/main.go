@@ -2,7 +2,6 @@ package main
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/content"
-import "github.com/cookiengineer/gooey/components/data"
 import "time"
 
 func main() {

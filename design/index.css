@@ -4,6 +4,7 @@
 
 @import url("./components/content/Fieldset.css");
 @import url("./components/content/LineChart.css");
+@import url("./components/content/PieChart.css");
 @import url("./components/content/Table.css");
 
 @import url("./components/layout/Header.css");
