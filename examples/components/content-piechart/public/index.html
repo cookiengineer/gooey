@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Gooey Pie Chart Example</title>
+
+		<!-- WebView -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src-elem 'self'">
+		<meta http-equiv="Content-Security-Policy" content="frame-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="worker-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="connect-src 'self'">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="manifest" href="/design/site.webmanifest" />
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/png" href="/design/favicon/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="/design/favicon/favicon.svg" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/design/favicon/apple-touch-icon.png" sizes="180x180" />
+
+		<!-- Design -->
+		<link rel="stylesheet" href="/design/index.css" />
+		<link rel="stylesheet" href="/custom/index.css" />
+	</head>
+	<body>
+		<main>
+			<article>
+				<figure data-name="integers" data-type="pie-chart">
+					<datalist>
+						<data data-property="john-wick" data-type="int" value="40">John Wick</data>
+						<data data-property="john-reese" data-type="int" value="13">John Reese</data>
+						<data data-property="harold-finch" data-type="int" value="37">Harold Finch</data>
+					</datalist>
+					<!-- Rendered via WebASM -->
+					<svg viewbox="0 0 512 512"></svg>
+					<figcaption></figcaption>
+				</figure>
+			</article>
+			<article>
+				<figure data-name="floats" data-type="pie-chart">
+					<datalist>
+						<data data-property="john-wick" data-type="float32" value="40.0">John Wick</data>
+						<data data-property="john-reese" data-type="float32" value="13.37">John Reese</data>
+						<data data-property="harold-finch" data-type="float32" value="37.13">Harold Finch</data>
+					</datalist>
+					<!-- Rendered via WebASM -->
+					<svg viewbox="0 0 512 512"></svg>
+					<figcaption></figcaption>
+				</figure>
+			</article>
+			<article>
+				<figure data-name="percentages" data-type="line-chart">
+					<datalist>
+						<data data-property="john-wick" data-type="string" value="40%">Sam Groves</data>
+						<data data-property="john-reese" data-type="string" value="13%">John Reese</data>
+						<data data-property="harold-finch" data-type="string" value="37%">Harold Finch</data>
+					</datalist>
+					<!-- Rendered via WebASM -->
+					<svg viewbox="0 0 512 512"></svg>
+					<figcaption></figcaption>
+				</figure>
+			</article>
+		</main>
+		<script src="wasm_exec.js"></script>
+		<script src="wasm_init.js"></script>
+	</body>
+</html>

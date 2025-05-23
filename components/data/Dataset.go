@@ -73,7 +73,7 @@ func (dataset *Dataset) Join(separator string) (map[string]string, map[string]st
 
 	for d := 0; d < len(*dataset); d++ {
 
-		tmp_values, tmp_types := (*dataset)[d].Render()
+		tmp_values, tmp_types := (*dataset)[d].String()
 
 		if d == 0 {
 			result_types = tmp_types
@@ -99,14 +99,14 @@ func (dataset *Dataset) Length() int {
 	return len(*dataset)
 }
 
-func (dataset *Dataset) Render() ([]map[string]string, map[string]string) {
+func (dataset *Dataset) String() ([]map[string]string, map[string]string) {
 
 	result_values := make([]map[string]string, 0)
 	result_types  := make(map[string]string)
 
 	for d := 0; d < len(*dataset); d++ {
 
-		tmp_values, tmp_types := (*dataset)[d].Render()
+		tmp_values, tmp_types := (*dataset)[d].String()
 
 		if d == 0 {
 			result_types = tmp_types

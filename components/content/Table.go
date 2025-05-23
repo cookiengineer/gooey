@@ -520,7 +520,7 @@ func (table *Table) Render() *dom.Element {
 
 				}
 
-				values, _ := table.Dataset.Get(position).Render()
+				values, _ := table.Dataset.Get(position).String()
 
 				for _, property := range table.Properties {
 
@@ -793,7 +793,7 @@ func (table *Table) String() string {
 
 		}
 
-		values, _ := table.Dataset.Get(position).Render()
+		values, _ := table.Dataset.Get(position).String()
 
 		for _, property := range table.Properties {
 

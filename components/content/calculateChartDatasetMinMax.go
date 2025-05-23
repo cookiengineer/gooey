@@ -2,6 +2,8 @@ package content
 
 import "github.com/cookiengineer/gooey/components/data"
 import "math"
+import "strconv"
+import "strings"
 
 func calculateChartDatasetMinMax(dataset *data.Dataset, properties []string) (int64, int64) {
 
@@ -117,7 +119,50 @@ func calculateChartDatasetMinMax(dataset *data.Dataset, properties []string) (in
 
 				case string:
 
-					// Do Nothing
+					value := val.(string)
+
+					if strings.HasSuffix(value, "%") {
+
+						value = value[0:len(value)-1]
+
+						if strings.Contains(value, ".") {
+
+							tmp, err := strconv.ParseFloat(value, 32)
+
+							if err == nil && tmp >= 0.0 && tmp <= 100.0 {
+
+								value1 := math.Floor(tmp)
+								value2 := math.Round(tmp)
+
+								if int64(value1) < min_value {
+									min_value = int64(value1)
+								}
+
+								if int64(value2) > max_value {
+									max_value = int64(value2)
+								}
+
+							}
+
+						} else {
+
+							tmp, err := strconv.ParseInt(value, 10, 32)
+
+							if err == nil && tmp >= 0 && tmp <= 100 {
+
+								if tmp < min_value {
+									min_value = tmp
+								}
+
+								if tmp > max_value {
+									max_value = tmp
+								}
+
+							}
+
+						}
+
+					}
 
 				case uint:
 

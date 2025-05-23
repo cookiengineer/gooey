@@ -29,6 +29,17 @@
 - [ ] Properties []string
 
 
+# ui/Range
+
+- [ ] Use `input[type="range"]`
+- [ ] Min/Max/Step `int` Properties
+
+# ui/Progress
+
+- [ ] Use `progress` element
+- [ ] Min/Max/Step `int` Properties
+
+
 ## Oauth Components
 
 - [ ] WebAuthN integrated login components

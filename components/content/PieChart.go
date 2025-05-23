@@ -8,13 +8,13 @@ import "github.com/cookiengineer/gooey/components/data"
 import "strconv"
 import "strings"
 
-type LineChart struct {
+type PieChart struct {
 	Name       string                `json:"name"`
 	Disabled   bool                  `json:"disabled"`
 	Labels     []string              `json:"labels"`
 	Properties []string              `json:"properties"`
 	Types      []string              `json:"types"`
-	Dataset    *data.Dataset         `json:"dataset"`
+	Data       *data.Data            `json:"data"`
 	Component  *components.Component `json:"component"`
 	ViewBox    struct {
 		Width  int `json:"width"`
@@ -22,15 +22,14 @@ type LineChart struct {
 	} `json:"viewbox"`
 }
 
-func NewLineChart(name string, labels []string, properties []string, types []string) LineChart {
+func NewPieChart(name string, labels []string, properties []string, types []string) PieChart {
 
-	var chart LineChart
+	var chart PieChart
 
 	element   := dom.Document.CreateElement("figure")
 	component := components.NewComponent(element)
-	dataset   := data.NewDataset(0)
 
-	chart.Dataset    = &dataset
+	chart.Data       = &data.Data{}
 	chart.Component  = &component
 	chart.Name       = strings.TrimSpace(strings.ToLower(name))
 	chart.Labels     = make([]string, 0)
@@ -38,7 +37,7 @@ func NewLineChart(name string, labels []string, properties []string, types []str
 	chart.Types      = make([]string, 0)
 
 	chart.ViewBox.Width  = 512
-	chart.ViewBox.Height = 256
+	chart.ViewBox.Height = 512
 
 	chart.SetLabelsAndPropertiesAndTypes(labels, properties, types)
 	chart.init_events()
@@ -48,14 +47,13 @@ func NewLineChart(name string, labels []string, properties []string, types []str
 
 }
 
-func ToLineChart(element *dom.Element) *LineChart {
+func ToPieChart(element *dom.Element) *PieChart {
 
-	var chart LineChart
+	var chart PieChart
 
 	component := components.NewComponent(element)
-	dataset   := data.NewDataset(0)
 
-	chart.Dataset    = &dataset
+	chart.Data       = &data.Data{}
 	chart.Component  = &component
 	chart.Name       = ""
 	chart.Labels     = make([]string, 0)
@@ -73,7 +71,7 @@ func ToLineChart(element *dom.Element) *LineChart {
 
 }
 
-func (chart *LineChart) Disable() bool {
+func (chart *PieChart) Disable() bool {
 
 	chart.Disabled = true
 	chart.Render()
@@ -82,7 +80,7 @@ func (chart *LineChart) Disable() bool {
 
 }
 
-func (chart *LineChart) Enable() bool {
+func (chart *PieChart) Enable() bool {
 
 	chart.Disabled = false
 	chart.Render()
@@ -91,7 +89,7 @@ func (chart *LineChart) Enable() bool {
 
 }
 
-func (chart *LineChart) init_events() {
+func (chart *PieChart) init_events() {
 
 	chart.Component.InitEvent("mousemove")
 
@@ -139,7 +137,7 @@ func (chart *LineChart) init_events() {
 
 }
 
-func (chart *LineChart) Parse() {
+func (chart *PieChart) Parse() {
 
 	if chart.Component.Element != nil {
 
@@ -171,7 +169,7 @@ func (chart *LineChart) Parse() {
 
 				} else {
 					chart.ViewBox.Width  = int(512)
-					chart.ViewBox.Height = int(256)
+					chart.ViewBox.Height = int(512)
 				}
 
 			} else {
@@ -194,50 +192,33 @@ func (chart *LineChart) Parse() {
 			}
 
 			elements   := datalist.QuerySelectorAll("data")
-			dataset    := data.NewDataset(0)
 			labels     := make([]string, 0)
 			properties := make([]string, 0)
 			types      := make(map[string]string)
-			values     := make([]map[string]string, 0)
+			values     := make(map[string]string)
 
 			for _, element := range elements {
 
 				property := element.GetAttribute("data-property")
 				label    := strings.TrimSpace(element.TextContent)
 				typ      := element.GetAttribute("data-type")
-				value    := strings.Split(element.GetAttribute("value"), ",")
+				val      := element.GetAttribute("value")
 
-				if len(value) > 0 {
+				types[property]  = typ
+				values[property] = val
 
-					if len(values) < len(value) {
-
-						for v := len(values); v < len(value); v++ {
-							values = append(values, map[string]string{})
-						}
-
-					}
-
-					for v, val := range value {
-						values[v][property] = val
-					}
-
-					types[property] = typ
-					labels          = append(labels, label)
-					properties      = append(properties, property)
-
-				}
+				labels     = append(labels, label)
+				properties = append(properties, property)
 
 			}
 
-			if len(values) > 0 && len(values[0]) == len(types) {
+			if len(values) > 0 && len(values) == len(types) {
 
-				for _, val := range values {
-					dataset.Add(data.ParseData(val, types))
-				}
+				tmp := data.ParseData(values, types)
+				chart.Data = &tmp
 
 			}
 
-			chart.Dataset    = &dataset
 			chart.Labels     = labels
 			chart.Properties = properties
 
@@ -246,7 +227,7 @@ func (chart *LineChart) Parse() {
 			for _, property := range properties {
 				tmp2 = append(tmp2, types[property])
 			}
-
+			
 			chart.Types = tmp2
 
 		}
@@ -255,12 +236,12 @@ func (chart *LineChart) Parse() {
 
 }
 
-func (chart *LineChart) Render() *dom.Element {
+func (chart *PieChart) Render() *dom.Element {
 
 	if chart.Component.Element != nil {
 
 		chart.Component.Element.SetAttribute("data-name", chart.Name)
-		chart.Component.Element.SetAttribute("data-type", "line-chart")
+		chart.Component.Element.SetAttribute("data-type", "pie-chart")
 
 		svg := chart.Component.Element.QuerySelector("svg")
 
@@ -276,9 +257,9 @@ func (chart *LineChart) Render() *dom.Element {
 			svg.SetAttribute("width",  strconv.Itoa(chart.ViewBox.Width))
 			svg.SetAttribute("height", strconv.Itoa(chart.ViewBox.Height))
 
-			if chart.Dataset.Length() > 0 {
+			if len(*chart.Data) > 0 {
 
-				min_value, max_value := calculateChartDatasetMinMax(chart.Dataset, chart.Properties)
+				min_value, max_value := calculateChartDataMinMax(chart.Data, chart.Properties)
 
 				layers := make([]*dom.Element, len(chart.Properties))
 
@@ -288,8 +269,8 @@ func (chart *LineChart) Render() *dom.Element {
 					layer.SetAttribute("data-property", property)
 					layer.SetAttribute("data-palette", strconv.Itoa(p+1))
 
-					path, texts := renderLineChartDataset(
-						chart.Dataset,
+					path, text := renderPieChartData(
+						chart.Data,
 						chart.ViewBox.Width,
 						chart.ViewBox.Height,
 						min_value,
@@ -297,16 +278,9 @@ func (chart *LineChart) Render() *dom.Element {
 						property,
 					)
 
-					if path != nil {
+					if path != nil && text != nil {
 						layer.Append(path)
-					}
-
-					for _, text := range texts {
-
-						if text != nil {
-							layer.Append(text)
-						}
-
+						layer.Append(text)
 					}
 
 					layers[p] = layer
@@ -346,49 +320,15 @@ func (chart *LineChart) Render() *dom.Element {
 
 }
 
-func (chart *LineChart) Add(data data.Data) bool {
-	return chart.Dataset.Add(data)
-}
+func (chart *PieChart) SetData(data data.Data) bool {
 
-func (chart *LineChart) Remove(indexes []int) {
+	chart.Data = &data
 
-	entries := make([]data.Data, 0)
-
-	for d, data := range *chart.Dataset {
-
-		found := false
-
-		for _, index := range indexes {
-
-			if d == index {
-				found = true
-				break
-			}
-
-		}
-
-		if found == false {
-			entries = append(entries, *data)
-		}
-
-	}
-
-	dataset := data.ToDataset(entries)
-
-	chart.Dataset = &dataset
+	return true
 
 }
 
-func (chart *LineChart) SetDataset(dataset data.Dataset) {
-	chart.Dataset = &dataset
-}
-
-func (chart *LineChart) SetData(entries []data.Data) {
-	dataset := data.ToDataset(entries)
-	chart.Dataset = &dataset
-}
-
-func (chart *LineChart) SetLabelsAndPropertiesAndTypes(labels []string, properties []string, types []string) bool {
+func (chart *PieChart) SetLabelsAndPropertiesAndTypes(labels []string, properties []string, types []string) bool {
 
 	var result bool
 
@@ -406,7 +346,7 @@ func (chart *LineChart) SetLabelsAndPropertiesAndTypes(labels []string, properti
 
 }
 
-func (chart *LineChart) String() string {
+func (chart *PieChart) String() string {
 
 	html := "<figure"
 
@@ -419,7 +359,7 @@ func (chart *LineChart) String() string {
 
 	html += "<datalist>"
 
-	values, _ := chart.Dataset.Join(",")
+	values, _ := chart.Data.String()
 
 	for p, property := range chart.Properties {
 
@@ -444,7 +384,7 @@ func (chart *LineChart) String() string {
 	html += " height=\"" + strconv.Itoa(chart.ViewBox.Height) + "\""
 	html += ">"
 
-	min_value, max_value := calculateChartDatasetMinMax(chart.Dataset, chart.Properties)
+	min_value, max_value := calculateChartDataMinMax(chart.Data, chart.Properties)
 
 	for p, property := range chart.Properties {
 
@@ -453,8 +393,8 @@ func (chart *LineChart) String() string {
 		html += " data-palette=\"" + strconv.Itoa(p+1) + "\""
 		html += ">"
 
-		path, texts := renderLineChartDataset(
-			chart.Dataset,
+		path, text := renderPieChartData(
+			chart.Data,
 			chart.ViewBox.Width,
 			chart.ViewBox.Height,
 			min_value,
@@ -466,18 +406,14 @@ func (chart *LineChart) String() string {
 		html += " d=\"" + path.GetAttribute("d") + "\""
 		html += "/>"
 
-		for _, text := range texts {
-
-			html += "<text"
-			html += " text-anchor=\"" + text.GetAttribute("text-anchor") + "\""
-			html += " dominant-baseline=\"" + text.GetAttribute("dominant-baseline") + "\""
-			html += " x=\"" + text.GetAttribute("x") + "\""
-			html += " y=\"" + text.GetAttribute("y") + "\""
-			html += ">"
-			html += text.InnerHTML
-			html += "</text>"
-
-		}
+		html += "<text"
+		html += " text-anchor=\"" + text.GetAttribute("text-anchor") + "\""
+		html += " dominant-baseline=\"" + text.GetAttribute("dominant-baseline") + "\""
+		html += " x=\"" + text.GetAttribute("x") + "\""
+		html += " y=\"" + text.GetAttribute("y") + "\""
+		html += ">"
+		html += text.InnerHTML
+		html += "</text>"
 
 		html += "</g>"
 

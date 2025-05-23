@@ -183,7 +183,7 @@ func ParseData(values map[string]string, types map[string]string) Data {
 
 }
 
-func (data *Data) Render() (map[string]string, map[string]string) {
+func (data *Data) String() (map[string]string, map[string]string) {
 
 	result_values := make(map[string]string)
 	result_types  := make(map[string]string)
@@ -292,7 +292,7 @@ func (data *Data) Render() (map[string]string, map[string]string) {
 
 }
 
-func (data *Data) RenderProperty(property string) (string, string) {
+func (data *Data) StringProperty(property string) (string, string) {
 
 	result_value := ""
 	result_type  := ""
