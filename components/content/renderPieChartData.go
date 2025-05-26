@@ -68,6 +68,10 @@ func renderPieChartData(data *data.Data, width int, height int, min_value int64,
 			fmt.Println(property, offset, percentage)
 			fmt.Println(value, delta)
 
+			// Move needs to be at start position of Arc, meaning on the circle position
+			// Arc needs to have rx,ry set to circle radius
+			// Arc needs to have end position on the circle, if more than 50%, then large arc flag needs to be 1
+
 			description = append(description, "M " + strconv.FormatFloat(center_x + start_x * radius, 'f', -1, 64) + " " + strconv.FormatFloat(center_y + start_y * radius, 'f', -1, 64))
 			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 0 " + strconv.FormatFloat(center_x + end_x * radius, 'f', -1, 64) + " " + strconv.FormatFloat(center_y + end_y * radius, 'f', -1, 64))
 			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))

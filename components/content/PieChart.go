@@ -269,6 +269,7 @@ func (chart *PieChart) Render() *dom.Element {
 					layer := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "g")
 					layer.SetAttribute("data-property", property)
 					layer.SetAttribute("data-palette", strconv.Itoa(p+1))
+					layer.SetAttribute("transform", "rotate(-180 256 256)")
 
 					path, text, percentage := renderPieChartData(
 						chart.Data,
