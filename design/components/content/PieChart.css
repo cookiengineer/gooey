@@ -20,16 +20,22 @@ figure[data-type="pie-chart"] figcaption {
 	text-align: center;
 }
 
-figure[data-type="pie-chart"] svg g {
-	opacity: 0.25;
+figure[data-type="pie-chart"] svg g path {
+	fill-opacity: 0.25;
+	stroke-opacity: 0.25;
 	z-index: 10;
-	transition: all 200ms ease-out;
+	transition: all 200ms ease-out 0ms;
 }
 
-figure[data-type="pie-chart"] svg g[data-state="active"] {
-	opacity: 1;
+figure[data-type="pie-chart"] svg g[data-state="active"] path {
+	fill-opacity: 1;
+	stroke-opacity: 1;
 	z-index: 20;
-	transition: all 200ms ease-out;
+	transition: all 200ms ease-out 0ms;
+}
+
+figure[data-type="pie-chart"] svg g path {
+	transition: fill 200ms ease-out;
 }
 
 figure[data-type="pie-chart"] svg g text {

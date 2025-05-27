@@ -20,14 +20,7 @@ func calculateChartDataMinMax(data *data.Data, properties []string) (int64, int6
 			case []byte:
 				// Do Nothing
 			case bool:
-
-				value := val.(bool)
-
-				if value == true || value == false {
-					max_value = 1
-					min_value = 0
-				}
-
+				// Do Nothing
 			case float32:
 
 				value1 := math.Floor(float64(val.(float32)))

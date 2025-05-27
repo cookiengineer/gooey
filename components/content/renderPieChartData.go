@@ -5,12 +5,9 @@ import "github.com/cookiengineer/gooey/components/data"
 import "math"
 import "strconv"
 import "strings"
-import "fmt"
 
 func getArcCoordinates(percentage float64) (float64, float64) {
 
-	// TODO: This is kind of wrong, it should start at the top and not at the bottom?
-	// TODO: largeArcFlag if percentage > 50% then 1 else 0?
 	x := math.Sin(2 * math.Pi * percentage)
 	y := math.Cos(2 * math.Pi * percentage)
 
@@ -45,52 +42,345 @@ func renderPieChartData(data *data.Data, width int, height int, min_value int64,
 		case []byte:
 			// Do Nothing
 		case bool:
+			// Do Nothing
+		case float32:
 
-			value := val.(bool)
+			value     := val.(float32)
+			percentage = float64(value) / delta
 
-			if value == true {
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
 
-				// TODO
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
 
-			} else if value == false {
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
 
-				// TODO
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatFloat(float64(value), 'g', -1, 32))
+
+		case float64:
+
+			value     := val.(float64)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatFloat(float64(value), 'g', -1, 64))
+
+		case int:
+
+			value     := val.(int)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatInt(int64(value), 10))
+
+		case int8:
+
+			value     := val.(int8)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatInt(int64(value), 10))
+
+		case int16:
+
+			value     := val.(int16)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatInt(int64(value), 10))
+
+		case int32:
+
+			value     := val.(int32)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatInt(int64(value), 10))
+
+		case int64:
+
+			value     := val.(int64)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatInt(int64(value), 10))
+
+		case string:
+
+			value := val.(string)
+
+			if strings.Contains(value, ".") && strings.HasSuffix(value, "%") {
+
+				tmp, err := strconv.ParseFloat(value[0:len(value)-1], 32)
+
+				if err == nil && tmp >= 0.0 && tmp <= 100.0 {
+
+					percentage = float64(tmp) / float64(100.0)
+
+					arc_start_x, arc_start_y := getArcCoordinates(offset)
+					arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+					arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+					text_x := int(center_x + arc_mid_x * radius / 2)
+					text_y := int(center_y - arc_mid_y * radius / 2)
+
+					move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+					move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+					end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+					end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+					description = append(description, "M " + move_x + " " + move_y)
+					description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+					description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+					text = renderTextAt(text_x, text_y, value)
+
+				}
+
+			} else if strings.HasSuffix(value, "%") {
+
+				tmp, err := strconv.ParseInt(value[0:len(value)-1], 10, 32)
+
+				if err == nil && tmp >= 0 && tmp <= 100 {
+
+					percentage = float64(tmp) / float64(100.0)
+
+					arc_start_x, arc_start_y := getArcCoordinates(offset)
+					arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+					arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+					text_x := int(center_x + arc_mid_x * radius / 2)
+					text_y := int(center_y - arc_mid_y * radius / 2)
+
+					move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+					move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+					end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+					end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+					description = append(description, "M " + move_x + " " + move_y)
+					description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+					description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+					text = renderTextAt(text_x, text_y, value)
+
+				}
 
 			}
 
-		case float32:
+		case uint:
 
-			value            := val.(float32)
-			percentage        = float64(value) / delta
-			start_x, start_y := getArcCoordinates(offset)
-			end_x,   end_y   := getArcCoordinates(offset + percentage)
+			value     := val.(uint)
+			percentage = float64(value) / delta
 
-			fmt.Println(property, offset, percentage)
-			fmt.Println(value, delta)
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
 
-			// Move needs to be at start position of Arc, meaning on the circle position
-			// Arc needs to have rx,ry set to circle radius
-			// Arc needs to have end position on the circle, if more than 50%, then large arc flag needs to be 1
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
 
-			description = append(description, "M " + strconv.FormatFloat(center_x + start_x * radius, 'f', -1, 64) + " " + strconv.FormatFloat(center_y + start_y * radius, 'f', -1, 64))
-			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 0 " + strconv.FormatFloat(center_x + end_x * radius, 'f', -1, 64) + " " + strconv.FormatFloat(center_y + end_y * radius, 'f', -1, 64))
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
 			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
 
-			// TODO: A rx ry x-axis-rotation large-arc-flag sweep-flag x y
+			text = renderTextAt(text_x, text_y, strconv.FormatUint(uint64(value), 10))
 
-		case float64:
-		case int:
-		case int8:
-		case int16:
-		case int32:
-		case int64:
-		case string:
-			// TODO: Parse percentage string
-		case uint:
 		case uint8:
+
+			value     := val.(uint8)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatUint(uint64(value), 10))
+
 		case uint16:
+
+			value     := val.(uint16)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatUint(uint64(value), 10))
+
 		case uint32:
+
+			value     := val.(uint32)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatUint(uint64(value), 10))
+
 		case uint64:
+
+			value     := val.(uint64)
+			percentage = float64(value) / delta
+
+			arc_start_x, arc_start_y := getArcCoordinates(offset)
+			arc_mid_x,   arc_mid_y   := getArcCoordinates(offset + percentage / 2)
+			arc_end_x,   arc_end_y   := getArcCoordinates(offset + percentage)
+
+			text_x := int(center_x + arc_mid_x * radius / 2)
+			text_y := int(center_y - arc_mid_y * radius / 2)
+
+			move_x := strconv.FormatFloat(center_x + arc_start_x * radius, 'f', -1, 64)
+			move_y := strconv.FormatFloat(center_y - arc_start_y * radius, 'f', -1, 64)
+			end_x  := strconv.FormatFloat(center_x + arc_end_x   * radius, 'f', -1, 64)
+			end_y  := strconv.FormatFloat(center_y - arc_end_y   * radius, 'f', -1, 64)
+
+			description = append(description, "M " + move_x + " " + move_y)
+			description = append(description, "A " + strconv.FormatFloat(radius, 'f', -1, 64) + " " + strconv.FormatFloat(radius, 'f', -1, 64) + " 0 0 1 " + end_x + " " + end_y)
+			description = append(description, "L " + strconv.FormatFloat(center_x, 'f', -1, 64) + " " + strconv.FormatFloat(center_y, 'f', -1, 64))
+
+			text = renderTextAt(text_x, text_y, strconv.FormatUint(uint64(value), 10))
+
 		}
 
 	}

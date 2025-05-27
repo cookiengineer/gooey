@@ -106,25 +106,24 @@ func (chart *PieChart) init_events() {
 					svg    := chart.Component.Element.QuerySelector("svg")
 					layers := chart.Component.Element.QuerySelectorAll("svg g")
 
-					var foreground *dom.Element = nil
-
-					background := make([]*dom.Element, 0)
+					// var foreground *dom.Element = nil
+					// background := make([]*dom.Element, 0)
 
 					for _, layer := range layers {
 
 						if layer.GetAttribute("data-property") == property {
 							layer.SetAttribute("data-state", "active")
-							foreground = layer
+							// foreground = layer
 						} else {
 							layer.RemoveAttribute("data-state")
-							background = append(background, layer)
+							// background = append(background, layer)
 						}
 
 					}
 
 					if svg != nil {
-						svg.ReplaceChildren(background)
-						svg.Append(foreground)
+						// svg.ReplaceChildren(background)
+						// svg.Append(foreground)
 					}
 
 				}
@@ -269,7 +268,9 @@ func (chart *PieChart) Render() *dom.Element {
 					layer := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "g")
 					layer.SetAttribute("data-property", property)
 					layer.SetAttribute("data-palette", strconv.Itoa(p+1))
-					layer.SetAttribute("transform", "rotate(-180 256 256)")
+
+					// TODO
+					// layer.SetAttribute("transform", "rotate(-180 256 256)")
 
 					path, text, percentage := renderPieChartData(
 						chart.Data,

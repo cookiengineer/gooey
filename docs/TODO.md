@@ -15,13 +15,6 @@
 - [ ] Labels []string
 - [ ] Properties []string
 
-## content/PieChart
-
-- [ ] Use a `<figure>` element as a wrapper
-- [ ] chart.Data is a data.Data instance
-- [ ] Labels []string
-- [ ] Properties []string
-
 ## content/RadialChart
 
 - [ ] chart.Dataset is data.Dataset instance

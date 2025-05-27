@@ -52,7 +52,6 @@ func renderLineChartDataset(dataset *data.Dataset, width int, height int, min_va
 
 			case []byte:
 				// Do Nothing
-
 			case bool:
 
 				value := val.(bool)
@@ -146,6 +145,44 @@ func renderLineChartDataset(dataset *data.Dataset, width int, height int, min_va
 
 				description = append(description, "L " + strconv.Itoa(pos_x) + " " + strconv.Itoa(pos_y))
 				texts = append(texts, renderTextAt(pos_x, pos_y, label))
+
+			case string:
+
+				value := val.(string)
+
+				if strings.Contains(value, ".") && strings.HasSuffix(value, "%") {
+
+					tmp, err := strconv.ParseFloat(value[0:len(value)-1], 32)
+
+					if err == nil && tmp >= 0.0 && tmp <= 100.0 {
+
+						percentage := float64(tmp) / float64(100.0)
+						pos_x      := int(delta_x * float64(index))
+						pos_y      := height - int(delta_y * percentage)
+						label      := value
+
+						description = append(description, "L " + strconv.Itoa(pos_x) + " " + strconv.Itoa(pos_y))
+						texts = append(texts, renderTextAt(pos_x, pos_y, label))
+
+					}
+
+				} else if strings.HasSuffix(value, "%") {
+
+					tmp, err := strconv.ParseInt(value[0:len(value)-1], 10, 32)
+
+					if err == nil && tmp >= 0 && tmp <= 100 {
+
+						percentage := float64(tmp) / float64(100.0)
+						pos_x      := int(delta_x * float64(index))
+						pos_y      := height - int(delta_y * percentage)
+						label      := value
+
+						description = append(description, "L " + strconv.Itoa(pos_x) + " " + strconv.Itoa(pos_y))
+						texts = append(texts, renderTextAt(pos_x, pos_y, label))
+
+					}
+
+				}
 
 			case uint:
 
