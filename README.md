@@ -80,6 +80,7 @@ is to migrate towards go-integrated tests that are compatible with `go test`.
 - [app](/examples/components/app)
 - [content-fieldset](/examples/components/content-fieldset)
 - [content-linechart](/examples/components/content-linechart)
+- [content-piechart](/examples/components/content-piechart)
 - [content-table](/examples/components/content-table)
 - [layout](/examples/components/layout)
 - [ui](/examples/components/ui)
