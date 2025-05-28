@@ -17,6 +17,8 @@ func RequestAnimationFrame(callback AnimationCallback) uint {
 			callback(timestamp)
 		}
 
+		return nil
+
 	})
 
 	tmp := js.Global().Call("requestAnimationFrame", wrapped_callback)

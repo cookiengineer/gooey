@@ -81,6 +81,12 @@
 
 # Bindings
 
+## CSS API
+
+- [ ] `css/FontFace`
+- [ ] `css/Matrix`
+- [ ] `css/Length`
+
 ## Encoding API
 
 [Encoders and Decoders](https://encoding.spec.whatwg.org/#encoders-and-decoders):
@@ -109,16 +115,50 @@
 
 ## Canvas API
 
-- [ ] canvas/Canvas
-- [ ] canvas/CanvasRenderingContext2D
-- [ ] canvas/CanvasGradient
-- [ ] canvas/CanvasPattern
-- [ ] canvas/ImageBitmap
-- [ ] canvas/ImageData
-- [ ] canvas/TextMetrics
-- [ ] canvas/OffscreenCanvas
-- [ ] canvas/OffscreenCanvasRenderingContext2D
-- [ ] canvas/ImageBitmapRenderingContext
+- [ ] `context.RoundRect()`
+
+Image/Texture APIs:
+
+- [ ] `canvas2d/Canvas` needs `ToDataURL()` and `ToBlob()` support
+- [ ] Is the `Blob` implementation part of `dom`?
+
+- https://developer.mozilla.org/en-US/docs/Web/API/Path2D
+- [ ] `Context.ClipPath(path Path2D)` to call `context.clip(path)` API
+
+- [ ] canvas2d/Image
+- [ ] canvas2d/ImageBitmap
+- [ ] canvas2d/ImageData
+
+- [ ] `context.SetFillStyleColor()`
+- [ ] `context.SetFillStylePattern()`
+- [ ] `context.SetFillStyleGradient()`
+
+- [ ] `context.SetStrokeStyleColor()`
+- [ ] `context.SetStrokeStylePattern()`
+- [ ] `context.SetStrokeStyleGradient()`
+
+- [ ] canvas2d/CanvasGradient
+- [ ] `context.CreateConicGradient()`
+- [ ] `context.CreateLinearGradient()`
+- [ ] `context.CreateRadialGradient()`
+- [ ] canvas2d/CanvasPattern
+- [ ] `context.CreatePattern()`
+
+- [ ] `context.DrawImage()`
+
+Matrix APIs:
+
+- [ ] `context.SetTransformMatrix(matrix DOMMatrix)`
+
+Path2D APIs:
+
+- [ ] `context.IsPointInPath()`
+- [ ] `context.IsPointInStroke()`
+
+Events:
+
+- [ ] contextlost event
+- [ ] contextrestored event
 
 
 ## Crypto API
