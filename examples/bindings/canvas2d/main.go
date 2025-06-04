@@ -9,6 +9,7 @@ func main() {
 
 	element := dom.Document.QuerySelector("canvas")
 	canvas  := canvas2d.ToCanvas(element)
+	image := canvas2d.NewImage(42, 42, "/images/gooey.png")
 
 	animations.RequestAnimationFrame(func(timestamp float64) {
 
@@ -35,6 +36,12 @@ func main() {
 		context.SetStrokeStyleColor("#0000ff")
 		context.Stroke()
 		context.ClosePath()
+
+		context.DrawImage(
+			&image,
+			0, 0, 42, 42,
+			13, 37, 42, 42,
+		)
 
 	})
 
