@@ -94,6 +94,10 @@ func (context *Context) ClosePath() {
 	context.Value.Call("closePath")
 }
 
+func (context *Context) DrawImage(image *Image, sx int, sy int, swidth int, sheight int, dx int, dy int, dwidth int, dheight int) {
+	context.Value.Call("drawImage", image.Value, sx, sy, swidth, sheight, dx, dy, dwidth, dheight)
+}
+
 func (context *Context) Ellipse(x int, y int, radius_x int, radius_y int, rotation float64, start_angle float64, end_angle float64, counterclockwise bool) {
 	context.Value.Call("ellipse", x, y, radius_x, radius_y, rotation, start_angle, end_angle, counterclockwise)
 }
