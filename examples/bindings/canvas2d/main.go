@@ -39,9 +39,21 @@ func main() {
 
 		context.DrawImage(
 			&image,
-			0, 0, 42, 42,
-			13, 37, 42, 42,
+			0,
+			0,
+			42,
+			42,
+			int(canvas.Width)  / 2 - 42/2,
+			int(canvas.Height) / 2 - 42/2,
+			42,
+			42,
 		)
+
+		context.BeginPath()
+		context.Rect(1, 1, int(canvas.Width) - 1, int(canvas.Height) - 1)
+		context.SetStrokeStyleColor("#000000")
+		context.Stroke()
+		context.ClosePath()
 
 	})
 
