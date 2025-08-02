@@ -7,9 +7,11 @@ import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
 import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/data"
 import "github.com/cookiengineer/gooey/components/layout"
 // import "sort"
 // import "strconv"
+import "fmt"
 
 type Tasks struct {
 	Main   *app.Main      `json:"main"`
@@ -136,13 +138,32 @@ func (controller *Tasks) Render() {
 
 			table, ok2 := article.Content[0].(*content.Table)
 
-			if ok2 == true {
+			if len(controller.Schema.Tasks) > 0 && ok2 == true {
 
-				if 1 == 2 {
-					table.Render()
+				dataset := data.NewDataset(len(controller.Schema.Tasks))
+
+				for t, task := range controller.Schema.Tasks {
+
+					dataset.Set(t, data.Data(map[string]any{
+						"id": task.ID,
+						"title": task.Title,
+						"done": task.Done,
+					}))
+
 				}
-				// TODO: Table.SetSomething()
-				// TODO: Table.Render()
+
+
+				// TODO: This doesn't work
+				table.SetDataset(dataset)
+
+				fmt.Println(dataset)
+				fmt.Println(table.Dataset)
+
+				table.Render()
+
+				fmt.Println(table.Labels)
+				fmt.Println(table.Properties)
+				fmt.Println(table.Types)
 
 			}
 
