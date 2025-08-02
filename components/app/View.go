@@ -18,7 +18,7 @@ type View struct {
 	Content []interfaces.Component `json:"components"`
 }
 
-func NewView(name string, label string, path string) View {
+func NewView(name string, label string, path string) *View {
 
 	var view View
 
@@ -31,7 +31,7 @@ func NewView(name string, label string, path string) View {
 	view.Path    = strings.ToLower(path)
 	view.Content = make([]interfaces.Component, 0)
 
-	return view
+	return &view
 
 }
 

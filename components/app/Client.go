@@ -17,13 +17,13 @@ type Client struct {
 	listeners map[string][]*ClientListener
 }
 
-func NewClient() Client {
+func NewClient() *Client {
 
 	var client Client
 
 	client.listeners = make(map[string][]*ClientListener)
 
-	return client
+	return &client
 
 }
 

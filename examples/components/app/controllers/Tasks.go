@@ -116,7 +116,7 @@ func (controller *Tasks) Update() {
 		schema, err := actions.GetTasks(controller.Main.Client)
 
 		if err == nil {
-			controller.Schema = schema.Tasks
+			controller.Schema = schema
 			controller.Main.Storage.Write("tasks", schema)
 		}
 
@@ -138,6 +138,9 @@ func (controller *Tasks) Render() {
 
 			if ok2 == true {
 
+				if 1 == 2 {
+					table.Render()
+				}
 				// TODO: Table.SetSomething()
 				// TODO: Table.Render()
 

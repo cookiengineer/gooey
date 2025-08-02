@@ -9,24 +9,23 @@ import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/interfaces"
 
 type Main struct {
-	Element *dom.Element    `json:"element"`
-	Client  *Client         `json:"client"`
-	Header  *layout.Header  `json:"header"`
-	Footer  *layout.Footer  `json:"footer"`
-	Dialog  *layout.Dialog  `json:"dialog"`
-	Storage *Storage        `json:"storage"`
-	View    interfaces.View `json:"view"`
-	views   map[string]interfaces.View
+	Element *dom.Element               `json:"element"`
+	Client  *Client                    `json:"client"`
+	Header  *layout.Header             `json:"header"`
+	Footer  *layout.Footer             `json:"footer"`
+	Dialog  *layout.Dialog             `json:"dialog"`
+	Storage *Storage                   `json:"storage"`
+	View    interfaces.View            `json:"view"`
+	views   map[string]interfaces.View `json:"-"`
 }
 
-func (main *Main) Init(element *dom.Element) {
+func NewMain(element *dom.Element) *Main {
 
-	client := NewClient()
-	storage := NewStorage()
+	var main Main
 
 	main.Element = element
-	main.Client  = &client
-	main.Storage = &storage
+	main.Client  = NewClient()
+	main.Storage = NewStorage()
 	main.View    = nil
 	main.views   = make(map[string]interfaces.View)
 
@@ -78,6 +77,8 @@ func (main *Main) Init(element *dom.Element) {
 	} else {
 		main.Dialog = nil
 	}
+
+	return &main
 
 }
 

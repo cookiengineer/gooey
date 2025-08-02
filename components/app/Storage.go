@@ -9,11 +9,11 @@ import "errors"
 type Storage struct {
 }
 
-func NewStorage() Storage {
+func NewStorage() *Storage {
 
 	var storage Storage
 
-	return storage
+	return &storage
 
 }
 
