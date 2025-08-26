@@ -5,7 +5,6 @@
 
 - [ ] Implement a Parse() and Render() method for server-side usage that uses `String()` on all components
 
-
 ## cookiestore Example
 
 ## content/BarChart
@@ -21,16 +20,18 @@
 - [ ] Labels []string
 - [ ] Properties []string
 
+## ui/Range
 
-# ui/Range
+- [ ] Implement stylesheets and integrate it into the content-fieldset example
 
-- [ ] Use `input[type="range"]`
-- [ ] Min/Max/Step `int` Properties
-
-# ui/Progress
+## ui/Progress
 
 - [ ] Use `progress` element
 - [ ] Min/Max/Step `int` Properties
+
+## attributes changes
+
+- [ ] Double check all examples to use `attributes map[string]any` everywhere
 
 
 ## Oauth Components

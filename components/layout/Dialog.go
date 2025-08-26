@@ -104,7 +104,7 @@ func (dialog *Dialog) init_events() {
 	dialog.Component.InitEvent("click")
 	dialog.Component.InitEvent("action")
 
-	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
+	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		action, ok1 := attributes["data-action"]
 
@@ -116,7 +116,7 @@ func (dialog *Dialog) init_events() {
 
 			} else {
 
-				dialog.Component.FireEventListeners("action", map[string]string{
+				dialog.Component.FireEventListeners("action", map[string]any{
 					"action": attributes["data-action"],
 				})
 
@@ -126,9 +126,9 @@ func (dialog *Dialog) init_events() {
 
 	}, false))
 
-	dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+	dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
-		dialog.Component.FireEventListeners("action", map[string]string{
+		dialog.Component.FireEventListeners("action", map[string]any{
 			"action": attributes["data-action"],
 		})
 

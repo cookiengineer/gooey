@@ -286,7 +286,7 @@ func (table *Table) init_events() {
 
 			} else if action != "" {
 
-				table.Component.FireEventListeners("action", map[string]string{
+				table.Component.FireEventListeners("action", map[string]any{
 					"action": action,
 				})
 

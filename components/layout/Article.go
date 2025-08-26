@@ -84,6 +84,10 @@ func (article *Article) Parse() {
 
 					// TODO: Radio support
 
+				} else if typ == "range" {
+
+					// TODO: Range support
+
 				} else {
 					mapped = append(mapped, ui.ToInput(element))
 				}

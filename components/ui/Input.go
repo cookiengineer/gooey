@@ -37,7 +37,7 @@ func NewInput(label string, value string, typ types.Input) Input {
 
 		input.Value = element.Value.Get("value").String()
 
-		input.Component.FireEventListeners("change-value", map[string]string{
+		input.Component.FireEventListeners("change-value", map[string]any{
 			"value": input.Value,
 		})
 
@@ -74,7 +74,7 @@ func ToInput(element *dom.Element) *Input {
 
 		input.Value = element.Value.Get("value").String()
 
-		input.Component.FireEventListeners("change-value", map[string]string{
+		input.Component.FireEventListeners("change-value", map[string]any{
 			"value": input.Value,
 		})
 

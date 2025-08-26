@@ -59,7 +59,7 @@ func (component *Component) AddEventListener(event string, listener *EventListen
 
 					wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
 
-						attributes := make(map[string]string)
+						attributes := make(map[string]any)
 
 						if dom_event.Target != nil {
 
@@ -93,7 +93,7 @@ func (component *Component) AddEventListener(event string, listener *EventListen
 
 					wrapped_listener := dom.ToEventListener(func(dom_event *dom.Event) {
 
-						attributes := make(map[string]string)
+						attributes := make(map[string]any)
 
 						if dom_event.Target != nil {
 
@@ -130,7 +130,7 @@ func (component *Component) AddEventListener(event string, listener *EventListen
 
 }
 
-func (component *Component) FireEventListeners(event string, attributes map[string]string) bool {
+func (component *Component) FireEventListeners(event string, attributes map[string]any) bool {
 
 	var result bool
 

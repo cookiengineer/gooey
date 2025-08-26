@@ -11,7 +11,7 @@ type EventListener struct {
 	Listener *dom.EventListener    `json:"listener"`
 }
 
-type EventListenerCallback func(string, map[string]string)
+type EventListenerCallback func(string, map[string]any)
 
 func ToEventListener(callback EventListenerCallback, once bool) *EventListener {
 

@@ -159,7 +159,7 @@ func (header *Header) init_events() {
 				event.PreventDefault()
 				event.StopPropagation()
 
-				header.Component.FireEventListeners("action", map[string]string{
+				header.Component.FireEventListeners("action", map[string]any{
 					"action": action,
 				})
 
@@ -168,7 +168,7 @@ func (header *Header) init_events() {
 				event.PreventDefault()
 				event.StopPropagation()
 
-				header.Component.FireEventListeners("change-view", map[string]string{
+				header.Component.FireEventListeners("change-view", map[string]any{
 					"name": view,
 					"path": path,
 				})

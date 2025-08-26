@@ -58,7 +58,7 @@ func NewSelect(label string, value string, values []string) Select {
 					self.Value = value.String()
 				}
 
-				self.Component.FireEventListeners("change-value", map[string]string{
+				self.Component.FireEventListeners("change-value", map[string]any{
 					"value": self.Value,
 				})
 
@@ -105,7 +105,7 @@ func ToSelect(element *dom.Element) *Select {
 					self.Value = value.String()
 				}
 
-				self.Component.FireEventListeners("change-value", map[string]string{
+				self.Component.FireEventListeners("change-value", map[string]any{
 					"value": self.Value,
 				})
 

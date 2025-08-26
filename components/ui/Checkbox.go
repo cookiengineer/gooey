@@ -43,7 +43,7 @@ func NewCheckbox(label string, value string) Checkbox {
 			checked = "true"
 		}
 
-		checkbox.Component.FireEventListeners("change-value", map[string]string{
+		checkbox.Component.FireEventListeners("change-value", map[string]any{
 			"value": checked,
 		})
 
@@ -79,7 +79,7 @@ func ToCheckbox(element *dom.Element) *Checkbox {
 			checked = "true"
 		}
 
-		checkbox.Component.FireEventListeners("change-value", map[string]string{
+		checkbox.Component.FireEventListeners("change-value", map[string]any{
 			"value": checked,
 		})
 

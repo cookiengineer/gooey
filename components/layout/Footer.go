@@ -105,13 +105,13 @@ func (footer *Footer) init_events() {
 	footer.Component.InitEvent("click")
 	footer.Component.InitEvent("action")
 
-	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]string) {
+	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		_, ok1 := attributes["data-action"]
 
 		if ok1 == true {
 
-			footer.Component.FireEventListeners("action", map[string]string{
+			footer.Component.FireEventListeners("action", map[string]any{
 				"action": attributes["data-action"],
 			})
 

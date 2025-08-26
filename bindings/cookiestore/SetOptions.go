@@ -1,11 +1,11 @@
 package cookiestore
 
 type SetOptions struct {
-	Domain      *string   `json:"domain"`
-	Expires     *int      `json:"expires"`
+	Domain      string    `json:"domain"`
+	Expires     int       `json:"expires"`
 	Name        string    `json:"name"`
 	Partitioned bool      `json:"partitioned"`
-	Path        *string   `json:"path"`
+	Path        string    `json:"path"`
 	SameSite    *SameSite `json:"sameSite"`
 	Value       string    `json:"value"`
 }
@@ -17,18 +17,18 @@ func (options SetOptions) MapToJS() map[string]any {
 	mapped["partitioned"] = options.Partitioned
 	mapped["value"] = options.Value
 
-	if options.Domain != nil {
-		mapped["domain"] = *options.Domain
+	if options.Domain != "" {
+		mapped["domain"] = options.Domain
 	}
 
-	if options.Expires != nil {
+	if options.Expires != 0 {
 		mapped["expires"] = options.Expires
 	} else {
-		mapped["expires"] = nil
+		mapped["expires"] = 0
 	}
 
-	if options.Path != nil {
-		mapped["path"] = *options.Path
+	if options.Path != "" {
+		mapped["path"] = options.Path
 	} else {
 		mapped["path"] = "/"
 	}

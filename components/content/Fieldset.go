@@ -161,9 +161,9 @@ func (fieldset *Fieldset) Parse() {
 
 								func(name string, input *ui.Checkbox) {
 
-									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
 
-										fieldset.Component.FireEventListeners("change-field", map[string]string{
+										fieldset.Component.FireEventListeners("change-field", map[string]any{
 											"name":  name,
 											"value": attributes["value"],
 										})
@@ -186,7 +186,7 @@ func (fieldset *Fieldset) Parse() {
 								// label := ui.ToLabel(element1)
 								// input := ui.ToRadioGroup(div.QuerySelectorAll("input[type=\"radio\"]"))
 
-								// input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]string) {
+								// input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]any) {
 								// 	fieldset.Component.FireEventListeners("change", attributes)
 								// }, false))
 
@@ -205,9 +205,9 @@ func (fieldset *Fieldset) Parse() {
 
 								func(name string, input *ui.Input) {
 
-									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
 
-										fieldset.Component.FireEventListeners("change-field", map[string]string{
+										fieldset.Component.FireEventListeners("change-field", map[string]any{
 											"name":  name,
 											"value": attributes["value"],
 										})
@@ -235,9 +235,9 @@ func (fieldset *Fieldset) Parse() {
 
 						func(name string, input *ui.Select) {
 
-							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
 
-								fieldset.Component.FireEventListeners("change-field", map[string]string{
+								fieldset.Component.FireEventListeners("change-field", map[string]any{
 									"name":  name,
 									"value": attributes["value"],
 								})
@@ -261,9 +261,9 @@ func (fieldset *Fieldset) Parse() {
 
 						func(name string, input *ui.Textarea) {
 
-							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]string) {
+							input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
 
-								fieldset.Component.FireEventListeners("change-field", map[string]string{
+								fieldset.Component.FireEventListeners("change-field", map[string]any{
 									"name":  name,
 									"value": attributes["value"],
 								})

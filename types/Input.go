@@ -13,7 +13,6 @@ const (
 	InputEmail         Input = "email"
 	InputFile          Input = "file"
 	InputMonth         Input = "month"
-	InputNumber        Input = "number"
 	InputPassword      Input = "password"
 	InputSearch        Input = "search"
 	InputTel           Input = "tel"
@@ -21,6 +20,12 @@ const (
 	InputTime          Input = "time"
 	InputURL           Input = "url"
 	InputWeek          Input = "week"
+
+	// ui.Number
+	InputNumber        Input = "number"
+
+	// ui.Range
+	InputRange         Input = "range"
 
 	// ui.Textarea uses same as InputText
 	InputTextarea      Input = "text"
