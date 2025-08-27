@@ -20,10 +20,6 @@
 - [ ] Labels []string
 - [ ] Properties []string
 
-## ui/Range
-
-- [ ] Implement stylesheets and integrate it into the content-fieldset example
-
 ## ui/Progress
 
 - [ ] Use `progress` element

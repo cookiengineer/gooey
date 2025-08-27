@@ -39,6 +39,8 @@ func main() {
 					"name":    fieldset.ValueOf("name").String(),
 					"email":   fieldset.ValueOf("email").String(),
 					"message": fieldset.ValueOf("message").String(),
+					"rating":  fieldset.ValueOf("rating").Int(),
+					"amount":  fieldset.ValueOf("amount").Int(),
 					"tos":     fieldset.ValueOf("tos").Bool(),
 				}, "", "\t")
 

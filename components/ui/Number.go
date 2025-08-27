@@ -9,7 +9,7 @@ import "strconv"
 import "strings"
 import "syscall/js"
 
-type Range struct {
+type Number struct {
 	Label     string                `json:"label"`
 	Type      types.Input           `json:"type"`
 	Value     int                   `json:"value"`
@@ -20,14 +20,14 @@ type Range struct {
 	Component *components.Component `json:"component"`
 }
 
-func NewRange(label string, step int, cur_value int, min_value int, max_value int) Range {
+func NewNumber(label string, step int, cur_value int, min_value int, max_value int) Number {
 
-	var input Range
+	var input Number
 
 	element   := dom.Document.CreateElement("input")
 	component := components.NewComponent(element)
 
-	element.SetAttribute("type", "range")
+	element.SetAttribute("type", "number")
 
 	if cur_value >= min_value && cur_value <= max_value {
 
@@ -51,7 +51,7 @@ func NewRange(label string, step int, cur_value int, min_value int, max_value in
 
 	input.Component = &component
 	input.Label     = label
-	input.Type      = types.InputRange
+	input.Type      = types.InputNumber
 
 	if input.Value > input.Max {
 		input.Max = input.Value
@@ -82,9 +82,9 @@ func NewRange(label string, step int, cur_value int, min_value int, max_value in
 
 }
 
-func ToRange(element *dom.Element) *Range {
+func ToNumber(element *dom.Element) *Number {
 
-	var input Range
+	var input Number
 
 	tmp := element.Value.Get("value")
 
@@ -171,7 +171,7 @@ func ToRange(element *dom.Element) *Range {
 
 }
 
-func (input *Range) Disable() bool {
+func (input *Number) Disable() bool {
 
 	input.Disabled = true
 	input.Render()
@@ -180,7 +180,7 @@ func (input *Range) Disable() bool {
 
 }
 
-func (input *Range) Enable() bool {
+func (input *Number) Enable() bool {
 
 	input.Disabled = false
 	input.Render()
@@ -189,7 +189,7 @@ func (input *Range) Enable() bool {
 
 }
 
-func (input *Range) Render() *dom.Element {
+func (input *Number) Render() *dom.Element {
 
 	if input.Component.Element != nil {
 
@@ -231,7 +231,7 @@ func (input *Range) Render() *dom.Element {
 
 }
 
-func (input *Range) String() string {
+func (input *Number) String() string {
 
 	html := "<input type=\"" + input.Type.String() + "\""
 
@@ -265,7 +265,7 @@ func (input *Range) String() string {
 
 }
 
-func (input *Range) ToValue() js.Value {
+func (input *Number) ToValue() js.Value {
 
 	var result js.Value
 

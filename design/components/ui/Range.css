@@ -1,0 +1,83 @@
+
+input[type="range"] {
+	display: inline-block;
+	margin: 0px;
+	padding: 4px 0px;
+	background: transparent;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	box-sizing: border-box;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	outline: unset;
+	transition: 250ms all ease-out;
+	cursor: col-resize;
+}
+
+input[type="range"][disabled] {
+	cursor: not-allowed;
+}
+
+input[type="range"]::-moz-range-track {
+	height: 2px;
+	background: var(--input-default-border);
+	-moz-appearance: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+	width: 16px;
+	height: 16px;
+	border: 1px solid var(--input-default-border);
+	border-radius: 8px;
+	background: var(--input-default-background);
+	outline: unset;
+	transition: 250ms all ease-out;
+	-moz-appearance: none;
+	cursor: col-resize;
+}
+
+input[type="range"]:hover::-moz-range-thumb,
+input[type="range"]:focus::-moz-range-thumb {
+	background: var(--palette-primary-background);
+	transition: 250ms all ease-out;
+}
+
+input[type="range"][disabled]:hover::-moz-range-thumb,
+input[type="range"][disabled]:focus::-moz-range-thumb {
+	border: 1px solid var(--input-disabled-color);
+	background: var(--input-disabled-background);
+	cursor: not-allowed;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+	height: 2px;
+	background: var(--input-default-border);
+	-webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+	width: 16px;
+	height: 16px;
+	border: 1px solid var(--input-default-border);
+	border-radius: 8px;
+	background: var(--input-default-background);
+	transition: 250ms all ease-out;
+	transform: translate(0%, -50%);
+	-webkit-appearance: none;
+	cursor: col-resize;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb,
+input[type="range"]:focus::-webkit-slider-thumb {
+	background: var(--palette-primary-background);
+	transition: 250ms all ease-out;
+}
+
+input[type="range"][disabled]:hover::-webkit-slider-thumb,
+input[type="range"][disabled]:focus::-webkit-slider-thumb {
+	border: 1px solid var(--input-disabled-color);
+	background: var(--input-disabled-background);
+	cursor: not-allowed;
+}
+

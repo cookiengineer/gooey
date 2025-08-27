@@ -28,6 +28,7 @@ input[type="week"] {
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	outline: unset;
+	transition: 250ms all ease-out;
 	cursor: text;
 }
 
@@ -61,6 +62,7 @@ input[type="week"]:focus {
 	background: var(--input-focus-background);
 	border: 1px solid var(--palette-primary-background);
 	outline: unset;
+	transition: 250ms all ease-out;
 }
 
 input[type="date"]:invalid,

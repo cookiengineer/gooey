@@ -80,14 +80,12 @@ func (article *Article) Parse() {
 
 				if typ == "checkbox" {
 					mapped = append(mapped, ui.ToCheckbox(element))
+				} else if typ == "number" {
+					mapped = append(mapped, ui.ToNumber(element))
 				} else if typ == "radio" {
-
-					// TODO: Radio support
-
+					// TODO: ui.Radio support
 				} else if typ == "range" {
-
-					// TODO: Range support
-
+					mapped = append(mapped, ui.ToRange(element))
 				} else {
 					mapped = append(mapped, ui.ToInput(element))
 				}

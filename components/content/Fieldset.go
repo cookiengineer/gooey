@@ -180,6 +180,32 @@ func (fieldset *Fieldset) Parse() {
 									ctype: "ui.Checkbox",
 								})
 
+							} else if typ == "number" {
+
+								label := ui.ToLabel(element1)
+								input := ui.ToNumber(element2)
+
+								func(name string, input *ui.Number) {
+
+									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
+
+										fieldset.Component.FireEventListeners("change-field", map[string]any{
+											"name":  name,
+											"value": attributes["value"],
+										})
+
+									}, false))
+
+								}(name, input)
+
+								fieldset.fields = append(fieldset.fields, &fieldset_field{
+									Name:  name,
+									Label: label,
+									Input: input,
+									Type:  input.Type,
+									ctype: "ui.Number",
+								})
+
 							} else if typ == "radio" {
 
 								// TODO: Support ui.RadioGroup
@@ -197,6 +223,32 @@ func (fieldset *Fieldset) Parse() {
 								// 	Type:  input.Type,
 								//	ctype: "ui.RadioGroup",
 								// })
+
+							} else if typ == "range" {
+
+								label := ui.ToLabel(element1)
+								input := ui.ToRange(element2)
+
+								func(name string, input *ui.Range) {
+
+									input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
+
+										fieldset.Component.FireEventListeners("change-field", map[string]any{
+											"name":  name,
+											"value": attributes["value"],
+										})
+
+									}, false))
+
+								}(name, input)
+
+								fieldset.fields = append(fieldset.fields, &fieldset_field{
+									Name:  name,
+									Label: label,
+									Input: input,
+									Type:  input.Type,
+									ctype: "ui.Range",
+								})
 
 							} else {
 
@@ -447,6 +499,14 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 					result = component.ToValue()
 				}
 
+			} else if field.Type == "ui.Number" {
+
+				component, ok := field.Input.(*ui.Number)
+
+				if ok == true {
+					result = component.ToValue()
+				}
+
 			} else if field.ctype == "ui.RadioGroup" {
 
 				// TODO: Support ui.RadioGroup
@@ -455,6 +515,14 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 				// if ok == true {
 				// 	result = component.ToValue()
 				// }
+
+			} else if field.Type == "ui.Range" {
+
+				component, ok := field.Input.(*ui.Range)
+
+				if ok == true {
+					result = component.ToValue()
+				}
 
 			} else if field.ctype == "ui.Select" {
 
