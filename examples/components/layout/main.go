@@ -9,9 +9,9 @@ import "time"
 func main() {
 
 	layout_dialog := layout.ToDialog(dom.Document.QuerySelector("dialog"))
-	layout_dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+	layout_dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
-		action, ok := attributes["action"]
+		action, ok := attributes["action"].(string)
 
 		if ok == true {
 
@@ -27,13 +27,13 @@ func main() {
 	}, false))
 
 	layout_header := layout.ToHeader(dom.Document.QuerySelector("header"))
-	layout_header.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+	layout_header.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("header action event")
 		console.Log(attributes)
 		console.GroupEnd("header action event")
 
-		action, ok := attributes["action"]
+		action, ok := attributes["action"].(string)
 
 		if ok == true {
 
@@ -45,7 +45,7 @@ func main() {
 
 	}, false))
 
-	layout_header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]string) {
+	layout_header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("header change-view event")
 		console.Log(attributes)
@@ -54,7 +54,7 @@ func main() {
 	}, false))
 
 	layout_footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
-	layout_footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+	layout_footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("footer action event")
 		console.Log(attributes)

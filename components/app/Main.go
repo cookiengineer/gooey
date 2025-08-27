@@ -36,10 +36,10 @@ func NewMain(element *dom.Element) *Main {
 	if header_element != nil {
 
 		main.Header = layout.ToHeader(header_element)
-		main.Header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]string) {
+		main.Header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]any) {
 
-			name, ok1 := attributes["name"]
-			path, ok2 := attributes["path"]
+			name, ok1 := attributes["name"].(string)
+			path, ok2 := attributes["path"].(string)
 
 			if ok1 == true && ok2 == true {
 

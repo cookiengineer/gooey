@@ -30,9 +30,9 @@ func NewTasks(main *app.Main) Tasks {
 	controller.Schema = &schemas.Tasks{}
 	controller.View   = view
 
-	controller.Main.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+	controller.Main.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
-		action, ok := attributes["action"]
+		action, ok := attributes["action"].(string)
 
 		if ok == true {
 
@@ -44,9 +44,9 @@ func NewTasks(main *app.Main) Tasks {
 
 	}, false))
 
-	controller.Main.Dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+	controller.Main.Dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
-		action, ok := attributes["action"]
+		action, ok := attributes["action"].(string)
 
 		if ok == true {
 

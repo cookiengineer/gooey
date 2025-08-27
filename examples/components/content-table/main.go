@@ -10,11 +10,11 @@ func main() {
 	table1 := content.ToTable(dom.Document.QuerySelector("table[data-name=\"candidates\"]"))
 	table2 := content.ToTable(dom.Document.QuerySelector("table[data-name=\"interviews\"]"))
 
-	table1.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]string) {
+	table1.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		if event == "action" {
 
-			action, ok := attributes["action"]
+			action, ok := attributes["action"].(string)
 
 			if ok == true {
 
