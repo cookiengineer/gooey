@@ -201,7 +201,7 @@ func (input *Range) Render() *dom.Element {
 
 		input.Component.Element.SetAttribute("type", input.Type.String())
 
-		if input.Value != 0 {
+		if input.Value >= 0 {
 			input.Component.Element.Value.Set("value", input.Value)
 		} else {
 			input.Component.Element.Value.Set("value", "")
@@ -228,6 +228,15 @@ func (input *Range) Render() *dom.Element {
 	}
 
 	return input.Component.Element
+
+}
+
+func (input *Range) Reset() bool {
+
+	input.Value = input.Min
+	input.Render()
+
+	return true
 
 }
 
@@ -274,7 +283,13 @@ func (input *Range) ToValue() js.Value {
 		tmp := input.Component.Element.Value.Get("value")
 
 		if !tmp.IsNull() && !tmp.IsUndefined() {
-			result = tmp
+
+			num, err := strconv.ParseInt(tmp.String(), 10, 64)
+
+			if err == nil {
+				result = js.ValueOf(num)
+			}
+
 		}
 
 	}

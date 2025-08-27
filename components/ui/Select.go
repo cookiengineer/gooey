@@ -10,12 +10,13 @@ import "strings"
 import "syscall/js"
 
 type Select struct {
-	Label     string                `json:"label"`
-	Type      types.Input           `json:"type"`
-	Value     string                `json:"value"`
-	Values    []string              `json:"values"`
-	Disabled  bool                  `json:"disabled"`
-	Component *components.Component `json:"component"`
+	Label         string                `json:"label"`
+	Type          types.Input           `json:"type"`
+	Value         string                `json:"value"`
+	Values        []string              `json:"values"`
+	Disabled      bool                  `json:"disabled"`
+	Component     *components.Component `json:"component"`
+	default_value string
 }
 
 func NewSelect(label string, value string, values []string) Select {
@@ -25,11 +26,12 @@ func NewSelect(label string, value string, values []string) Select {
 	element   := dom.Document.CreateElement("select")
 	component := components.NewComponent(element)
 
-	self.Component = &component
-	self.Label     = strings.TrimSpace(label)
-	self.Type      = types.InputText
-	self.Value     = strings.TrimSpace(value)
-	self.Values    = make([]string, 0)
+	self.Component     = &component
+	self.Label         = strings.TrimSpace(label)
+	self.Type          = types.InputText
+	self.Value         = strings.TrimSpace(value)
+	self.Values        = make([]string, 0)
+	self.default_value = self.Value
 
 	for _, val := range values {
 
@@ -87,6 +89,7 @@ func ToSelect(element *dom.Element) *Select {
 	self.Disabled  = element.HasAttribute("disabled")
 
 	self.Parse()
+	self.default_value = self.Value
 
 	self.Component.InitEvent("change-value")
 
@@ -261,6 +264,15 @@ func (self *Select) Render() *dom.Element {
 	}
 
 	return self.Component.Element
+
+}
+
+func (self *Select) Reset() bool {
+
+	self.Value = self.default_value
+	self.Render()
+
+	return true
 
 }
 

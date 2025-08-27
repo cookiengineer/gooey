@@ -132,6 +132,15 @@ func (input *Input) Render() *dom.Element {
 
 }
 
+func (input *Input) Reset() bool {
+
+	input.Value = ""
+	input.Render()
+
+	return true
+
+}
+
 func (input *Input) String() string {
 
 	html := "<input type=\"" + input.Type.String() + "\""

@@ -128,6 +128,15 @@ func (textarea *Textarea) Render() *dom.Element {
 
 }
 
+func (textarea *Textarea) Reset() bool {
+
+	textarea.Value = ""
+	textarea.Render()
+
+	return true
+
+}
+
 func (textarea *Textarea) String() string {
 
 	html := "<textarea"

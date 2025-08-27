@@ -427,13 +427,194 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 func (fieldset *Fieldset) Reset() bool {
 
-	var result bool
+	var result bool = true
 
-	// TODO: Reset all field Input components to their default value
+	for _, field := range fieldset.fields {
+
+		if field.ctype == "ui.Checkbox" {
+
+			component, ok := field.Input.(*ui.Checkbox)
+
+			if ok == true {
+
+				check := component.Reset()
+
+				if check == false {
+					result = false
+				}
+
+			}
+
+		} else if field.ctype == "ui.Input" {
+
+			component, ok := field.Input.(*ui.Input)
+
+			if ok == true {
+
+				check := component.Reset()
+
+				if check == false {
+					result = false
+				}
+
+			}
+
+		} else if field.ctype == "ui.Number" {
+
+			component, ok := field.Input.(*ui.Number)
+
+			if ok == true {
+
+				check := component.Reset()
+
+				if check == false {
+					result = false
+				}
+
+			}
+
+		} else if field.ctype == "ui.RadioGroup" {
+
+			// TODO: Support ui.RadioGroup
+			// component, ok := field.Input.(*ui.Radio)
+
+			// if ok == true {
+
+			// 	check := component.Reset()
+
+			// 	if check == false {
+			// 		result = false
+			// 	}
+
+			// }
+
+		} else if field.ctype == "ui.Range" {
+
+			component, ok := field.Input.(*ui.Range)
+
+			if ok == true {
+
+				check := component.Reset()
+
+				if check == false {
+					result = false
+				}
+
+			}
+
+		} else if field.ctype == "ui.Select" {
+
+			component, ok := field.Input.(*ui.Select)
+
+			if ok == true {
+
+				check := component.Reset()
+
+				if check == false {
+					result = false
+				}
+
+			}
+
+		} else if field.ctype == "ui.Textarea" {
+
+			component, ok := field.Input.(*ui.Textarea)
+
+			if ok == true {
+
+				check := component.Reset()
+
+				if check == false {
+					result = false
+				}
+
+			}
+
+		}
+
+	}
 
 	return result
 
 }
+
+func (fieldset *Fieldset) ResetField(name string) bool {
+
+	var result bool
+
+	for _, field := range fieldset.fields {
+
+		if field.Name == name {
+
+			if field.ctype == "ui.Checkbox" {
+
+				component, ok := field.Input.(*ui.Checkbox)
+
+				if ok == true {
+					result = component.Reset()
+				}
+
+			} else if field.ctype == "ui.Input" {
+
+				component, ok := field.Input.(*ui.Input)
+
+				if ok == true {
+					result = component.Reset()
+				}
+
+			} else if field.ctype == "ui.Number" {
+
+				component, ok := field.Input.(*ui.Number)
+
+				if ok == true {
+					result = component.Reset()
+				}
+
+			} else if field.ctype == "ui.RadioGroup" {
+
+				// TODO: Support ui.RadioGroup
+				// component, ok := field.Input.(*ui.Radio)
+
+				// if ok == true {
+				// 	result = component.Reset()
+				// }
+
+			} else if field.ctype == "ui.Range" {
+
+				component, ok := field.Input.(*ui.Range)
+
+				if ok == true {
+					result = component.Reset()
+				}
+
+			} else if field.ctype == "ui.Select" {
+
+				component, ok := field.Input.(*ui.Select)
+
+				if ok == true {
+					result = component.Reset()
+				}
+
+			} else if field.ctype == "ui.Textarea" {
+
+				component, ok := field.Input.(*ui.Textarea)
+
+				if ok == true {
+					result = component.Reset()
+				}
+
+			}
+
+			break
+
+		}
+
+	}
+
+	return result
+
+}
+
 
 func (fieldset *Fieldset) String() string {
 
@@ -499,7 +680,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 					result = component.ToValue()
 				}
 
-			} else if field.Type == "ui.Number" {
+			} else if field.ctype == "ui.Number" {
 
 				component, ok := field.Input.(*ui.Number)
 
@@ -516,7 +697,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 				// 	result = component.ToValue()
 				// }
 
-			} else if field.Type == "ui.Range" {
+			} else if field.ctype == "ui.Range" {
 
 				component, ok := field.Input.(*ui.Range)
 

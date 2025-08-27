@@ -231,6 +231,15 @@ func (input *Number) Render() *dom.Element {
 
 }
 
+func (input *Number) Reset() bool {
+
+	input.Value = input.Min
+	input.Render()
+
+	return true
+
+}
+
 func (input *Number) String() string {
 
 	html := "<input type=\"" + input.Type.String() + "\""
@@ -274,7 +283,13 @@ func (input *Number) ToValue() js.Value {
 		tmp := input.Component.Element.Value.Get("value")
 
 		if !tmp.IsNull() && !tmp.IsUndefined() {
-			result = tmp
+
+			num, err := strconv.ParseInt(tmp.String(), 10, 64)
+
+			if err == nil {
+				result = js.ValueOf(num)
+			}
+
 		}
 
 	}

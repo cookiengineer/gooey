@@ -52,10 +52,6 @@
 
 - [ ] OpenAPI on-the-fly generation?
 
-## content/Fieldset
-
-- [ ] Implement a `Reset()` method that resets all fields
-
 ## content/Article
 
 - [ ] Create a `content.Article` component
@@ -74,6 +70,7 @@
 
 - [ ] Needs a separate `<div>` element surrounding the `<input type="radio">` elements
 - [ ] Root element is the `div`, not any of the input radio elements.
+
 
 
 # Bindings

@@ -135,6 +135,15 @@ func (checkbox *Checkbox) Render() *dom.Element {
 
 }
 
+func (checkbox *Checkbox) Reset() bool {
+
+	checkbox.Value = false
+	checkbox.Render()
+
+	return true
+
+}
+
 func (checkbox *Checkbox) String() string {
 
 	html := "<input type=\"checkbox\""
