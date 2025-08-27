@@ -23,8 +23,10 @@
 - [ui.Checkbox](/components/ui/Checkbox.go) fires a `change-value` event
 - [ui.Input](/components/ui/Input.go) fires a `change-value` event
 - [ui.Label](/components/ui/Label.go)
+- [ui.Number](/components/ui/Number.go) fires a `change-value` event
 - [ ] [ui.Radio](/components/ui/Radio.go) fires a `change-value` event
 - [ ] [ui.RadioGroup](/components/ui/RadioGroup.go)
+- [ui.Range](/components/ui/Range.go) fires a `change-value` event
 - [ui.Select](/components/ui/Select.go) fires a `change-value` event
 - [ui.Textarea](/components/ui/Textarea.go) fires a `change-value` event
 
