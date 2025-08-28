@@ -694,12 +694,33 @@ func (table *Table) Selected() ([]int, []data.Data) {
 }
 
 func (table *Table) SetDataset(dataset data.Dataset) {
+
 	table.Dataset = &dataset
+	table.selected = make([]bool, dataset.Length())
+
+	table.selected = make([]bool, dataset.Length())
+	table.sortby = ""
+	table.sorted = make([]int, dataset.Length())
+
+	for d := 0; d < dataset.Length(); d++ {
+		table.sorted[d] = d
+	}
+
 }
 
 func (table *Table) SetData(entries []data.Data) {
+
 	dataset := data.ToDataset(entries)
 	table.Dataset = &dataset
+
+	table.selected = make([]bool, dataset.Length())
+	table.sortby = ""
+	table.sorted = make([]int, dataset.Length())
+
+	for d := 0; d < dataset.Length(); d++ {
+		table.sorted[d] = d
+	}
+
 }
 
 func (table *Table) SetCenter(components []interfaces.Component) {
@@ -725,6 +746,45 @@ func (table *Table) SetLabelsAndPropertiesAndTypes(labels []string, properties [
 		table.Types      = types
 
 		result = true
+
+	}
+
+	return result
+
+}
+
+func (table *Table) SortBy(prop string) bool {
+
+	var result bool
+
+	thead := table.Component.Element.QuerySelector("thead")
+
+	if thead != nil {
+
+		ths   := thead.QuerySelectorAll("th")
+		found := false
+
+		for _, th := range ths {
+			th.RemoveAttribute("data-sort")
+		}
+
+		for _, th := range ths {
+
+			property := th.GetAttribute("data-property")
+
+			if property == prop {
+				th.SetAttribute("data-sort", "ascending")
+				found = true
+				break
+			}
+
+		}
+
+		if found == true {
+			table.sorted = table.Dataset.SortByProperty(prop)
+			table.sortby = prop
+			result = true
+		}
 
 	}
 

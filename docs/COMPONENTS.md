@@ -9,6 +9,7 @@
 - [app.Main](/components/app/Main.go)
 - [app.Client](/components/app/Client.go)
 - [app.ClientListener](/components/app/ClientListener.go)
+- [app.Controller](/components/app/Controller.go)
 - [app.Storage](/components/app/Storage.go)
 - [app.View](/components/app/View.go)
 

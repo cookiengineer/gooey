@@ -138,13 +138,15 @@ func (controller *Tasks) Render() {
 
 			table, ok2 := article.Content[0].(*content.Table)
 
+			fmt.Println(controller.Schema.Tasks)
+
 			if len(controller.Schema.Tasks) > 0 && ok2 == true {
 
-				dataset := data.NewDataset(len(controller.Schema.Tasks))
+				dataset := data.NewDataset(0)
 
-				for t, task := range controller.Schema.Tasks {
+				for _, task := range controller.Schema.Tasks {
 
-					dataset.Set(t, data.Data(map[string]any{
+					dataset.Add(data.Data(map[string]any{
 						"id": task.ID,
 						"title": task.Title,
 						"done": task.Done,
@@ -152,18 +154,13 @@ func (controller *Tasks) Render() {
 
 				}
 
+				console.Log(dataset)
+				console.Log(table)
 
-				// TODO: This doesn't work
 				table.SetDataset(dataset)
-
-				fmt.Println(dataset)
-				fmt.Println(table.Dataset)
+				// table.SortBy("id")
 
 				table.Render()
-
-				fmt.Println(table.Labels)
-				fmt.Println(table.Properties)
-				fmt.Println(table.Types)
 
 			}
 
