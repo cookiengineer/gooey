@@ -308,6 +308,14 @@ func (table *Table) Parse() {
 			table.Name = strings.TrimSpace(strings.ToLower(name))
 		}
 
+		selectable := table.Component.Element.GetAttribute("data-selectable")
+
+		if selectable == "true" {
+			table.Selectable = true
+		} else {
+			table.Selectable = false
+		}
+
 		thead := table.Component.Element.QuerySelector("thead")
 
 		if thead != nil {
@@ -316,7 +324,7 @@ func (table *Table) Parse() {
 			labels     := make([]string, 0)
 			properties := make([]string, 0)
 			types      := make([]string, 0)
-			selectable := false
+			selectable := table.Selectable
 
 			if len(elements) > 0 {
 
@@ -491,6 +499,14 @@ func (table *Table) Parse() {
 func (table *Table) Render() *dom.Element {
 
 	if table.Component.Element != nil {
+
+		if table.Name != "" {
+			table.Component.Element.SetAttribute("data-name", table.Name)
+		}
+
+		if table.Selectable == true {
+			table.Component.Element.SetAttribute("data-selectable", "true")
+		}
 
 		tbody := table.Component.Element.QuerySelector("tbody")
 
@@ -798,6 +814,10 @@ func (table *Table) String() string {
 
 	if table.Name != "" {
 		html += " data-name=\"" + table.Name + "\""
+	}
+
+	if table.Selectable == true {
+		html += " data-selectable=\"" + strconv.FormatBool(table.Selectable) + "\""
 	}
 
 	html += ">"
