@@ -1,5 +1,8 @@
 
-# Promise APIs and Go Channels
+# Common Errata and Limitations
+
+
+## Promise APIs and Go Channels
 
 Sometimes, the main thread will hang when using go channels inside a for loop.
 
@@ -66,3 +69,61 @@ for d := 0; d < len(dataset); d++ {
 
 }
 ```
+
+
+## Generic Methods and Components Typecasting
+
+In Go there's still no generic methods available due to the ongoing discussion about
+whether or not runtime boxing or comptime expansion is going to be implemented, which
+means that the Web Component graph in the [components](../components) package is built
+up using [interfaces.Component](../interfaces/Component.go).
+
+This implies that the consuming side of the application needs to manually typecast the
+components in the graph back to their struct references.
+
+```go
+import "example/actions"
+import "example/schemas"
+import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/app"
+import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/layout"
+
+// Example Controller
+type Example struct {
+	Main   *app.Main         `json:"main"`
+	Schema *schemas.Examples `json:"schema"`
+	View   *app.View         `json:"view"`
+}
+
+func NewExample(main *app.Main) Example {
+
+	var controller Example
+
+	controller.Main   = main
+	controller.Schema = &schema.Examples{}
+	controller.View   = view
+
+	// body > main > section[data-name="example"] > article
+	article, ok1 := controller.View.Content[0].(*layout.Article)
+
+	if ok1 == true {
+
+		// body > main > section[data-name="example"] > article > table
+		table, ok2 := article.Content[0].(*content.Table)
+
+		if ok2 == true {
+
+			table.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+				// Now you can use the Table API
+			}))
+
+		}
+
+	}
+
+	return controller
+
+}
+```
+
