@@ -64,11 +64,12 @@ is to migrate towards go-integrated tests that are compatible with `go test`.
 
 **Bindings Examples**:
 
+- [canvas2d](/examples/bindings/canvas2d)
 - [console](/examples/bindings/console)
 - [crypto-aescbc](/examples/bindings/crypto-aescbc)
 - [cookiestore](/examples/bindings/cookiestore)
 - [dom](/examples/bindings/dom)
-- [canvas2d](/examples/bindings/canvas2d)
+- [encoding](/examples/bindings/encoding)
 - [fetch](/examples/bindings/fetch)
 - [history](/examples/bindings/history)
 - [location](/examples/bindings/location)

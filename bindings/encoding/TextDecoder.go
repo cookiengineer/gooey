@@ -22,8 +22,8 @@ func NewTextDecoder(encoding Encoding, options TextDecoderOptions) *TextDecoder 
 
 	if !constructor.IsNull() && !constructor.IsUndefined() {
 
-		wrapped_encoding = js.ValueOf(encoding.String())
-		wrapped_options  = js.ValueOf(options.MapToJS())
+		wrapped_encoding := js.ValueOf(encoding.String())
+		wrapped_options  := js.ValueOf(options.MapToJS())
 
 		value := constructor.New(wrapped_encoding, wrapped_options)
 		decoder.Value = &value
@@ -55,7 +55,7 @@ func (decoder *TextDecoder) Decode(buffer []byte) string {
 		wrapped_buffer := js.Global().Get("Uint8Array").New(len(buffer))
 		js.CopyBytesToJS(wrapped_buffer, buffer)
 
-		value := decoder.Value.Get("decode").Call(wrapped_buffer)
+		value := decoder.Value.Call("decode", wrapped_buffer)
 
 		if !value.IsNull() && !value.IsUndefined() {
 			result = value.String()

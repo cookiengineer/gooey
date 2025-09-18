@@ -11,7 +11,7 @@ type TextEncoder struct {
 
 func NewTextEncoder(encoding Encoding) *TextEncoder {
 
-	if encoding == EncodingUTF_8 {
+	if encoding == EncodingUTF8 {
 
 		var encoder TextEncoder
 
@@ -36,7 +36,7 @@ func ToTextEncoder(value js.Value) *TextEncoder {
 
 	var encoder TextEncoder
 
-	encoder.Encoding = EncodingUTF_8
+	encoder.Encoding = EncodingUTF8
 	encoder.Value = &value
 
 	return &encoder
@@ -51,7 +51,7 @@ func (encoder *TextEncoder) Encode(value string) []byte {
 
 		wrapped_string := js.ValueOf(value)
 
-		value := encoder.Value.Get("encode").Call(wrapped_string)
+		value := encoder.Value.Call("encode", wrapped_string)
 
 		if !value.IsNull() && !value.IsUndefined() {
 			result = make([]byte, value.Get("byteLength").Int())
