@@ -25,6 +25,9 @@
 
 		<!-- Design -->
 		<link rel="stylesheet" href="/design/index.css" />
+
+		<!-- App Design -->
+		<link rel="stylesheet" href="/app/index.css" />
 	</head>
 	<body>
 		<header>
@@ -35,15 +38,29 @@
 		<main data-view="tasks">
 			<section data-name="tasks" class="active">
 				<article>
-					<table>
+					<table data-name="tasks" data-selectable="true">
 						<thead>
 							<tr>
+								<th><input type="checkbox" data-action="select"/></th>
 								<th data-property="id" data-type="int">ID</th>
 								<th data-property="title" data-type="string">Title</th>
 								<th data-property="done" data-type="bool">Done?</th>
 							</tr>
 						</thead>
 						<tbody></tbody>
+						<tfoot>
+							<tr>
+								<td colspan="2">
+									<button data-action="mark-undone">Undone</button>
+								</td>
+								<td>
+									<label>Mark selected Tasks as ...</label>
+								</td>
+								<td>
+									<button data-action="mark-done">Done</button>
+								</td>
+							</tr>
+						</tfoot>
 					</table>
 				</article>
 			</section>

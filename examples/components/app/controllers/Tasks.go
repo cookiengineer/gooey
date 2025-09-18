@@ -9,9 +9,7 @@ import "github.com/cookiengineer/gooey/components/app"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/data"
 import "github.com/cookiengineer/gooey/components/layout"
-// import "sort"
-// import "strconv"
-import "fmt"
+import "sync"
 
 type Tasks struct {
 	Main   *app.Main      `json:"main"`
@@ -29,6 +27,116 @@ func NewTasks(main *app.Main) Tasks {
 	controller.Main   = main
 	controller.Schema = &schemas.Tasks{}
 	controller.View   = view
+
+	table := controller.queryTable()
+
+	if table != nil {
+
+		table.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+
+			action, ok := attributes["action"].(string)
+
+			if ok == true {
+
+				if action == "mark-undone" {
+
+					go func() {
+
+						indexes, dataset := table.Selected()
+						waitgroup := sync.WaitGroup{}
+
+						table.Deselect(indexes)
+
+						for d := 0; d < len(dataset); d++ {
+
+							index := indexes[d]
+							entry := dataset[d]
+
+							waitgroup.Add(1)
+
+							go func(index int, entry data.Data) {
+
+								entry["done"] = false
+
+								task := schemas.Task{
+									ID:    entry["id"].(int),
+									Title: entry["title"].(string),
+									Done:  entry["done"].(bool),
+								}
+
+								result, err := actions.UpdateTask(controller.Main.Client, &task)
+
+								if result.Done == false && err == nil {
+
+									table.Remove([]int{index})
+									table.Add(entry)
+
+								}
+
+								defer waitgroup.Done()
+
+							}(index, entry)
+
+						}
+
+						waitgroup.Wait()
+						table.Render()
+
+					}()
+
+				} else if action == "mark-done" {
+
+					go func() {
+
+						indexes, dataset := table.Selected()
+						waitgroup := sync.WaitGroup{}
+
+						table.Deselect(indexes)
+
+						for d := 0; d < len(dataset); d++ {
+
+							index := indexes[d]
+							entry := dataset[d]
+
+							waitgroup.Add(1)
+
+							go func(index int, entry data.Data) {
+
+								entry["done"] = true
+
+								task := schemas.Task{
+									ID:    entry["id"].(int),
+									Title: entry["title"].(string),
+									Done:  entry["done"].(bool),
+								}
+
+								result, err := actions.UpdateTask(controller.Main.Client, &task)
+
+								if result.Done == true && err == nil {
+
+									table.Remove([]int{index})
+									table.Add(entry)
+
+								}
+
+								defer waitgroup.Done()
+
+							}(index, entry)
+
+						}
+
+						waitgroup.Wait()
+						table.Render()
+
+					}()
+
+				}
+
+			}
+
+		}, false))
+
+	}
 
 	controller.Main.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
@@ -52,11 +160,12 @@ func NewTasks(main *app.Main) Tasks {
 
 			if action == "confirm" {
 
-				if controller.Main.Dialog.Content != nil {
+				go func() {
 
-					fieldset, ok := controller.Main.Dialog.Content.(*content.Fieldset)
+					fieldset := controller.queryFieldset()
+					table := controller.queryTable()
 
-					if ok == true {
+					if fieldset != nil && table != nil {
 
 						title := fieldset.ValueOf("title").String()
 						done  := fieldset.ValueOf("done").Bool()
@@ -72,32 +181,55 @@ func NewTasks(main *app.Main) Tasks {
 							fieldset.Reset()
 							controller.Main.Dialog.Disable()
 
+							waitgroup := sync.WaitGroup{}
+							waitgroup.Add(1)
+
 							go func() {
 
-								actions.CreateTask(controller.Main.Client, &task)
+								result, err := actions.CreateTask(controller.Main.Client, &task)
+
+								if result.Title == task.Title && err == nil {
+
+									table.Add(data.Data(map[string]any{
+										"id":    result.ID,
+										"title": task.Title,
+										"done":  task.Done,
+									}))
+
+								}
 
 								controller.Main.Dialog.Enable()
 								controller.Main.Dialog.Hide()
 
+								defer waitgroup.Done()
+
 							}()
+
+							waitgroup.Wait()
+							table.Render()
 
 						}
 
-					} else {
-						console.Error("PANIC: Dialog has no Fieldset!")
 					}
 
-				}
+				}()
 
 			} else if action == "cancel" {
 
-				fieldset, ok := controller.Main.Dialog.Content.(*content.Fieldset)
+				go func() {
 
-				if ok == true {
-					fieldset.Reset()
-				}
+					fieldset := controller.queryFieldset()
 
-				controller.Main.Dialog.Hide()
+					if fieldset != nil {
+
+						fieldset.Reset()
+
+						controller.Main.Dialog.Enable()
+						controller.Main.Dialog.Hide()
+
+					}
+
+				}()
 
 			}
 
@@ -138,8 +270,6 @@ func (controller *Tasks) Render() {
 
 			table, ok2 := article.Content[0].(*content.Table)
 
-			fmt.Println(controller.Schema.Tasks)
-
 			if len(controller.Schema.Tasks) > 0 && ok2 == true {
 
 				dataset := data.NewDataset(0)
@@ -158,7 +288,7 @@ func (controller *Tasks) Render() {
 				console.Log(table)
 
 				table.SetDataset(dataset)
-				// table.SortBy("id")
+				table.SortBy("id")
 
 				table.Render()
 
@@ -170,167 +300,46 @@ func (controller *Tasks) Render() {
 	}
 
 }
-// func (view Tasks) BindEvents() {
-// 
-// 	table  := view.GetElement("table")
-// 	dialog := view.GetElement("dialog")
-// 	footer := view.GetElement("footer")
-// 
-// 	if table != nil {
-// 
-// 		table.AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-// 
-// 			target := event.Target
-// 
-// 			if target.TagName == "INPUT" && target.GetAttribute("type") == "checkbox" {
-// 
-// 				row      := target.QueryParent("tr")
-// 				num, err := strconv.ParseInt(row.GetAttribute("data-id"), 10, 64)
-// 
-// 				if err == nil {
-// 
-// 					id       := int(num)
-// 					task, ok := view.Schema.Tasks[id]
-// 
-// 					if ok == true {
-// 
-// 						if task.Done == true {
-// 							task.Done = false
-// 						} else {
-// 							task.Done = true
-// 						}
-// 
-// 						go func() {
-// 
-// 							actions.UpdateTask(view.Main.Client, task)
-// 							view.Refresh()
-// 
-// 						}()
-// 
-// 					}
-// 
-// 				}
-// 
-// 			}
-// 
-// 		}))
-// 
-// 	}
-// 
-// 	if dialog != nil {
-// 
-// 		dialog.QuerySelector("button[data-action=\"confirm\"]").AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-// 
-// 			title := dialog.QuerySelector("input[data-name=\"title\"]").Value.Get("value").String()
-// 			done  := dialog.QuerySelector("input[data-name=\"done\"]").Value.Get("checked").Bool()
-// 
-// 			task := schemas.Task{
-// 				ID: 0, // set by backend
-// 				Title: title,
-// 				Done:  done,
-// 			}
-// 
-// 			if task.Title != "" {
-// 
-// 				buttons := dialog.QuerySelectorAll("button")
-// 
-// 				for _, button := range buttons {
-// 					button.SetAttribute("disabled", "")
-// 				}
-// 
-// 				go func() {
-// 
-// 					actions.CreateTask(view.Main.Client, &task)
-// 					view.CloseDialog()
-// 					view.Refresh()
-// 
-// 					for _, button := range buttons {
-// 						button.RemoveAttribute("disabled")
-// 					}
-// 
-// 				}()
-// 
-// 			}
-// 
-// 		}))
-// 
-// 	}
-// 
-// 	if footer != nil {
-// 
-// 		footer.QuerySelector("button[data-action=\"create\"]").AddEventListener("click", dom.ToEventListener(func(event dom.Event) {
-// 			dialog.SetAttribute("open", "")
-// 		}))
-// 
-// 	}
-// 
-// }
-// 
-// func (view Tasks) Enter() bool {
-// 
-// 	view.Refresh()
-// 
-// 	return true
-// 
-// }
-// 
-// func (view Tasks) Leave() bool {
-// 	return true
-// }
-// 
-// 
-// func (view Tasks) Render() {
-// 
-// 	table := view.GetElement("table")
-// 
-// 	if table != nil {
-// 
-// 		html := ""
-// 		ids  := make([]int, 0)
-// 
-// 		for _, task := range view.Schema.Tasks {
-// 			ids = append(ids, task.ID)
-// 		}
-// 
-// 		sort.Ints(ids)
-// 
-// 		for i := 0; i < len(ids); i++ {
-// 
-// 			task := view.Schema.Tasks[ids[i]]
-// 			html += view.RenderTask(task)
-// 
-// 		}
-// 
-// 		tbody := table.QuerySelector("tbody")
-// 
-// 		if tbody != nil {
-// 			tbody.SetInnerHTML(html)
-// 		}
-// 
-// 	}
-// 
-// }
-// 
-// func (view Tasks) RenderTask(task *schemas.Task) string {
-// 
-// 	var result string
-// 
-// 	id := strconv.Itoa(task.ID)
-// 
-// 	result += "<tr data-id=\"" + id + "\">"
-// 	result += "<td>" + strconv.Itoa(task.ID) + "</td>"
-// 	result += "<td>" + task.Title + "</td>"
-// 
-// 	if task.Done == true {
-// 		result += "<td><input type=\"checkbox\" checked /></td>"
-// 	} else {
-// 		result += "<td><input type=\"checkbox\" /></td>"
-// 	}
-// 
-// 	result += "</tr>"
-// 
-// 	return result
-// 
-// }
-// 
-// }
+
+func (controller *Tasks) queryFieldset() *content.Fieldset {
+
+	var result *content.Fieldset
+
+	if controller.Main.Dialog.Content != nil {
+
+		fieldset, ok1 := controller.Main.Dialog.Content.(*content.Fieldset)
+
+		if ok1 == true {
+			result = fieldset
+		}
+
+	}
+
+	return result
+
+}
+
+func (controller *Tasks) queryTable() *content.Table {
+
+	var result *content.Table
+
+	if len(controller.View.Content) > 0 {
+
+		article, ok1 := controller.View.Content[0].(*layout.Article)
+
+		if ok1 == true && len(article.Content) > 0 {
+
+			table, ok2 := article.Content[0].(*content.Table)
+
+			if ok2 == true {
+				result = table
+			}
+
+		}
+
+	}
+
+	return result
+
+}
+

@@ -224,7 +224,7 @@ func main() {
 
 						if err2 == nil {
 
-							fmt.Println("> POST /api/tasks/" + strconv.Itoa(schema.ID) + ": ok")
+							fmt.Println("> PATCH /api/tasks/" + strconv.Itoa(schema.ID) + ": ok")
 
 							response.Header().Set("Content-Type", "application/json")
 							response.WriteHeader(http.StatusOK)
@@ -232,7 +232,7 @@ func main() {
 
 						} else {
 
-							fmt.Println("> POST /api/tasks/" + strconv.Itoa(schema.ID) + ": error")
+							fmt.Println("> PATCH /api/tasks/" + strconv.Itoa(schema.ID) + ": error")
 
 							response.Header().Set("Content-Type", "application/json")
 							response.WriteHeader(http.StatusInternalServerError)
