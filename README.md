@@ -90,7 +90,7 @@ is to migrate towards go-integrated tests that are compatible with `go test`.
 
 # License
 
-This project is licensed under the [MIT](./LICENSE_MIT.txt) license.
+This project is licensed under the [MIT](./LICENSE.txt) license.
 
 
 # Contributors
