@@ -2,7 +2,6 @@ package controllers
 
 import "example/actions"
 import "example/schemas"
-import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
@@ -283,9 +282,6 @@ func (controller *Tasks) Render() {
 					}))
 
 				}
-
-				console.Log(dataset)
-				console.Log(table)
 
 				table.SetDataset(dataset)
 				table.SortBy("id")
