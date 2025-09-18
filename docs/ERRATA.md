@@ -2,20 +2,33 @@
 # Common Errata and Limitations
 
 
-## Promise APIs and Go Channels
+## Deadlocks
 
-Sometimes, the main thread will hang when using go channels inside a for loop.
+Sometimes, the main thread will hang when using `wasm` as a compilation target.
 
-The effect is visible that the line before will be executed, but then when trying to read a
-channel, the program will never finish reading it. So every binding that is using a Promise
-API behind the scenes can be affected by this scheduler bug.
+Go's scheduler is synchronous, meaning that if you have a function that executes something,
+it will block the main thread by default. In order to run things in parallel,
+go has the `go func(){}()` or go routine concept which is non-blocking.
 
-The cause is likely the scheduler timing precision differences in Web Browsers and the
-expectations on the internal go `syscall/js` / `wasm_exec.js` side, where channels seem
-to not be properly deconstructed in some cases.
+The deadlock effect is visible that the line before it will be executed, but then when
+trying to read a channel or executing a `waitGroup.Wait()`, the program will never finish
+and the CPU load will spike to an endless for loop.
+
+Usually the Browser Tab will be non-reactive as well, because the scheduler's main loop
+will just endlessly check for something that will never evaluate to true.
+
+
+### Deadlocks with Promise APIs
+
+Every Promise API in the Browser has to use a `chan` (or channel) to represent its state
+of whether it was successful by executing the `then(func(){})` callback or unsuccessful by executing
+the `catch(func(){})` callback.
+
+Keep in mind that all implementations of `gooey/bindings` that use Promises in the Web
+Browser will have a channel that could be blocking the main thread and result into a deadlock.
 
 If you experience this bug, it's usually solved by wrapping the Promise API calls inside a
-containing go routine so that the main thread doesn't hang up.
+containing `go func(){}()` wrapper so that the main thread doesn't hang up in a deadlock.
 
 Example Code that will hang up:
 
@@ -66,6 +79,149 @@ for d := 0; d < len(dataset); d++ {
 		fmt.Println("This will be printed")
 
 	}(dataset[d])
+
+}
+```
+
+
+### Deadlocks with WaitGroups
+
+Things get a little complicated when you rely on something like a `sync.Waitgroup` in Go
+because its `Wait()` function is blocking the main thread and will result in a deadlock
+of the main loop that is provided by the `wasm_exec.js` function.
+
+Example Code that will hang up:
+
+```go
+// DONT USE
+waitgroup := sync.WaitGroup{}
+
+for i := 0; i < 10; i++ {
+	waitgroup.Add(1)
+
+	go func(i int) {
+		time.Sleep(i * time.Second)
+		fmt.Println("Waited " + strconv.Itoa(i) + " seconds")
+		defer waitgroup.Done()
+	}(i)
+
+}
+
+// waitgroup.Wait() will deadlock the main thread
+waitgroup.Wait()
+fmt.Println("Finished")
+```
+
+Example Code that will work:
+
+```go
+go func() {
+
+	waitgroup := sync.WaitGroup{}
+
+	for i := 0; i < 10; i++ {
+		waitgroup.Add(1)
+
+		go func(i int) {
+			time.Sleep(i * time.Second)
+			fmt.Println("Waited " + strconv.Itoa(i) + " seconds")
+			defer waitgroup.Done()
+		}(i)
+
+	}
+
+	waitgroup.Wait()
+	fmt.Println("Finished")
+
+}()
+```
+
+
+### Deadlocks with Channels
+
+If you read from a channel in Go, it will cause a deadlock in the `wasm_exec.js` scheduler.
+This means that you have to wrap all channel-using code into a `go func(){}()` wrapper.
+
+This is related to Promise APIs, too, because they rely on using channels to be able to both
+evaluate the result or error state from `then()` and `catch()` callbacks.
+
+Example Code that will hang up:
+
+```go
+// DONT USE
+func main() {
+
+	channel := make(chan bool)
+
+	go func() {
+		time.Sleep(5 * time.Second)
+		channel <- true
+	}()
+
+	result := <-done
+
+	fmt.Println("Deadlock of main thread happens before this")
+	fmt.Println(result)
+
+}
+```
+
+Example code that will work:
+
+```go
+func main() {
+
+	go func() {
+		channel := make(chan bool)
+
+		go func() {
+			time.Sleep(5 * time.Second)
+			channel <- true
+		}()
+
+		result := <-done
+
+		fmt.Println("No deadlock of main thread")
+		fmt.Println(result)
+	}()
+
+}
+```
+
+
+### Debugging Deadlocks
+
+Mistakes happen, and it's a little painful to debug deadlocks because the Go scheduler
+in `wasm_exec.js` won't complete and therefore you don't know where exactly your code
+will deadlock.
+
+However, you can get better debug information by using the `runtime.Stack()` method and
+by wrapping a little helper method to do it. This will print out all running go routines
+and show the stacktraces of each of them.
+
+```go
+func DebugDeadlockAfter(seconds int) {
+	time.Sleep(seconds * time.Second)
+	buffer := make([]byte, 1<<16)
+	runtime.Stack(buf, true)
+
+	fmt.Println(string(buf))
+}
+
+func main() {
+
+	// Usage example
+	go DebugDeadlockAfter(10)
+
+	waitgroup := sync.WaitGroup{}
+	waitgroup.Add(1)
+	go func() {
+		time.Sleep(30 * time.Second)
+		defer waitgroup.Done()
+	}()
+
+	// Deadlock main thread on purpose
+	waitgroup.Wait()
 
 }
 ```
@@ -126,4 +282,5 @@ func NewExample(main *app.Main) Example {
 
 }
 ```
+
 
