@@ -4,6 +4,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
 import "syscall/js"
@@ -100,6 +101,10 @@ func (textarea *Textarea) Enable() bool {
 
 }
 
+func (textarea *Textarea) Query(query string) interfaces.Component {
+	return nil
+}
+
 func (textarea *Textarea) Render() *dom.Element {
 
 	if textarea.Component.Element != nil {
@@ -135,6 +140,10 @@ func (textarea *Textarea) Reset() bool {
 
 	return true
 
+}
+
+func (textarea *Textarea) SetChildren(children []interfaces.Component) bool {
+	return false
 }
 
 func (textarea *Textarea) String() string {

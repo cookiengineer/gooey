@@ -4,6 +4,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strconv"
 import "strings"
@@ -189,6 +190,10 @@ func (input *Number) Enable() bool {
 
 }
 
+func (input *Number) Query(query string) interfaces.Component {
+	return nil
+}
+
 func (input *Number) Render() *dom.Element {
 
 	if input.Component.Element != nil {
@@ -238,6 +243,10 @@ func (input *Number) Reset() bool {
 
 	return true
 
+}
+
+func (input *Number) SetChildren(children []interfaces.Component) bool {
+	return false
 }
 
 func (input *Number) String() string {

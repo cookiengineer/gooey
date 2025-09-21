@@ -1,6 +1,14 @@
 
 # Components
 
+## interfaces.Component Refactor
+
+- [ ] Query() method for content Components
+- [ ] Query() method for layout Components
+
+- [ ] Use `document.Register("fieldset", Wrap(content.ToFieldset))`
+- [ ] Use `Unwrap[*content.Fieldset](document.Query("main > fieldset"))`
+
 ## cookiestore Example
 
 ## app/View

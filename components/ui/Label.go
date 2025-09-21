@@ -2,6 +2,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
 
 type Label struct {
@@ -49,6 +50,10 @@ func (label *Label) Enable() bool {
 	return false
 }
 
+func (label *Label) Query(query string) interfaces.Component {
+	return nil
+}
+
 func (label *Label) Render() *dom.Element {
 
 	if label.Component.Element != nil {
@@ -65,6 +70,10 @@ func (label *Label) Render() *dom.Element {
 
 	return label.Component.Element
 
+}
+
+func (label *Label) SetChildren(children []interfaces.Component) bool {
+	return false
 }
 
 func (label *Label) String() string {

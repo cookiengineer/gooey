@@ -4,6 +4,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "slices"
 import "strings"
@@ -183,6 +184,10 @@ func (self *Select) Parse() {
 
 }
 
+func (self *Select) Query(query string) interfaces.Component {
+	return nil
+}
+
 func (self *Select) Render() *dom.Element {
 
 	if self.Component.Element != nil {
@@ -274,6 +279,10 @@ func (self *Select) Reset() bool {
 
 	return true
 
+}
+
+func (self *Select) SetChildren(children []interfaces.Component) bool {
+	return false
 }
 
 func (self *Select) String() string {
