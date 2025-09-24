@@ -3,8 +3,18 @@
 
 ## interfaces.Component Refactor
 
+- [ ] Finish implementation of components/utils/MatchesQuery() method
+
+- Mount and Unmount should be able to bind and unbind event listeners
+- Mount also parses subcomponents and subelements if the Component has a Layout property or uses a Dataset representation
+
+- [ ] Mount() and Unmount() method for content Components
+- [ ] Mount() and Unmount() method for layout Components
+
 - [ ] Query() method for content Components
 - [ ] Query() method for layout Components
+
+
 
 - [ ] Use `document.Register("fieldset", Wrap(content.ToFieldset))`
 - [ ] Use `Unwrap[*content.Fieldset](document.Query("main > fieldset"))`

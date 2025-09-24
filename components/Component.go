@@ -1,6 +1,8 @@
 package components
 
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components/utils"
+import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
 
 type Component struct {
@@ -191,6 +193,24 @@ func (component *Component) InitEvent(event string) {
 
 }
 
+func (component *Component) Mount() bool {
+	return true
+}
+
+func (component *Component) Query(query string) interfaces.Component {
+
+	if component.Element != nil {
+
+		if utils.MatchesQuery(component.Element, query) == true {
+			return component
+		}
+
+	}
+
+	return nil
+
+}
+
 func (component *Component) Render() *dom.Element {
 	return component.Element
 }
@@ -252,6 +272,10 @@ func (component *Component) RemoveEventListener(event string, listener *EventLis
 
 }
 
+func (component *Component) SetChildren(children []interfaces.Component) bool {
+	return false
+}
+
 func (component *Component) String() string {
 
 	html := ""
@@ -278,3 +302,6 @@ func (component *Component) String() string {
 
 }
 
+func (component *Component) Unmount() bool {
+	return true
+}

@@ -19,6 +19,22 @@ func NewDocument() *Document {
 	document.Registry   = make(map[string]constructor)
 	document.Body       = dom.Document.QuerySelector("body")
 
+	document.Mount()
+
+	return &document
+
+}
+
+func ToDocument(element *dom.Element) *Document {
+
+	var document Document
+
+	document.Components = make(map[string]interfaces.Component, 0)
+	document.Registry   = make(map[string]constructor)
+	document.Body       = element
+
+	document.Mount()
+
 	return &document
 
 }
@@ -27,21 +43,21 @@ func (document *Document) Register(tagname string, wrapper constructor) {
 	document.Registry[tagname] = wrapper
 }
 
-func (document *Document) Parse(body *dom.Element) {
+func (document *Document) Mount() bool {
 
-	if body.TagName != "BODY" {
+	if document.Body != nil {
 
-		tmp := body.QuerySelector("body")
+		if document.Body.TagName != "BODY" {
 
-		if tmp != nil {
-			body = tmp
+			tmp := document.Body.QuerySelector("body")
+
+			if tmp != nil {
+				document.Body = tmp
+			}
+
 		}
 
-	}
-
-	if body.TagName == "BODY" {
-
-		children := body.Children()
+		children := document.Body.Children()
 
 		for _, element := range children {
 
@@ -56,9 +72,11 @@ func (document *Document) Parse(body *dom.Element) {
 
 				component := wrapper(element)
 
-				fmt.Println(component)
+				fmt.Println("component", component)
 
 			} else {
+
+				fmt.Println("element", element)
 
 				// TODO: Make it a default component
 
@@ -68,6 +86,10 @@ func (document *Document) Parse(body *dom.Element) {
 
 		}
 
+		return true
+
+	} else {
+		return false
 	}
 
 }
@@ -84,7 +106,13 @@ func (document *Document) Query(query string) interfaces.Component {
 	// TODO: Support "main > section > table[data-name=\"foobar\"]" syntax
 
 
+	// TODO: If Query() returns nil, throw an error?
+
 
 	return nil
 
+}
+
+func (document *Document) Unmount() bool {
+	return false
 }

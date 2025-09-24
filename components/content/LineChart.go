@@ -5,6 +5,8 @@ package content
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/data"
+import "github.com/cookiengineer/gooey/components/utils"
+import "github.com/cookiengineer/gooey/interfaces"
 import "strconv"
 import "strings"
 
@@ -70,6 +72,10 @@ func ToLineChart(element *dom.Element) *LineChart {
 
 	return &chart
 
+}
+
+func (chart *LineChart) Add(data data.Data) bool {
+	return chart.Dataset.Add(data)
 }
 
 func (chart *LineChart) Disable() bool {
@@ -256,6 +262,20 @@ func (chart *LineChart) Mount() bool {
 
 }
 
+func (chart *LineChart) Query(query string) interfaces.Component {
+
+	if chart.Component.Element != nil {
+
+		if utils.MatchesQuery(chart.Component.Element, query) == true {
+			return chart.Component
+		}
+
+	}
+
+	return nil
+
+}
+
 func (chart *LineChart) Render() *dom.Element {
 
 	if chart.Component.Element != nil {
@@ -347,10 +367,6 @@ func (chart *LineChart) Render() *dom.Element {
 
 }
 
-func (chart *LineChart) Add(data data.Data) bool {
-	return chart.Dataset.Add(data)
-}
-
 func (chart *LineChart) Remove(indexes []int) {
 
 	entries := make([]data.Data, 0)
@@ -378,6 +394,10 @@ func (chart *LineChart) Remove(indexes []int) {
 
 	chart.Dataset = &dataset
 
+}
+
+func (chart *LineChart) SetChildren(children []interfaces.Component) bool {
+	return false
 }
 
 func (chart *LineChart) SetDataset(dataset data.Dataset) {

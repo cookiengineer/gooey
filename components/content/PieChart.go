@@ -5,6 +5,8 @@ package content
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/data"
+import "github.com/cookiengineer/gooey/components/utils"
+import "github.com/cookiengineer/gooey/interfaces"
 import "strconv"
 import "strings"
 
@@ -236,6 +238,20 @@ func (chart *PieChart) Mount() bool {
 
 }
 
+func (chart *PieChart) Query(query string) interfaces.Component {
+
+	if chart.Component.Element != nil {
+
+		if utils.MatchesQuery(chart.Component.Element, query) == true {
+			return chart.Component
+		}
+
+	}
+
+	return nil
+
+}
+
 func (chart *PieChart) Render() *dom.Element {
 
 	if chart.Component.Element != nil {
@@ -324,6 +340,10 @@ func (chart *PieChart) Render() *dom.Element {
 
 	return chart.Component.Element
 
+}
+
+func (chart *PieChart) SetChildren(children []interfaces.Component) bool {
+	return false
 }
 
 func (chart *PieChart) SetData(data data.Data) bool {
