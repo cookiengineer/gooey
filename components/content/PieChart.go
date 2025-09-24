@@ -40,7 +40,7 @@ func NewPieChart(name string, labels []string, properties []string, types []stri
 	chart.ViewBox.Height = 512
 
 	chart.SetLabelsAndPropertiesAndTypes(labels, properties, types)
-	chart.init_events()
+	chart.Mount()
 	chart.Render()
 
 	return chart
@@ -63,8 +63,7 @@ func ToPieChart(element *dom.Element) *PieChart {
 	chart.ViewBox.Width  = 512
 	chart.ViewBox.Height = 256
 
-	chart.Parse()
-	chart.init_events()
+	chart.Mount()
 	chart.Render()
 
 	return &chart
@@ -89,54 +88,11 @@ func (chart *PieChart) Enable() bool {
 
 }
 
-func (chart *PieChart) init_events() {
+func (chart *PieChart) Mount() bool {
 
-	chart.Component.InitEvent("mousemove")
-
-	chart.Component.Element.AddEventListener("mousemove", dom.ToEventListener(func(event *dom.Event) {
-
-		if chart.Disabled == false && event.Target != nil {
-
-			if event.Target.TagName == "LABEL" {
-
-				property := event.Target.GetAttribute("data-property")
-
-				if property != "" {
-
-					svg    := chart.Component.Element.QuerySelector("svg")
-					layers := chart.Component.Element.QuerySelectorAll("svg g")
-
-					// var foreground *dom.Element = nil
-					// background := make([]*dom.Element, 0)
-
-					for _, layer := range layers {
-
-						if layer.GetAttribute("data-property") == property {
-							layer.SetAttribute("data-state", "active")
-							// foreground = layer
-						} else {
-							layer.RemoveAttribute("data-state")
-							// background = append(background, layer)
-						}
-
-					}
-
-					if svg != nil {
-						// svg.ReplaceChildren(background)
-						// svg.Append(foreground)
-					}
-
-				}
-
-			}
-
-		}
-
-	}))
-
-}
-
-func (chart *PieChart) Parse() {
+	if chart.Component != nil {
+		chart.Component.InitEvent("mousemove")
+	}
 
 	if chart.Component.Element != nil {
 
@@ -231,6 +187,51 @@ func (chart *PieChart) Parse() {
 
 		}
 
+		chart.Component.Element.AddEventListener("mousemove", dom.ToEventListener(func(event *dom.Event) {
+
+			if chart.Disabled == false && event.Target != nil {
+
+				if event.Target.TagName == "LABEL" {
+
+					property := event.Target.GetAttribute("data-property")
+
+					if property != "" {
+
+						svg    := chart.Component.Element.QuerySelector("svg")
+						layers := chart.Component.Element.QuerySelectorAll("svg g")
+
+						// var foreground *dom.Element = nil
+						// background := make([]*dom.Element, 0)
+
+						for _, layer := range layers {
+
+							if layer.GetAttribute("data-property") == property {
+								layer.SetAttribute("data-state", "active")
+								// foreground = layer
+							} else {
+								layer.RemoveAttribute("data-state")
+								// background = append(background, layer)
+							}
+
+						}
+
+						if svg != nil {
+							// svg.ReplaceChildren(background)
+							// svg.Append(foreground)
+						}
+
+					}
+
+				}
+
+			}
+
+		}))
+
+		return true
+
+	} else {
+		return false
 	}
 
 }
@@ -440,5 +441,15 @@ func (chart *PieChart) String() string {
 	html += "</figure>"
 
 	return html
+
+}
+
+func (chart *PieChart) Unmount() bool {
+
+	if chart.Component.Element != nil {
+		chart.Component.Element.RemoveEventListener("mousemove", nil)
+	}
+
+	return true
 
 }
