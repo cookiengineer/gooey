@@ -4,6 +4,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strconv"
@@ -157,7 +158,9 @@ func (input *Range) Enable() bool {
 
 func (input *Range) Mount() bool {
 
-	input.Component.InitEvent("change-value")
+	if input.Component != nil {
+		input.Component.InitEvent("change-value")
+	}
 
 	if input.Component.Element != nil {
 
@@ -187,7 +190,17 @@ func (input *Range) Mount() bool {
 }
 
 func (input *Range) Query(query string) interfaces.Component {
+
+	if input.Component.Element != nil {
+
+		if utils.MatchesQuery(input.Component.Element, query) == true {
+			return input.Component
+		}
+
+	}
+
 	return nil
+
 }
 
 func (input *Range) Render() *dom.Element {

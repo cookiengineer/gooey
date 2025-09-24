@@ -4,6 +4,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
@@ -82,7 +83,9 @@ func (textarea *Textarea) Enable() bool {
 
 func (textarea *Textarea) Mount() bool {
 
-	textarea.Component.InitEvent("change-value")
+	if textarea.Component != nil {
+		textarea.Component.InitEvent("change-value")
+	}
 
 	if textarea.Component.Element != nil {
 
@@ -105,7 +108,17 @@ func (textarea *Textarea) Mount() bool {
 }
 
 func (textarea *Textarea) Query(query string) interfaces.Component {
+
+	if textarea.Component.Element != nil {
+
+		if utils.MatchesQuery(textarea.Component.Element, query) == true {
+			return textarea.Component
+		}
+
+	}
+
 	return nil
+
 }
 
 func (textarea *Textarea) Render() *dom.Element {

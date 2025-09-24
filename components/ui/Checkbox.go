@@ -4,6 +4,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
@@ -77,7 +78,9 @@ func (checkbox *Checkbox) Enable() bool {
 
 func (checkbox *Checkbox) Mount() bool {
 
-	checkbox.Component.InitEvent("change-value")
+	if checkbox.Component != nil {
+		checkbox.Component.InitEvent("change-value")
+	}
 
 	if checkbox.Component.Element != nil {
 
@@ -106,7 +109,17 @@ func (checkbox *Checkbox) Mount() bool {
 }
 
 func (checkbox *Checkbox) Query(query string) interfaces.Component {
+
+	if checkbox.Component.Element != nil {
+
+		if utils.MatchesQuery(checkbox.Component.Element, query) == true {
+			return checkbox.Component
+		}
+
+	}
+
 	return nil
+
 }
 
 func (checkbox *Checkbox) Render() *dom.Element {

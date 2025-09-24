@@ -2,6 +2,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
 
@@ -68,14 +69,26 @@ func (button *Button) Enable() bool {
 
 func (button *Button) Mount() bool {
 
-	button.Component.InitEvent("click")
+	if button.Component != nil {
+		button.Component.InitEvent("click")
+	}
 
 	return true
 
 }
 
 func (button *Button) Query(query string) interfaces.Component {
+
+	if button.Component.Element != nil {
+
+		if utils.MatchesQuery(button.Component.Element, query) == true {
+			return button.Component
+		}
+
+	}
+
 	return nil
+
 }
 
 func (button *Button) Render() *dom.Element {

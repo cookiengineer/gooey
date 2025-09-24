@@ -4,6 +4,7 @@ package ui
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "slices"
@@ -87,7 +88,9 @@ func (self *Select) Enable() bool {
 
 func (self *Select) Mount() bool {
 
-	self.Component.InitEvent("change-value")
+	if self.Component != nil {
+		self.Component.InitEvent("change-value")
+	}
 
 	if self.Component.Element != nil {
 
@@ -161,7 +164,17 @@ func (self *Select) Mount() bool {
 }
 
 func (self *Select) Query(query string) interfaces.Component {
+
+	if self.Component.Element != nil {
+
+		if utils.MatchesQuery(self.Component.Element, query) == true {
+			return self.Component
+		}
+
+	}
+
 	return nil
+
 }
 
 func (self *Select) Render() *dom.Element {
