@@ -90,7 +90,7 @@ func (input *Input) Mount() bool {
 
 		input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
-			input.Value = element.Value.Get("value").String()
+			input.Value = input.Component.Element.Value.Get("value").String()
 
 			input.Component.FireEventListeners("change-value", map[string]any{
 				"value": input.Value,

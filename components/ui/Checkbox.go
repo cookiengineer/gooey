@@ -83,7 +83,7 @@ func (checkbox *Checkbox) Mount() bool {
 
 		checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
-			checkbox.Value = element.Value.Get("checked").Bool()
+			checkbox.Value = checkbox.Component.Element.Value.Get("checked").Bool()
 
 			checked := "false"
 

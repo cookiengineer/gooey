@@ -88,7 +88,7 @@ func (textarea *Textarea) Mount() bool {
 
 		textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
-			textarea.Value = element.Value.Get("value").String()
+			textarea.Value = textarea.Component.Element.Value.Get("value").String()
 
 			textarea.Component.FireEventListeners("change-value", map[string]any{
 				"value": textarea.Value,

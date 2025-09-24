@@ -163,7 +163,7 @@ func (input *Number) Mount() bool {
 
 		input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
-			value := element.Value.Get("value").String()
+			value := input.Component.Element.Value.Get("value").String()
 			number, err := strconv.ParseInt(value, 10, 64)
 
 			if err == nil {
