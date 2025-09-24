@@ -9,7 +9,7 @@ func main() {
 
 	element := dom.Document.QuerySelector("main")
 
-	main                := app.NewMain(element)
+	main                := app.ToMain(element)
 	controller_tasks    := controllers.NewTasks(main)
 	controller_settings := controllers.NewSettings(main)
 

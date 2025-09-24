@@ -32,18 +32,7 @@ func NewInput(label string, value string, typ types.Input) Input {
 	input.Value     = strings.TrimSpace(value)
 	input.Disabled  = false
 
-	input.Component.InitEvent("change-value")
-
-	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		input.Value = element.Value.Get("value").String()
-
-		input.Component.FireEventListeners("change-value", map[string]any{
-			"value": input.Value,
-		})
-
-	}))
-
+	input.Mount()
 	input.Render()
 
 	return input
@@ -69,17 +58,7 @@ func ToInput(element *dom.Element) *Input {
 	input.Type      = types.Input(element.GetAttribute("type"))
 	input.Disabled  = element.HasAttribute("disabled")
 
-	input.Component.InitEvent("change-value")
-
-	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		input.Value = element.Value.Get("value").String()
-
-		input.Component.FireEventListeners("change-value", map[string]any{
-			"value": input.Value,
-		})
-
-	}))
+	input.Mount()
 
 	return &input
 
@@ -100,6 +79,30 @@ func (input *Input) Enable() bool {
 	input.Render()
 
 	return true
+
+}
+
+func (input *Input) Mount() bool {
+
+	input.Component.InitEvent("change-value")
+
+	if input.Component.Element != nil {
+
+		input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
+
+			input.Value = element.Value.Get("value").String()
+
+			input.Component.FireEventListeners("change-value", map[string]any{
+				"value": input.Value,
+			})
+
+		}))
+
+		return true
+
+	} else {
+		return false
+	}
 
 }
 
@@ -187,5 +190,15 @@ func (input *Input) ToValue() js.Value {
 	}
 
 	return result
+
+}
+
+func (input *Input) Unmount() bool {
+
+	if input.Component.Element != nil {
+		input.Component.Element.RemoveEventListener("change", nil)
+	}
+
+	return true
 
 }

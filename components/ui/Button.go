@@ -24,7 +24,7 @@ func NewButton(label string, action string) Button {
 	button.Action    = strings.ToLower(action)
 	button.Disabled  = false
 
-	button.Component.InitEvent("click")
+	button.Mount()
 	button.Render()
 
 	return button
@@ -42,7 +42,7 @@ func ToButton(element *dom.Element) *Button {
 	button.Action    = strings.ToLower(element.GetAttribute("data-action"))
 	button.Disabled  = element.HasAttribute("disabled")
 
-	button.Component.InitEvent("click")
+	button.Mount()
 
 	return &button
 
@@ -61,6 +61,14 @@ func (button *Button) Enable() bool {
 
 	button.Disabled = false
 	button.Render()
+
+	return true
+
+}
+
+func (button *Button) Mount() bool {
+
+	button.Component.InitEvent("click")
 
 	return true
 
@@ -124,4 +132,8 @@ func (button *Button) String() string {
 
 	return html
 
+}
+
+func (button *Button) Unmount() bool {
+	return true
 }

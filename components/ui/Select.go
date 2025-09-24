@@ -44,35 +44,7 @@ func NewSelect(label string, value string, values []string) Select {
 
 	}
 
-	self.Component.InitEvent("change-value")
-
-	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		index   := self.Component.Element.Value.Get("selectedIndex").Int()
-		options := self.Component.Element.Value.Get("options")
-
-		if !options.IsNull() && !options.IsUndefined() && index != -1 {
-
-			value := options.Index(index).Get("value")
-
-			if !value.IsNull() && !value.IsUndefined() {
-
-				if slices.Contains(self.Values, value.String()) {
-					self.Value = value.String()
-				}
-
-				self.Component.FireEventListeners("change-value", map[string]any{
-					"value": self.Value,
-				})
-
-			}
-
-		} else if index == -1 {
-			self.Value = ""
-		}
-
-	}))
-
+	self.Mount()
 	self.Render()
 
 	return self
@@ -89,37 +61,7 @@ func ToSelect(element *dom.Element) *Select {
 	self.Type      = types.InputText
 	self.Disabled  = element.HasAttribute("disabled")
 
-	self.Parse()
-	self.default_value = self.Value
-
-	self.Component.InitEvent("change-value")
-
-	self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		index   := self.Component.Element.Value.Get("selectedIndex").Int()
-		options := self.Component.Element.Value.Get("options")
-
-		if !options.IsNull() && !options.IsUndefined() && index != -1 {
-
-			value := options.Index(index).Get("value")
-
-			if !value.IsNull() && !value.IsUndefined() {
-
-				if slices.Contains(self.Values, value.String()) {
-					self.Value = value.String()
-				}
-
-				self.Component.FireEventListeners("change-value", map[string]any{
-					"value": self.Value,
-				})
-
-			}
-
-		} else if index == -1 {
-			self.Value = ""
-		}
-
-	}))
+	self.Mount()
 
 	return &self
 
@@ -143,7 +85,9 @@ func (self *Select) Enable() bool {
 
 }
 
-func (self *Select) Parse() {
+func (self *Select) Mount() bool {
+
+	self.Component.InitEvent("change-value")
 
 	if self.Component.Element != nil {
 
@@ -177,9 +121,41 @@ func (self *Select) Parse() {
 
 		}
 
-		self.Value = value
-		self.Values = values
+		self.default_value = value
+		self.Value         = value
+		self.Values        = values
 
+		self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
+
+			index   := self.Component.Element.Value.Get("selectedIndex").Int()
+			options := self.Component.Element.Value.Get("options")
+
+			if !options.IsNull() && !options.IsUndefined() && index != -1 {
+
+				value := options.Index(index).Get("value")
+
+				if !value.IsNull() && !value.IsUndefined() {
+
+					if slices.Contains(self.Values, value.String()) {
+						self.Value = value.String()
+					}
+
+					self.Component.FireEventListeners("change-value", map[string]any{
+						"value": self.Value,
+					})
+
+				}
+
+			} else if index == -1 {
+				self.Value = ""
+			}
+
+		}))
+
+		return true
+
+	} else {
+		return false
 	}
 
 }
@@ -353,5 +329,15 @@ func (self *Select) ToValue() js.Value {
 	}
 
 	return result
+
+}
+
+func (self *Select) Unmount() bool {
+
+	if self.Component.Element != nil {
+		self.Component.Element.RemoveEventListener("change", nil)
+	}
+
+	return true
 
 }

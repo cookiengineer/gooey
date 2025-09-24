@@ -32,24 +32,7 @@ func NewCheckbox(label string, value string) Checkbox {
 	checkbox.Value     = false
 	checkbox.Disabled  = false
 
-	checkbox.Component.InitEvent("change-value")
-
-	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		checkbox.Value = element.Value.Get("checked").Bool()
-
-		checked := "false"
-
-		if checkbox.Value == true {
-			checked = "true"
-		}
-
-		checkbox.Component.FireEventListeners("change-value", map[string]any{
-			"value": checked,
-		})
-
-	}))
-
+	checkbox.Mount()
 	checkbox.Render()
 
 	return checkbox
@@ -68,23 +51,7 @@ func ToCheckbox(element *dom.Element) *Checkbox {
 	checkbox.Value     = element.Value.Get("checked").Bool()
 	checkbox.Disabled  = element.HasAttribute("disabled")
 
-	checkbox.Component.InitEvent("change-value")
-
-	checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		checkbox.Value = element.Value.Get("checked").Bool()
-
-		checked := "false"
-
-		if checkbox.Value == true {
-			checked = "true"
-		}
-
-		checkbox.Component.FireEventListeners("change-value", map[string]any{
-			"value": checked,
-		})
-
-	}))
+	checkbox.Mount()
 
 	return &checkbox
 
@@ -105,6 +72,36 @@ func (checkbox *Checkbox) Enable() bool {
 	checkbox.Render()
 
 	return true
+
+}
+
+func (checkbox *Checkbox) Mount() bool {
+
+	checkbox.Component.InitEvent("change-value")
+
+	if checkbox.Component.Element != nil {
+
+		checkbox.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
+
+			checkbox.Value = element.Value.Get("checked").Bool()
+
+			checked := "false"
+
+			if checkbox.Value == true {
+				checked = "true"
+			}
+
+			checkbox.Component.FireEventListeners("change-value", map[string]any{
+				"value": checked,
+			})
+
+		}))
+
+		return true
+
+	} else {
+		return false
+	}
 
 }
 
@@ -196,5 +193,15 @@ func (checkbox *Checkbox) ToValue() js.Value {
 	}
 
 	return result
+
+}
+
+func (checkbox *Checkbox) Unmount() bool {
+
+	if checkbox.Component.Element != nil {
+		checkbox.Component.Element.RemoveEventListener("change", nil)
+	}
+
+	return true
 
 }

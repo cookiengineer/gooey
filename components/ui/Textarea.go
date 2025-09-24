@@ -30,18 +30,7 @@ func NewTextarea(label string, value string) Textarea {
 	textarea.Value     = value
 	textarea.Disabled  = false
 
-	textarea.Component.InitEvent("change-value")
-
-	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		textarea.Value = element.Value.Get("value").String()
-
-		textarea.Component.FireEventListeners("change-value", map[string]any{
-			"value": textarea.Value,
-		})
-
-	}))
-
+	textarea.Mount()
 	textarea.Render()
 
 	return textarea
@@ -67,17 +56,7 @@ func ToTextarea(element *dom.Element) *Textarea {
 	textarea.Type      = types.InputTextarea
 	textarea.Disabled  = element.HasAttribute("disabled")
 
-	textarea.Component.InitEvent("change-value")
-
-	textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		textarea.Value = element.Value.Get("value").String()
-
-		textarea.Component.FireEventListeners("change-value", map[string]any{
-			"value": textarea.Value,
-		})
-
-	}))
+	textarea.Mount()
 
 	return &textarea
 
@@ -98,6 +77,30 @@ func (textarea *Textarea) Enable() bool {
 	textarea.Render()
 
 	return true
+
+}
+
+func (textarea *Textarea) Mount() bool {
+
+	textarea.Component.InitEvent("change-value")
+
+	if textarea.Component.Element != nil {
+
+		textarea.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
+
+			textarea.Value = element.Value.Get("value").String()
+
+			textarea.Component.FireEventListeners("change-value", map[string]any{
+				"value": textarea.Value,
+			})
+
+		}))
+
+		return true
+
+	} else {
+		return false
+	}
 
 }
 
@@ -185,5 +188,15 @@ func (textarea *Textarea) ToValue() js.Value {
 	}
 
 	return result
+
+}
+
+func (textarea *Textarea) Unmount() bool {
+
+	if textarea.Component.Element != nil {
+		textarea.Component.Element.RemoveEventListener("change", nil)
+	}
+
+	return true
 
 }

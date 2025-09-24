@@ -58,25 +58,7 @@ func NewNumber(label string, step int, cur_value int, min_value int, max_value i
 		input.Max = input.Value
 	}
 
-	input.Component.InitEvent("change-value")
-
-	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		value := element.Value.Get("value").String()
-		number, err := strconv.ParseInt(value, 10, 64)
-
-		if err == nil {
-
-			input.Value = int(number)
-
-			input.Component.FireEventListeners("change-value", map[string]any{
-				"value": input.Value,
-			})
-
-		}
-
-	}))
-
+	input.Mount()
 	input.Render()
 
 	return input
@@ -149,24 +131,7 @@ func ToNumber(element *dom.Element) *Number {
 	input.Type      = types.Input(element.GetAttribute("type"))
 	input.Disabled  = element.HasAttribute("disabled")
 
-	input.Component.InitEvent("change-value")
-
-	input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
-
-		value := element.Value.Get("value").String()
-		number, err := strconv.ParseInt(value, 10, 64)
-
-		if err == nil {
-
-			input.Value = int(number)
-
-			input.Component.FireEventListeners("change-value", map[string]any{
-				"value": input.Value,
-			})
-
-		}
-
-	}))
+	input.Mount()
 
 	return &input
 
@@ -187,6 +152,37 @@ func (input *Number) Enable() bool {
 	input.Render()
 
 	return true
+
+}
+
+func (input *Number) Mount() bool {
+
+	input.Component.InitEvent("change-value")
+
+	if input.Component.Element != nil {
+
+		input.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
+
+			value := element.Value.Get("value").String()
+			number, err := strconv.ParseInt(value, 10, 64)
+
+			if err == nil {
+
+				input.Value = int(number)
+
+				input.Component.FireEventListeners("change-value", map[string]any{
+					"value": input.Value,
+				})
+
+			}
+
+		}))
+
+		return true
+
+	} else {
+		return false
+	}
 
 }
 
@@ -304,5 +300,15 @@ func (input *Number) ToValue() js.Value {
 	}
 
 	return result
+
+}
+
+func (input *Number) Unmount() bool {
+
+	if input.Component.Element != nil {
+		input.Component.Element.RemoveEventListener("change", nil)
+	}
+
+	return true
 
 }

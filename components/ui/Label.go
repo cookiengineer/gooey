@@ -50,6 +50,10 @@ func (label *Label) Enable() bool {
 	return false
 }
 
+func (label *Label) Mount() bool {
+	return true
+}
+
 func (label *Label) Query(query string) interfaces.Component {
 	return nil
 }
@@ -94,4 +98,8 @@ func (label *Label) String() string {
 
 	return html
 
+}
+
+func (label *Label) Unmount() bool {
+	return true
 }

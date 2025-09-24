@@ -24,6 +24,7 @@ func NewArticle() Article {
 	article.Component = &component
 	article.Content   = make([]interfaces.Component, 0)
 
+	article.Mount()
 	article.Render()
 
 	return article
@@ -40,7 +41,7 @@ func ToArticle(element *dom.Element) *Article {
 	article.Component = &component
 	article.Content   = make([]interfaces.Component, 0)
 
-	article.Parse()
+	article.Mount()
 
 	return &article
 
@@ -54,7 +55,7 @@ func (article *Article) Enable() bool {
 	return false
 }
 
-func (article *Article) Parse() {
+func (article *Article) Mount() bool {
 
 	if article.Component.Element != nil {
 
@@ -106,6 +107,21 @@ func (article *Article) Parse() {
 		}
 
 		article.Content = mapped
+
+		return true
+
+	} else {
+		return false
+	}
+
+}
+
+func (article *Article) Query(query string) (bool, interfaces.Component) {
+
+	for c := 0; c < len(article.Content); c++ {
+
+		// TODO: How to validate if article.Content.TagName is the same?
+		// TODO: Needs a GetElement() method?
 
 	}
 
@@ -159,4 +175,17 @@ func (article *Article) String() string {
 
 	return html
 
+}
+
+func (article *Article) Unmount() bool {
+
+	if len(article.Content) > 0 {
+
+		for _, component := range article.Content {
+			component.Unmount()
+		}
+
+	}
+
+	return true
 }

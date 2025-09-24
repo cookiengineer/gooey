@@ -19,7 +19,25 @@ type Main struct {
 	views   map[string]interfaces.View `json:"-"`
 }
 
-func NewMain(element *dom.Element) *Main {
+func NewMain() *Main {
+
+	var main Main
+
+	main.Element = dom.Document.QuerySelector("main")
+	main.Client  = NewClient()
+	main.Storage = NewStorage()
+	main.View    = nil
+	main.views   = make(map[string]interfaces.View)
+
+	if main.Element != nil {
+		main.Parse()
+	}
+
+	return &main
+
+}
+
+func ToMain(element *dom.Element) *Main {
 
 	var main Main
 
@@ -29,9 +47,17 @@ func NewMain(element *dom.Element) *Main {
 	main.View    = nil
 	main.views   = make(map[string]interfaces.View)
 
+	if main.Element != nil {
+		main.Parse()
+	}
+
+	return &main
+
+}
+
+func (main *Main) Parse() {
+
 	header_element := dom.Document.QuerySelector("body > header")
-	footer_element := dom.Document.QuerySelector("body > footer")
-	dialog_element := dom.Document.QuerySelector("body > dialog")
 
 	if header_element != nil {
 
@@ -66,19 +92,21 @@ func NewMain(element *dom.Element) *Main {
 		main.Header = nil
 	}
 
+	footer_element := dom.Document.QuerySelector("body > footer")
+
 	if footer_element != nil {
 		main.Footer = layout.ToFooter(footer_element)
 	} else {
 		main.Footer = nil
 	}
 
+	dialog_element := dom.Document.QuerySelector("body > dialog")
+
 	if dialog_element != nil {
 		main.Dialog = layout.ToDialog(dialog_element)
 	} else {
 		main.Dialog = nil
 	}
-
-	return &main
 
 }
 

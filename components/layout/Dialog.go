@@ -29,7 +29,7 @@ func NewDialog() Dialog {
 	dialog.Content   = nil
 	dialog.Footer    = nil
 
-	dialog.init_events()
+	dialog.Mount()
 	dialog.Render()
 
 	return dialog
@@ -47,8 +47,7 @@ func ToDialog(element *dom.Element) *Dialog {
 	dialog.Content   = nil
 	dialog.Footer    = nil
 
-	dialog.Parse()
-	dialog.init_events()
+	dialog.Mount()
 
 	return &dialog
 
@@ -99,44 +98,44 @@ func (dialog *Dialog) Hide() bool {
 
 }
 
-func (dialog *Dialog) init_events() {
+func (dialog *Dialog) Mount() bool {
 
-	dialog.Component.InitEvent("click")
-	dialog.Component.InitEvent("action")
+	if dialog.Footer != nil && dialog.Component != nil {
 
-	dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
+		dialog.Component.InitEvent("click")
+		dialog.Component.InitEvent("action")
 
-		action, ok1 := attributes["data-action"]
+		dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
-		if ok1 == true {
+			dialog.Component.FireEventListeners("action", map[string]any{
+				"action": attributes["data-action"],
+			})
 
-			if action == "close" {
+		}, false))
 
-				dialog.Hide()
+		dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
 
-			} else {
+			action, ok1 := attributes["data-action"]
 
-				dialog.Component.FireEventListeners("action", map[string]any{
-					"action": attributes["data-action"],
-				})
+			if ok1 == true {
+
+				if action == "close" {
+
+					dialog.Hide()
+
+				} else {
+
+					dialog.Component.FireEventListeners("action", map[string]any{
+						"action": attributes["data-action"],
+					})
+
+				}
 
 			}
 
-		}
+		}, false))
 
-	}, false))
-
-	dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
-
-		dialog.Component.FireEventListeners("action", map[string]any{
-			"action": attributes["data-action"],
-		})
-
-	}, false))
-
-}
-
-func (dialog *Dialog) Parse() {
+	}
 
 	if dialog.Component.Element != nil {
 
@@ -174,6 +173,8 @@ func (dialog *Dialog) Parse() {
 				dialog.Footer = ToFooter(tmp3)
 			}
 
+			return true
+
 		} else {
 
 			console.Group("Dialog: Invalid Markup")
@@ -181,8 +182,12 @@ func (dialog *Dialog) Parse() {
 			console.Error(dialog.Component.Element.InnerHTML)
 			console.GroupEnd("Dialog: Invalid Markup")
 
+			return false
+
 		}
 
+	} else {
+		return false
 	}
 
 }
@@ -245,5 +250,19 @@ func (dialog *Dialog) Show() bool {
 	}
 
 	return result
+
+}
+
+func (dialog *Dialog) Unmount() bool {
+
+	if dialog.Footer != nil {
+		dialog.Footer.Component.RemoveEventListener("action", nil)
+	}
+
+	if dialog.Component != nil {
+		dialog.Component.RemoveEventListener("click", nil)
+	}
+
+	return true
 
 }

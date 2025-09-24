@@ -41,7 +41,7 @@ func NewHeader() Header {
 	header.View          = ""
 	header.views         = make(map[string]*header_view_item)
 
-	header.init_events()
+	header.Mount()
 	header.Render()
 
 	return header
@@ -60,8 +60,7 @@ func ToHeader(element *dom.Element) *Header {
 	header.Content.Right = make([]interfaces.Component, 0)
 	header.views         = make(map[string]*header_view_item)
 
-	header.Parse()
-	header.init_events()
+	header.Mount()
 
 	return &header
 
@@ -141,49 +140,49 @@ func (header *Header) Enable() bool {
 
 }
 
-func (header *Header) init_events() {
+func (header *Header) Mount() bool {
 
-	header.Component.InitEvent("change-view")
-	header.Component.InitEvent("action")
+	if header.Component != nil {
 
-	header.Component.Element.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
+		header.Component.InitEvent("change-view")
+		header.Component.InitEvent("action")
 
-		if event.Target != nil {
+	}
 
-			action := event.Target.GetAttribute("data-action")
-			view   := event.Target.GetAttribute("data-view")
-			path   := event.Target.GetAttribute("href")
+	if header.Component.Element != nil {
 
-			if action != "" {
+		header.Component.Element.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
 
-				event.PreventDefault()
-				event.StopPropagation()
+			if event.Target != nil {
 
-				header.Component.FireEventListeners("action", map[string]any{
-					"action": action,
-				})
+				action := event.Target.GetAttribute("data-action")
+				view   := event.Target.GetAttribute("data-view")
+				path   := event.Target.GetAttribute("href")
 
-			} else if view != "" && path != "" {
+				if action != "" {
 
-				event.PreventDefault()
-				event.StopPropagation()
+					event.PreventDefault()
+					event.StopPropagation()
 
-				header.Component.FireEventListeners("change-view", map[string]any{
-					"name": view,
-					"path": path,
-				})
+					header.Component.FireEventListeners("action", map[string]any{
+						"action": action,
+					})
+
+				} else if view != "" && path != "" {
+
+					event.PreventDefault()
+					event.StopPropagation()
+
+					header.Component.FireEventListeners("change-view", map[string]any{
+						"name": view,
+						"path": path,
+					})
+
+				}
 
 			}
 
-		}
-
-	}))
-
-}
-
-func (header *Header) Parse() {
-
-	if header.Component.Element != nil {
+		}))
 
 		layout := header.Component.Element.GetAttribute("data-layout")
 
@@ -242,6 +241,8 @@ func (header *Header) Parse() {
 			header.Content.Left  = components_left
 			header.Content.Right = components_right
 
+			return true
+
 		} else {
 
 			console.Group("Header: Invalid Markup")
@@ -249,8 +250,12 @@ func (header *Header) Parse() {
 			console.Error(header.Component.Element.InnerHTML)
 			console.GroupEnd("Header: Invalid Markup")
 
+			return false
+
 		}
 
+	} else {
+		return false
 	}
 
 }
@@ -409,5 +414,15 @@ func (header *Header) String() string {
 	html += "</header>"
 
 	return html
+
+}
+
+func (header *Header) Unmount() bool {
+
+	if header.Component.Element != nil {
+		header.Component.Element.RemoveEventListener("click", nil)
+	}
+
+	return true
 
 }

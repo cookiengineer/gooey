@@ -30,7 +30,7 @@ func NewFooter() Footer {
 	footer.Content.Center = make([]interfaces.Component, 0)
 	footer.Content.Right  = make([]interfaces.Component, 0)
 
-	footer.init_events()
+	footer.Mount()
 	footer.Render()
 
 	return footer
@@ -49,8 +49,7 @@ func ToFooter(element *dom.Element) *Footer {
 	footer.Content.Center = make([]interfaces.Component, 0)
 	footer.Content.Right  = make([]interfaces.Component, 0)
 
-	footer.Parse()
-	footer.init_events()
+	footer.Mount()
 
 	return &footer
 
@@ -100,28 +99,28 @@ func (footer *Footer) Enable() bool {
 
 }
 
-func (footer *Footer) init_events() {
+func (footer *Footer) Mount() bool {
 
-	footer.Component.InitEvent("click")
-	footer.Component.InitEvent("action")
+	if footer.Component != nil {
 
-	footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
+		footer.Component.InitEvent("click")
+		footer.Component.InitEvent("action")
 
-		_, ok1 := attributes["data-action"]
+		footer.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
 
-		if ok1 == true {
+			_, ok1 := attributes["data-action"]
 
-			footer.Component.FireEventListeners("action", map[string]any{
-				"action": attributes["data-action"],
-			})
+			if ok1 == true {
 
-		}
+				footer.Component.FireEventListeners("action", map[string]any{
+					"action": attributes["data-action"],
+				})
 
-	}, false))
+			}
 
-}
+		}, false))
 
-func (footer *Footer) Parse() {
+	}
 
 	if footer.Component.Element != nil {
 
@@ -161,6 +160,8 @@ func (footer *Footer) Parse() {
 				footer.Content.Right = append(footer.Content.Right, ui.ToButton(button))
 			}
 
+			return true
+
 		} else {
 
 			console.Group("Footer: Invalid Markup")
@@ -168,8 +169,12 @@ func (footer *Footer) Parse() {
 			console.Error(footer.Component.Element.InnerHTML)
 			console.GroupEnd("Footer: Invalid Markup")
 
+			return false
+
 		}
 
+	} else {
+		return false
 	}
 
 }
@@ -274,5 +279,15 @@ func (footer *Footer) String() string {
 	html += "</footer>"
 
 	return html
+
+}
+
+func (footer *Footer) Unmount() bool {
+
+	if footer.Component != nil {
+		footer.Component.RemoveEventListener("click", nil)
+	}
+
+	return true
 
 }
