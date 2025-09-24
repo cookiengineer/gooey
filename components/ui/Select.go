@@ -94,39 +94,43 @@ func (self *Select) Mount() bool {
 
 	if self.Component.Element != nil {
 
-		tmp := self.Component.Element.QuerySelector("option")
+		if len(self.Values) == 0 || self.default_value == "" {
 
-		// First option element is the placeholder
-		if tmp != nil && tmp.GetAttribute("value") == "" {
-			self.Label = tmp.TextContent
-		} else {
-			self.Label = ""
-		}
+			tmp := self.Component.Element.QuerySelector("option")
 
-		elements := self.Component.Element.QuerySelectorAll("option")
+			// First option element is the placeholder
+			if tmp != nil && tmp.GetAttribute("value") == "" {
+				self.Label = tmp.TextContent
+			} else {
+				self.Label = ""
+			}
 
-		value := ""
-		values := make([]string, 0)
+			elements := self.Component.Element.QuerySelectorAll("option")
 
-		for _, element := range elements {
+			value := ""
+			values := make([]string, 0)
 
-			tmp := element.GetAttribute("value")
+			for _, element := range elements {
 
-			if tmp != "" {
+				tmp := element.GetAttribute("value")
 
-				if element.HasAttribute("selected") {
-					value = tmp
+				if tmp != "" {
+
+					if element.HasAttribute("selected") {
+						value = tmp
+					}
+
+					values = append(values, tmp)
+
 				}
-
-				values = append(values, tmp)
 
 			}
 
-		}
+			self.default_value = value
+			self.Value         = value
+			self.Values        = values
 
-		self.default_value = value
-		self.Value         = value
-		self.Values        = values
+		}
 
 		self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 

@@ -190,7 +190,7 @@ func (table *Table) Mount() bool {
 
 		thead := table.Component.Element.QuerySelector("thead")
 
-		if thead != nil {
+		if thead != nil && len(table.Labels) == 0 && len(table.Properties) == 0 && len(table.Types) == 0 {
 
 			elements   := thead.QuerySelectorAll("th")
 			labels     := make([]string, 0)
@@ -953,6 +953,30 @@ func (table *Table) Unmount() bool {
 
 	if table.Component.Element != nil {
 		table.Component.Element.RemoveEventListener("click", nil)
+	}
+
+	if len(table.Footer.Content.Left) > 0 {
+
+		for _, component := range table.Footer.Content.Left {
+			component.Unmount()
+		}
+
+	}
+
+	if len(table.Footer.Content.Center) > 0 {
+
+		for _, component := range table.Footer.Content.Center {
+			component.Unmount()
+		}
+
+	}
+
+	if len(table.Footer.Content.Right) > 0 {
+
+		for _, component := range table.Footer.Content.Right {
+			component.Unmount()
+		}
+
 	}
 
 	return true

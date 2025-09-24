@@ -154,61 +154,65 @@ func (chart *LineChart) Mount() bool {
 
 			}
 
-			elements   := datalist.QuerySelectorAll("data")
-			dataset    := data.NewDataset(0)
-			labels     := make([]string, 0)
-			properties := make([]string, 0)
-			types      := make(map[string]string)
-			values     := make([]map[string]string, 0)
+			if len(chart.Labels) == 0 && len(chart.Properties) == 0 && len(chart.Types) == 0 {
 
-			for _, element := range elements {
+				elements   := datalist.QuerySelectorAll("data")
+				dataset    := data.NewDataset(0)
+				labels     := make([]string, 0)
+				properties := make([]string, 0)
+				types      := make(map[string]string)
+				values     := make([]map[string]string, 0)
 
-				property := element.GetAttribute("data-property")
-				label    := strings.TrimSpace(element.TextContent)
-				typ      := element.GetAttribute("data-type")
-				value    := strings.Split(element.GetAttribute("value"), ",")
+				for _, element := range elements {
 
-				if len(value) > 0 {
+					property := element.GetAttribute("data-property")
+					label    := strings.TrimSpace(element.TextContent)
+					typ      := element.GetAttribute("data-type")
+					value    := strings.Split(element.GetAttribute("value"), ",")
 
-					if len(values) < len(value) {
+					if len(value) > 0 {
 
-						for v := len(values); v < len(value); v++ {
-							values = append(values, map[string]string{})
+						if len(values) < len(value) {
+
+							for v := len(values); v < len(value); v++ {
+								values = append(values, map[string]string{})
+							}
+
 						}
 
-					}
+						for v, val := range value {
+							values[v][property] = val
+						}
 
-					for v, val := range value {
-						values[v][property] = val
-					}
+						types[property] = typ
+						labels          = append(labels, label)
+						properties      = append(properties, property)
 
-					types[property] = typ
-					labels          = append(labels, label)
-					properties      = append(properties, property)
+					}
 
 				}
 
-			}
+				if len(values) > 0 && len(values[0]) == len(types) {
 
-			if len(values) > 0 && len(values[0]) == len(types) {
+					for _, val := range values {
+						dataset.Add(data.ParseData(val, types))
+					}
 
-				for _, val := range values {
-					dataset.Add(data.ParseData(val, types))
 				}
 
+				chart.Dataset    = &dataset
+				chart.Labels     = labels
+				chart.Properties = properties
+
+				tmp2 := make([]string, 0)
+
+				for _, property := range properties {
+					tmp2 = append(tmp2, types[property])
+				}
+
+				chart.Types = tmp2
+
 			}
-
-			chart.Dataset    = &dataset
-			chart.Labels     = labels
-			chart.Properties = properties
-
-			tmp2 := make([]string, 0)
-
-			for _, property := range properties {
-				tmp2 = append(tmp2, types[property])
-			}
-
-			chart.Types = tmp2
 
 		}
 

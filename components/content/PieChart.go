@@ -148,44 +148,48 @@ func (chart *PieChart) Mount() bool {
 
 			}
 
-			elements   := datalist.QuerySelectorAll("data")
-			labels     := make([]string, 0)
-			properties := make([]string, 0)
-			types      := make(map[string]string)
-			values     := make(map[string]string)
+			if len(chart.Labels) == 0 && len(chart.Properties) == 0 && len(chart.Types) == 0 {
 
-			for _, element := range elements {
+				elements   := datalist.QuerySelectorAll("data")
+				labels     := make([]string, 0)
+				properties := make([]string, 0)
+				types      := make(map[string]string)
+				values     := make(map[string]string)
 
-				property := element.GetAttribute("data-property")
-				label    := strings.TrimSpace(element.TextContent)
-				typ      := element.GetAttribute("data-type")
-				val      := element.GetAttribute("value")
+				for _, element := range elements {
 
-				types[property]  = typ
-				values[property] = val
+					property := element.GetAttribute("data-property")
+					label    := strings.TrimSpace(element.TextContent)
+					typ      := element.GetAttribute("data-type")
+					val      := element.GetAttribute("value")
 
-				labels     = append(labels, label)
-				properties = append(properties, property)
+					types[property]  = typ
+					values[property] = val
+
+					labels     = append(labels, label)
+					properties = append(properties, property)
+
+				}
+
+				if len(values) > 0 && len(values) == len(types) {
+
+					tmp := data.ParseData(values, types)
+					chart.Data = &tmp
+
+				}
+
+				chart.Labels     = labels
+				chart.Properties = properties
+
+				tmp2 := make([]string, 0)
+
+				for _, property := range properties {
+					tmp2 = append(tmp2, types[property])
+				}
+				
+				chart.Types = tmp2
 
 			}
-
-			if len(values) > 0 && len(values) == len(types) {
-
-				tmp := data.ParseData(values, types)
-				chart.Data = &tmp
-
-			}
-
-			chart.Labels     = labels
-			chart.Properties = properties
-
-			tmp2 := make([]string, 0)
-
-			for _, property := range properties {
-				tmp2 = append(tmp2, types[property])
-			}
-			
-			chart.Types = tmp2
 
 		}
 
