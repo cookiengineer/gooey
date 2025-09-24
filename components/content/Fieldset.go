@@ -43,8 +43,7 @@ func NewFieldset(name string, label string) Fieldset {
 	fieldset.Component = &component
 	fieldset.fields    = make([]*fieldset_field, 0)
 
-	fieldset.Component.InitEvent("change-field")
-
+	fieldset.Mount()
 	fieldset.Render()
 
 	return fieldset
@@ -66,9 +65,7 @@ func ToFieldset(element *dom.Element) *Fieldset {
 		fieldset.Name = "fieldset-" + strconv.Itoa(fieldset_count)
 	}
 
-	fieldset.Component.InitEvent("change-field")
-
-	fieldset.Parse()
+	fieldset.Mount()
 	fieldset.Render()
 
 	return &fieldset
@@ -126,7 +123,11 @@ func (fieldset *Fieldset) Enable() bool {
 
 }
 
-func (fieldset *Fieldset) Parse() {
+func (fieldset *Fieldset) Mount() bool {
+
+	if fieldset.Component != nil {
+		fieldset.Component.InitEvent("change-field")
+	}
 
 	if fieldset.Component.Element != nil {
 
@@ -340,6 +341,10 @@ func (fieldset *Fieldset) Parse() {
 
 		}
 
+		return true
+
+	} else {
+		return false
 	}
 
 }
@@ -653,6 +658,21 @@ func (fieldset *Fieldset) TypeOf(name string) types.Input {
 	}
 
 	return result
+
+}
+
+func (fieldset *Fieldset) Unmount() bool {
+
+	if len(fieldset.fields) > 0 {
+
+		for _, field := range fieldset.fields {
+			field.Label.Unmount()
+			field.Input.Unmount()
+		}
+
+	}
+
+	return true
 
 }
 

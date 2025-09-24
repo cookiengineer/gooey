@@ -55,7 +55,8 @@ func NewTable(name string, labels []string, properties []string, types []string,
 	table.Footer.Content.Right  = make([]interfaces.Component, 0)
 
 	table.SetLabelsAndPropertiesAndTypes(labels, properties, types)
-	table.init_events()
+	table.Mount()
+	table.Render()
 
 	return table
 
@@ -83,8 +84,7 @@ func ToTable(element *dom.Element) *Table {
 	table.Footer.Content.Center = make([]interfaces.Component, 0)
 	table.Footer.Content.Right  = make([]interfaces.Component, 0)
 
-	table.Parse()
-	table.init_events()
+	table.Mount()
 
 	return &table
 
@@ -166,139 +166,11 @@ func (table *Table) Enable() bool {
 
 }
 
-func (table *Table) init_events() {
+func (table *Table) Mount() bool {
 
-	table.Component.InitEvent("action")
-
-	table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
-
-		if event.Target != nil {
-
-			action := event.Target.GetAttribute("data-action")
-
-			if action == "select" {
-
-				th := event.Target.QueryParent("th")
-
-				if th != nil {
-
-					is_active := event.Target.Value.Get("checked").Bool()
-
-					if is_active == true {
-
-						for s := 0; s < len(table.selected); s++ {
-							table.selected[s] = true
-						}
-
-						table.Render()
-
-					} else {
-
-						for s := 0; s < len(table.selected); s++ {
-							table.selected[s] = false
-						}
-
-						table.Render()
-
-					}
-
-				} else {
-
-					is_active := event.Target.Value.Get("checked").Bool()
-					tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
-
-					if is_active == true {
-
-						num, err := strconv.ParseInt(tmp, 10, 64)
-
-						if err == nil {
-
-							index := int(num)
-
-							if index >= 0 && index < table.Dataset.Length() {
-
-								table.selected[index] = true
-								table.Render()
-
-							}
-
-						}
-
-					} else {
-
-						num, err := strconv.ParseInt(tmp, 10, 64)
-
-						if err == nil {
-
-							index := int(num)
-
-							if index >= 0 && index < table.Dataset.Length() {
-
-								input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
-
-								if input != nil {
-									input.Value.Set("checked", false)
-								}
-
-								table.selected[index] = false
-								table.Render()
-
-							}
-
-						}
-
-					}
-
-					event.PreventDefault()
-					event.StopPropagation()
-
-				}
-
-			} else if action == "sort" {
-
-				thead := table.Component.Element.QuerySelector("thead")
-				th    := event.Target.QueryParent("th")
-
-				if thead != nil && th != nil {
-
-					property := th.GetAttribute("data-property")
-					ths      := thead.QuerySelectorAll("th")
-
-					for _, th := range ths {
-						th.RemoveAttribute("data-sort")
-					}
-
-					if table.sortby != property {
-
-						th.SetAttribute("data-sort", "ascending")
-
-						table.sorted = table.Dataset.SortByProperty(property)
-						table.sortby = property
-
-						table.Render()
-
-					}
-
-					event.PreventDefault()
-					event.StopPropagation()
-
-				}
-
-			} else if action != "" {
-
-				table.Component.FireEventListeners("action", map[string]any{
-					"action": action,
-				})
-
-			}
-
-		}
-
-	}))
-
-}
-
-func (table *Table) Parse() {
+	if table.Component != nil {
+		table.Component.InitEvent("action")
+	}
 
 	if table.Component.Element != nil {
 
@@ -492,6 +364,136 @@ func (table *Table) Parse() {
 
 		}
 
+		table.Component.Element.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
+
+			if event.Target != nil {
+
+				action := event.Target.GetAttribute("data-action")
+
+				if action == "select" {
+
+					th := event.Target.QueryParent("th")
+
+					if th != nil {
+
+						is_active := event.Target.Value.Get("checked").Bool()
+
+						if is_active == true {
+
+							for s := 0; s < len(table.selected); s++ {
+								table.selected[s] = true
+							}
+
+							table.Render()
+
+						} else {
+
+							for s := 0; s < len(table.selected); s++ {
+								table.selected[s] = false
+							}
+
+							table.Render()
+
+						}
+
+					} else {
+
+						is_active := event.Target.Value.Get("checked").Bool()
+						tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+
+						if is_active == true {
+
+							num, err := strconv.ParseInt(tmp, 10, 64)
+
+							if err == nil {
+
+								index := int(num)
+
+								if index >= 0 && index < table.Dataset.Length() {
+
+									table.selected[index] = true
+									table.Render()
+
+								}
+
+							}
+
+						} else {
+
+							num, err := strconv.ParseInt(tmp, 10, 64)
+
+							if err == nil {
+
+								index := int(num)
+
+								if index >= 0 && index < table.Dataset.Length() {
+
+									input := table.Component.Element.QuerySelector("thead input[data-action=\"select\"]")
+
+									if input != nil {
+										input.Value.Set("checked", false)
+									}
+
+									table.selected[index] = false
+									table.Render()
+
+								}
+
+							}
+
+						}
+
+						event.PreventDefault()
+						event.StopPropagation()
+
+					}
+
+				} else if action == "sort" {
+
+					thead := table.Component.Element.QuerySelector("thead")
+					th    := event.Target.QueryParent("th")
+
+					if thead != nil && th != nil {
+
+						property := th.GetAttribute("data-property")
+						ths      := thead.QuerySelectorAll("th")
+
+						for _, th := range ths {
+							th.RemoveAttribute("data-sort")
+						}
+
+						if table.sortby != property {
+
+							th.SetAttribute("data-sort", "ascending")
+
+							table.sorted = table.Dataset.SortByProperty(property)
+							table.sortby = property
+
+							table.Render()
+
+						}
+
+						event.PreventDefault()
+						event.StopPropagation()
+
+					}
+
+				} else if action != "" {
+
+					table.Component.FireEventListeners("action", map[string]any{
+						"action": action,
+					})
+
+				}
+
+			}
+
+		}))
+
+		return true
+
+	} else {
+		return false
 	}
 
 }
@@ -944,5 +946,15 @@ func (table *Table) String() string {
 	html += "</table>"
 
 	return html
+
+}
+
+func (table *Table) Unmount() bool {
+
+	if table.Component.Element != nil {
+		table.Component.Element.RemoveEventListener("click", nil)
+	}
+
+	return true
 
 }
