@@ -29,9 +29,8 @@ func NewMain() *Main {
 	main.View    = nil
 	main.views   = make(map[string]interfaces.View)
 
-	if main.Element != nil {
-		main.Parse()
-	}
+	main.Mount()
+	main.Render()
 
 	return &main
 
@@ -47,15 +46,43 @@ func ToMain(element *dom.Element) *Main {
 	main.View    = nil
 	main.views   = make(map[string]interfaces.View)
 
-	if main.Element != nil {
-		main.Parse()
-	}
+	main.Mount()
 
 	return &main
 
 }
 
-func (main *Main) Parse() {
+func (main *Main) ChangeView(name string) bool {
+
+	var result bool
+
+	view, ok := main.views[name]
+
+	if ok == true {
+
+		if main.View != nil {
+			main.View.Leave()
+			main.View = nil
+		}
+
+		main.Element.SetAttribute("data-view", name)
+
+		if main.Header != nil {
+			main.Header.ChangeView(name)
+		}
+
+		main.View = view
+		main.View.Enter()
+
+		result = true
+
+	}
+
+	return result
+
+}
+
+func (main *Main) Mount() bool {
 
 	header_element := dom.Document.QuerySelector("body > header")
 
@@ -108,6 +135,8 @@ func (main *Main) Parse() {
 		main.Dialog = nil
 	}
 
+	return true
+
 }
 
 func (main *Main) Render() {
@@ -130,36 +159,6 @@ func (main *Main) Render() {
 
 }
 
-func (main *Main) ChangeView(name string) bool {
-
-	var result bool
-
-	view, ok := main.views[name]
-
-	if ok == true {
-
-		if main.View != nil {
-			main.View.Leave()
-			main.View = nil
-		}
-
-		main.Element.SetAttribute("data-view", name)
-
-		if main.Header != nil {
-			main.Header.ChangeView(name)
-		}
-
-		main.View = view
-		main.View.Enter()
-
-		result = true
-
-	}
-
-	return result
-
-}
-
 func (main *Main) SetView(view interfaces.View) {
 
 	name := view.GetProperty("Name")
@@ -173,5 +172,15 @@ func (main *Main) SetView(view interfaces.View) {
 		}
 
 	}
+
+}
+
+func (main *Main) Unmount() bool {
+
+	if main.Header != nil {
+		main.Header.Component.RemoveEventListener("change-view", nil)
+	}
+
+	return true
 
 }

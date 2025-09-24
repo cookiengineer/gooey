@@ -45,7 +45,7 @@ func ToView(element *dom.Element, label string, path string) *View {
 	view.Path    = strings.ToLower(path)
 	view.Content = make([]interfaces.Component, 0)
 
-	view.Parse()
+	view.Mount()
 
 	return &view
 
@@ -88,7 +88,7 @@ func (view *View) GetProperty(name string) string {
 
 }
 
-func (view *View) Parse() {
+func (view *View) Mount() bool {
 
 	if view.Element != nil {
 
@@ -119,6 +119,10 @@ func (view *View) Parse() {
 
 		view.Content = components
 
+		return true
+
+	} else {
+		return false
 	}
 
 }
@@ -167,3 +171,6 @@ func (view *View) SetProperty(name string, value string) bool {
 
 }
 
+func (view *View) Unmount() bool {
+	return true
+}
