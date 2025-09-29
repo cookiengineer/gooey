@@ -6,6 +6,7 @@ import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/components/data"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strconv"
@@ -636,6 +637,26 @@ func (table *Table) Deselect(indexes []int) {
 	for _, index := range indexes {
 		table.selected[index] = false
 	}
+
+}
+
+func (table *Table) Query(query string) interfaces.Component {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) == 1 {
+
+		if table.Component.Element != nil {
+
+			if utils.MatchesQuery(table.Component.Element, query) == true {
+				return table.Component
+			}
+
+		}
+
+	}
+
+	return nil
 
 }
 

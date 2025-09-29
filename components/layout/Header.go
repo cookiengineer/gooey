@@ -4,6 +4,7 @@ import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "sort"
@@ -257,6 +258,58 @@ func (header *Header) Mount() bool {
 	} else {
 		return false
 	}
+
+}
+
+func (header *Header) Query(query string) interfaces.Component {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) >= 2 {
+
+		if header.Component.Element != nil {
+
+			if utils.MatchesQuery(header.Component.Element, selectors[0]) == true {
+
+				tmp_query := utils.JoinQuery(selectors[1:])
+
+				for _, content := range header.Content.Left {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+				for _, content := range header.Content.Right {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) == 1 {
+
+		if header.Component.Element != nil {
+
+			if utils.MatchesQuery(header.Component.Element, selectors[0]) == true {
+				return header.Component
+			}
+
+		}
+
+	}
+
+	return nil
 
 }
 

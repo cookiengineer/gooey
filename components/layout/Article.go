@@ -4,6 +4,7 @@ import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 
@@ -116,14 +117,45 @@ func (article *Article) Mount() bool {
 
 }
 
-func (article *Article) Query(query string) (bool, interfaces.Component) {
+func (article *Article) Query(query string) interfaces.Component {
 
-	for c := 0; c < len(article.Content); c++ {
+	selectors := utils.SplitQuery(query)
 
-		// TODO: How to validate if article.Content.TagName is the same?
-		// TODO: Needs a GetElement() method?
+	if len(selectors) >= 2 {
+
+		if article.Component.Element != nil {
+
+			if utils.MatchesQuery(article.Component.Element, selectors[0]) == true {
+
+				tmp_query := utils.JoinQuery(selectors[1:])
+
+				for _, content := range article.Content {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) == 1 {
+
+		if article.Component.Element != nil {
+
+			if utils.MatchesQuery(article.Component.Element, selectors[0]) == true {
+				return article.Component
+			}
+
+		}
 
 	}
+
+	return nil
 
 }
 

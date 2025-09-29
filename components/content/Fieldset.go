@@ -18,10 +18,10 @@ import "syscall/js"
 var fieldset_count int = 0
 
 type fieldset_field struct {
-	Name  string               `json:"name"`
-	Label interfaces.Component `json:"label"`
-	Input interfaces.Component `json:"input"`
-	Type  types.Input          `json:"type"`
+	Name  string
+	Label interfaces.Component
+	Input interfaces.Component
+	Type  types.Input
 	ctype string // component type
 }
 
@@ -29,7 +29,7 @@ type Fieldset struct {
 	Name      string                `json:"name"`
 	Label     string                `json:"label"`
 	Component *components.Component `json:"component"`
-	fields    []*fieldset_field
+	fields    []*fieldset_field     `json:"-"`
 }
 
 func NewFieldset(name string, label string) Fieldset {

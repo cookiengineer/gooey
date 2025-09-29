@@ -4,6 +4,7 @@ import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 
@@ -176,6 +177,68 @@ func (footer *Footer) Mount() bool {
 	} else {
 		return false
 	}
+
+}
+
+func (footer *Footer) Query(query string) interfaces.Component {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) >= 2 {
+
+		if footer.Component.Element != nil {
+
+			if utils.MatchesQuery(footer.Component.Element, selectors[0]) == true {
+
+				tmp_query := utils.JoinQuery(selectors[1:])
+
+				for _, content := range footer.Content.Left {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+				for _, content := range footer.Content.Center {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+				for _, content := range footer.Content.Right {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) == 1 {
+
+		if footer.Component.Element != nil {
+
+			if utils.MatchesQuery(footer.Component.Element, selectors[0]) == true {
+				return footer.Component
+			}
+
+		}
+
+	}
+
+	return nil
 
 }
 

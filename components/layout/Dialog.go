@@ -4,6 +4,7 @@ import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strings"
@@ -189,6 +190,58 @@ func (dialog *Dialog) Mount() bool {
 	} else {
 		return false
 	}
+
+}
+
+func (dialog *Dialog) Query(query string) interfaces.Component {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) >= 2 {
+
+		if dialog.Component.Element != nil {
+
+			if utils.MatchesQuery(dialog.Component.Element, selectors[0]) == true {
+
+				if dialog.Content != nil {
+
+					tmp_query     := utils.JoinQuery(selectors[1:])
+					tmp_component := dialog.Content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+				if dialog.Footer != nil {
+
+					tmp_query     := utils.JoinQuery(selectors[1:])
+					tmp_component := dialog.Footer.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) == 1 {
+
+		if dialog.Component.Element != nil {
+
+			if utils.MatchesQuery(dialog.Component.Element, selectors[0]) == true {
+				return dialog.Component
+			}
+
+		}
+
+	}
+
+	return nil
 
 }
 

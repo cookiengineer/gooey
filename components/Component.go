@@ -3,6 +3,7 @@ package components
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
+import "sort"
 import "strings"
 
 type Component struct {
@@ -282,14 +283,20 @@ func (component *Component) String() string {
 
 		html += "<" + tagname
 
-		// TODO: attributes?
+		attributes := make([]string, 0)
 
-		// TODO: Is disabled attribute actually mapped as an attribute with value "" in the HTMLElement API?
+		for key, _ := range component.Element.Attributes {
+			attributes = append(attributes, key)
+		}
+
+		sort.Strings(attributes)
+
+		for _, attribute := range attributes {
+			html += " " + attribute + "=\"" + component.Element.Attributes[attribute] + "\""
+		}
 
 		html += ">"
-
-		// TODO: TextContent? InnerHTML?
-
+		html += component.Element.InnerHTML
 		html += "</" + tagname + ">"
 
 	}
