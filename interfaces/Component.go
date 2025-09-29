@@ -8,11 +8,12 @@ type Component interface {
 	Enable()                 bool
 	Disable()                bool
 
-	Query(string)            Component
-	SetChildren([]Component) bool
-
 	Mount()                  bool
 	Unmount()                bool
+
+	Query(string)            Component
+
 	Render()                 *dom.Element
 	String()                 string
+
 }

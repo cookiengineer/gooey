@@ -158,10 +158,6 @@ func (textarea *Textarea) Reset() bool {
 
 }
 
-func (textarea *Textarea) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (textarea *Textarea) String() string {
 
 	html := "<textarea"

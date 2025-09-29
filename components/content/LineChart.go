@@ -400,10 +400,6 @@ func (chart *LineChart) Remove(indexes []int) {
 
 }
 
-func (chart *LineChart) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (chart *LineChart) SetDataset(dataset data.Dataset) {
 	chart.Dataset = &dataset
 }

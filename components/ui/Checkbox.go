@@ -159,10 +159,6 @@ func (checkbox *Checkbox) Reset() bool {
 
 }
 
-func (checkbox *Checkbox) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (checkbox *Checkbox) String() string {
 
 	html := "<input type=\"checkbox\""

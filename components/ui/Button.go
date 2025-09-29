@@ -119,10 +119,6 @@ func (button *Button) Render() *dom.Element {
 
 }
 
-func (button *Button) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (button *Button) String() string {
 
 	html := "<button"

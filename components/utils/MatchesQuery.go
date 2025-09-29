@@ -4,7 +4,6 @@ package utils
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "strings"
-import "fmt"
 
 func MatchesQuery(element *dom.Element, query string) bool {
 
@@ -13,21 +12,9 @@ func MatchesQuery(element *dom.Element, query string) bool {
 		result := false
 
 		if strings.Contains(query, " > ") {
-
-			tmp1 := strings.Split(strings.TrimSpace(query), " > ")
-
-			// TODO: Implement this
-
-			fmt.Println(tmp1)
-
+			result = false
 		} else if strings.Contains(query, " ") {
-
-			tmp1 := strings.Split(strings.TrimSpace(query), " ")
-
-			// TODO: Implement this
-
-			fmt.Println(tmp1)
-
+			result = false
 		} else {
 
 			if strings.Contains(query, "[") && strings.HasSuffix(query, "]") {

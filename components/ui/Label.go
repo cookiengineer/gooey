@@ -90,10 +90,6 @@ func (label *Label) Render() *dom.Element {
 
 }
 
-func (label *Label) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (label *Label) String() string {
 
 	html := ""

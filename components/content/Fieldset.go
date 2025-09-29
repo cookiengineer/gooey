@@ -5,6 +5,7 @@ package content
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
 import "strconv"
@@ -207,24 +208,6 @@ func (fieldset *Fieldset) Mount() bool {
 									ctype: "ui.Number",
 								})
 
-							} else if typ == "radio" {
-
-								// TODO: Support ui.RadioGroup
-								// label := ui.ToLabel(element1)
-								// input := ui.ToRadioGroup(div.QuerySelectorAll("input[type=\"radio\"]"))
-
-								// input.Component.AddEventListener("change", components.ToEventListener(func(event string, attributes map[string]any) {
-								// 	fieldset.Component.FireEventListeners("change", attributes)
-								// }, false))
-
-								// fieldset.fields = append(fieldset.fields, &fieldset_field{
-								// 	Name:  name,
-								// 	Label: &label,
-								// 	Input: &input,
-								// 	Type:  input.Type,
-								//	ctype: "ui.RadioGroup",
-								// })
-
 							} else if typ == "range" {
 
 								label := ui.ToLabel(element1)
@@ -346,6 +329,104 @@ func (fieldset *Fieldset) Mount() bool {
 	} else {
 		return false
 	}
+
+}
+
+func (fieldset *Fieldset) Query(query string) interfaces.Component {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) == 2 {
+
+		if fieldset.Component.Element != nil {
+
+			if utils.MatchesQuery(fieldset.Component.Element, selectors[0]) == true {
+
+				for _, field := range fieldset.fields {
+
+					if field.ctype == "ui.Checkbox" {
+
+						component, ok := field.Input.(*ui.Checkbox)
+
+						if ok == true && component.Component.Element != nil {
+
+							if utils.MatchesQuery(component.Component.Element, selectors[1]) == true {
+								return field.Input
+							}
+
+						}
+
+					} else if field.ctype == "ui.Input" {
+
+						component, ok := field.Input.(*ui.Input)
+
+						if ok == true && component.Component.Element != nil {
+
+							if utils.MatchesQuery(component.Component.Element, selectors[1]) == true {
+								return field.Input
+							}
+
+						}
+
+					} else if field.ctype == "ui.Number" {
+
+						component, ok := field.Input.(*ui.Number)
+
+						if ok == true && component.Component.Element != nil {
+
+							if utils.MatchesQuery(component.Component.Element, selectors[1]) == true {
+								return field.Input
+							}
+
+						}
+
+					} else if field.ctype == "ui.Range" {
+
+						component, ok := field.Input.(*ui.Range)
+
+						if ok == true && component.Component.Element != nil {
+
+							if utils.MatchesQuery(component.Component.Element, selectors[1]) == true {
+								return field.Input
+							}
+
+						}
+
+					} else if field.ctype == "ui.Select" {
+
+						component, ok := field.Input.(*ui.Select)
+
+						if ok == true && component.Component.Element != nil {
+
+							if utils.MatchesQuery(component.Component.Element, selectors[1]) == true {
+								return field.Input
+							}
+
+						}
+
+					} else if field.ctype == "ui.Textarea" {
+
+						component, ok := field.Input.(*ui.Textarea)
+
+						if ok == true && component.Component.Element != nil {
+
+							if utils.MatchesQuery(component.Component.Element, selectors[1]) == true {
+								return field.Input
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return nil
 
 }
 
@@ -478,21 +559,6 @@ func (fieldset *Fieldset) Reset() bool {
 
 			}
 
-		} else if field.ctype == "ui.RadioGroup" {
-
-			// TODO: Support ui.RadioGroup
-			// component, ok := field.Input.(*ui.Radio)
-
-			// if ok == true {
-
-			// 	check := component.Reset()
-
-			// 	if check == false {
-			// 		result = false
-			// 	}
-
-			// }
-
 		} else if field.ctype == "ui.Range" {
 
 			component, ok := field.Input.(*ui.Range)
@@ -574,15 +640,6 @@ func (fieldset *Fieldset) ResetField(name string) bool {
 				if ok == true {
 					result = component.Reset()
 				}
-
-			} else if field.ctype == "ui.RadioGroup" {
-
-				// TODO: Support ui.RadioGroup
-				// component, ok := field.Input.(*ui.Radio)
-
-				// if ok == true {
-				// 	result = component.Reset()
-				// }
 
 			} else if field.ctype == "ui.Range" {
 
@@ -707,15 +764,6 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 				if ok == true {
 					result = component.ToValue()
 				}
-
-			} else if field.ctype == "ui.RadioGroup" {
-
-				// TODO: Support ui.RadioGroup
-				// component, ok := field.Input.(*ui.Radio)
-
-				// if ok == true {
-				// 	result = component.ToValue()
-				// }
 
 			} else if field.ctype == "ui.Range" {
 

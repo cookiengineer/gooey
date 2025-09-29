@@ -272,10 +272,6 @@ func (component *Component) RemoveEventListener(event string, listener *EventLis
 
 }
 
-func (component *Component) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (component *Component) String() string {
 
 	html := ""

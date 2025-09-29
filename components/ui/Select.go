@@ -274,10 +274,6 @@ func (self *Select) Reset() bool {
 
 }
 
-func (self *Select) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (self *Select) String() string {
 
 	html := "<select"

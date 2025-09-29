@@ -346,10 +346,6 @@ func (chart *PieChart) Render() *dom.Element {
 
 }
 
-func (chart *PieChart) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (chart *PieChart) SetData(data data.Data) bool {
 
 	chart.Data = &data

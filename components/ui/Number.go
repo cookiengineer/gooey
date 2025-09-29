@@ -254,10 +254,6 @@ func (input *Number) Reset() bool {
 
 }
 
-func (input *Number) SetChildren(children []interfaces.Component) bool {
-	return false
-}
-
 func (input *Number) String() string {
 
 	html := "<input type=\"" + input.Type.String() + "\""
