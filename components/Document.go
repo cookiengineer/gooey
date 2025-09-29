@@ -3,21 +3,20 @@ package components
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
-import "fmt"
 
 type Document struct {
-	Components map[string]interfaces.Component `json:"components"`
-	Registry   map[string]constructor          `json:"registry"`
-	Body       *dom.Element                    `json:"body"`
+	Content  []interfaces.Component `json:"components"`
+	Registry map[string]constructor `json:"registry"`
+	Body     *dom.Element           `json:"body"`
 }
 
 func NewDocument() *Document {
 
 	var document Document
 
-	document.Components = make(map[string]interfaces.Component, 0)
-	document.Registry   = make(map[string]constructor)
-	document.Body       = dom.Document.QuerySelector("body")
+	document.Content  = make([]interfaces.Component, 0)
+	document.Registry = make(map[string]constructor)
+	document.Body     = dom.Document.QuerySelector("body")
 
 	document.Mount()
 
@@ -29,9 +28,9 @@ func ToDocument(element *dom.Element) *Document {
 
 	var document Document
 
-	document.Components = make(map[string]interfaces.Component, 0)
-	document.Registry   = make(map[string]constructor)
-	document.Body       = element
+	document.Content  = make([]interfaces.Component, 0)
+	document.Registry = make(map[string]constructor)
+	document.Body     = element
 
 	document.Mount()
 
@@ -40,7 +39,7 @@ func ToDocument(element *dom.Element) *Document {
 }
 
 func (document *Document) Register(tagname string, wrapper constructor) {
-	document.Registry[tagname] = wrapper
+	document.Registry[strings.ToLower(tagname)] = wrapper
 }
 
 func (document *Document) Mount() bool {
@@ -57,34 +56,61 @@ func (document *Document) Mount() bool {
 
 		}
 
+		content  := make([]interfaces.Component, 0)
 		children := document.Body.Children()
 
 		for _, element := range children {
 
-			// TODO: How to define identifier for query path?
-			// TODO: if children contains another with same tagname, use nth-of-type(...)?
-
-			tagname := strings.ToLower(element.TagName)
-
-			wrapper, ok := document.Registry[tagname]
+			wrapper, ok := document.Registry[strings.ToLower(element.TagName)]
 
 			if ok == true {
 
 				component := wrapper(element)
 
-				fmt.Println("component", component)
+				if component != nil {
+					component.Mount()
+					content = append(content, component)
+				}
 
 			} else {
 
-				fmt.Println("element", element)
+				component := NewComponent(element)
+				nested_content  := make([]interfaces.Component, 0)
+				nested_children := element.Children()
 
-				// TODO: Make it a default component
+				for _, element := range nested_children {
 
-				// TODO: Find out children, iterate and do the same
+					wrapper, ok := document.Registry[strings.ToLower(element.TagName)]
+
+					if ok == true {
+
+						nested_component := wrapper(element)
+
+						if nested_component != nil {
+							nested_component.Mount()
+							content = append(content, nested_component)
+						}
+
+					} else {
+
+						nested_component := NewComponent(element)
+						nested_component.Mount()
+						nested_content = append(nested_content, &nested_component)
+
+					}
+
+				}
+
+				component.SetContent(nested_content)
+				component.Mount()
+
+				content = append(content, &component)
 
 			}
 
 		}
+
+		document.Content = content
 
 		return true
 

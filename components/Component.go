@@ -7,6 +7,7 @@ import "sort"
 import "strings"
 
 type Component struct {
+	Content   []interfaces.Component      `json:"content"`
 	Listeners map[string][]*EventListener `json:"listeners"`
 	Element   *dom.Element                `json:"element"`
 }
@@ -15,6 +16,7 @@ func NewComponent(element *dom.Element) Component {
 
 	var component Component
 
+	component.Content = make([]interfaces.Component, 0)
 	component.Element = element
 	component.Listeners = make(map[string][]*EventListener, 0)
 
@@ -200,10 +202,38 @@ func (component *Component) Mount() bool {
 
 func (component *Component) Query(query string) interfaces.Component {
 
-	if component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(component.Element, query) == true {
-			return component
+	if len(selectors) >= 2 {
+
+		if component.Element != nil {
+
+			if utils.MatchesQuery(component.Element, selectors[0]) == true {
+
+				tmp_query := utils.JoinQuery(selectors[1:])
+
+				for _, content := range component.Content {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) == 1 {
+
+		if component.Element != nil {
+
+			if utils.MatchesQuery(component.Element, selectors[0]) == true {
+				return component
+			}
+
 		}
 
 	}
@@ -271,6 +301,10 @@ func (component *Component) RemoveEventListener(event string, listener *EventLis
 
 	return result
 
+}
+
+func (component *Component) SetContent(components []interfaces.Component) {
+	component.Content = components
 }
 
 func (component *Component) String() string {
