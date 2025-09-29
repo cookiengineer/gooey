@@ -112,7 +112,7 @@ func (textarea *Textarea) Query(query string) interfaces.Component {
 	if textarea.Component.Element != nil {
 
 		if utils.MatchesQuery(textarea.Component.Element, query) == true {
-			return textarea.Component
+			return textarea
 		}
 
 	}

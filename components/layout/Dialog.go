@@ -240,7 +240,7 @@ func (dialog *Dialog) Query(query string) interfaces.Component {
 		if dialog.Component.Element != nil {
 
 			if utils.MatchesQuery(dialog.Component.Element, selectors[0]) == true {
-				return dialog.Component
+				return dialog
 			}
 
 		}

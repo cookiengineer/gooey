@@ -63,7 +63,7 @@ func (label *Label) Query(query string) interfaces.Component {
 	if label.Component.Element != nil {
 
 		if utils.MatchesQuery(label.Component.Element, query) == true {
-			return label.Component
+			return label
 		}
 
 	}

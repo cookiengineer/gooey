@@ -138,7 +138,7 @@ func (self *Example) Query(query string) interfaces.Component {
 		if self.Component.Element != nil {
 
 			if utils.MatchesQuery(self.Component.Element, selectors[0]) == true {
-				return self.Component
+				return self
 			}
 
 		}

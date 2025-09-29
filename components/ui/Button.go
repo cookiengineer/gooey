@@ -82,7 +82,7 @@ func (button *Button) Query(query string) interfaces.Component {
 	if button.Component.Element != nil {
 
 		if utils.MatchesQuery(button.Component.Element, query) == true {
-			return button.Component
+			return button
 		}
 
 	}

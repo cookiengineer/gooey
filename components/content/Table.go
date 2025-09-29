@@ -649,7 +649,7 @@ func (table *Table) Query(query string) interfaces.Component {
 		if table.Component.Element != nil {
 
 			if utils.MatchesQuery(table.Component.Element, query) == true {
-				return table.Component
+				return table
 			}
 
 		}

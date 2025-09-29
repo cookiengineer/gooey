@@ -146,7 +146,7 @@ func (article *Article) Query(query string) interfaces.Component {
 		if article.Component.Element != nil {
 
 			if utils.MatchesQuery(article.Component.Element, selectors[0]) == true {
-				return article.Component
+				return article
 			}
 
 		}

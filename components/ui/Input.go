@@ -114,7 +114,7 @@ func (input *Input) Query(query string) interfaces.Component {
 	if input.Component.Element != nil {
 
 		if utils.MatchesQuery(input.Component.Element, query) == true {
-			return input.Component
+			return input
 		}
 
 	}

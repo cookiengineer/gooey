@@ -172,7 +172,7 @@ func (self *Select) Query(query string) interfaces.Component {
 	if self.Component.Element != nil {
 
 		if utils.MatchesQuery(self.Component.Element, query) == true {
-			return self.Component
+			return self
 		}
 
 	}

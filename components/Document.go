@@ -1,6 +1,9 @@
+//go:build wasm
+
 package components
 
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
 
@@ -18,8 +21,6 @@ func NewDocument() *Document {
 	document.Registry = make(map[string]constructor)
 	document.Body     = dom.Document.QuerySelector("body")
 
-	document.Mount()
-
 	return &document
 
 }
@@ -31,8 +32,6 @@ func ToDocument(element *dom.Element) *Document {
 	document.Content  = make([]interfaces.Component, 0)
 	document.Registry = make(map[string]constructor)
 	document.Body     = element
-
-	document.Mount()
 
 	return &document
 
@@ -61,50 +60,54 @@ func (document *Document) Mount() bool {
 
 		for _, element := range children {
 
-			wrapper, ok := document.Registry[strings.ToLower(element.TagName)]
+			if element.TagName != "SCRIPT" && element.TagName != "STYLE" {
 
-			if ok == true {
+				wrapper, ok := document.Registry[strings.ToLower(element.TagName)]
 
-				component := wrapper(element)
+				if ok == true {
 
-				if component != nil {
-					component.Mount()
-					content = append(content, component)
-				}
+					component := wrapper(element)
 
-			} else {
+					if component != nil {
+						component.Mount()
+						content = append(content, component)
+					}
 
-				component := NewComponent(element)
-				nested_content  := make([]interfaces.Component, 0)
-				nested_children := element.Children()
+				} else {
 
-				for _, element := range nested_children {
+					component := NewComponent(element)
+					nested_content  := make([]interfaces.Component, 0)
+					nested_children := element.Children()
 
-					wrapper, ok := document.Registry[strings.ToLower(element.TagName)]
+					for _, nested_element := range nested_children {
 
-					if ok == true {
+						wrapper, ok := document.Registry[strings.ToLower(nested_element.TagName)]
 
-						nested_component := wrapper(element)
+						if ok == true {
 
-						if nested_component != nil {
+							nested_component := wrapper(nested_element)
+
+							if nested_component != nil {
+								nested_component.Mount()
+								nested_content = append(nested_content, nested_component)
+							}
+
+						} else {
+
+							nested_component := NewComponent(nested_element)
 							nested_component.Mount()
-							content = append(content, nested_component)
+							nested_content = append(nested_content, &nested_component)
+
 						}
-
-					} else {
-
-						nested_component := NewComponent(element)
-						nested_component.Mount()
-						nested_content = append(nested_content, &nested_component)
 
 					}
 
+					component.SetContent(nested_content)
+					component.Mount()
+
+					content = append(content, &component)
+
 				}
-
-				component.SetContent(nested_content)
-				component.Mount()
-
-				content = append(content, &component)
 
 			}
 
@@ -122,18 +125,27 @@ func (document *Document) Mount() bool {
 
 func (document *Document) Query(query string) interfaces.Component {
 
-	// TODO: Components interface needs a QueryComponent() method,
-	//       where query selector is split up and delegated, so that
-	//       each Component decides how to query e.g. "Footer" or "Header" or "Content[0]"
+	if document.Body != nil {
 
-	// TODO: Support "main > section > table" syntax
-	// TODO: Support "main > section > table:nth-of-type(1)" syntax
-	// TODO: Support "main > section > table:nth-child(1)" syntax
-	// TODO: Support "main > section > table[data-name=\"foobar\"]" syntax
+		selectors := utils.SplitQuery(query)
 
+		if len(selectors) >= 1 {
 
-	// TODO: If Query() returns nil, throw an error?
+			tmp_query := utils.JoinQuery(selectors)
 
+			for _, content := range document.Content {
+
+				tmp_component := content.Query(tmp_query)
+
+				if tmp_component != nil {
+					return tmp_component
+				}
+
+			}
+
+		}
+
+	}
 
 	return nil
 

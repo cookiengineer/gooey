@@ -424,6 +424,16 @@ func (fieldset *Fieldset) Query(query string) interfaces.Component {
 
 		}
 
+	} else if len(selectors) == 1 {
+
+		if fieldset.Component.Element != nil {
+
+			if utils.MatchesQuery(fieldset.Component.Element, selectors[0]) == true {
+				return fieldset
+			}
+
+		}
+
 	}
 
 	return nil

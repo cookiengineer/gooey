@@ -113,7 +113,7 @@ func (checkbox *Checkbox) Query(query string) interfaces.Component {
 	if checkbox.Component.Element != nil {
 
 		if utils.MatchesQuery(checkbox.Component.Element, query) == true {
-			return checkbox.Component
+			return checkbox
 		}
 
 	}

@@ -302,7 +302,7 @@ func (header *Header) Query(query string) interfaces.Component {
 		if header.Component.Element != nil {
 
 			if utils.MatchesQuery(header.Component.Element, selectors[0]) == true {
-				return header.Component
+				return header
 			}
 
 		}

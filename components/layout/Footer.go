@@ -231,7 +231,7 @@ func (footer *Footer) Query(query string) interfaces.Component {
 		if footer.Component.Element != nil {
 
 			if utils.MatchesQuery(footer.Component.Element, selectors[0]) == true {
-				return footer.Component
+				return footer
 			}
 
 		}

@@ -247,7 +247,7 @@ func (chart *PieChart) Query(query string) interfaces.Component {
 	if chart.Component.Element != nil {
 
 		if utils.MatchesQuery(chart.Component.Element, query) == true {
-			return chart.Component
+			return chart
 		}
 
 	}
