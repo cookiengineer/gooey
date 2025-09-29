@@ -28,8 +28,20 @@
 	</head>
 	<body>
 		<main>
-			<app-example>
+			<app-example data-name="example">
 				<h3>This is a custom App Component</h3>
+				<p>
+					It automatically parses and maps nested &lt;button&gt;, &lt;input&gt;,
+					&lt;select&gt; and &lt;textarea&gt; elements.
+				</p>
+				<p>
+					Gooey default stylesheets are not applied to demonstrate flexibility.
+				</p>
+				<button data-action="create">Example Button</button>
+				<input type="number" min="1" max="100" value="50"/>
+				<textarea>
+					Example Textarea
+				</textarea>
 			</app-example>
 		</main>
 		<script src="wasm_exec.js"></script>

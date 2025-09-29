@@ -84,8 +84,6 @@ func (article *Article) Mount() bool {
 					mapped = append(mapped, ui.ToCheckbox(element))
 				} else if typ == "number" {
 					mapped = append(mapped, ui.ToNumber(element))
-				} else if typ == "radio" {
-					// TODO: ui.Radio support
 				} else if typ == "range" {
 					mapped = append(mapped, ui.ToRange(element))
 				} else {
