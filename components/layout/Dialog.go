@@ -101,18 +101,10 @@ func (dialog *Dialog) Hide() bool {
 
 func (dialog *Dialog) Mount() bool {
 
-	if dialog.Footer != nil && dialog.Component != nil {
+	if dialog.Component != nil {
 
 		dialog.Component.InitEvent("click")
 		dialog.Component.InitEvent("action")
-
-		dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
-
-			dialog.Component.FireEventListeners("action", map[string]any{
-				"action": attributes["data-action"],
-			})
-
-		}, false))
 
 		dialog.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
 
@@ -171,7 +163,21 @@ func (dialog *Dialog) Mount() bool {
 			tmp3 := article.QuerySelector("footer")
 
 			if tmp3 != nil {
+
 				dialog.Footer = ToFooter(tmp3)
+
+				if dialog.Footer != nil {
+
+					dialog.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+
+						dialog.Component.FireEventListeners("action", map[string]any{
+							"action": attributes["data-action"],
+						})
+
+					}, false))
+
+				}
+
 			}
 
 			return true
@@ -303,6 +309,40 @@ func (dialog *Dialog) Show() bool {
 	}
 
 	return result
+
+}
+
+func (dialog *Dialog) String() string {
+
+	html := "<dialog"
+
+	if dialog.Layout != types.LayoutFlow {
+		html += " data-layout=\"" + dialog.Layout.String() + "\""
+	}
+
+	if dialog.Component.Element.HasAttribute("open") == true {
+		html += " open"
+	}
+
+	html += ">"
+	html += "<article>"
+
+	if dialog.Title != "" {
+		html += "<h3>" + dialog.Title + "</h3>"
+	}
+
+	if dialog.Content != nil {
+		html += dialog.Content.String()
+	}
+
+	if dialog.Footer != nil {
+		html += dialog.Footer.String()
+	}
+
+	html += "</article>"
+	html += "</dialog>"
+
+	return html
 
 }
 
