@@ -151,6 +151,24 @@ func (document *Document) Query(query string) interfaces.Component {
 
 }
 
+func (document *Document) String() string {
+
+	html := "<!DOCTYPE html>"
+	html += "<html>"
+	html += "<body>"
+
+	for _, content := range document.Content {
+		html += content.String()
+	}
+
+	html += "</body>"
+	html += "</html>"
+
+	return html
+
+}
+
 func (document *Document) Unmount() bool {
 	return false
 }
+

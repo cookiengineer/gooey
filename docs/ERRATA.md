@@ -1,7 +1,6 @@
 
 # Common Errata and Limitations
 
-
 ## Deadlocks
 
 Sometimes, the main thread will hang when using `wasm` as a compilation target.
@@ -16,7 +15,6 @@ and the CPU load will spike to an endless for loop.
 
 Usually the Browser Tab will be non-reactive as well, because the scheduler's main loop
 will just endlessly check for something that will never evaluate to true.
-
 
 ### Deadlocks with Promise APIs
 
@@ -83,7 +81,6 @@ for d := 0; d < len(dataset); d++ {
 }
 ```
 
-
 ### Deadlocks with WaitGroups
 
 Things get a little complicated when you rely on something like a `sync.Waitgroup` in Go
@@ -136,7 +133,6 @@ go func() {
 }()
 ```
 
-
 ### Deadlocks with Channels
 
 If you read from a channel in Go, it will cause a deadlock in the `wasm_exec.js` scheduler.
@@ -188,7 +184,6 @@ func main() {
 }
 ```
 
-
 ### Debugging Deadlocks
 
 Mistakes happen, and it's a little painful to debug deadlocks because the Go scheduler
@@ -226,8 +221,7 @@ func main() {
 }
 ```
 
-
-## Generic Methods and Components Typecasting
+## Components Typecasting
 
 In Go there's still no generic methods available due to the ongoing discussion about
 whether or not runtime boxing or comptime expansion is going to be implemented, which
@@ -237,14 +231,9 @@ up using [interfaces.Component](../interfaces/Component.go).
 This implies that the consuming side of the application needs to manually typecast the
 components in the graph back to their struct references.
 
-```go
-import "example/actions"
-import "example/schemas"
-import "github.com/cookiengineer/gooey/components"
-import "github.com/cookiengineer/gooey/components/app"
-import "github.com/cookiengineer/gooey/components/content"
-import "github.com/cookiengineer/gooey/components/layout"
+A painful implementation that uses manual typecasting looks like this:
 
+```go
 // Example Controller
 type Example struct {
 	Main   *app.Main         `json:"main"`
@@ -283,4 +272,27 @@ func NewExample(main *app.Main) Example {
 }
 ```
 
+### Component Wrapping and Unwrapping
 
+For this purpose, there's the [components.Wrap()](../components/Wrap.go) and
+[components.Unwrap()](../components/Unwrap.go) methods available which allow
+to typecast from and to [interfaces.Component](../interfaces/Component.go).
+
+```go
+func main() {
+
+	document := components.NewDocument()
+	ui.RegisterTo(document)
+
+	// body > main > section[data-name="example"] > app-example > input[type="email"]
+	as_interfaces_Component := document.Query("main > section[data-name=\"example\"] > app-example > input[data-name=\"email\"]")
+
+	as_ui_Input, ok := components.Unwrap[*ui.Input](as_interfaces_Component)
+
+	if ok == true {
+		console.Log("Typecast successful, now you can use the ui.Input struct methods")
+		as_ui_Input.Reset()
+	}
+
+}
+```
