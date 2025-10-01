@@ -5,17 +5,19 @@ package app
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/layout"
+import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "github.com/cookiengineer/gooey/types"
+import "sort"
 import "strings"
 
 type View struct {
 	Element *dom.Element           `json:"element"`
 	Layout  types.Layout           `json:"layout"`
-	Name    string                 `json:"name"`
-	Label   string                 `json:"label"`
-	Path    string                 `json:"path"`
-	Content []interfaces.Component `json:"components"`
+	Content []interfaces.Component `json:"content"`
+	name    string                 `json:"name"`
+	label   string                 `json:"label"`
+	path    string                 `json:"path"`
 }
 
 func NewView(name string, label string, path string) *View {
@@ -25,30 +27,39 @@ func NewView(name string, label string, path string) *View {
 	element := dom.Document.CreateElement("section")
 
 	view.Element = element
-	view.Name    = strings.ToLower(name)
-	view.Label   = label
 	view.Layout  = types.LayoutFlow
-	view.Path    = strings.ToLower(path)
 	view.Content = make([]interfaces.Component, 0)
+
+	view.name    = strings.ToLower(name)
+	view.label   = label
+	view.path    = strings.ToLower(path)
 
 	return &view
 
 }
 
-func ToView(element *dom.Element, label string, path string) *View {
+func ToView(element *dom.Element) *View {
 
 	var view View
 
 	view.Element = element
 	view.Layout  = types.LayoutFlow
-	view.Label   = label
-	view.Path    = strings.ToLower(path)
 	view.Content = make([]interfaces.Component, 0)
 
-	view.Mount()
+	view.name  = strings.ToLower(element.GetAttribute("data-name"))
+	view.label = element.GetAttribute("data-label")
+	view.path  = strings.ToLower(element.GetAttribute("data-path"))
 
 	return &view
 
+}
+
+func (view *View) Disable() bool {
+	return false
+}
+
+func (view *View) Enable() bool {
+	return false
 }
 
 func (view *View) Enter() bool {
@@ -71,21 +82,8 @@ func (view *View) Leave() bool {
 
 }
 
-func (view *View) GetProperty(name string) string {
-
-	var result string
-
-	switch name {
-	case "Name":
-		result = view.Name
-	case "Label":
-		result = view.Label
-	case "Path":
-		result = view.Path
-	}
-
-	return result
-
+func (view *View) Label() string {
+	return view.label
 }
 
 func (view *View) Mount() bool {
@@ -95,13 +93,25 @@ func (view *View) Mount() bool {
 		tmp_name := view.Element.GetAttribute("data-name")
 
 		if tmp_name != "" {
-			view.Name = strings.ToLower(tmp_name)
+			view.name = strings.ToLower(tmp_name)
+		}
+
+		tmp_label := view.Element.GetAttribute("data-label")
+
+		if tmp_label != "" {
+			view.label = tmp_label
 		}
 
 		tmp_layout := view.Element.GetAttribute("data-layout")
 
 		if tmp_layout != "" {
 			view.Layout = types.Layout(tmp_layout)
+		}
+
+		tmp_path := view.Element.GetAttribute("data-path")
+
+		if tmp_path != "" {
+			view.path = strings.ToLower(tmp_path)
 		}
 
 		elements   := view.Element.Children()
@@ -119,6 +129,10 @@ func (view *View) Mount() bool {
 
 		view.Content = components
 
+		for _, component := range view.Content {
+			component.Mount()
+		}
+
 		return true
 
 	} else {
@@ -127,12 +141,93 @@ func (view *View) Mount() bool {
 
 }
 
-func (view *View) Render() {
+func (view *View) Name() string {
+	return view.name
+}
+
+func (view *View) Path() string {
+	return view.path
+}
+
+func (view *View) Query(query string) interfaces.Component {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) >= 2 {
+
+		if view.Element != nil {
+
+			if utils.MatchesQuery(view.Element, selectors[0]) == true {
+
+				tmp_query := utils.JoinQuery(selectors[1:])
+
+				for _, content := range view.Content {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) == 1 {
+
+		if view.Element != nil {
+
+			if utils.MatchesQuery(view.Element, selectors[0]) == true {
+				return view
+			}
+
+		}
+
+	}
+
+	return nil
+
+}
+
+func (view *View) QuerySelector(query string) *dom.Element {
+
+	if view.Element != nil {
+		return view.Element.QuerySelector(query)
+	}
+
+	return nil
+
+}
+
+func (view *View) QuerySelectorAll(query string) []*dom.Element {
+
+	result := make([]*dom.Element, 0)
+
+	if view.Element != nil {
+		result = view.Element.QuerySelectorAll(query)
+	}
+
+	return result
+
+}
+
+
+func (view *View) Render() *dom.Element {
 
 	if view.Element != nil {
 
-		if view.Name != "" {
-			view.Element.SetAttribute("data-name", strings.ToLower(view.Name))
+		if view.name != "" {
+			view.Element.SetAttribute("data-name", view.name)
+		}
+
+		if view.label != "" {
+			view.Element.SetAttribute("data-label", view.label)
+		}
+
+		if view.path != "" {
+			view.Element.SetAttribute("data-path", view.path)
 		}
 
 		if view.Layout != types.LayoutFlow {
@@ -147,30 +242,52 @@ func (view *View) Render() {
 
 		view.Element.ReplaceChildren(elements)
 
+		return view.Element
+
 	}
+
+	return nil
 
 }
 
-func (view *View) SetProperty(name string, value string) bool {
+func (view *View) String() string {
 
-	var result bool
+	html := ""
 
-	switch name {
-	case "Name":
-		view.Name = value
-		result    = true
-	case "Label":
-		view.Label = value
-		result     = true
-	case "Path":
-		view.Path = value
-		result    = true
+	if view.Element != nil {
+
+		tagname := strings.ToLower(view.Element.TagName)
+
+		html += "<" + tagname
+
+		attributes := make([]string, 0)
+
+		for key, _ := range view.Element.Attributes {
+			attributes = append(attributes, key)
+		}
+
+		sort.Strings(attributes)
+
+		for _, attribute := range attributes {
+			html += " " + attribute + "=\"" + view.Element.Attributes[attribute] + "\""
+		}
+
+		html += ">"
+		html += view.Element.InnerHTML
+		html += "</" + tagname + ">"
+
 	}
 
-	return result
+	return html
 
 }
 
 func (view *View) Unmount() bool {
+
+	for _, component := range view.Content {
+		component.Unmount()
+	}
+
 	return true
+
 }

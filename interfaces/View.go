@@ -2,13 +2,25 @@
 
 package interfaces
 
-type View interface {
-	Enter() bool
-	Leave() bool
-	Render()
+import "github.com/cookiengineer/gooey/bindings/dom"
 
-	// Required for UI integration
-	GetProperty(string) string
-	SetProperty(string, string) bool
+type View interface {
+
+	// Required for App Components
+	Name()  string
+	Label() string
+	Path()  string
+
+	// Lifecycle Methods
+	Mount()   bool
+	Unmount() bool
+	Enter()   bool
+	Leave()   bool
+
+	// Component Methods
+	Query(string) Component
+	Render()      *dom.Element
+	String()      string
+
 }
 

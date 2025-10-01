@@ -10,7 +10,7 @@ import "strings"
 type Document struct {
 	Content  []interfaces.Component `json:"components"`
 	Registry map[string]constructor `json:"registry"`
-	Body     *dom.Element           `json:"body"`
+	body     *dom.Element           `json:"-"`
 }
 
 func NewDocument() *Document {
@@ -19,7 +19,7 @@ func NewDocument() *Document {
 
 	document.Content  = make([]interfaces.Component, 0)
 	document.Registry = make(map[string]constructor)
-	document.Body     = dom.Document.QuerySelector("body")
+	document.body     = dom.Document.QuerySelector("body")
 
 	return &document
 
@@ -31,7 +31,7 @@ func ToDocument(element *dom.Element) *Document {
 
 	document.Content  = make([]interfaces.Component, 0)
 	document.Registry = make(map[string]constructor)
-	document.Body     = element
+	document.body     = element
 
 	return &document
 
@@ -43,20 +43,20 @@ func (document *Document) Register(tagname string, wrapper constructor) {
 
 func (document *Document) Mount() bool {
 
-	if document.Body != nil {
+	if document.body != nil {
 
-		if document.Body.TagName != "BODY" {
+		if document.body.TagName != "BODY" {
 
-			tmp := document.Body.QuerySelector("body")
+			tmp := document.body.QuerySelector("body")
 
 			if tmp != nil {
-				document.Body = tmp
+				document.body = tmp
 			}
 
 		}
 
 		content  := make([]interfaces.Component, 0)
-		children := document.Body.Children()
+		children := document.body.Children()
 
 		for _, element := range children {
 
@@ -69,42 +69,15 @@ func (document *Document) Mount() bool {
 					component := wrapper(element)
 
 					if component != nil {
-						component.Mount()
+						// Custom Wrappers have to Mount() themselves
 						content = append(content, component)
 					}
 
 				} else {
 
 					component := NewComponent(element)
-					nested_content  := make([]interfaces.Component, 0)
-					nested_children := element.Children()
-
-					for _, nested_element := range nested_children {
-
-						wrapper, ok := document.Registry[strings.ToLower(nested_element.TagName)]
-
-						if ok == true {
-
-							nested_component := wrapper(nested_element)
-
-							if nested_component != nil {
-								nested_component.Mount()
-								nested_content = append(nested_content, nested_component)
-							}
-
-						} else {
-
-							nested_component := NewComponent(nested_element)
-							nested_component.Mount()
-							nested_content = append(nested_content, &nested_component)
-
-						}
-
-					}
-
-					component.SetContent(nested_content)
+					traverseComponent(document, &component)
 					component.Mount()
-
 					content = append(content, &component)
 
 				}
@@ -123,13 +96,31 @@ func (document *Document) Mount() bool {
 
 }
 
-func (document *Document) Query(query string) interfaces.Component {
+func (document *Document) QueryComponent(query string) interfaces.Component {
 
-	if document.Body != nil {
+	selectors := utils.SplitQuery(query)
 
-		selectors := utils.SplitQuery(query)
+	if len(selectors) >= 2 && selectors[0] == "body" {
 
-		if len(selectors) >= 1 {
+		if len(document.Content) > 0 {
+
+			tmp_query := utils.JoinQuery(selectors[1:])
+
+			for _, component := range document.Content {
+
+				tmp_component := component.Query(tmp_query)
+
+				if tmp_component != nil {
+					return tmp_component
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) >= 1 {
+
+		if len(document.Content) > 0 {
 
 			tmp_query := utils.JoinQuery(selectors)
 
@@ -151,6 +142,81 @@ func (document *Document) Query(query string) interfaces.Component {
 
 }
 
+func (document *Document) QuerySelector(query string) *dom.Element {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) >= 2 && selectors[0] == "body" {
+
+		if document.body != nil {
+
+			children := document.body.Children()
+
+			for _, element := range children {
+
+				if utils.MatchesQuery(element, selectors[2]) == true {
+
+					tmp_query := utils.JoinQuery(selectors[2:])
+					tmp_found := element.QuerySelector(tmp_query)
+
+					if tmp_found != nil {
+						return tmp_found
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) >= 1 {
+
+		if document.body != nil {
+			return document.body.QuerySelector(utils.JoinQuery(selectors))
+		}
+
+	}
+
+	return nil
+
+}
+
+func (document *Document) QuerySelectorAll(query string) []*dom.Element {
+
+	result    := make([]*dom.Element, 0)
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) >= 2 && selectors[0] == "body" {
+
+		if document.body != nil {
+
+			children  := document.body.Children()
+
+			for _, element := range children {
+
+				if utils.MatchesQuery(element, selectors[2]) == true {
+
+					tmp_query := utils.JoinQuery(selectors[2:])
+					tmp_found := element.QuerySelectorAll(tmp_query)
+
+					for _, tmp_element := range tmp_found {
+						result = append(result, tmp_element)
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) >= 1 {
+		result = document.body.QuerySelectorAll(utils.JoinQuery(selectors))
+	}
+
+	return result
+
+}
+
 func (document *Document) String() string {
 
 	html := "<!DOCTYPE html>"
@@ -169,6 +235,12 @@ func (document *Document) String() string {
 }
 
 func (document *Document) Unmount() bool {
-	return false
+
+	for _, component := range document.Content {
+		component.Unmount()
+	}
+
+	return true
+
 }
 

@@ -313,6 +313,39 @@ func (header *Header) Query(query string) interfaces.Component {
 
 }
 
+func (header *Header) RegisterView(view interfaces.View) {
+
+	name  := view.Name()
+	label := view.Label()
+	path  := view.Path()
+
+	if name != "" && label != "" && path != "" {
+
+		item, ok := header.views[name]
+
+		if ok == true {
+
+			item.Name  = name
+			item.Label = label
+			item.Path  = path
+
+		} else {
+
+			item := header_view_item{
+				Name:    name,
+				Label:   label,
+				Path:    path,
+				Element: dom.Document.CreateElement("li"),
+			}
+
+			header.views[name] = &item
+
+		}
+
+	}
+
+}
+
 func (header *Header) Render() *dom.Element {
 
 	if header.Component.Element != nil {
@@ -367,39 +400,6 @@ func (header *Header) SetLeft(components []interfaces.Component) {
 
 func (header *Header) SetRight(components []interfaces.Component) {
 	header.Content.Right = components
-}
-
-func (header *Header) SetView(view interfaces.View) {
-
-	name  := view.GetProperty("Name")
-	label := view.GetProperty("Label")
-	path  := view.GetProperty("Path")
-
-	if name != "" && label != "" && path != "" {
-
-		item, ok := header.views[name]
-
-		if ok == true {
-
-			item.Name  = name
-			item.Label = label
-			item.Path  = path
-
-		} else {
-
-			item := header_view_item{
-				Name:    name,
-				Label:   label,
-				Path:    path,
-				Element: dom.Document.CreateElement("li"),
-			}
-
-			header.views[name] = &item
-
-		}
-
-	}
-
 }
 
 func (header *Header) String() string {

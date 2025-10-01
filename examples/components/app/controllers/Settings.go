@@ -1,7 +1,6 @@
 package controllers
 
 import "example/schemas"
-import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/app"
 
 type Settings struct {
@@ -10,17 +9,28 @@ type Settings struct {
 	View   *app.View         `json:"view"`
 }
 
-func NewSettings(main *app.Main) Settings {
+func NewSettings(main *app.Main, view *app.View) *Settings {
 
 	var controller Settings
-
-	element := dom.Document.QuerySelector("section[data-name=\"settings\"]")
-	view    := app.ToView(element, "Settings", "/settings.html")
 
 	controller.Main   = main
 	controller.Schema = &schemas.Settings{}
 	controller.View   = view
 
-	return controller
+	// TODO
 
+	return &controller
+
+}
+
+func (controller *Settings) Name() string {
+	return "settings"
+}
+
+func (controller *Settings) Update() {
+	// Not Implemented
+}
+
+func (controller *Settings) Render() {
+	// Not Implemented
 }

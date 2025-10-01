@@ -3,13 +3,9 @@
 
 ## cookiestore Example
 
-## app/View
+## app/Main
 
 - [ ] Integrate the History API in the fallback case, instead of using `location.Location.Replace()`
-
-## components/Document
-
-- [ ] Implement a Parse() and Render() method for server-side usage that uses `String()` on all components
 
 ## components/content/BarChart
 

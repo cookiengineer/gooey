@@ -3,7 +3,7 @@
 package app
 
 type Controller struct {
-	Name   string `json:"name"`
+	name   string `json:"name"`
 	Main   *Main  `json:"main"`
 	Schema any    `json:"schema"`
 	View   *View  `json:"view"`
@@ -13,7 +13,7 @@ func NewController(name string, main *Main, view *View) *Controller {
 
 	var controller Controller
 
-	controller.Name   = name
+	controller.name   = name
 	controller.Main   = main
 	controller.Schema = nil
 	controller.View   = view
@@ -22,30 +22,23 @@ func NewController(name string, main *Main, view *View) *Controller {
 
 }
 
-func (controller *Controller) GetProperty(name string) string {
+func (controller *Controller) Name() string {
+	return controller.name
+}
 
-	var result string
+func (controller *Controller) SetMain(main *Main) bool {
 
-	switch name {
-	case "Name":
-		result = controller.Name
-	}
+	controller.Main = main
 
-	return result
+	return true
 
 }
 
-func (controller *Controller) SetProperty(name string, value string) bool {
+func (controller *Controller) SetName(name string) bool {
 
-	var result bool
+	controller.name = name
 
-	switch name {
-	case "Name":
-		controller.Name = value
-		result          = true
-	}
-
-	return result
+	return true
 
 }
 
@@ -57,3 +50,10 @@ func (controller *Controller) SetSchema(schema any) bool {
 
 }
 
+func (controller *Controller) SetView(view *View) bool {
+
+	controller.View = view
+
+	return true
+
+}

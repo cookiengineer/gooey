@@ -1,26 +1,34 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/app"
+import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/layout"
+import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/interfaces"
 import "example/controllers"
 import "time"
 
 func main() {
 
-	element := dom.Document.QuerySelector("main")
+	main := app.NewMain()
 
-	main                := app.ToMain(element)
-	controller_tasks    := controllers.NewTasks(main)
-	controller_settings := controllers.NewSettings(main)
+	// Register Gooey Components
+	content.RegisterTo(main.Document)
+	layout.RegisterTo(main.Document)
+	ui.RegisterTo(main.Document)
 
-	main.SetView(controller_tasks.View)
-	main.SetView(controller_settings.View)
+	// Register App Controllers
+	main.RegisterController("settings", func(main *app.Main, view *app.View) interfaces.Controller {
+		return controllers.NewSettings(main, view)
+	})
 
-	view := element.GetAttribute("data-view")
+	main.RegisterController("tasks", func(main *app.Main, view *app.View) interfaces.Controller {
+		return controllers.NewTasks(main, view)
+	})
 
-	if view != "" {
-		main.ChangeView(view)
-	}
+	// Start the App
+	main.Mount()
+	main.Render()
 
 	for true {
 

@@ -161,6 +161,19 @@ func (footer *Footer) Mount() bool {
 				footer.Content.Right = append(footer.Content.Right, ui.ToButton(button))
 			}
 
+
+			for _, component := range footer.Content.Left {
+				component.Mount()
+			}
+
+			for _, component := range footer.Content.Center {
+				component.Mount()
+			}
+
+			for _, component := range footer.Content.Right {
+				component.Mount()
+			}
+
 			return true
 
 		} else {
@@ -275,7 +288,7 @@ func (footer *Footer) Render() *dom.Element {
 
 			tmp[0].ReplaceChildren(elements_left)
 			tmp[1].ReplaceChildren(elements_center)
-			tmp[2].ReplaceChildren(elements_left)
+			tmp[2].ReplaceChildren(elements_right)
 
 		}
 

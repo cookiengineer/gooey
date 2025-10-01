@@ -2,7 +2,6 @@ package controllers
 
 import "example/actions"
 import "example/schemas"
-import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
 import "github.com/cookiengineer/gooey/components/content"
@@ -16,20 +15,20 @@ type Tasks struct {
 	View   *app.View      `json:"view"`
 }
 
-func NewTasks(main *app.Main) Tasks {
+func NewTasks(main *app.Main, view *app.View) *Tasks {
 
 	var controller Tasks
-
-	element := dom.Document.QuerySelector("section[data-name=\"tasks\"]")
-	view    := app.ToView(element, "Tasks", "/index.html")
 
 	controller.Main   = main
 	controller.Schema = &schemas.Tasks{}
 	controller.View   = view
 
-	table := controller.queryTable()
+	// IMPORTANT: The Component Query API is self-including
 
-	if table != nil {
+	fieldset, ok0 := components.Unwrap[*content.Fieldset](controller.Main.Dialog.Query("dialog > fieldset"))
+	table, ok1 := components.Unwrap[*content.Table](controller.View.Query("section > article > table"))
+
+	if fieldset != nil && table != nil && ok0 == true && ok1 == true {
 
 		table.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
@@ -161,9 +160,6 @@ func NewTasks(main *app.Main) Tasks {
 
 				go func() {
 
-					fieldset := controller.queryFieldset()
-					table := controller.queryTable()
-
 					if fieldset != nil && table != nil {
 
 						title := fieldset.ValueOf("title").String()
@@ -217,8 +213,6 @@ func NewTasks(main *app.Main) Tasks {
 
 				go func() {
 
-					fieldset := controller.queryFieldset()
-
 					if fieldset != nil {
 
 						fieldset.Reset()
@@ -238,8 +232,12 @@ func NewTasks(main *app.Main) Tasks {
 
 	controller.Update()
 
-	return controller
+	return &controller
 
+}
+
+func (controller *Tasks) Name() string {
+	return "tasks"
 }
 
 func (controller *Tasks) Update() {
@@ -294,48 +292,6 @@ func (controller *Tasks) Render() {
 
 
 	}
-
-}
-
-func (controller *Tasks) queryFieldset() *content.Fieldset {
-
-	var result *content.Fieldset
-
-	if controller.Main.Dialog.Content != nil {
-
-		fieldset, ok1 := controller.Main.Dialog.Content.(*content.Fieldset)
-
-		if ok1 == true {
-			result = fieldset
-		}
-
-	}
-
-	return result
-
-}
-
-func (controller *Tasks) queryTable() *content.Table {
-
-	var result *content.Table
-
-	if len(controller.View.Content) > 0 {
-
-		article, ok1 := controller.View.Content[0].(*layout.Article)
-
-		if ok1 == true && len(article.Content) > 0 {
-
-			table, ok2 := article.Content[0].(*content.Table)
-
-			if ok2 == true {
-				result = table
-			}
-
-		}
-
-	}
-
-	return result
 
 }
 

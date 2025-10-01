@@ -197,7 +197,13 @@ func (component *Component) InitEvent(event string) {
 }
 
 func (component *Component) Mount() bool {
+
+	for _, content := range component.Content {
+		content.Mount()
+	}
+
 	return true
+
 }
 
 func (component *Component) Query(query string) interfaces.Component {
@@ -340,5 +346,11 @@ func (component *Component) String() string {
 }
 
 func (component *Component) Unmount() bool {
+
+	for _, content := range component.Content {
+		content.Unmount()
+	}
+
 	return true
+
 }
