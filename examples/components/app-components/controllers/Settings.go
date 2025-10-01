@@ -17,7 +17,7 @@ func NewSettings(main *app.Main, view *app.View) *Settings {
 	controller.Schema = &schemas.Settings{}
 	controller.View   = view
 
-	// TODO
+	controller.Update()
 
 	return &controller
 
@@ -28,9 +28,12 @@ func (controller *Settings) Name() string {
 }
 
 func (controller *Settings) Update() {
+
 	// Not Implemented
+	controller.Render()
+
 }
 
 func (controller *Settings) Render() {
-	// Not Implemented
+	controller.View.Render()
 }

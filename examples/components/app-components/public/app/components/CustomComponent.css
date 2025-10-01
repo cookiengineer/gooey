@@ -1,0 +1,69 @@
+
+app-custom-component {
+	display: block;
+	width: 512px;
+	height: auto;
+	margin: 32px auto;
+	padding: 0px;
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+	border: 1px solid var(--article-border);
+	border-radius: 32px;
+}
+
+app-custom-component h3 {
+	display: block;
+	position: static;
+	margin: 0px;
+	padding: 8px 8px;
+	font-family: 'cantarell';
+	font-weight: bold;
+	font-size: 16px;
+	text-align: center;
+	color: var(--header-color);
+	background: var(--header-background);
+	border-radius: 32px 32px 0px 0px;
+	user-select: none;
+}
+
+app-custom-component p {
+	font-family: 'cantarell';
+	font-weight: normal;
+	font-size: 16px;
+	margin: 16px 32px;
+}
+
+app-custom-component button,
+app-custom-component input[type="date"],
+app-custom-component input[type="datetime-local"],
+app-custom-component input[type="email"],
+app-custom-component input[type="file"],
+app-custom-component input[type="month"],
+app-custom-component input[type="number"],
+app-custom-component input[type="password"],
+app-custom-component input[type="search"],
+app-custom-component input[type="tel"],
+app-custom-component input[type="text"],
+app-custom-component input[type="time"],
+app-custom-component input[type="url"],
+app-custom-component input[type="week"],
+app-custom-component select {
+	display: block;
+	width: 256px;
+	margin: 16px 32px;
+}
+
+app-custom-component textarea {
+	display: block;
+	width: 256px;
+	height: 8em;
+	margin: 16px 32px;
+}
+
+@keyframes gradient {
+	0%   { background-position:   0% 50%; }
+	50%  { background-position: 100% 50%; }
+	100% { background-position:   0% 50%; }
+}
+

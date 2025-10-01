@@ -1,6 +1,3 @@
 
-main[data-view="settings"] app-custom-component {
-	border: 2px solid red;
-	border-radius: 16px;
-}
+@import url("./components/CustomComponent.css");
 
