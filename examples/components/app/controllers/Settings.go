@@ -32,5 +32,5 @@ func (controller *Settings) Update() {
 }
 
 func (controller *Settings) Render() {
-	// Not Implemented
+	controller.View.Render()
 }
