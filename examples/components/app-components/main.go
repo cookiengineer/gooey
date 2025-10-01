@@ -1,65 +1,34 @@
 package main
 
-import "github.com/cookiengineer/gooey/bindings/console"
-import "github.com/cookiengineer/gooey/components"
-// import "github.com/cookiengineer/gooey/components/content"
-// import "github.com/cookiengineer/gooey/components/layout"
-// import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/app"
+import "github.com/cookiengineer/gooey/components/content"
+import "github.com/cookiengineer/gooey/components/layout"
+import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/interfaces"
 import app_components "example/components"
+import "example/controllers"
 import "time"
 
 func main() {
 
-	document := components.NewDocument()
+	main := app.NewMain()
 
-	// XXX: This is how to use Gooey Components
-	// content.RegisterTo(document)
-	// layout.RegisterTo(document)
-	// ui.RegisterTo(document)
-	// app.RegisterTo(document)
+	// Register Gooey Components
+	content.RegisterTo(main.Document)
+	layout.RegisterTo(main.Document)
+	ui.RegisterTo(main.Document)
 
-	app_components.RegisterTo(document)
+	// Register App Components
+	app_components.RegisterTo(main.Document)
 
-	document.Mount()
+	// Register App Controllers
+	main.RegisterController("settings", func(main *app.Main, view *app.View) interfaces.Controller {
+		return controllers.NewSettings(main, view)
+	})
 
-
-
-	main_component, ok1 := components.Unwrap[*components.Component](document.Query("main"))
-
-	if ok1 == true {
-
-		console.Group("Main Component")
-		console.Log(main_component)
-		console.GroupEnd("Main Component")
-
-	} else {
-		console.Error("Can't typecast to components.Component")
-	}
-
-	example_component, ok2 := components.Unwrap[*app_components.Example](document.Query("main > app-example"))
-
-	if ok2 == true {
-
-		console.Group("App Example Component")
-		console.Log(example_component)
-		console.GroupEnd("App Example Component")
-
-	} else {
-		console.Error("Can't typecast to app_components.Example")
-	}
-
-	h3_component, ok3 := components.Unwrap[*components.Component](document.Query("main > app-example > h3"))
-
-	if ok3 == true {
-
-		console.Group("H3 Component")
-		console.Log(h3_component)
-		console.GroupEnd("H3 Component")
-
-	} else {
-		console.Error("Can't typecast to components.Component")
-	}
-
+	// Start the App
+	main.Mount()
+	main.Render()
 
 	for true {
 

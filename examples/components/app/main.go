@@ -21,7 +21,6 @@ func main() {
 	main.RegisterController("settings", func(main *app.Main, view *app.View) interfaces.Controller {
 		return controllers.NewSettings(main, view)
 	})
-
 	main.RegisterController("tasks", func(main *app.Main, view *app.View) interfaces.Controller {
 		return controllers.NewTasks(main, view)
 	})
