@@ -5,7 +5,7 @@
     <img width="256" height="256" src="https://raw.githubusercontent.com/cookiengineer/gooey/master/assets/gooey.jpg">
 </p>
 
-[Gooey](https://github.com/cookiengineer/gooey) (GUI) is divided in two parts:
+[Gooey](https://github.com/cookiengineer/gooey) (pronounced as `/'ɡu.i/` or `GUI`) is divided in two parts:
 
 - A pure Go WebASM [bindings](/bindings) framework that bridges the gaps between Go, WebASM and Browser APIs.
 - A pure Go Web UI [components](/components) framework that structures a Web Application, ready to be used in local Web Views.
@@ -15,19 +15,21 @@
 
 Problems in modern Web App Development:
 
-- Components are great as a separation of feature concept.
-- Components are bad for web accessibility (`aria-` property fatigue).
+- Web Components are great as a separation of feature concept.
+- Web Components are bad for web accessibility (`aria-` property fatigue).
 - Frontend-to-Backend communication is always a problem.
-- Frontend Routers differ always from Backend Routers.
-- Frontend schema safety and validation is always implemented redundantly.
-- Backend schema safety and validation is great with `Marshal` / `Unmarshal`.
+- Frontend schema safety and validation is always implemented redundantly in another language (be it ECMAScript, TypeScript, or whatever).
+- Backend schema safety and validation is great with `Marshal` / `Unmarshal`, but is hard to keep on bug-to-bug parity with Frontend.
+- Using online-first Web Apps with slow internet connections is very painful.
 
 Conclusions:
 
-- Use Go's types and schemas on both the Frontend and the Backend.
+- Use Go's types, structs and schemas on the Frontend via WebASM and on the Backend via its native builds.
 - Use dynamic Web Components for the Frontend via WebASM.
 - Use static Web Components for the Backend via Go's native builds to provide server-side rendering.
-- Deploy offline-first Apps via `webview/webview` that point to a local web server.
+- Deploy offline-first Apps via `webview/webview` that point towards a local web server.
+- Bundle all assets in `/public` via `go:embed` with the application binary.
+
 
 ## Architecture
 
@@ -35,18 +37,27 @@ Gooey uses a Reactive MVC Architecture and embraces the use of a unidirectional
 flow, meaning it is a circular pattern of state management.
 
 This is a nice architecture pattern for deserialization and serialization of the
-Schemas into Views, because all custom application code lands in the controllers,
-which manage the Views, Storages and networking code.
+Schemas into Views, because all custom application code lands in the separated
+controllers, which each manage their own View, Client, and Storage.
 
 ![Reactive MVC Architecture](/assets/reactive-mvc.jpg)
+
+Custom Controllers with even Custom Views are easily integratable this way, because
+the Reactive MVC Architecture allows to build an App where each of the Views is
+just a Web Component layer and doesn't need to be touched for most cases.
 
 
 ## Documentation
 
+- [ERRATA.md](/docs/ERRATA.md) documents the state of known errata and problems of using Go via WebASM.
+
+**IMPORTANT**: Note that even if you have years of Go development experience, the Errata
+document is still relevant for you, because it highlights problems when using Go in the
+Web Browser and the quirks that come with it.
+
 - [ARCHITECTURE.md](/docs/ARCHITECTURE.md) documents the architecture of a Gooey App.
-- [BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented web bindings.
-- [COMPONENTS.md](/docs/COMPONENTS.md) documents the state of implemented web components.
-- [ERRATA.md](/docs/ERRATA.md) documents the state of known errata of using Go via WebASM.
+- [BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented Web Bindings.
+- [COMPONENTS.md](/docs/COMPONENTS.md) documents the state of implemented Web Components.
 - [TODO.md](/docs/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
 
 
@@ -58,9 +69,9 @@ use the bindings. They also contain a separate `main.go` which is compiled into 
 
 All examples are served on `http://localhost:3000` when the `build.sh` is executed.
 
-Important: These examples also serve as unit tests, because `go test` cannot generate
-binaries for the `syscall/js` platform. As soon as unit tests are available, the plan
-is to migrate towards go-integrated tests that are compatible with `go test`.
+**Important**: The examples also serve as unit tests, because `go test` cannot generate
+binaries for the `syscall/js` platform right now. As soon as unit tests are available
+upstream via `go test -c`, the plan is to migrate towards fully integrated unit tests.
 
 **Bindings Examples**:
 
