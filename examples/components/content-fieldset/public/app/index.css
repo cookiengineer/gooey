@@ -1,0 +1,28 @@
+
+main fieldset,
+main article {
+	width: 512px;
+	margin: 32px auto;
+}
+
+main article {
+	padding: 0px 16px 16px 16px;
+}
+
+main article h3 {
+	margin: 16px 0px 32px 0px;
+	padding: 0px;
+	font-family: 'cantarell';
+	font-size: 24px;
+	font-style: normal;
+	font-weight: bold;
+}
+
+main article pre {
+	margin: 32px 0px 32px 0px;
+	padding: 8px;
+	background: var(--input-default-background);
+	quotes: none;
+	border: 0px solid transparent;
+	border-radius: 4px;
+}

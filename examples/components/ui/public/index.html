@@ -25,41 +25,49 @@
 
 		<!-- Design -->
 		<link rel="stylesheet" href="/design/index.css" />
+
+		<!-- App Design -->
+		<link rel="stylesheet" href="/app/index.css" />
 	</head>
 	<body>
 		<main>
-			<h3>ui.Button</h3>
-			<div>
-				<p>ui.Button fires a <q>click</q> event (see console output):</p>
-				<button>Click me!</button>
-			</div>
-
-			<h3>ui.Input</h3>
-			<div>
-				<p>ui.Input fires a <q>change-value</q> event (see console output):</p>
-				<input type="url" placeholder="https://cookie.engineer"/>
-			</div>
-
-			<h3>ui.Select</h3>
-			<div>
-				<p>ui.Select fires a <q>change-value</q> event (see console output):</p>
-				<select>
-					<option>-- Please select your favorite character --</option>
-					<option value="Carl Elias">Carl Elias</option>
-					<option value="Harold Finch">Harold Finch</option>
-					<option value="Lionel Fusco">Lionel Fusco</option>
-					<option value="John Reese">John Reese</option>
-					<option value="Joss Carter">Joss Carter</option>
-					<option value="Samantha Groves">Samantha Groves</option>
-					<option value="Sameen Shaw">Sameen Shaw</option>
-				</select>
-			</div>
-
-			<h3>ui.Textarea</h3>
-			<div>
-				<p>ui.Textarea fires a <q>change-value</q> event (see console output):</p>
-				<textarea cols="30" rows="10" placeholder="Please type a message..."></textarea>
-			</div>
+			<article>
+				<h3>ui.Button</h3>
+				<div>
+					<p>The ui.Button Component fires a <q>click</q> event (see console output):</p>
+					<button>Click me!</button>
+				</div>
+			</article>
+			<article>
+				<h3>ui.Input</h3>
+				<div>
+					<p>The ui.Input Component fires a <q>change-value</q> event (see console output):</p>
+					<input type="url" placeholder="https://cookie.engineer"/>
+				</div>
+			</article>
+			<article>
+				<h3>ui.Select</h3>
+				<div>
+					<p>The ui.Select Component fires a <q>change-value</q> event (see console output):</p>
+					<select>
+						<option>-- Please select your favorite character --</option>
+						<option value="Carl Elias">Carl Elias</option>
+						<option value="Harold Finch">Harold Finch</option>
+						<option value="Lionel Fusco">Lionel Fusco</option>
+						<option value="John Reese">John Reese</option>
+						<option value="Joss Carter">Joss Carter</option>
+						<option value="Samantha Groves">Samantha Groves</option>
+						<option value="Sameen Shaw">Sameen Shaw</option>
+					</select>
+				</div>
+			</article>
+			<article>
+				<h3>ui.Textarea</h3>
+				<div>
+					<p>The ui.Textarea Component fires a <q>change-value</q> event (see console output):</p>
+					<textarea cols="30" rows="10" placeholder="Please type a message..."></textarea>
+				</div>
+			</article>
 		</main>
 		<script src="wasm_exec.js"></script>
 		<script src="wasm_init.js"></script>
