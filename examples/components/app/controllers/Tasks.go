@@ -1,12 +1,12 @@
 package controllers
 
-import "example/actions"
-import "example/schemas"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/data"
-import "github.com/cookiengineer/gooey/components/layout"
+import "github.com/cookiengineer/gooey/interfaces"
+import "example/actions"
+import "example/schemas"
 import "sync"
 
 type Tasks struct {
@@ -15,13 +15,13 @@ type Tasks struct {
 	View   *app.View      `json:"view"`
 }
 
-func NewTasks(main *app.Main, view *app.View) *Tasks {
+func NewTasks(main *app.Main, view interfaces.View) *Tasks {
 
 	var controller Tasks
 
 	controller.Main   = main
 	controller.Schema = &schemas.Tasks{}
-	controller.View   = view
+	controller.View   = view.(*app.View)
 
 	// IMPORTANT: The Component Query API is self-including
 
@@ -247,27 +247,13 @@ func (controller *Tasks) Update() {
 		schema, err := actions.GetTasks(controller.Main.Client)
 
 		if err == nil {
+
 			controller.Schema = schema
 			controller.Main.Storage.Write("tasks", schema)
-		}
 
-		controller.Render()
+			table, ok1 := components.Unwrap[*content.Table](controller.View.Query("section > article > table"))
 
-	}
-
-}
-
-func (controller *Tasks) Render() {
-
-	for c := 0; c < len(controller.View.Content); c++ {
-
-		article, ok1 := controller.View.Content[c].(*layout.Article)
-
-		if ok1 == true && len(article.Content) == 1 {
-
-			table, ok2 := article.Content[0].(*content.Table)
-
-			if len(controller.Schema.Tasks) > 0 && ok2 == true {
+			if len(controller.Schema.Tasks) > 0 && ok1 == true {
 
 				dataset := data.NewDataset(0)
 
@@ -284,14 +270,17 @@ func (controller *Tasks) Render() {
 				table.SetDataset(dataset)
 				table.SortBy("id")
 
-				table.Render()
-
 			}
 
 		}
 
+		controller.Render()
 
 	}
 
+}
+
+func (controller *Tasks) Render() {
+	controller.View.Render()
 }
 

@@ -1,7 +1,8 @@
 package controllers
 
-import "example/schemas"
 import "github.com/cookiengineer/gooey/components/app"
+import "github.com/cookiengineer/gooey/interfaces"
+import "example/schemas"
 
 type Settings struct {
 	Main   *app.Main         `json:"main"`
@@ -9,13 +10,13 @@ type Settings struct {
 	View   *app.View         `json:"view"`
 }
 
-func NewSettings(main *app.Main, view *app.View) *Settings {
+func NewSettings(main *app.Main, view interfaces.View) *Settings {
 
 	var controller Settings
 
 	controller.Main   = main
 	controller.Schema = &schemas.Settings{}
-	controller.View   = view
+	controller.View   = view.(*app.View)
 
 	// TODO
 
