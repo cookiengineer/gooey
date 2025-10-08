@@ -12,6 +12,8 @@ type View interface {
 	Path()  string
 
 	// Lifecycle Methods
+	Enable()  bool
+	Disable() bool
 	Mount()   bool
 	Unmount() bool
 	Enter()   bool

@@ -2,7 +2,7 @@
 
 package app
 
-import "github.com/cookiengineer/gooey/bindings/console"
+// import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/bindings/location"
 import "github.com/cookiengineer/gooey/components"
@@ -11,7 +11,7 @@ import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
 
-type controller_constructor func(*Main,*View)  interfaces.Controller
+type controller_constructor func(*Main, interfaces.View)  interfaces.Controller
 type view_constructor       func(*dom.Element) interfaces.View
 
 type Main struct {
@@ -109,12 +109,92 @@ func (main *Main) ChangeView(name string) bool {
 
 }
 
+func (main *Main) GetView(name string) interfaces.View {
+
+	view, ok := main.views[name]
+
+	if ok == true {
+		return view
+	}
+
+	return nil
+
+}
+
 func (main *Main) Mount() bool {
 
 	main.Document.Register("header",  components.Wrap(layout.ToHeader))
 	main.Document.Register("footer",  components.Wrap(layout.ToFooter))
 	main.Document.Register("dialog",  components.Wrap(layout.ToDialog))
-	main.Document.Register("section", components.Wrap(ToView))
+
+	main.Document.Register("section", func(element *dom.Element) interfaces.Component {
+
+		is_view_element := element.ParentNode().TagName == "MAIN"
+
+		if is_view_element == true {
+
+			name := element.GetAttribute("data-name")
+
+			if name != "" {
+
+				view_wrapper, ok1 := main.ViewRegistry[name]
+
+				if ok1 == true {
+
+					custom_view := view_wrapper(element)
+
+					if custom_view != nil {
+						main.views[name] = custom_view
+					} else {
+						main.views[name] = ToView(element)
+					}
+
+					main.views[name].Mount()
+
+				} else {
+
+					main.views[name] = ToView(element)
+					main.views[name].Mount()
+
+				}
+
+				if main.Header != nil {
+					main.Header.RegisterView(main.views[name])
+				}
+
+				controller_wrapper, ok2 := main.ControllerRegistry[name]
+
+				if ok2 == true {
+
+					controller := controller_wrapper(main, main.views[name])
+
+					if controller != nil {
+						main.controllers[name] = controller
+					}
+
+				}
+
+				return interfaces.Component(main.views[name])
+
+			} else {
+
+				component := components.NewComponent(element)
+				component.Mount()
+
+				return interfaces.Component(&component)
+
+			}
+
+		} else {
+
+			component := components.NewComponent(element)
+			component.Mount()
+
+			return interfaces.Component(&component)
+
+		}
+
+	})
 
 	// Don't mount Components
 	main.Document.Mount()
@@ -173,74 +253,7 @@ func (main *Main) Mount() bool {
 	main_component, ok4 := components.Unwrap[*components.Component](main.Document.QueryComponent("body > main"))
 
 	if main_component != nil && ok4 == true {
-
-		if len(main_component.Content) > 0 {
-
-			for _, component := range main_component.Content {
-
-				view, ok0 := component.(*View)
-
-				if ok0 == true {
-
-					name  := view.Name()
-					label := view.Label()
-					path  := view.Path()
-
-					if name != "" && label != "" && path != "" {
-
-						view_wrapper, ok1 := main.ViewRegistry[name]
-
-						if ok1 == true {
-
-							custom_view := view_wrapper(view.Element)
-
-							if custom_view != nil {
-								main.views[name] = custom_view
-							} else {
-								main.views[name] = view
-							}
-
-							main.views[name].Mount()
-
-						} else {
-
-							main.views[name] = view
-							main.views[name].Mount()
-
-						}
-
-						if main.Header != nil {
-							main.Header.RegisterView(main.views[name])
-						}
-
-						controller_wrapper, ok2 := main.ControllerRegistry[name]
-
-						if ok2 == true {
-
-							controller := controller_wrapper(main, view)
-
-							if controller != nil {
-								main.controllers[name] = controller
-							}
-
-						}
-
-					} else {
-						console.Group("View: Invalid Markup")
-						console.Error("Expected <section data-name=\"...\" data-label=\"...\" data-path=\"...\"></section>")
-						console.GroupEnd("View: Invalid Markup")
-					}
-
-				} else {
-					console.Group("Main: Invalid Markup")
-					console.Error("Expected <main><section data-name=\"...\" data-label=\"...\" data-path=\"...\"></section></main>")
-					console.GroupEnd("Main: Invalid Markup")
-				}
-
-			}
-
-		}
-
+		// Do Nothing?
 	}
 
 	if main.Element != nil {
