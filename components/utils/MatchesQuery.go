@@ -35,6 +35,12 @@ func MatchesQuery(element *dom.Element, query string) bool {
 					attribute := query_attribute[0:strings.Index(query_attribute, "^=")]
 					value     := query_attribute[strings.Index(query_attribute, "^=")+2:]
 
+					if strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"") {
+						value = value[1:len(value)-1]
+					} else if strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'") {
+						value = value[1:len(value)-1]
+					}
+
 					if strings.HasPrefix(element.GetAttribute(attribute), value) {
 						matches_attribute = true
 					}
@@ -43,6 +49,12 @@ func MatchesQuery(element *dom.Element, query string) bool {
 
 					attribute := query_attribute[0:strings.Index(query_attribute, "$=")]
 					value     := query_attribute[strings.Index(query_attribute, "$=")+2:]
+
+					if strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"") {
+						value = value[1:len(value)-1]
+					} else if strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'") {
+						value = value[1:len(value)-1]
+					}
 
 					if strings.HasSuffix(element.GetAttribute(attribute), value) {
 						matches_attribute = true
@@ -53,6 +65,12 @@ func MatchesQuery(element *dom.Element, query string) bool {
 					attribute := query_attribute[0:strings.Index(query_attribute, "*=")]
 					value     := query_attribute[strings.Index(query_attribute, "*=")+2:]
 
+					if strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"") {
+						value = value[1:len(value)-1]
+					} else if strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'") {
+						value = value[1:len(value)-1]
+					}
+
 					if strings.Contains(element.GetAttribute(attribute), value) {
 						matches_attribute = true
 					}
@@ -61,6 +79,12 @@ func MatchesQuery(element *dom.Element, query string) bool {
 
 					attribute := query_attribute[0:strings.Index(query_attribute, "^=")]
 					value     := query_attribute[strings.Index(query_attribute, "^=")+2:]
+
+					if strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"") {
+						value = value[1:len(value)-1]
+					} else if strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'") {
+						value = value[1:len(value)-1]
+					}
 
 					if element.GetAttribute(attribute) == value {
 						matches_attribute = true
@@ -72,6 +96,12 @@ func MatchesQuery(element *dom.Element, query string) bool {
 
 					attribute := query_attribute[0:strings.Index(query_attribute, "=")]
 					value     := query_attribute[strings.Index(query_attribute, "=")+1:]
+
+					if strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"") {
+						value = value[1:len(value)-1]
+					} else if strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'") {
+						value = value[1:len(value)-1]
+					}
 
 					if element.GetAttribute(attribute) == value {
 						matches_attribute = true
