@@ -111,10 +111,16 @@ func (input *Input) Mount() bool {
 
 func (input *Input) Query(query string) interfaces.Component {
 
-	if input.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(input.Component.Element, query) == true {
-			return input
+	if len(selectors) == 1 {
+
+		if input.Component.Element != nil {
+
+			if utils.MatchesQuery(input.Component.Element, selectors[0]) == true {
+				return input
+			}
+
 		}
 
 	}

@@ -109,10 +109,16 @@ func (textarea *Textarea) Mount() bool {
 
 func (textarea *Textarea) Query(query string) interfaces.Component {
 
-	if textarea.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(textarea.Component.Element, query) == true {
-			return textarea
+	if len(selectors) == 1 {
+
+		if textarea.Component.Element != nil {
+
+			if utils.MatchesQuery(textarea.Component.Element, selectors[0]) == true {
+				return textarea
+			}
+
 		}
 
 	}

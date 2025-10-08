@@ -268,10 +268,16 @@ func (chart *LineChart) Mount() bool {
 
 func (chart *LineChart) Query(query string) interfaces.Component {
 
-	if chart.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(chart.Component.Element, query) == true {
-			return chart
+	if len(selectors) == 1 {
+
+		if chart.Component.Element != nil {
+
+			if utils.MatchesQuery(chart.Component.Element, selectors[0]) == true {
+				return chart
+			}
+
 		}
 
 	}

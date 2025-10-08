@@ -79,10 +79,16 @@ func (button *Button) Mount() bool {
 
 func (button *Button) Query(query string) interfaces.Component {
 
-	if button.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(button.Component.Element, query) == true {
-			return button
+	if len(selectors) == 1 {
+
+		if button.Component.Element != nil {
+
+			if utils.MatchesQuery(button.Component.Element, selectors[0]) == true {
+				return button
+			}
+
 		}
 
 	}

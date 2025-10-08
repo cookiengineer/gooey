@@ -244,10 +244,16 @@ func (chart *PieChart) Mount() bool {
 
 func (chart *PieChart) Query(query string) interfaces.Component {
 
-	if chart.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(chart.Component.Element, query) == true {
-			return chart
+	if len(selectors) == 1 {
+
+		if chart.Component.Element != nil {
+
+			if utils.MatchesQuery(chart.Component.Element, selectors[0]) == true {
+				return chart
+			}
+
 		}
 
 	}

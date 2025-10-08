@@ -169,10 +169,16 @@ func (self *Select) Mount() bool {
 
 func (self *Select) Query(query string) interfaces.Component {
 
-	if self.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(self.Component.Element, query) == true {
-			return self
+	if len(selectors) == 1 {
+
+		if self.Component.Element != nil {
+
+			if utils.MatchesQuery(self.Component.Element, selectors[0]) == true {
+				return self
+			}
+
 		}
 
 	}

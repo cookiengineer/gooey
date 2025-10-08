@@ -110,10 +110,16 @@ func (checkbox *Checkbox) Mount() bool {
 
 func (checkbox *Checkbox) Query(query string) interfaces.Component {
 
-	if checkbox.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(checkbox.Component.Element, query) == true {
-			return checkbox
+	if len(selectors) == 1 {
+
+		if checkbox.Component.Element != nil {
+
+			if utils.MatchesQuery(checkbox.Component.Element, selectors[0]) == true {
+				return checkbox
+			}
+
 		}
 
 	}

@@ -60,10 +60,16 @@ func (label *Label) Mount() bool {
 
 func (label *Label) Query(query string) interfaces.Component {
 
-	if label.Component.Element != nil {
+	selectors := utils.SplitQuery(query)
 
-		if utils.MatchesQuery(label.Component.Element, query) == true {
-			return label
+	if len(selectors) == 1 {
+
+		if label.Component.Element != nil {
+
+			if utils.MatchesQuery(label.Component.Element, selectors[0]) == true {
+				return label
+			}
+
 		}
 
 	}
