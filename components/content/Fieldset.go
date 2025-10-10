@@ -6,8 +6,8 @@ import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
-import "github.com/cookiengineer/gooey/types"
+import "github.com/cookiengineer/gooey/components/interfaces"
+import "github.com/cookiengineer/gooey/components/types"
 import "strconv"
 import "strings"
 import "syscall/js"
@@ -36,13 +36,13 @@ func NewFieldset(name string, label string) Fieldset {
 
 	var fieldset Fieldset
 
-	element   := dom.Document.CreateElement("fieldset")
+	element := dom.Document.CreateElement("fieldset")
 	component := components.NewComponent(element)
 
-	fieldset.Name      = strings.TrimSpace(strings.ToLower(name))
-	fieldset.Label     = strings.TrimSpace(label)
+	fieldset.Name = strings.TrimSpace(strings.ToLower(name))
+	fieldset.Label = strings.TrimSpace(label)
 	fieldset.Component = &component
-	fieldset.fields    = make([]*fieldset_field, 0)
+	fieldset.fields = make([]*fieldset_field, 0)
 
 	fieldset.Mount()
 	fieldset.Render()
@@ -57,9 +57,9 @@ func ToFieldset(element *dom.Element) *Fieldset {
 
 	component := components.NewComponent(element)
 
-	fieldset.Name      = strings.TrimSpace(element.GetAttribute("data-name"))
+	fieldset.Name = strings.TrimSpace(element.GetAttribute("data-name"))
 	fieldset.Component = &component
-	fieldset.fields    = make([]*fieldset_field, 0)
+	fieldset.fields = make([]*fieldset_field, 0)
 
 	if fieldset.Name == "" {
 		fieldset_count++
@@ -144,7 +144,7 @@ func (fieldset *Fieldset) Mount() bool {
 
 			for _, div := range divs {
 
-				name     := div.GetAttribute("data-name")
+				name := div.GetAttribute("data-name")
 				element1 := div.QuerySelector("label")
 				element2 := div.QuerySelector("input, select, textarea")
 
@@ -495,8 +495,8 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 		for _, field := range fieldset.fields {
 
-			div   := dom.Document.CreateElement("div")
-			id    := toIdentifier(strings.ToLower(fieldset.Name + "-" + field.Name))
+			div := dom.Document.CreateElement("div")
+			id := toIdentifier(strings.ToLower(fieldset.Name + "-" + field.Name))
 			label := field.Label.Render()
 			input := field.Input.Render()
 
@@ -687,7 +687,6 @@ func (fieldset *Fieldset) ResetField(name string) bool {
 
 }
 
-
 func (fieldset *Fieldset) String() string {
 
 	html := "<fieldset>"
@@ -748,7 +747,7 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 	var result js.Value
 
 	for _, field := range fieldset.fields {
-	
+
 		if field.Name == name {
 
 			if field.ctype == "ui.Checkbox" {
@@ -810,4 +809,3 @@ func (fieldset *Fieldset) ValueOf(name string) js.Value {
 	return result
 
 }
-

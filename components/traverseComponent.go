@@ -1,11 +1,11 @@
 package components
 
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strings"
 
 func traverseComponent(document *Document, component *Component) {
 
-	nested_content  := make([]interfaces.Component, 0)
+	nested_content := make([]interfaces.Component, 0)
 	nested_children := component.Element.Children()
 
 	for _, nested_element := range nested_children {

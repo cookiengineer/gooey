@@ -5,8 +5,8 @@ package ui
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
-import "github.com/cookiengineer/gooey/types"
+import "github.com/cookiengineer/gooey/components/interfaces"
+import "github.com/cookiengineer/gooey/components/types"
 import "strings"
 import "syscall/js"
 
@@ -22,16 +22,16 @@ func NewCheckbox(label string, value string) Checkbox {
 
 	var checkbox Checkbox
 
-	element   := dom.Document.CreateElement("input")
+	element := dom.Document.CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", "checkbox")
 
 	checkbox.Component = &component
-	checkbox.Label     = label
-	checkbox.Type      = types.InputCheckbox
-	checkbox.Value     = false
-	checkbox.Disabled  = false
+	checkbox.Label = label
+	checkbox.Type = types.InputCheckbox
+	checkbox.Value = false
+	checkbox.Disabled = false
 
 	checkbox.Mount()
 	checkbox.Render()
@@ -47,10 +47,10 @@ func ToCheckbox(element *dom.Element) *Checkbox {
 	component := components.NewComponent(element)
 
 	checkbox.Component = &component
-	checkbox.Label     = strings.TrimSpace(element.GetAttribute("title"))
-	checkbox.Type      = types.InputCheckbox
-	checkbox.Value     = element.Value.Get("checked").Bool()
-	checkbox.Disabled  = element.HasAttribute("disabled")
+	checkbox.Label = strings.TrimSpace(element.GetAttribute("title"))
+	checkbox.Type = types.InputCheckbox
+	checkbox.Value = element.Value.Get("checked").Bool()
+	checkbox.Disabled = element.HasAttribute("disabled")
 
 	checkbox.Mount()
 

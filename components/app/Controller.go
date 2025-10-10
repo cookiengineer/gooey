@@ -13,10 +13,10 @@ func NewController(name string, main *Main, view *View) *Controller {
 
 	var controller Controller
 
-	controller.name   = name
-	controller.Main   = main
+	controller.name = name
+	controller.Main = main
 	controller.Schema = nil
-	controller.View   = view
+	controller.View = view
 
 	return &controller
 

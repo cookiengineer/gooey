@@ -6,8 +6,8 @@ import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
-import "github.com/cookiengineer/gooey/types"
+import "github.com/cookiengineer/gooey/components/interfaces"
+import "github.com/cookiengineer/gooey/components/types"
 import "sort"
 import "strings"
 
@@ -27,12 +27,12 @@ func NewView(name string, label string, path string) *View {
 	element := dom.Document.CreateElement("section")
 
 	view.Element = element
-	view.Layout  = types.LayoutFlow
+	view.Layout = types.LayoutFlow
 	view.Content = make([]interfaces.Component, 0)
 
-	view.name    = strings.ToLower(name)
-	view.label   = label
-	view.path    = strings.ToLower(path)
+	view.name = strings.ToLower(name)
+	view.label = label
+	view.path = strings.ToLower(path)
 
 	return &view
 
@@ -43,12 +43,12 @@ func ToView(element *dom.Element) *View {
 	var view View
 
 	view.Element = element
-	view.Layout  = types.LayoutFlow
+	view.Layout = types.LayoutFlow
 	view.Content = make([]interfaces.Component, 0)
 
-	view.name  = strings.ToLower(element.GetAttribute("data-name"))
+	view.name = strings.ToLower(element.GetAttribute("data-name"))
 	view.label = element.GetAttribute("data-label")
-	view.path  = strings.ToLower(element.GetAttribute("data-path"))
+	view.path = strings.ToLower(element.GetAttribute("data-path"))
 
 	return &view
 
@@ -114,7 +114,7 @@ func (view *View) Mount() bool {
 			view.path = strings.ToLower(tmp_path)
 		}
 
-		elements   := view.Element.Children()
+		elements := view.Element.Children()
 		components := make([]interfaces.Component, 0)
 
 		for _, element := range elements {
@@ -212,7 +212,6 @@ func (view *View) QuerySelectorAll(query string) []*dom.Element {
 	return result
 
 }
-
 
 func (view *View) Render() *dom.Element {
 

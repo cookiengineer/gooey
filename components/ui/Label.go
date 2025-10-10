@@ -3,7 +3,7 @@ package ui
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strings"
 
 type Label struct {
@@ -16,12 +16,12 @@ func NewLabel(lbl string, typ string) Label {
 
 	var label Label
 
-	element   := dom.Document.CreateElement("label")
+	element := dom.Document.CreateElement("label")
 	component := components.NewComponent(element)
 
 	label.Component = &component
-	label.Label     = lbl
-	label.Type      = strings.ToLower(typ)
+	label.Label = lbl
+	label.Type = strings.ToLower(typ)
 
 	label.Mount()
 	label.Render()
@@ -37,8 +37,8 @@ func ToLabel(element *dom.Element) *Label {
 	component := components.NewComponent(element)
 
 	label.Component = &component
-	label.Label     = strings.TrimSpace(element.TextContent)
-	label.Type      = element.GetAttribute("data-type")
+	label.Label = strings.TrimSpace(element.TextContent)
+	label.Type = element.GetAttribute("data-type")
 
 	label.Mount()
 

@@ -14,7 +14,7 @@ func DeleteTask(client *app.Client, task *schemas.Task) (*schemas.Task, error) {
 
 	if err0 == nil {
 
-		response, err1 := client.Delete("/api/tasks/" + strconv.Itoa(task.ID), bytes)
+		response, err1 := client.Delete("/api/tasks/"+strconv.Itoa(task.ID), bytes)
 
 		if err1 == nil {
 
@@ -39,4 +39,3 @@ func DeleteTask(client *app.Client, task *schemas.Task) (*schemas.Task, error) {
 	return result_schema, result_error
 
 }
-

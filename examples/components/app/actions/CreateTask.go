@@ -38,4 +38,3 @@ func CreateTask(client *app.Client, task *schemas.Task) (*schemas.Task, error) {
 	return result_schema, result_error
 
 }
-

@@ -14,7 +14,7 @@ func calculateChartDatasetMinMax(dataset *data.Dataset, properties []string) (in
 
 		for index := 0; index < dataset.Length(); index++ {
 
-			data    := dataset.Get(index)
+			data := dataset.Get(index)
 			val, ok := (*data)[property]
 
 			if ok == true {
@@ -123,7 +123,7 @@ func calculateChartDatasetMinMax(dataset *data.Dataset, properties []string) (in
 
 					if strings.HasSuffix(value, "%") {
 
-						value = value[0:len(value)-1]
+						value = value[0 : len(value)-1]
 
 						if strings.Contains(value, ".") {
 

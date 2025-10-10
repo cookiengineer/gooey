@@ -5,8 +5,8 @@ package ui
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
-import "github.com/cookiengineer/gooey/types"
+import "github.com/cookiengineer/gooey/components/interfaces"
+import "github.com/cookiengineer/gooey/components/types"
 import "strings"
 import "syscall/js"
 
@@ -22,16 +22,16 @@ func NewInput(label string, value string, typ types.Input) Input {
 
 	var input Input
 
-	element   := dom.Document.CreateElement("input")
+	element := dom.Document.CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", typ.String())
 
 	input.Component = &component
-	input.Label     = strings.TrimSpace(label)
-	input.Type      = typ
-	input.Value     = strings.TrimSpace(value)
-	input.Disabled  = false
+	input.Label = strings.TrimSpace(label)
+	input.Type = typ
+	input.Value = strings.TrimSpace(value)
+	input.Disabled = false
 
 	input.Mount()
 	input.Render()
@@ -55,9 +55,9 @@ func ToInput(element *dom.Element) *Input {
 	component := components.NewComponent(element)
 
 	input.Component = &component
-	input.Label     = strings.TrimSpace(element.GetAttribute("placeholder"))
-	input.Type      = types.Input(element.GetAttribute("type"))
-	input.Disabled  = element.HasAttribute("disabled")
+	input.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
+	input.Type = types.Input(element.GetAttribute("type"))
+	input.Disabled = element.HasAttribute("disabled")
 
 	input.Mount()
 

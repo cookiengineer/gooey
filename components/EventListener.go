@@ -17,8 +17,8 @@ func ToEventListener(callback EventListenerCallback, once bool) *EventListener {
 
 	var listener EventListener
 
-	listener.Id       = component_listener_id
-	listener.Once     = once
+	listener.Id = component_listener_id
+	listener.Once = once
 	listener.Callback = callback
 	listener.Listener = nil
 

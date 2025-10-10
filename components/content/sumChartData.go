@@ -5,7 +5,7 @@ import "math"
 import "strconv"
 import "strings"
 
-func sumChartData(data *data.Data, properties []string) (int64) {
+func sumChartData(data *data.Data, properties []string) int64 {
 
 	var result int64 = 0
 
@@ -66,7 +66,7 @@ func sumChartData(data *data.Data, properties []string) (int64) {
 
 				if strings.HasSuffix(value, "%") {
 
-					value = value[0:len(value)-1]
+					value = value[0 : len(value)-1]
 
 					if strings.Contains(value, ".") {
 

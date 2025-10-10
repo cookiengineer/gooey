@@ -147,7 +147,7 @@ func main() {
 			if err0 == nil {
 
 				schema := schemas.Task{}
-				err1   := json.Unmarshal(bytes, &schema)
+				err1 := json.Unmarshal(bytes, &schema)
 
 				if err1 == nil {
 
@@ -209,7 +209,7 @@ func main() {
 			if err0 == nil {
 
 				schema := schemas.Task{}
-				err1   := json.Unmarshal(bytes, &schema)
+				err1 := json.Unmarshal(bytes, &schema)
 
 				if err1 == nil {
 
@@ -218,7 +218,7 @@ func main() {
 					if ok == true {
 
 						task.Title = schema.Title
-						task.Done  = schema.Done
+						task.Done = schema.Done
 
 						payload, err2 := json.MarshalIndent(task, "", "\t")
 

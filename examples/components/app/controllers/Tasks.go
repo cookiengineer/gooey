@@ -4,7 +4,7 @@ import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/app"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/data"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "example/actions"
 import "example/schemas"
 import "sync"
@@ -19,14 +19,14 @@ func NewTasks(main *app.Main, view interfaces.View) *Tasks {
 
 	var controller Tasks
 
-	controller.Main   = main
+	controller.Main = main
 	controller.Schema = &schemas.Tasks{}
-	controller.View   = view.(*app.View)
+	controller.View = view.(*app.View)
 
 	// IMPORTANT: The Component Query API is self-including
 
-	fieldset, ok0 := components.Unwrap[*content.Fieldset](controller.Main.Dialog.Query("dialog > fieldset"))
-	table, ok1 := components.Unwrap[*content.Table](controller.View.Query("section > article > table"))
+	fieldset, ok0 := components.UnwrapComponent[*content.Fieldset](controller.Main.Dialog.Query("dialog > fieldset"))
+	table, ok1 := components.UnwrapComponent[*content.Table](controller.View.Query("section > article > table"))
 
 	if fieldset != nil && table != nil && ok0 == true && ok1 == true {
 
@@ -163,7 +163,7 @@ func NewTasks(main *app.Main, view interfaces.View) *Tasks {
 					if fieldset != nil && table != nil {
 
 						title := fieldset.ValueOf("title").String()
-						done  := fieldset.ValueOf("done").Bool()
+						done := fieldset.ValueOf("done").Bool()
 
 						task := schemas.Task{
 							ID:    0,
@@ -251,7 +251,7 @@ func (controller *Tasks) Update() {
 			controller.Schema = schema
 			controller.Main.Storage.Write("tasks", schema)
 
-			table, ok1 := components.Unwrap[*content.Table](controller.View.Query("section > article > table"))
+			table, ok1 := components.UnwrapComponent[*content.Table](controller.View.Query("section > article > table"))
 
 			if len(controller.Schema.Tasks) > 0 && ok1 == true {
 
@@ -260,9 +260,9 @@ func (controller *Tasks) Update() {
 				for _, task := range controller.Schema.Tasks {
 
 					dataset.Add(data.Data(map[string]any{
-						"id": task.ID,
+						"id":    task.ID,
 						"title": task.Title,
-						"done": task.Done,
+						"done":  task.Done,
 					}))
 
 				}
@@ -283,4 +283,3 @@ func (controller *Tasks) Update() {
 func (controller *Tasks) Render() {
 	controller.View.Render()
 }
-

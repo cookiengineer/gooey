@@ -2,7 +2,7 @@ package components
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "sort"
 import "strings"
 
@@ -21,6 +21,18 @@ func NewComponent(element *dom.Element) Component {
 	component.Listeners = make(map[string][]*EventListener, 0)
 
 	return component
+
+}
+
+func ToComponent(element *dom.Element) *Component {
+
+	var component Component
+
+	component.Content = make([]interfaces.Component, 0)
+	component.Element = element
+	component.Listeners = make(map[string][]*EventListener, 0)
+
+	return &component
 
 }
 

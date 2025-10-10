@@ -6,7 +6,7 @@ import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/data"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strconv"
 import "strings"
 
@@ -28,18 +28,18 @@ func NewLineChart(name string, labels []string, properties []string, types []str
 
 	var chart LineChart
 
-	element   := dom.Document.CreateElement("figure")
+	element := dom.Document.CreateElement("figure")
 	component := components.NewComponent(element)
-	dataset   := data.NewDataset(0)
+	dataset := data.NewDataset(0)
 
-	chart.Dataset    = &dataset
-	chart.Component  = &component
-	chart.Name       = strings.TrimSpace(strings.ToLower(name))
-	chart.Labels     = make([]string, 0)
+	chart.Dataset = &dataset
+	chart.Component = &component
+	chart.Name = strings.TrimSpace(strings.ToLower(name))
+	chart.Labels = make([]string, 0)
 	chart.Properties = make([]string, 0)
-	chart.Types      = make([]string, 0)
+	chart.Types = make([]string, 0)
 
-	chart.ViewBox.Width  = 512
+	chart.ViewBox.Width = 512
 	chart.ViewBox.Height = 256
 
 	chart.SetLabelsAndPropertiesAndTypes(labels, properties, types)
@@ -55,16 +55,16 @@ func ToLineChart(element *dom.Element) *LineChart {
 	var chart LineChart
 
 	component := components.NewComponent(element)
-	dataset   := data.NewDataset(0)
+	dataset := data.NewDataset(0)
 
-	chart.Dataset    = &dataset
-	chart.Component  = &component
-	chart.Name       = ""
-	chart.Labels     = make([]string, 0)
+	chart.Dataset = &dataset
+	chart.Component = &component
+	chart.Name = ""
+	chart.Labels = make([]string, 0)
 	chart.Properties = make([]string, 0)
-	chart.Types      = make([]string, 0)
+	chart.Types = make([]string, 0)
 
-	chart.ViewBox.Width  = 512
+	chart.ViewBox.Width = 512
 	chart.ViewBox.Height = 256
 
 	chart.Mount()
@@ -111,27 +111,27 @@ func (chart *LineChart) Mount() bool {
 		}
 
 		datalist := chart.Component.Element.QuerySelector("datalist")
-		svg      := chart.Component.Element.QuerySelector("svg")
+		svg := chart.Component.Element.QuerySelector("svg")
 
 		if datalist != nil && svg != nil {
 
 			viewbox := svg.GetAttribute("viewBox")
-			tmp1    := strings.Split(viewbox, " ")
+			tmp1 := strings.Split(viewbox, " ")
 
 			if len(tmp1) == 4 {
 
 				if tmp1[0] == "0" && tmp1[1] == "0" {
 
-					width,  err1 := strconv.ParseInt(tmp1[2], 10, 64)
+					width, err1 := strconv.ParseInt(tmp1[2], 10, 64)
 					height, err2 := strconv.ParseInt(tmp1[3], 10, 64)
 
 					if err1 == nil && err2 == nil {
-						chart.ViewBox.Width  = int(width)
+						chart.ViewBox.Width = int(width)
 						chart.ViewBox.Height = int(height)
 					}
 
 				} else {
-					chart.ViewBox.Width  = int(512)
+					chart.ViewBox.Width = int(512)
 					chart.ViewBox.Height = int(256)
 				}
 
@@ -142,11 +142,11 @@ func (chart *LineChart) Mount() bool {
 
 				if tmp2 != "" && tmp3 != "" {
 
-					width,  err1 := strconv.ParseInt(tmp2, 10, 64)
+					width, err1 := strconv.ParseInt(tmp2, 10, 64)
 					height, err2 := strconv.ParseInt(tmp3, 10, 64)
 
 					if err1 == nil && err2 == nil {
-						chart.ViewBox.Width  = int(width)
+						chart.ViewBox.Width = int(width)
 						chart.ViewBox.Height = int(height)
 					}
 
@@ -156,19 +156,19 @@ func (chart *LineChart) Mount() bool {
 
 			if len(chart.Labels) == 0 && len(chart.Properties) == 0 && len(chart.Types) == 0 {
 
-				elements   := datalist.QuerySelectorAll("data")
-				dataset    := data.NewDataset(0)
-				labels     := make([]string, 0)
+				elements := datalist.QuerySelectorAll("data")
+				dataset := data.NewDataset(0)
+				labels := make([]string, 0)
 				properties := make([]string, 0)
-				types      := make(map[string]string)
-				values     := make([]map[string]string, 0)
+				types := make(map[string]string)
+				values := make([]map[string]string, 0)
 
 				for _, element := range elements {
 
 					property := element.GetAttribute("data-property")
-					label    := strings.TrimSpace(element.TextContent)
-					typ      := element.GetAttribute("data-type")
-					value    := strings.Split(element.GetAttribute("value"), ",")
+					label := strings.TrimSpace(element.TextContent)
+					typ := element.GetAttribute("data-type")
+					value := strings.Split(element.GetAttribute("value"), ",")
 
 					if len(value) > 0 {
 
@@ -185,8 +185,8 @@ func (chart *LineChart) Mount() bool {
 						}
 
 						types[property] = typ
-						labels          = append(labels, label)
-						properties      = append(properties, property)
+						labels = append(labels, label)
+						properties = append(properties, property)
 
 					}
 
@@ -200,8 +200,8 @@ func (chart *LineChart) Mount() bool {
 
 				}
 
-				chart.Dataset    = &dataset
-				chart.Labels     = labels
+				chart.Dataset = &dataset
+				chart.Labels = labels
 				chart.Properties = properties
 
 				tmp2 := make([]string, 0)
@@ -226,7 +226,7 @@ func (chart *LineChart) Mount() bool {
 
 					if property != "" {
 
-						svg    := chart.Component.Element.QuerySelector("svg")
+						svg := chart.Component.Element.QuerySelector("svg")
 						layers := chart.Component.Element.QuerySelectorAll("svg g")
 
 						var foreground *dom.Element = nil
@@ -304,7 +304,7 @@ func (chart *LineChart) Render() *dom.Element {
 				strconv.Itoa(chart.ViewBox.Height),
 			}, " "))
 
-			svg.SetAttribute("width",  strconv.Itoa(chart.ViewBox.Width))
+			svg.SetAttribute("width", strconv.Itoa(chart.ViewBox.Width))
 			svg.SetAttribute("height", strconv.Itoa(chart.ViewBox.Height))
 
 			if chart.Dataset.Length() > 0 {
@@ -421,9 +421,9 @@ func (chart *LineChart) SetLabelsAndPropertiesAndTypes(labels []string, properti
 
 	if len(labels) == len(properties) && len(labels) == len(types) {
 
-		chart.Labels     = labels
+		chart.Labels = labels
 		chart.Properties = properties
-		chart.Types      = types
+		chart.Types = types
 
 		result = true
 
@@ -452,7 +452,7 @@ func (chart *LineChart) String() string {
 
 		value := values[property]
 		label := chart.Labels[p]
-		typ   := chart.Types[p]
+		typ := chart.Types[p]
 
 		html += "<data"
 		html += " data-property=\"" + property + "\""

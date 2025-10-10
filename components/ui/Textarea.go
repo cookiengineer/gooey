@@ -5,8 +5,8 @@ package ui
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
-import "github.com/cookiengineer/gooey/types"
+import "github.com/cookiengineer/gooey/components/interfaces"
+import "github.com/cookiengineer/gooey/components/types"
 import "strings"
 import "syscall/js"
 
@@ -22,14 +22,14 @@ func NewTextarea(label string, value string) Textarea {
 
 	var textarea Textarea
 
-	element   := dom.Document.CreateElement("textarea")
+	element := dom.Document.CreateElement("textarea")
 	component := components.NewComponent(element)
 
 	textarea.Component = &component
-	textarea.Label     = label
-	textarea.Type      = types.InputTextarea
-	textarea.Value     = value
-	textarea.Disabled  = false
+	textarea.Label = label
+	textarea.Type = types.InputTextarea
+	textarea.Value = value
+	textarea.Disabled = false
 
 	textarea.Mount()
 	textarea.Render()
@@ -53,9 +53,9 @@ func ToTextarea(element *dom.Element) *Textarea {
 	component := components.NewComponent(element)
 
 	textarea.Component = &component
-	textarea.Label     = strings.TrimSpace(element.GetAttribute("placeholder"))
-	textarea.Type      = types.InputTextarea
-	textarea.Disabled  = element.HasAttribute("disabled")
+	textarea.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
+	textarea.Type = types.InputTextarea
+	textarea.Disabled = element.HasAttribute("disabled")
 
 	textarea.Mount()
 

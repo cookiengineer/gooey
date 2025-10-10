@@ -4,6 +4,6 @@ import "github.com/cookiengineer/gooey/components"
 
 func RegisterTo(document *components.Document) {
 
-	document.Register("app-custom-component", components.Wrap(ToCustomComponent))
+	document.Register("app-custom-component", components.WrapComponent(ToCustomComponent))
 
 }

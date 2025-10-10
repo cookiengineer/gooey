@@ -8,50 +8,45 @@ import "github.com/cookiengineer/gooey/bindings/location"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strings"
 
-type controller_constructor func(*Main, interfaces.View)  interfaces.Controller
-type view_constructor       func(*dom.Element) interfaces.View
-
 type Main struct {
+	Client  *Client  `json:"client"`
+	Storage *Storage `json:"storage"`
 
-	Client             *Client                           `json:"client"`
-	Storage            *Storage                          `json:"storage"`
+	Header *layout.Header `json:"header"`
+	Footer *layout.Footer `json:"footer"`
+	Dialog *layout.Dialog `json:"dialog"`
 
-	Header             *layout.Header                    `json:"header"`
-	Footer             *layout.Footer                    `json:"footer"`
-	Dialog             *layout.Dialog                    `json:"dialog"`
+	Controller         interfaces.Controller            `json:"controller"`
+	ControllerRegistry map[string]ControllerConstructor `json:"controller_registry"`
+	View               interfaces.View                  `json:"view"`
+	ViewRegistry       map[string]ViewConstructor       `json:"view_registry"`
+	Document           *components.Document             `json:"document"`
+	Element            *dom.Element                     `json:"element"`
 
-	Controller         interfaces.Controller             `json:"controller"`
-	ControllerRegistry map[string]controller_constructor `json:"controller_registry"`
-	View               interfaces.View                   `json:"view"`
-	ViewRegistry       map[string]view_constructor       `json:"view_registry"`
-	Document           *components.Document              `json:"document"`
-	Element            *dom.Element                      `json:"element"`
-
-	controllers        map[string]interfaces.Controller  `json:"-"`
-	views              map[string]interfaces.View        `json:"-"`
-
+	controllers map[string]interfaces.Controller `json:"-"`
+	views       map[string]interfaces.View       `json:"-"`
 }
 
 func NewMain() *Main {
 
 	var main Main
 
-	main.Client  = NewClient()
+	main.Client = NewClient()
 	main.Storage = NewStorage()
 
-	main.Controller         = nil
-	main.ControllerRegistry = make(map[string]controller_constructor)
-	main.controllers        = make(map[string]interfaces.Controller)
+	main.Controller = nil
+	main.ControllerRegistry = make(map[string]ControllerConstructor)
+	main.controllers = make(map[string]interfaces.Controller)
 
-	main.View         = nil
-	main.ViewRegistry = make(map[string]view_constructor)
-	main.views        = make(map[string]interfaces.View)
+	main.View = nil
+	main.ViewRegistry = make(map[string]ViewConstructor)
+	main.views = make(map[string]interfaces.View)
 
 	main.Document = components.NewDocument()
-	main.Element  = main.Document.QuerySelector("main")
+	main.Element = main.Document.QuerySelector("main")
 
 	return &main
 
@@ -61,19 +56,19 @@ func ToMain(document *components.Document) *Main {
 
 	var main Main
 
-	main.Client  = NewClient()
+	main.Client = NewClient()
 	main.Storage = NewStorage()
 
-	main.Controller         = nil
-	main.ControllerRegistry = make(map[string]controller_constructor)
-	main.controllers        = make(map[string]interfaces.Controller)
+	main.Controller = nil
+	main.ControllerRegistry = make(map[string]ControllerConstructor)
+	main.controllers = make(map[string]interfaces.Controller)
 
-	main.View         = nil
-	main.ViewRegistry = make(map[string]view_constructor)
-	main.views        = make(map[string]interfaces.View)
+	main.View = nil
+	main.ViewRegistry = make(map[string]ViewConstructor)
+	main.views = make(map[string]interfaces.View)
 
 	main.Document = document
-	main.Element  = main.Document.QuerySelector("main")
+	main.Element = main.Document.QuerySelector("main")
 
 	return &main
 
@@ -123,9 +118,9 @@ func (main *Main) GetView(name string) interfaces.View {
 
 func (main *Main) Mount() bool {
 
-	main.Document.Register("header",  components.Wrap(layout.ToHeader))
-	main.Document.Register("footer",  components.Wrap(layout.ToFooter))
-	main.Document.Register("dialog",  components.Wrap(layout.ToDialog))
+	main.Document.Register("header", components.WrapComponent(layout.ToHeader))
+	main.Document.Register("footer", components.WrapComponent(layout.ToFooter))
+	main.Document.Register("dialog", components.WrapComponent(layout.ToDialog))
 
 	// XXX: Initialize Views DURING the Component Graph is being built
 	main.Document.Register("section", func(element *dom.Element) interfaces.Component {
@@ -163,7 +158,6 @@ func (main *Main) Mount() bool {
 					main.Header.RegisterView(main.views[name])
 				}
 
-
 				return interfaces.Component(main.views[name])
 
 			} else {
@@ -189,7 +183,7 @@ func (main *Main) Mount() bool {
 	// Don't mount Components
 	main.Document.Mount()
 
-	header, ok1 := components.Unwrap[*layout.Header](main.Document.QueryComponent("body > header"))
+	header, ok1 := components.UnwrapComponent[*layout.Header](main.Document.QueryComponent("body > header"))
 
 	if header != nil && ok1 == true {
 
@@ -224,7 +218,7 @@ func (main *Main) Mount() bool {
 		main.Header = nil
 	}
 
-	footer, ok2 := components.Unwrap[*layout.Footer](main.Document.QueryComponent("body > footer"))
+	footer, ok2 := components.UnwrapComponent[*layout.Footer](main.Document.QueryComponent("body > footer"))
 
 	if footer != nil && ok2 == true {
 		main.Footer = footer
@@ -232,7 +226,7 @@ func (main *Main) Mount() bool {
 		main.Footer = nil
 	}
 
-	dialog, ok3 := components.Unwrap[*layout.Dialog](main.Document.QueryComponent("body > dialog"))
+	dialog, ok3 := components.UnwrapComponent[*layout.Dialog](main.Document.QueryComponent("body > dialog"))
 
 	if dialog != nil && ok3 == true {
 		main.Dialog = dialog
@@ -241,7 +235,7 @@ func (main *Main) Mount() bool {
 	}
 
 	// XXX: Initialize Controllers AFTER the Component Graph is ready
-	main_component, ok4 := components.Unwrap[*components.Component](main.Document.QueryComponent("body > main"))
+	main_component, ok4 := components.UnwrapComponent[*components.Component](main.Document.QueryComponent("body > main"))
 
 	if len(main.views) > 0 && main_component != nil && ok4 == true {
 
@@ -322,7 +316,7 @@ func (main *Main) QuerySelector(view_name string, query string) *dom.Element {
 		} else {
 
 			tmp_selectors := make([]string, 0)
-			tmp_selectors = append(tmp_selectors, "section[data-name=\"" + view_name + "\"]")
+			tmp_selectors = append(tmp_selectors, "section[data-name=\""+view_name+"\"]")
 			tmp_selectors = append(tmp_selectors, selectors...)
 
 			return main.Document.QuerySelector(utils.JoinQuery(tmp_selectors))
@@ -352,7 +346,7 @@ func (main *Main) QuerySelectorAll(view_name string, query string) []*dom.Elemen
 		} else {
 
 			tmp_selectors := make([]string, 0)
-			tmp_selectors = append(tmp_selectors, "section[data-name=\"" + view_name + "\"]")
+			tmp_selectors = append(tmp_selectors, "section[data-name=\""+view_name+"\"]")
 			tmp_selectors = append(tmp_selectors, selectors...)
 
 			result = main.Document.QuerySelectorAll(utils.JoinQuery(tmp_selectors))
@@ -365,11 +359,11 @@ func (main *Main) QuerySelectorAll(view_name string, query string) []*dom.Elemen
 
 }
 
-func (main *Main) RegisterController(name string, wrapper controller_constructor) {
+func (main *Main) RegisterController(name string, wrapper ControllerConstructor) {
 	main.ControllerRegistry[strings.ToLower(name)] = wrapper
 }
 
-func (main *Main) RegisterView(name string, wrapper view_constructor) {
+func (main *Main) RegisterView(name string, wrapper ViewConstructor) {
 	main.ViewRegistry[strings.ToLower(name)] = wrapper
 }
 

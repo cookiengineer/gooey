@@ -5,8 +5,8 @@ package ui
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
-import "github.com/cookiengineer/gooey/types"
+import "github.com/cookiengineer/gooey/components/interfaces"
+import "github.com/cookiengineer/gooey/components/types"
 import "slices"
 import "strings"
 import "syscall/js"
@@ -25,14 +25,14 @@ func NewSelect(label string, value string, values []string) Select {
 
 	var self Select
 
-	element   := dom.Document.CreateElement("select")
+	element := dom.Document.CreateElement("select")
 	component := components.NewComponent(element)
 
-	self.Component     = &component
-	self.Label         = strings.TrimSpace(label)
-	self.Type          = types.InputText
-	self.Value         = strings.TrimSpace(value)
-	self.Values        = make([]string, 0)
+	self.Component = &component
+	self.Label = strings.TrimSpace(label)
+	self.Type = types.InputText
+	self.Value = strings.TrimSpace(value)
+	self.Values = make([]string, 0)
 	self.default_value = self.Value
 
 	for _, val := range values {
@@ -59,8 +59,8 @@ func ToSelect(element *dom.Element) *Select {
 	component := components.NewComponent(element)
 
 	self.Component = &component
-	self.Type      = types.InputText
-	self.Disabled  = element.HasAttribute("disabled")
+	self.Type = types.InputText
+	self.Disabled = element.HasAttribute("disabled")
 
 	self.Mount()
 
@@ -127,14 +127,14 @@ func (self *Select) Mount() bool {
 			}
 
 			self.default_value = value
-			self.Value         = value
-			self.Values        = values
+			self.Value = value
+			self.Values = values
 
 		}
 
 		self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
-			index   := self.Component.Element.Value.Get("selectedIndex").Int()
+			index := self.Component.Element.Value.Get("selectedIndex").Int()
 			options := self.Component.Element.Value.Get("options")
 
 			if !options.IsNull() && !options.IsUndefined() && index != -1 {
@@ -305,7 +305,7 @@ func (self *Select) String() string {
 			}
 
 		}
-		
+
 	} else {
 
 		for _, value := range self.Values {
@@ -326,7 +326,7 @@ func (self *Select) ToValue() js.Value {
 
 	if self.Component.Element != nil {
 
-		index   := self.Component.Element.Value.Get("selectedIndex").Int()
+		index := self.Component.Element.Value.Get("selectedIndex").Int()
 		options := self.Component.Element.Value.Get("options")
 
 		if !options.IsNull() && !options.IsUndefined() && index != -1 {

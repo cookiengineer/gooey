@@ -5,8 +5,8 @@ package ui
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
-import "github.com/cookiengineer/gooey/types"
+import "github.com/cookiengineer/gooey/components/interfaces"
+import "github.com/cookiengineer/gooey/components/types"
 import "strconv"
 import "strings"
 import "syscall/js"
@@ -26,21 +26,21 @@ func NewRange(label string, step int, cur_value int, min_value int, max_value in
 
 	var input Range
 
-	element   := dom.Document.CreateElement("input")
+	element := dom.Document.CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", "range")
 
 	if cur_value >= min_value && cur_value <= max_value {
 
-		input.Min   = min_value
-		input.Max   = max_value
+		input.Min = min_value
+		input.Max = max_value
 		input.Value = cur_value
 
 	} else if cur_value >= 0 && cur_value <= 100 {
 
-		input.Min   = 0
-		input.Max   = 100
+		input.Min = 0
+		input.Max = 100
 		input.Value = cur_value
 
 	}
@@ -52,8 +52,8 @@ func NewRange(label string, step int, cur_value int, min_value int, max_value in
 	}
 
 	input.Component = &component
-	input.Label     = label
-	input.Type      = types.InputRange
+	input.Label = label
+	input.Type = types.InputRange
 
 	if input.Value > input.Max {
 		input.Max = input.Value
@@ -86,7 +86,7 @@ func ToRange(element *dom.Element) *Range {
 		input.Value = 0
 	}
 
-	max_str  := strings.TrimSpace(element.GetAttribute("max"))
+	max_str := strings.TrimSpace(element.GetAttribute("max"))
 	min_str := strings.TrimSpace(element.GetAttribute("min"))
 
 	if min_str != "" && max_str != "" {
@@ -128,9 +128,9 @@ func ToRange(element *dom.Element) *Range {
 	component := components.NewComponent(element)
 
 	input.Component = &component
-	input.Label     = strings.TrimSpace(element.GetAttribute("placeholder"))
-	input.Type      = types.Input(element.GetAttribute("type"))
-	input.Disabled  = element.HasAttribute("disabled")
+	input.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
+	input.Type = types.Input(element.GetAttribute("type"))
+	input.Disabled = element.HasAttribute("disabled")
 
 	input.Mount()
 

@@ -4,22 +4,22 @@ package components
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strings"
 
 type Document struct {
-	Content  []interfaces.Component `json:"components"`
-	Registry map[string]constructor `json:"registry"`
-	body     *dom.Element           `json:"-"`
+	Content  []interfaces.Component          `json:"components"`
+	Registry map[string]ComponentConstructor `json:"registry"`
+	body     *dom.Element                    `json:"-"`
 }
 
 func NewDocument() *Document {
 
 	var document Document
 
-	document.Content  = make([]interfaces.Component, 0)
-	document.Registry = make(map[string]constructor)
-	document.body     = dom.Document.QuerySelector("body")
+	document.Content = make([]interfaces.Component, 0)
+	document.Registry = make(map[string]ComponentConstructor)
+	document.body = dom.Document.QuerySelector("body")
 
 	return &document
 
@@ -29,15 +29,15 @@ func ToDocument(element *dom.Element) *Document {
 
 	var document Document
 
-	document.Content  = make([]interfaces.Component, 0)
-	document.Registry = make(map[string]constructor)
-	document.body     = element
+	document.Content = make([]interfaces.Component, 0)
+	document.Registry = make(map[string]ComponentConstructor)
+	document.body = element
 
 	return &document
 
 }
 
-func (document *Document) Register(tagname string, wrapper constructor) {
+func (document *Document) Register(tagname string, wrapper ComponentConstructor) {
 	document.Registry[strings.ToLower(tagname)] = wrapper
 }
 
@@ -55,7 +55,7 @@ func (document *Document) Mount() bool {
 
 		}
 
-		content  := make([]interfaces.Component, 0)
+		content := make([]interfaces.Component, 0)
 		children := document.body.Children()
 
 		for _, element := range children {
@@ -183,14 +183,14 @@ func (document *Document) QuerySelector(query string) *dom.Element {
 
 func (document *Document) QuerySelectorAll(query string) []*dom.Element {
 
-	result    := make([]*dom.Element, 0)
+	result := make([]*dom.Element, 0)
 	selectors := utils.SplitQuery(query)
 
 	if len(selectors) >= 2 && selectors[0] == "body" {
 
 		if document.body != nil {
 
-			children  := document.body.Children()
+			children := document.body.Children()
 
 			for _, element := range children {
 
@@ -243,4 +243,3 @@ func (document *Document) Unmount() bool {
 	return true
 
 }
-

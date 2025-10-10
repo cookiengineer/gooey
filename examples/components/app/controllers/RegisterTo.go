@@ -1,7 +1,7 @@
 package controllers
 
 import "github.com/cookiengineer/gooey/components/app"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 
 func RegisterTo(main *app.Main) {
 
@@ -12,6 +12,5 @@ func RegisterTo(main *app.Main) {
 	main.RegisterController("tasks", func(main *app.Main, view interfaces.View) interfaces.Controller {
 		return NewTasks(main, view)
 	})
-
 
 }

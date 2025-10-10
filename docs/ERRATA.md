@@ -274,9 +274,9 @@ func NewExample(main *app.Main) Example {
 
 ### Component Wrapping and Unwrapping
 
-For this purpose, there's the [components.Wrap()](../components/Wrap.go) and
-[components.Unwrap()](../components/Unwrap.go) methods available which allow
-to typecast from and to [interfaces.Component](../interfaces/Component.go).
+For this purpose, there's the [components.WrapComponent()](../components/WrapComponent.go) and
+[components.UnwrapComponent()](../components/UnwrapComponent.go) methods available which allow
+to typecast from and to [interfaces.Component](../components/interfaces/Component.go).
 
 ```go
 func main() {

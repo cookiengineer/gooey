@@ -4,9 +4,9 @@ import "github.com/cookiengineer/gooey/components"
 
 func RegisterTo(document *components.Document) {
 
-	document.Register("article", components.Wrap(ToArticle))
-	document.Register("dialog",  components.Wrap(ToDialog))
-	document.Register("footer",  components.Wrap(ToFooter))
-	document.Register("header",  components.Wrap(ToHeader))
+	document.Register("article", components.WrapComponent(ToArticle))
+	document.Register("dialog",  components.WrapComponent(ToDialog))
+	document.Register("footer",  components.WrapComponent(ToFooter))
+	document.Register("header",  components.WrapComponent(ToHeader))
 
 }

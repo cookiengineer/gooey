@@ -8,7 +8,7 @@ import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/components/data"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strconv"
 import "strings"
 
@@ -36,24 +36,24 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 	var table Table
 
-	element   := dom.Document.CreateElement("table")
+	element := dom.Document.CreateElement("table")
 	component := components.NewComponent(element)
-	dataset   := data.NewDataset(0)
+	dataset := data.NewDataset(0)
 
-	table.Dataset    = &dataset
-	table.Component  = &component
-	table.Name       = strings.TrimSpace(strings.ToLower(name))
-	table.Labels     = make([]string, 0)
+	table.Dataset = &dataset
+	table.Component = &component
+	table.Name = strings.TrimSpace(strings.ToLower(name))
+	table.Labels = make([]string, 0)
 	table.Properties = make([]string, 0)
-	table.Types      = make([]string, 0)
+	table.Types = make([]string, 0)
 	table.Selectable = selectable
-	table.selected   = make([]bool, 0)
-	table.sorted     = make([]int, 0)
-	table.sortby     = ""
+	table.selected = make([]bool, 0)
+	table.sorted = make([]int, 0)
+	table.sortby = ""
 
-	table.Footer.Content.Left   = make([]interfaces.Component, 0)
+	table.Footer.Content.Left = make([]interfaces.Component, 0)
 	table.Footer.Content.Center = make([]interfaces.Component, 0)
-	table.Footer.Content.Right  = make([]interfaces.Component, 0)
+	table.Footer.Content.Right = make([]interfaces.Component, 0)
 
 	table.SetLabelsAndPropertiesAndTypes(labels, properties, types)
 	table.Mount()
@@ -68,22 +68,22 @@ func ToTable(element *dom.Element) *Table {
 	var table Table
 
 	component := components.NewComponent(element)
-	dataset   := data.NewDataset(0)
+	dataset := data.NewDataset(0)
 
-	table.Dataset    = &dataset
-	table.Component  = &component
-	table.Name       = ""
-	table.Labels     = make([]string, 0)
+	table.Dataset = &dataset
+	table.Component = &component
+	table.Name = ""
+	table.Labels = make([]string, 0)
 	table.Properties = make([]string, 0)
-	table.Types      = make([]string, 0)
+	table.Types = make([]string, 0)
 	table.Selectable = element.HasAttribute("data-selectable")
-	table.selected   = make([]bool, 0)
-	table.sorted     = make([]int, 0)
-	table.sortby     = ""
+	table.selected = make([]bool, 0)
+	table.sorted = make([]int, 0)
+	table.sortby = ""
 
-	table.Footer.Content.Left   = make([]interfaces.Component, 0)
+	table.Footer.Content.Left = make([]interfaces.Component, 0)
 	table.Footer.Content.Center = make([]interfaces.Component, 0)
-	table.Footer.Content.Right  = make([]interfaces.Component, 0)
+	table.Footer.Content.Right = make([]interfaces.Component, 0)
 
 	table.Mount()
 
@@ -193,10 +193,10 @@ func (table *Table) Mount() bool {
 
 		if thead != nil && len(table.Labels) == 0 && len(table.Properties) == 0 && len(table.Types) == 0 {
 
-			elements   := thead.QuerySelectorAll("th")
-			labels     := make([]string, 0)
+			elements := thead.QuerySelectorAll("th")
+			labels := make([]string, 0)
 			properties := make([]string, 0)
-			types      := make([]string, 0)
+			types := make([]string, 0)
 			selectable := table.Selectable
 
 			if len(elements) > 0 {
@@ -204,7 +204,7 @@ func (table *Table) Mount() bool {
 				checkbox := elements[0].QuerySelector("input[type=\"checkbox\"]")
 
 				if checkbox != nil {
-					elements   = elements[1:]
+					elements = elements[1:]
 					selectable = true
 				}
 
@@ -212,9 +212,9 @@ func (table *Table) Mount() bool {
 
 					element := elements[e]
 
-					label    := strings.TrimSpace(element.TextContent)
+					label := strings.TrimSpace(element.TextContent)
 					property := element.GetAttribute("data-property")
-					typ      := element.GetAttribute("data-type")
+					typ := element.GetAttribute("data-type")
 
 					if typ == "" {
 						typ = "string"
@@ -222,9 +222,9 @@ func (table *Table) Mount() bool {
 
 					if label != "" && property != "" {
 
-						labels     = append(labels, label)
+						labels = append(labels, label)
 						properties = append(properties, property)
-						types      = append(types, typ)
+						types = append(types, typ)
 
 					}
 
@@ -232,9 +232,9 @@ func (table *Table) Mount() bool {
 
 			}
 
-			table.Labels     = labels
+			table.Labels = labels
 			table.Properties = properties
-			table.Types      = types
+			table.Types = types
 			table.Selectable = selectable
 
 		}
@@ -243,9 +243,9 @@ func (table *Table) Mount() bool {
 
 		if tbody != nil {
 
-			rows     := tbody.QuerySelectorAll("tr")
-			dataset  := data.NewDataset(len(rows))
-			sorted   := make([]int, len(rows))
+			rows := tbody.QuerySelectorAll("tr")
+			dataset := data.NewDataset(len(rows))
+			sorted := make([]int, len(rows))
 			selected := make([]bool, len(rows))
 
 			for r, row := range rows {
@@ -271,8 +271,8 @@ func (table *Table) Mount() bool {
 				if len(elements) > 0 {
 
 					checkbox := elements[0].QuerySelector("input[type=\"checkbox\"]")
-					values   := make(map[string]string)
-					types    := make(map[string]string)
+					values := make(map[string]string)
+					types := make(map[string]string)
 
 					if checkbox != nil {
 						elements = elements[1:]
@@ -286,7 +286,7 @@ func (table *Table) Mount() bool {
 
 						if key != "" && typ != "" && val != "" {
 							values[key] = val
-							types[key]  = typ
+							types[key] = typ
 						}
 
 					}
@@ -400,7 +400,7 @@ func (table *Table) Mount() bool {
 					} else {
 
 						is_active := event.Target.Value.Get("checked").Bool()
-						tmp       := event.Target.QueryParent("tr").GetAttribute("data-id")
+						tmp := event.Target.QueryParent("tr").GetAttribute("data-id")
 
 						if is_active == true {
 
@@ -452,12 +452,12 @@ func (table *Table) Mount() bool {
 				} else if action == "sort" {
 
 					thead := table.Component.Element.QuerySelector("thead")
-					th    := event.Target.QueryParent("th")
+					th := event.Target.QueryParent("th")
 
 					if thead != nil && th != nil {
 
 						property := th.GetAttribute("data-property")
-						ths      := thead.QuerySelectorAll("th")
+						ths := thead.QuerySelectorAll("th")
 
 						for _, th := range ths {
 							th.RemoveAttribute("data-sort")
@@ -576,9 +576,9 @@ func (table *Table) Render() *dom.Element {
 
 			if len(tmp) == 3 {
 
-				elements_left   := make([]*dom.Element, 0)
+				elements_left := make([]*dom.Element, 0)
 				elements_center := make([]*dom.Element, 0)
-				elements_right  := make([]*dom.Element, 0)
+				elements_right := make([]*dom.Element, 0)
 
 				for _, component := range table.Footer.Content.Left {
 					elements_left = append(elements_left, component.Render())
@@ -623,7 +623,7 @@ func (table *Table) Add(data data.Data) bool {
 	if table.Dataset.Add(data) == true {
 
 		table.selected = append(table.selected, false)
-		table.sorted   = append(table.sorted, table.Dataset.Length() - 1)
+		table.sorted = append(table.sorted, table.Dataset.Length()-1)
 		result = true
 
 	}
@@ -662,9 +662,9 @@ func (table *Table) Query(query string) interfaces.Component {
 
 func (table *Table) Remove(indexes []int) {
 
-	entries  := make([]data.Data, 0)
+	entries := make([]data.Data, 0)
 	selected := make([]bool, 0)
-	sorted   := make([]int, 0)
+	sorted := make([]int, 0)
 
 	for d, data := range *table.Dataset {
 
@@ -681,7 +681,7 @@ func (table *Table) Remove(indexes []int) {
 		}
 
 		if found == false {
-			entries  = append(entries, *data)
+			entries = append(entries, *data)
 			selected = append(selected, is_selected)
 		}
 
@@ -693,10 +693,10 @@ func (table *Table) Remove(indexes []int) {
 
 	dataset := data.ToDataset(entries)
 
-	table.Dataset  = &dataset
+	table.Dataset = &dataset
 	table.selected = selected
-	table.sortby   = ""
-	table.sorted   = sorted
+	table.sortby = ""
+	table.sorted = sorted
 
 }
 
@@ -780,9 +780,9 @@ func (table *Table) SetLabelsAndPropertiesAndTypes(labels []string, properties [
 
 	if len(labels) == len(properties) && len(labels) == len(types) {
 
-		table.Labels     = labels
+		table.Labels = labels
 		table.Properties = properties
-		table.Types      = types
+		table.Types = types
 
 		result = true
 
@@ -800,7 +800,7 @@ func (table *Table) SortBy(prop string) bool {
 
 	if thead != nil {
 
-		ths   := thead.QuerySelectorAll("th")
+		ths := thead.QuerySelectorAll("th")
 		found := false
 
 		for _, th := range ths {
@@ -855,7 +855,7 @@ func (table *Table) String() string {
 	for l, label := range table.Labels {
 
 		property := table.Properties[l]
-		typ      := table.Types[l]
+		typ := table.Types[l]
 
 		html += "<th data-property=\"" + property + "\" data-type=\"" + typ + "\""
 
@@ -938,7 +938,7 @@ func (table *Table) String() string {
 	html += "<td"
 
 	if len(table.Labels) >= 3 {
-		html += " colspan=\"" + strconv.Itoa(len(table.Labels) - 2) + "\""
+		html += " colspan=\"" + strconv.Itoa(len(table.Labels)-2) + "\""
 	}
 
 	if len(table.Footer.Content.Center) > 0 {

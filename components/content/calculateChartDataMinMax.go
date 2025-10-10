@@ -113,7 +113,7 @@ func calculateChartDataMinMax(data *data.Data, properties []string) (int64, int6
 
 				if strings.HasSuffix(value, "%") {
 
-					value = value[0:len(value)-1]
+					value = value[0 : len(value)-1]
 
 					if strings.Contains(value, ".") {
 

@@ -6,7 +6,7 @@ import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/data"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strconv"
 import "strings"
 
@@ -28,17 +28,17 @@ func NewPieChart(name string, labels []string, properties []string, types []stri
 
 	var chart PieChart
 
-	element   := dom.Document.CreateElement("figure")
+	element := dom.Document.CreateElement("figure")
 	component := components.NewComponent(element)
 
-	chart.Data       = &data.Data{}
-	chart.Component  = &component
-	chart.Name       = strings.TrimSpace(strings.ToLower(name))
-	chart.Labels     = make([]string, 0)
+	chart.Data = &data.Data{}
+	chart.Component = &component
+	chart.Name = strings.TrimSpace(strings.ToLower(name))
+	chart.Labels = make([]string, 0)
 	chart.Properties = make([]string, 0)
-	chart.Types      = make([]string, 0)
+	chart.Types = make([]string, 0)
 
-	chart.ViewBox.Width  = 512
+	chart.ViewBox.Width = 512
 	chart.ViewBox.Height = 512
 
 	chart.SetLabelsAndPropertiesAndTypes(labels, properties, types)
@@ -55,14 +55,14 @@ func ToPieChart(element *dom.Element) *PieChart {
 
 	component := components.NewComponent(element)
 
-	chart.Data       = &data.Data{}
-	chart.Component  = &component
-	chart.Name       = ""
-	chart.Labels     = make([]string, 0)
+	chart.Data = &data.Data{}
+	chart.Component = &component
+	chart.Name = ""
+	chart.Labels = make([]string, 0)
 	chart.Properties = make([]string, 0)
-	chart.Types      = make([]string, 0)
+	chart.Types = make([]string, 0)
 
-	chart.ViewBox.Width  = 512
+	chart.ViewBox.Width = 512
 	chart.ViewBox.Height = 256
 
 	chart.Mount()
@@ -105,27 +105,27 @@ func (chart *PieChart) Mount() bool {
 		}
 
 		datalist := chart.Component.Element.QuerySelector("datalist")
-		svg      := chart.Component.Element.QuerySelector("svg")
+		svg := chart.Component.Element.QuerySelector("svg")
 
 		if datalist != nil && svg != nil {
 
 			viewbox := svg.GetAttribute("viewBox")
-			tmp1    := strings.Split(viewbox, " ")
+			tmp1 := strings.Split(viewbox, " ")
 
 			if len(tmp1) == 4 {
 
 				if tmp1[0] == "0" && tmp1[1] == "0" {
 
-					width,  err1 := strconv.ParseInt(tmp1[2], 10, 64)
+					width, err1 := strconv.ParseInt(tmp1[2], 10, 64)
 					height, err2 := strconv.ParseInt(tmp1[3], 10, 64)
 
 					if err1 == nil && err2 == nil {
-						chart.ViewBox.Width  = int(width)
+						chart.ViewBox.Width = int(width)
 						chart.ViewBox.Height = int(height)
 					}
 
 				} else {
-					chart.ViewBox.Width  = int(512)
+					chart.ViewBox.Width = int(512)
 					chart.ViewBox.Height = int(512)
 				}
 
@@ -136,11 +136,11 @@ func (chart *PieChart) Mount() bool {
 
 				if tmp2 != "" && tmp3 != "" {
 
-					width,  err1 := strconv.ParseInt(tmp2, 10, 64)
+					width, err1 := strconv.ParseInt(tmp2, 10, 64)
 					height, err2 := strconv.ParseInt(tmp3, 10, 64)
 
 					if err1 == nil && err2 == nil {
-						chart.ViewBox.Width  = int(width)
+						chart.ViewBox.Width = int(width)
 						chart.ViewBox.Height = int(height)
 					}
 
@@ -150,23 +150,23 @@ func (chart *PieChart) Mount() bool {
 
 			if len(chart.Labels) == 0 && len(chart.Properties) == 0 && len(chart.Types) == 0 {
 
-				elements   := datalist.QuerySelectorAll("data")
-				labels     := make([]string, 0)
+				elements := datalist.QuerySelectorAll("data")
+				labels := make([]string, 0)
 				properties := make([]string, 0)
-				types      := make(map[string]string)
-				values     := make(map[string]string)
+				types := make(map[string]string)
+				values := make(map[string]string)
 
 				for _, element := range elements {
 
 					property := element.GetAttribute("data-property")
-					label    := strings.TrimSpace(element.TextContent)
-					typ      := element.GetAttribute("data-type")
-					val      := element.GetAttribute("value")
+					label := strings.TrimSpace(element.TextContent)
+					typ := element.GetAttribute("data-type")
+					val := element.GetAttribute("value")
 
-					types[property]  = typ
+					types[property] = typ
 					values[property] = val
 
-					labels     = append(labels, label)
+					labels = append(labels, label)
 					properties = append(properties, property)
 
 				}
@@ -178,7 +178,7 @@ func (chart *PieChart) Mount() bool {
 
 				}
 
-				chart.Labels     = labels
+				chart.Labels = labels
 				chart.Properties = properties
 
 				tmp2 := make([]string, 0)
@@ -186,7 +186,7 @@ func (chart *PieChart) Mount() bool {
 				for _, property := range properties {
 					tmp2 = append(tmp2, types[property])
 				}
-				
+
 				chart.Types = tmp2
 
 			}
@@ -203,7 +203,7 @@ func (chart *PieChart) Mount() bool {
 
 					if property != "" {
 
-						svg    := chart.Component.Element.QuerySelector("svg")
+						svg := chart.Component.Element.QuerySelector("svg")
 						layers := chart.Component.Element.QuerySelectorAll("svg g")
 
 						// var foreground *dom.Element = nil
@@ -280,15 +280,15 @@ func (chart *PieChart) Render() *dom.Element {
 				strconv.Itoa(chart.ViewBox.Height),
 			}, " "))
 
-			svg.SetAttribute("width",  strconv.Itoa(chart.ViewBox.Width))
+			svg.SetAttribute("width", strconv.Itoa(chart.ViewBox.Width))
 			svg.SetAttribute("height", strconv.Itoa(chart.ViewBox.Height))
 
 			if len(*chart.Data) > 0 {
 
 				min_value := int64(0)
 				max_value := sumChartData(chart.Data, chart.Properties)
-				layers    := make([]*dom.Element, len(chart.Properties))
-				offset    := 0.0
+				layers := make([]*dom.Element, len(chart.Properties))
+				offset := 0.0
 
 				for p, property := range chart.Properties {
 
@@ -366,9 +366,9 @@ func (chart *PieChart) SetLabelsAndPropertiesAndTypes(labels []string, propertie
 
 	if len(labels) == len(properties) && len(labels) == len(types) {
 
-		chart.Labels     = labels
+		chart.Labels = labels
 		chart.Properties = properties
-		chart.Types      = types
+		chart.Types = types
 
 		result = true
 
@@ -397,7 +397,7 @@ func (chart *PieChart) String() string {
 
 		value := values[property]
 		label := chart.Labels[p]
-		typ   := chart.Types[p]
+		typ := chart.Types[p]
 
 		html += "<data"
 		html += " data-property=\"" + property + "\""
@@ -418,7 +418,7 @@ func (chart *PieChart) String() string {
 
 	min_value := int64(0)
 	max_value := sumChartData(chart.Data, chart.Properties)
-	offset    := 0.0
+	offset := 0.0
 
 	for p, property := range chart.Properties {
 

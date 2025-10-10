@@ -1,12 +1,25 @@
 package content
 
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
+import "github.com/cookiengineer/gooey/components/interfaces"
 
 func RegisterTo(document *components.Document) {
 
-	document.Register("fieldset",                         components.Wrap(ToFieldset))
-	document.Register("figure[data-type=\"line-chart\"]", components.Wrap(ToLineChart))
-	document.Register("figure[data-type=\"pie-chart\"]",  components.Wrap(ToPieChart))
-	document.Register("table",                            components.Wrap(ToTable))
+	document.Register("fieldset", components.WrapComponent(ToFieldset))
+	document.Register("figure", func(element *dom.Element) interfaces.Component {
+
+		typ := element.GetAttribute("data-type")
+
+		if typ == "line-chart" {
+			return ToLineChart(element)
+		} else if typ == "pie-chart" {
+			return ToPieChart(element)
+		} else {
+			return components.ToComponent(element)
+		}
+
+	})
+	document.Register("table", components.WrapComponent(ToTable))
 
 }

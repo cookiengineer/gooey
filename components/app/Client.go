@@ -103,7 +103,7 @@ func (client *Client) Create(path string, payload []byte) (*fetch.Response, erro
 				Cache:       fetch.CacheDefault,
 				Credentials: fetch.CredentialsOmit,
 				Redirect:    fetch.RedirectError,
-				Headers:     map[string]string{
+				Headers: map[string]string{
 					"Accept":         "application/json",
 					"Content-Type":   "application/json",
 					"Content-Length": strconv.Itoa(len(payload)),
@@ -162,7 +162,7 @@ func (client *Client) Read(path string) (*fetch.Response, error) {
 				Cache:       fetch.CacheDefault,
 				Credentials: fetch.CredentialsOmit,
 				Redirect:    fetch.RedirectError,
-				Headers:     map[string]string{
+				Headers: map[string]string{
 					"Accept": "application/json",
 				},
 			})
@@ -218,7 +218,7 @@ func (client *Client) Update(path string, payload []byte) (*fetch.Response, erro
 				Cache:       fetch.CacheDefault,
 				Credentials: fetch.CredentialsOmit,
 				Redirect:    fetch.RedirectError,
-				Headers:     map[string]string{
+				Headers: map[string]string{
 					"Accept":         "application/json",
 					"Content-Type":   "application/json",
 					"Content-Length": strconv.Itoa(len(payload)),
@@ -277,7 +277,7 @@ func (client *Client) Delete(path string, payload []byte) (*fetch.Response, erro
 				Cache:       fetch.CacheDefault,
 				Credentials: fetch.CredentialsOmit,
 				Redirect:    fetch.RedirectError,
-				Headers:     map[string]string{
+				Headers: map[string]string{
 					"Accept":         "application/json",
 					"Content-Type":   "application/json",
 					"Content-Length": strconv.Itoa(len(payload)),
@@ -321,4 +321,3 @@ func (client *Client) Delete(path string, payload []byte) (*fetch.Response, erro
 	}
 
 }
-

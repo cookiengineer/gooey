@@ -1,0 +1,8 @@
+//go:build wasm
+
+package components
+
+import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components/interfaces"
+
+type ComponentConstructor func(*dom.Element) interfaces.Component

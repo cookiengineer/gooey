@@ -3,7 +3,7 @@ package ui
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
-import "github.com/cookiengineer/gooey/interfaces"
+import "github.com/cookiengineer/gooey/components/interfaces"
 import "strings"
 
 type Button struct {
@@ -17,13 +17,13 @@ func NewButton(label string, action string) Button {
 
 	var button Button
 
-	element   := dom.Document.CreateElement("button")
+	element := dom.Document.CreateElement("button")
 	component := components.NewComponent(element)
 
 	button.Component = &component
-	button.Label     = label
-	button.Action    = strings.ToLower(action)
-	button.Disabled  = false
+	button.Label = label
+	button.Action = strings.ToLower(action)
+	button.Disabled = false
 
 	button.Mount()
 	button.Render()
@@ -39,9 +39,9 @@ func ToButton(element *dom.Element) *Button {
 	component := components.NewComponent(element)
 
 	button.Component = &component
-	button.Label     = strings.TrimSpace(element.TextContent)
-	button.Action    = strings.ToLower(element.GetAttribute("data-action"))
-	button.Disabled  = element.HasAttribute("disabled")
+	button.Label = strings.TrimSpace(element.TextContent)
+	button.Action = strings.ToLower(element.GetAttribute("data-action"))
+	button.Disabled = element.HasAttribute("disabled")
 
 	button.Mount()
 
