@@ -10,7 +10,6 @@ import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
-import "fmt"
 
 type controller_constructor func(*Main, interfaces.View)  interfaces.Controller
 type view_constructor       func(*dom.Element) interfaces.View
@@ -234,8 +233,6 @@ func (main *Main) Mount() bool {
 	}
 
 	dialog, ok3 := components.Unwrap[*layout.Dialog](main.Document.QueryComponent("body > dialog"))
-
-	fmt.Println("dialog in main.Mount()?", dialog, ok3)
 
 	if dialog != nil && ok3 == true {
 		main.Dialog = dialog
