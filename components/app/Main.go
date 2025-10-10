@@ -10,6 +10,7 @@ import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/interfaces"
 import "strings"
+import "fmt"
 
 type controller_constructor func(*Main, interfaces.View)  interfaces.Controller
 type view_constructor       func(*dom.Element) interfaces.View
@@ -127,6 +128,7 @@ func (main *Main) Mount() bool {
 	main.Document.Register("footer",  components.Wrap(layout.ToFooter))
 	main.Document.Register("dialog",  components.Wrap(layout.ToDialog))
 
+	// XXX: Initialize Views DURING the Component Graph is being built
 	main.Document.Register("section", func(element *dom.Element) interfaces.Component {
 
 		is_view_element := element.ParentNode().TagName == "MAIN"
@@ -137,9 +139,9 @@ func (main *Main) Mount() bool {
 
 			if name != "" {
 
-				view_wrapper, ok1 := main.ViewRegistry[name]
+				view_wrapper, ok := main.ViewRegistry[name]
 
-				if ok1 == true {
+				if ok == true {
 
 					custom_view := view_wrapper(element)
 
@@ -162,17 +164,6 @@ func (main *Main) Mount() bool {
 					main.Header.RegisterView(main.views[name])
 				}
 
-				controller_wrapper, ok2 := main.ControllerRegistry[name]
-
-				if ok2 == true {
-
-					controller := controller_wrapper(main, main.views[name])
-
-					if controller != nil {
-						main.controllers[name] = controller
-					}
-
-				}
 
 				return interfaces.Component(main.views[name])
 
@@ -244,16 +235,35 @@ func (main *Main) Mount() bool {
 
 	dialog, ok3 := components.Unwrap[*layout.Dialog](main.Document.QueryComponent("body > dialog"))
 
+	fmt.Println("dialog in main.Mount()?", dialog, ok3)
+
 	if dialog != nil && ok3 == true {
 		main.Dialog = dialog
 	} else {
 		main.Dialog = nil
 	}
 
+	// XXX: Initialize Controllers AFTER the Component Graph is ready
 	main_component, ok4 := components.Unwrap[*components.Component](main.Document.QueryComponent("body > main"))
 
-	if main_component != nil && ok4 == true {
-		// Do Nothing?
+	if len(main.views) > 0 && main_component != nil && ok4 == true {
+
+		for name, _ := range main.views {
+
+			controller_wrapper, ok := main.ControllerRegistry[name]
+
+			if ok == true {
+
+				controller := controller_wrapper(main, main.views[name])
+
+				if controller != nil {
+					main.controllers[name] = controller
+				}
+
+			}
+
+		}
+
 	}
 
 	if main.Element != nil {
