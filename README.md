@@ -100,6 +100,11 @@ upstream via `go test -c`, the plan is to migrate towards fully integrated unit 
 - [ui](/examples/components/ui)
 
 
+# Changelog
+
+Changes, Additions and Removals are documented in [CHANGELOG.md](./CHANGELOG.md).
+
+
 # License
 
 This project is licensed under the [MIT](./LICENSE.txt) license.
