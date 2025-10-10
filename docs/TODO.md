@@ -3,6 +3,15 @@
 
 ## cookiestore Example
 
+## components/interfaces
+
+- [ ] Decide on an interface for a Schema of `N Data` (`map[string]any`) instances
+- [ ] Decide on an interface for a Schema of `1 Data` (`map[string]any`) instances
+- [ ] Decide how to integrate custom `String()` methods on a Schema instance, which has to allow
+      the generation of HTML, the generation of strings themselves and be integratable into custom
+      components. Maybe it makes sense to have a Renderable or Stringifiable interface that is used
+      by the components?
+
 ## app/Main
 
 - [ ] Integrate the History API in the fallback case, instead of using `location.Location.Replace()`
