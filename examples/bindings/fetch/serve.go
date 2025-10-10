@@ -14,9 +14,21 @@ func main() {
 
 	http.HandleFunc("/api/test", func(response http.ResponseWriter, request *http.Request) {
 
-		response.Header().Set("Content-Type", "application/json")
-		response.WriteHeader(http.StatusOK)
-		response.Write([]byte("{\"message\": \"success\"}"))
+		if request.Method == http.MethodGet {
+
+			response.Header().Set("Content-Type", "application/json")
+			response.WriteHeader(http.StatusOK)
+			response.Write([]byte("{\"message\": \"success\"}"))
+
+		} else if request.Method == http.MethodOptions {
+
+			origin := request.URL.Scheme + "://" + request.URL.Host
+
+			response.Header().Set("Access-Control-Allow-Origin", origin)
+			response.WriteHeader(http.StatusOK)
+			response.Write([]byte(""))
+
+		}
 
 	})
 
