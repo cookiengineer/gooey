@@ -446,7 +446,29 @@ func (chart *LineChart) String() string {
 
 	html += "<datalist>"
 
-	values, _ := chart.Dataset.Join(",")
+	values := make(map[string]string)
+
+	for _, property := range chart.Properties {
+
+		value := ""
+
+		for d := 0; d < chart.Dataset.Length(); d++ {
+
+			_, val := chart.Dataset.Get(d).StringProperty(property)
+
+			if val != "" {
+				value += val
+			}
+
+			if d < chart.Dataset.Length() - 1 {
+				value += ","
+			}
+
+		}
+
+		values[property] = value
+
+	}
 
 	for p, property := range chart.Properties {
 
