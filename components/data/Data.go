@@ -7,21 +7,47 @@ type Data map[string]any
 
 func ParseData(values map[string]string, types map[string]string) Data {
 
-	var result Data = Data(map[string]any{})
+	data := Data(map[string]any{})
 
 	if len(values) == len(types) {
 
-		for key, val := range values {
+		for property, value := range values {
 
-			typ, ok := types[key]
+			typ, ok := types[property]
 
 			if ok == true {
 
 				switch typ {
-				case "bytes":
+
+				case "[]bool":
+
+					bools  := make([]bool, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						if chunk == "true" {
+							bools = append(bools, true)
+						} else {
+							bools = append(bools, false)
+						}
+
+					}
+
+					data[property] = bools
+
+				case "bool":
+
+					if value == "true" {
+						data[property] = true
+					} else {
+						data[property] = false
+					}
+
+				case "[]byte":
 
 					bytes  := make([]byte, 0)
-					chunks := strings.Split(strings.TrimSpace(val), " ")
+					chunks := strings.Split(strings.TrimSpace(value), " ")
 
 					for _, chunk := range chunks {
 
@@ -37,138 +63,369 @@ func ParseData(values map[string]string, types map[string]string) Data {
 
 					}
 
-					result[key] = bytes
+					data[property] = bytes
 
-				case "bool":
+				case "[]float32":
 
-					if val == "true" {
-						result[key] = true
-					} else {
-						result[key] = false
+					floats := make([]float32, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseFloat(chunk, 32)
+
+						if err == nil {
+							floats = append(floats, float32(tmp))
+						} else {
+							floats = append(floats, float32(0.0))
+						}
+
 					}
+
+					data[property] = floats
 
 				case "float32":
 
-					tmp, err := strconv.ParseFloat(val, 32)
+					tmp, err := strconv.ParseFloat(value, 32)
 
 					if err == nil {
-						result[key] = float32(tmp)
+						data[property] = float32(tmp)
 					} else {
-						result[key] = float32(0.0)
+						data[property] = float32(0.0)
 					}
+
+				case "[]float64":
+
+					floats := make([]float64, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseFloat(chunk, 64)
+
+						if err == nil {
+							floats = append(floats, float64(tmp))
+						} else {
+							floats = append(floats, float64(0.0))
+						}
+
+					}
+
+					data[property] = floats
 
 				case "float64":
 
-					tmp, err := strconv.ParseFloat(val, 64)
+					tmp, err := strconv.ParseFloat(value, 64)
 
 					if err == nil {
-						result[key] = float64(tmp)
+						data[property] = float64(tmp)
 					} else {
-						result[key] = float64(0.0)
+						data[property] = float64(0.0)
 					}
+
+				case "[]int":
+
+					ints   := make([]int, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseInt(chunk, 10, 0)
+
+						if err == nil {
+							ints = append(ints, int(tmp))
+						} else {
+							ints = append(ints, int(0))
+						}
+
+					}
+
+					data[property] = ints
 
 				case "int":
 
-					tmp, err := strconv.ParseInt(val, 10, 0)
+					tmp, err := strconv.ParseInt(value, 10, 0)
 
 					if err == nil {
-						result[key] = int(tmp)
+						data[property] = int(tmp)
 					} else {
-						result[key] = int(0)
+						data[property] = int(0)
 					}
+
+				case "[]int8":
+
+					ints   := make([]int8, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseInt(chunk, 10, 8)
+
+						if err == nil {
+							ints = append(ints, int8(tmp))
+						} else {
+							ints = append(ints, int8(0))
+						}
+
+					}
+
+					data[property] = ints
 
 				case "int8":
 
-					tmp, err := strconv.ParseInt(val, 10, 8)
+					tmp, err := strconv.ParseInt(value, 10, 8)
 
 					if err == nil {
-						result[key] = int8(tmp)
+						data[property] = int8(tmp)
 					} else {
-						result[key] = int8(0)
+						data[property] = int8(0)
 					}
+
+				case "[]int16":
+
+					ints   := make([]int16, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseInt(chunk, 10, 16)
+
+						if err == nil {
+							ints = append(ints, int16(tmp))
+						} else {
+							ints = append(ints, int16(0))
+						}
+
+					}
+
+					data[property] = ints
 
 				case "int16":
 
-					tmp, err := strconv.ParseInt(val, 10, 16)
+					tmp, err := strconv.ParseInt(value, 10, 16)
 
 					if err == nil {
-						result[key] = int16(tmp)
+						data[property] = int16(tmp)
 					} else {
-						result[key] = int16(0)
+						data[property] = int16(0)
 					}
+
+				case "[]int32":
+
+					ints   := make([]int32, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseInt(chunk, 10, 32)
+
+						if err == nil {
+							ints = append(ints, int32(tmp))
+						} else {
+							ints = append(ints, int32(0))
+						}
+
+					}
+
+					data[property] = ints
 
 				case "int32":
 
-					tmp, err := strconv.ParseInt(val, 10, 32)
+					tmp, err := strconv.ParseInt(value, 10, 32)
 
 					if err == nil {
-						result[key] = int32(tmp)
+						data[property] = int32(tmp)
 					} else {
-						result[key] = int32(0)
+						data[property] = int32(0)
 					}
+
+				case "[]int64":
+
+					ints   := make([]int64, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseInt(chunk, 10, 64)
+
+						if err == nil {
+							ints = append(ints, int64(tmp))
+						} else {
+							ints = append(ints, int64(0))
+						}
+
+					}
+
+					data[property] = ints
 
 				case "int64":
 
-					tmp, err := strconv.ParseInt(val, 10, 64)
+					tmp, err := strconv.ParseInt(value, 10, 64)
 
 					if err == nil {
-						result[key] = int64(tmp)
+						data[property] = int64(tmp)
 					} else {
-						result[key] = int64(0)
+						data[property] = int64(0)
 					}
+
+				case "[]string":
+
+					strs   := make([]string, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+						strs = append(strs, chunk)
+					}
+
+					data[property] = strs
 
 				case "string":
 
-					result[key] = val
+					data[property] = string(value)
+
+				case "[]uint":
+
+					uints  := make([]uint, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseUint(chunk, 10, 0)
+
+						if err == nil {
+							uints = append(uints, uint(tmp))
+						} else {
+							uints = append(uints, uint(0))
+						}
+
+					}
+
+					data[property] = uints
 
 				case "uint":
 
-					tmp, err := strconv.ParseUint(val, 10, 0)
+					tmp, err := strconv.ParseUint(value, 10, 0)
 
 					if err == nil {
-						result[key] = uint(tmp)
+						data[property] = uint(tmp)
 					} else {
-						result[key] = uint(0)
+						data[property] = uint(0)
 					}
+
+				case "[]uint8":
+
+					uints  := make([]uint8, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseUint(chunk, 10, 8)
+
+						if err == nil {
+							uints = append(uints, uint8(tmp))
+						} else {
+							uints = append(uints, uint8(0))
+						}
+
+					}
+
+					data[property] = uints
 
 				case "uint8":
 
-					tmp, err := strconv.ParseUint(val, 10, 8)
+					tmp, err := strconv.ParseUint(value, 10, 8)
 
 					if err == nil {
-						result[key] = uint8(tmp)
+						data[property] = uint8(tmp)
 					} else {
-						result[key] = uint8(0)
+						data[property] = uint8(0)
 					}
+
+				case "[]uint16":
+
+					uints  := make([]uint16, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseUint(chunk, 10, 16)
+
+						if err == nil {
+							uints = append(uints, uint16(tmp))
+						} else {
+							uints = append(uints, uint16(0))
+						}
+
+					}
+
+					data[property] = uints
 
 				case "uint16":
 
-					tmp, err := strconv.ParseUint(val, 10, 16)
+					tmp, err := strconv.ParseUint(value, 10, 16)
 
 					if err == nil {
-						result[key] = uint16(tmp)
+						data[property] = uint16(tmp)
 					} else {
-						result[key] = uint16(0)
+						data[property] = uint16(0)
 					}
+
+				case "[]uint32":
+
+					uints  := make([]uint32, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseUint(chunk, 10, 32)
+
+						if err == nil {
+							uints = append(uints, uint32(tmp))
+						} else {
+							uints = append(uints, uint32(0))
+						}
+
+					}
+
+					data[property] = uints
 
 				case "uint32":
 
-					tmp, err := strconv.ParseUint(val, 10, 32)
+					tmp, err := strconv.ParseUint(value, 10, 32)
 
 					if err == nil {
-						result[key] = uint32(tmp)
+						data[property] = uint32(tmp)
 					} else {
-						result[key] = uint32(0)
+						data[property] = uint32(0)
 					}
+
+				case "[]uint64":
+
+					uints  := make([]uint64, 0)
+					chunks := strings.Split(strings.TrimSpace(value), ",")
+
+					for _, chunk := range chunks {
+
+						tmp, err := strconv.ParseUint(chunk, 10, 64)
+
+						if err == nil {
+							uints = append(uints, uint64(tmp))
+						} else {
+							uints = append(uints, uint64(0))
+						}
+
+					}
+
+					data[property] = uints
 
 				case "uint64":
 
-					tmp, err := strconv.ParseUint(val, 10, 64)
+					tmp, err := strconv.ParseUint(value, 10, 64)
 
 					if err == nil {
-						result[key] = uint64(tmp)
+						data[property] = uint64(tmp)
 					} else {
-						result[key] = uint64(0)
+						data[property] = uint64(0)
 					}
 
 				}
@@ -179,7 +436,7 @@ func ParseData(values map[string]string, types map[string]string) Data {
 
 	}
 
-	return result
+	return data
 
 }
 
@@ -188,214 +445,350 @@ func (data *Data) String() (map[string]string, map[string]string) {
 	result_values := make(map[string]string)
 	result_types  := make(map[string]string)
 
-	for key, val := range *data {
+	for property, _ := range *data {
 
-		switch tmp := val.(type) {
-		case []byte:
+		typ, val := data.StringProperty(property)
 
-			result := ""
-
-			for t := 0; t < len(tmp); t++ {
-
-				hex := strconv.FormatUint(uint64(tmp[t]), 16)
-
-				if len(hex) == 1 {
-					result += "0x0" + hex
-				} else {
-					result += "0x" + hex
-				}
-
-				if t < len(tmp) - 1 {
-					result += " "
-				}
-
-			}
-
-			result_types[key]  = "bytes"
-			result_values[key] = result
-
-		case bool:
-
-			result_types[key]  = "bool"
-			result_values[key] = strconv.FormatBool(tmp)
-
-		case float32:
-
-			result_types[key]  = "float32"
-			result_values[key] = strconv.FormatFloat(float64(tmp), 'g', -1, 32)
-
-		case float64:
-
-			result_types[key]  = "float64"
-			result_values[key] = strconv.FormatFloat(float64(tmp), 'g', -1, 64)
-
-		case int:
-
-			result_types[key]  = "int"
-			result_values[key] = strconv.FormatInt(int64(tmp), 10)
-
-		case int8:
-
-			result_types[key]  = "int8"
-			result_values[key] = strconv.FormatInt(int64(tmp), 10)
-
-		case int16:
-
-			result_types[key]  = "int16"
-			result_values[key] = strconv.FormatInt(int64(tmp), 10)
-
-		case int32:
-
-			result_types[key]  = "int32"
-			result_values[key] = strconv.FormatInt(int64(tmp), 10)
-
-		case int64:
-
-			result_types[key]  = "int64"
-			result_values[key] = strconv.FormatInt(tmp, 10)
-
-		case string:
-
-			result_types[key]  = "string"
-			result_values[key] = tmp
-
-		case uint:
-
-			result_types[key]  = "uint"
-			result_values[key] = strconv.FormatUint(uint64(tmp), 10)
-
-		case uint8:
-
-			result_types[key]  = "uint8"
-			result_values[key] = strconv.FormatUint(uint64(tmp), 10)
-
-		case uint16:
-
-			result_types[key]  = "uint16"
-			result_values[key] = strconv.FormatUint(uint64(tmp), 10)
-
-		case uint32:
-
-			result_types[key]  = "uint32"
-			result_values[key] = strconv.FormatUint(uint64(tmp), 10)
-
-		case uint64:
-
-			result_types[key]  = "uint64"
-			result_values[key] = strconv.FormatUint(tmp, 10)
-
+		if typ != "" && val != "" {
+			result_types[property]  = typ
+			result_values[property] = val
 		}
 
 	}
 
-	return result_values, result_types
+	return result_types, result_values
 
 }
 
 func (data *Data) StringProperty(property string) (string, string) {
 
-	result_value := ""
 	result_type  := ""
+	result_value := ""
 
 	if property != "" {
 
-		val, ok := (*data)[property]
+		raw_value, ok := (*data)[property]
 
 		if ok == true {
 
-			switch tmp := val.(type) {
-			case []byte:
+			switch value := raw_value.(type) {
 
-				result := ""
+			case []bool:
 
-				for t := 0; t < len(tmp); t++ {
+				formatted := ""
 
-					hex := strconv.FormatUint(uint64(tmp[t]), 16)
+				for v := 0; v < len(value); v++ {
 
-					if len(hex) == 1 {
-						result += "0x0" + hex
-					} else {
-						result += "0x" + hex
-					}
+					formatted += strconv.FormatBool(value[v])
 
-					if t < len(tmp) - 1 {
-						result += " "
+					if v < len(value) - 1 {
+						formatted += ","
 					}
 
 				}
 
-				result_type  = "bytes"
-				result_value = result
+				result_type  = "[]bool"
+				result_value = formatted
 
 			case bool:
 
 				result_type  = "bool"
-				result_value = strconv.FormatBool(tmp)
+				result_value = strconv.FormatBool(value)
+
+			case []byte:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					hex := strconv.FormatUint(uint64(value[v]), 16)
+
+					if len(hex) == 1 {
+						formatted += "0x0" + hex
+					} else {
+						formatted += "0x" + hex
+					}
+
+					if v < len(value) - 1 {
+						formatted += " "
+					}
+
+				}
+
+				result_type  = "[]byte"
+				result_value = formatted
+
+			case []float32:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatFloat(float64(value[v]), 'g', -1, 32)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]float32"
+				result_value = formatted
 
 			case float32:
 
 				result_type  = "float32"
-				result_value = strconv.FormatFloat(float64(tmp), 'g', -1, 32)
+				result_value = strconv.FormatFloat(float64(value), 'g', -1, 32)
+
+			case []float64:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatFloat(float64(value[v]), 'g', -1, 64)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]float64"
+				result_value = formatted
 
 			case float64:
 
 				result_type  = "float64"
-				result_value = strconv.FormatFloat(float64(tmp), 'g', -1, 64)
+				result_value = strconv.FormatFloat(float64(value), 'g', -1, 64)
+
+			case []int:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatInt(int64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]int"
+				result_value = formatted
 
 			case int:
 
 				result_type  = "int"
-				result_value = strconv.FormatInt(int64(tmp), 10)
+				result_value = strconv.FormatInt(int64(value), 10)
+
+			case []int8:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatInt(int64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]int8"
+				result_value = formatted
 
 			case int8:
 
 				result_type  = "int8"
-				result_value = strconv.FormatInt(int64(tmp), 10)
+				result_value = strconv.FormatInt(int64(value), 10)
+
+			case []int16:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatInt(int64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]int16"
+				result_value = formatted
 
 			case int16:
 
 				result_type  = "int16"
-				result_value = strconv.FormatInt(int64(tmp), 10)
+				result_value = strconv.FormatInt(int64(value), 10)
+
+			case []int32:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatInt(int64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]int32"
+				result_value = formatted
 
 			case int32:
 
 				result_type  = "int32"
-				result_value = strconv.FormatInt(int64(tmp), 10)
+				result_value = strconv.FormatInt(int64(value), 10)
+
+			case []int64:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatInt(int64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]int64"
+				result_value = formatted
 
 			case int64:
 
 				result_type  = "int64"
-				result_value = strconv.FormatInt(tmp, 10)
+				result_value = strconv.FormatInt(value, 10)
+
+			case []string:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += value[v]
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]string"
+				result_value = formatted
 
 			case string:
 
 				result_type  = "string"
-				result_value = tmp
+				result_value = value
+
+			case []uint:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatUint(uint64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]uint"
+				result_value = formatted
 
 			case uint:
 
 				result_type  = "uint"
-				result_value = strconv.FormatUint(uint64(tmp), 10)
+				result_value = strconv.FormatUint(uint64(value), 10)
+
+			// case []uint8:
+			// XXX: Same as []byte
 
 			case uint8:
 
 				result_type  = "uint8"
-				result_value = strconv.FormatUint(uint64(tmp), 10)
+				result_value = strconv.FormatUint(uint64(value), 10)
+
+			case []uint16:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatUint(uint64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]uint16"
+				result_value = formatted
 
 			case uint16:
 
 				result_type  = "uint16"
-				result_value = strconv.FormatUint(uint64(tmp), 10)
+				result_value = strconv.FormatUint(uint64(value), 10)
+
+			case []uint32:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatUint(uint64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]uint32"
+				result_value = formatted
 
 			case uint32:
 
 				result_type  = "uint32"
-				result_value = strconv.FormatUint(uint64(tmp), 10)
+				result_value = strconv.FormatUint(uint64(value), 10)
+
+			case []uint64:
+
+				formatted := ""
+
+				for v := 0; v < len(value); v++ {
+
+					formatted += strconv.FormatUint(uint64(value[v]), 10)
+
+					if v < len(value) - 1 {
+						formatted += ","
+					}
+
+				}
+
+				result_type  = "[]uint64"
+				result_value = formatted
 
 			case uint64:
 
 				result_type  = "uint64"
-				result_value = strconv.FormatUint(tmp, 10)
+				result_value = strconv.FormatUint(value, 10)
 
 			}
 
@@ -403,7 +796,7 @@ func (data *Data) StringProperty(property string) (string, string) {
 
 	}
 
-	return result_value, result_type
+	return result_type, result_value
 
 }
 
