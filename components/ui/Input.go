@@ -33,9 +33,6 @@ func NewInput(label string, value string, typ types.Input) Input {
 	input.Value = strings.TrimSpace(value)
 	input.Disabled = false
 
-	input.Mount()
-	input.Render()
-
 	return input
 
 }
@@ -58,8 +55,6 @@ func ToInput(element *dom.Element) *Input {
 	input.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
 	input.Type = types.Input(element.GetAttribute("type"))
 	input.Disabled = element.HasAttribute("disabled")
-
-	input.Mount()
 
 	return &input
 

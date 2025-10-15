@@ -59,9 +59,6 @@ func NewRange(label string, step int, cur_value int, min_value int, max_value in
 		input.Max = input.Value
 	}
 
-	input.Mount()
-	input.Render()
-
 	return input
 
 }
@@ -131,8 +128,6 @@ func ToRange(element *dom.Element) *Range {
 	input.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
 	input.Type = types.Input(element.GetAttribute("type"))
 	input.Disabled = element.HasAttribute("disabled")
-
-	input.Mount()
 
 	return &input
 

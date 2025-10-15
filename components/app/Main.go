@@ -145,12 +145,9 @@ func (main *Main) Mount() bool {
 						main.views[name] = ToView(element)
 					}
 
-					main.views[name].Mount()
-
 				} else {
 
 					main.views[name] = ToView(element)
-					main.views[name].Mount()
 
 				}
 
@@ -163,8 +160,6 @@ func (main *Main) Mount() bool {
 			} else {
 
 				component := components.NewComponent(element)
-				component.Mount()
-
 				return interfaces.Component(&component)
 
 			}
@@ -172,8 +167,6 @@ func (main *Main) Mount() bool {
 		} else {
 
 			component := components.NewComponent(element)
-			component.Mount()
-
 			return interfaces.Component(&component)
 
 		}

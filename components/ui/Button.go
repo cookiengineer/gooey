@@ -25,9 +25,6 @@ func NewButton(label string, action string) Button {
 	button.Action = strings.ToLower(action)
 	button.Disabled = false
 
-	button.Mount()
-	button.Render()
-
 	return button
 
 }
@@ -42,8 +39,6 @@ func ToButton(element *dom.Element) *Button {
 	button.Label = strings.TrimSpace(element.TextContent)
 	button.Action = strings.ToLower(element.GetAttribute("data-action"))
 	button.Disabled = element.HasAttribute("disabled")
-
-	button.Mount()
 
 	return &button
 

@@ -2,8 +2,8 @@ package layout
 
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
-import "github.com/cookiengineer/gooey/components/content"
-import "github.com/cookiengineer/gooey/components/ui"
+import content_components "github.com/cookiengineer/gooey/components/content"
+import ui_components "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/components/interfaces"
 import "github.com/cookiengineer/gooey/components/types"
@@ -18,15 +18,12 @@ func NewArticle() Article {
 
 	var article Article
 
-	element   := dom.Document.CreateElement("article")
+	element := dom.Document.CreateElement("article")
 	component := components.NewComponent(element)
 
-	article.Layout    = types.LayoutFlow
+	article.Layout = types.LayoutFlow
 	article.Component = &component
-	article.Content   = make([]interfaces.Component, 0)
-
-	article.Mount()
-	article.Render()
+	article.Content = make([]interfaces.Component, 0)
 
 	return article
 
@@ -38,11 +35,9 @@ func ToArticle(element *dom.Element) *Article {
 
 	component := components.NewComponent(element)
 
-	article.Layout    = types.LayoutFlow
+	article.Layout = types.LayoutFlow
 	article.Component = &component
-	article.Content   = make([]interfaces.Component, 0)
-
-	article.Mount()
+	article.Content = make([]interfaces.Component, 0)
 
 	return &article
 
@@ -67,45 +62,49 @@ func (article *Article) Mount() bool {
 		}
 
 		elements := article.Component.Element.Children()
-		mapped   := make([]interfaces.Component, 0)
+		content := make([]interfaces.Component, 0)
 
 		for _, element := range elements {
 
 			switch element.TagName {
 			case "BUTTON":
-				mapped = append(mapped, ui.ToButton(element))
+				content = append(content, ui_components.ToButton(element))
 			case "LABEL":
-				mapped = append(mapped, ui.ToLabel(element))
+				content = append(content, ui_components.ToLabel(element))
 			case "INPUT":
 
 				typ := element.GetAttribute("type")
 
 				if typ == "checkbox" {
-					mapped = append(mapped, ui.ToCheckbox(element))
+					content = append(content, ui_components.ToCheckbox(element))
 				} else if typ == "number" {
-					mapped = append(mapped, ui.ToNumber(element))
+					content = append(content, ui_components.ToNumber(element))
 				} else if typ == "range" {
-					mapped = append(mapped, ui.ToRange(element))
+					content = append(content, ui_components.ToRange(element))
 				} else {
-					mapped = append(mapped, ui.ToInput(element))
+					content = append(content, ui_components.ToInput(element))
 				}
 
 			case "FIELDSET":
-				mapped = append(mapped, content.ToFieldset(element))
+				content = append(content, content_components.ToFieldset(element))
 			case "SELECT":
-				mapped = append(mapped, ui.ToSelect(element))
+				content = append(content, ui_components.ToSelect(element))
 			case "TABLE":
-				mapped = append(mapped, content.ToTable(element))
+				content = append(content, content_components.ToTable(element))
 			case "TEXTAREA":
-				mapped = append(mapped, ui.ToTextarea(element))
+				content = append(content, ui_components.ToTextarea(element))
 			default:
 				component := components.NewComponent(element)
-				mapped = append(mapped, &component)
+				content = append(content, &component)
 			}
 
 		}
 
-		article.Content = mapped
+		article.Content = content
+
+		for _, component := range article.Content {
+			component.Mount()
+		}
 
 		return true
 

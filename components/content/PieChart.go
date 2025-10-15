@@ -42,8 +42,6 @@ func NewPieChart(name string, labels []string, properties []string, types []stri
 	chart.ViewBox.Height = 512
 
 	chart.SetLabelsAndPropertiesAndTypes(labels, properties, types)
-	chart.Mount()
-	chart.Render()
 
 	return chart
 
@@ -64,9 +62,6 @@ func ToPieChart(element *dom.Element) *PieChart {
 
 	chart.ViewBox.Width = 512
 	chart.ViewBox.Height = 256
-
-	chart.Mount()
-	chart.Render()
 
 	return &chart
 

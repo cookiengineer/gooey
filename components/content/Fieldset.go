@@ -44,9 +44,6 @@ func NewFieldset(name string, label string) Fieldset {
 	fieldset.Component = &component
 	fieldset.fields = make([]*fieldset_field, 0)
 
-	fieldset.Mount()
-	fieldset.Render()
-
 	return fieldset
 
 }
@@ -65,9 +62,6 @@ func ToFieldset(element *dom.Element) *Fieldset {
 		fieldset_count++
 		fieldset.Name = "fieldset-" + strconv.Itoa(fieldset_count)
 	}
-
-	fieldset.Mount()
-	fieldset.Render()
 
 	return &fieldset
 
@@ -142,6 +136,8 @@ func (fieldset *Fieldset) Mount() bool {
 
 		if len(divs) > 0 {
 
+			fieldset_fields := make([]*fieldset_field, 0)
+
 			for _, div := range divs {
 
 				name := div.GetAttribute("data-name")
@@ -174,7 +170,7 @@ func (fieldset *Fieldset) Mount() bool {
 
 								}(name, input)
 
-								fieldset.fields = append(fieldset.fields, &fieldset_field{
+								fieldset_fields = append(fieldset_fields, &fieldset_field{
 									Name:  name,
 									Label: label,
 									Input: input,
@@ -200,7 +196,7 @@ func (fieldset *Fieldset) Mount() bool {
 
 								}(name, input)
 
-								fieldset.fields = append(fieldset.fields, &fieldset_field{
+								fieldset_fields = append(fieldset_fields, &fieldset_field{
 									Name:  name,
 									Label: label,
 									Input: input,
@@ -226,7 +222,7 @@ func (fieldset *Fieldset) Mount() bool {
 
 								}(name, input)
 
-								fieldset.fields = append(fieldset.fields, &fieldset_field{
+								fieldset_fields = append(fieldset_fields, &fieldset_field{
 									Name:  name,
 									Label: label,
 									Input: input,
@@ -252,7 +248,7 @@ func (fieldset *Fieldset) Mount() bool {
 
 								}(name, input)
 
-								fieldset.fields = append(fieldset.fields, &fieldset_field{
+								fieldset_fields = append(fieldset_fields, &fieldset_field{
 									Name:  name,
 									Label: label,
 									Input: input,
@@ -282,7 +278,7 @@ func (fieldset *Fieldset) Mount() bool {
 
 						}(name, input)
 
-						fieldset.fields = append(fieldset.fields, &fieldset_field{
+						fieldset_fields = append(fieldset_fields, &fieldset_field{
 							Name:  name,
 							Label: label,
 							Input: input,
@@ -308,7 +304,7 @@ func (fieldset *Fieldset) Mount() bool {
 
 						}(name, input)
 
-						fieldset.fields = append(fieldset.fields, &fieldset_field{
+						fieldset_fields = append(fieldset_fields, &fieldset_field{
 							Name:  name,
 							Label: label,
 							Input: input,
@@ -320,6 +316,13 @@ func (fieldset *Fieldset) Mount() bool {
 
 				}
 
+			}
+
+			fieldset.fields = fieldset_fields
+
+			for _, fieldset_field := range fieldset.fields {
+				fieldset_field.Label.Mount()
+				fieldset_field.Input.Mount()
 			}
 
 		}

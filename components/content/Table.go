@@ -56,8 +56,6 @@ func NewTable(name string, labels []string, properties []string, types []string,
 	table.Footer.Content.Right = make([]interfaces.Component, 0)
 
 	table.SetLabelsAndPropertiesAndTypes(labels, properties, types)
-	table.Mount()
-	table.Render()
 
 	return table
 
@@ -84,8 +82,6 @@ func ToTable(element *dom.Element) *Table {
 	table.Footer.Content.Left = make([]interfaces.Component, 0)
 	table.Footer.Content.Center = make([]interfaces.Component, 0)
 	table.Footer.Content.Right = make([]interfaces.Component, 0)
-
-	table.Mount()
 
 	return &table
 
@@ -330,30 +326,37 @@ func (table *Table) Mount() bool {
 			if len(tmp) == 3 {
 
 				buttons_left := tmp[0].QuerySelectorAll("button")
+				content_left := make([]interfaces.Component, 0)
 
 				for _, button := range buttons_left {
-					table.Footer.Content.Left = append(table.Footer.Content.Left, ui.ToButton(button))
+					content_left = append(content_left, ui.ToButton(button))
 				}
 
 				elements_center := tmp[1].QuerySelectorAll("button, label, input")
+				content_center := make([]interfaces.Component, 0)
 
 				for _, element := range elements_center {
 
 					if element.TagName == "BUTTON" {
-						table.Footer.Content.Center = append(table.Footer.Content.Center, ui.ToButton(element))
+						content_center = append(content_center, ui.ToButton(element))
 					} else if element.TagName == "LABEL" {
-						table.Footer.Content.Center = append(table.Footer.Content.Center, ui.ToLabel(element))
+						content_center = append(content_center, ui.ToLabel(element))
 					} else if element.TagName == "INPUT" {
-						table.Footer.Content.Center = append(table.Footer.Content.Center, ui.ToInput(element))
+						content_center = append(content_center, ui.ToInput(element))
 					}
 
 				}
 
 				buttons_right := tmp[2].QuerySelectorAll("button")
+				content_right := make([]interfaces.Component, 0)
 
 				for _, button := range buttons_right {
-					table.Footer.Content.Right = append(table.Footer.Content.Right, ui.ToButton(button))
+					content_right = append(content_right, ui.ToButton(button))
 				}
+
+				table.Footer.Content.Left = content_left
+				table.Footer.Content.Center = content_center
+				table.Footer.Content.Right = content_right
 
 			} else {
 
@@ -491,6 +494,18 @@ func (table *Table) Mount() bool {
 
 		}))
 
+		for _, component := range table.Footer.Content.Left {
+			component.Mount()
+		}
+
+		for _, component := range table.Footer.Content.Center {
+			component.Mount()
+		}
+
+		for _, component := range table.Footer.Content.Right {
+			component.Mount()
+		}
+
 		return true
 
 	} else {
@@ -539,7 +554,7 @@ func (table *Table) Render() *dom.Element {
 
 				}
 
-				values, _ := table.Dataset.Get(position).String()
+				_, values := table.Dataset.Get(position).String()
 
 				for _, property := range table.Properties {
 
@@ -896,7 +911,7 @@ func (table *Table) String() string {
 
 		}
 
-		values, _ := table.Dataset.Get(position).String()
+		_, values := table.Dataset.Get(position).String()
 
 		for _, property := range table.Properties {
 

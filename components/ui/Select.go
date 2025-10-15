@@ -45,9 +45,6 @@ func NewSelect(label string, value string, values []string) Select {
 
 	}
 
-	self.Mount()
-	self.Render()
-
 	return self
 
 }
@@ -61,8 +58,6 @@ func ToSelect(element *dom.Element) *Select {
 	self.Component = &component
 	self.Type = types.InputText
 	self.Disabled = element.HasAttribute("disabled")
-
-	self.Mount()
 
 	return &self
 

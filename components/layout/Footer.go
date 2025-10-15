@@ -22,17 +22,14 @@ func NewFooter() Footer {
 
 	var footer Footer
 
-	element   := dom.Document.CreateElement("footer")
+	element := dom.Document.CreateElement("footer")
 	component := components.NewComponent(element)
 
-	footer.Component      = &component
-	footer.Layout         = types.LayoutFlex
-	footer.Content.Left   = make([]interfaces.Component, 0)
+	footer.Component = &component
+	footer.Layout = types.LayoutFlex
+	footer.Content.Left = make([]interfaces.Component, 0)
 	footer.Content.Center = make([]interfaces.Component, 0)
-	footer.Content.Right  = make([]interfaces.Component, 0)
-
-	footer.Mount()
-	footer.Render()
+	footer.Content.Right = make([]interfaces.Component, 0)
 
 	return footer
 
@@ -44,13 +41,11 @@ func ToFooter(element *dom.Element) *Footer {
 
 	component := components.NewComponent(element)
 
-	footer.Component      = &component
-	footer.Layout         = types.LayoutFlex
-	footer.Content.Left   = make([]interfaces.Component, 0)
+	footer.Component = &component
+	footer.Layout = types.LayoutFlex
+	footer.Content.Left = make([]interfaces.Component, 0)
 	footer.Content.Center = make([]interfaces.Component, 0)
-	footer.Content.Right  = make([]interfaces.Component, 0)
-
-	footer.Mount()
+	footer.Content.Right = make([]interfaces.Component, 0)
 
 	return &footer
 
@@ -136,31 +131,37 @@ func (footer *Footer) Mount() bool {
 		if len(tmp) == 3 && tmp[0].TagName == "DIV" && tmp[1].TagName == "DIV" && tmp[2].TagName == "DIV" {
 
 			buttons_left := tmp[0].QuerySelectorAll("button")
+			content_left := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_left {
-				footer.Content.Left = append(footer.Content.Left, ui.ToButton(button))
+				content_left = append(content_left, ui.ToButton(button))
 			}
 
 			elements_center := tmp[1].QuerySelectorAll("button, label, input")
+			content_center := make([]interfaces.Component, 0)
 
 			for _, element := range elements_center {
 
 				if element.TagName == "BUTTON" {
-					footer.Content.Center = append(footer.Content.Center, ui.ToButton(element))
+					content_center = append(content_center, ui.ToButton(element))
 				} else if element.TagName == "LABEL" {
-					footer.Content.Center = append(footer.Content.Center, ui.ToLabel(element))
+					content_center = append(content_center, ui.ToLabel(element))
 				} else if element.TagName == "INPUT" {
-					footer.Content.Center = append(footer.Content.Center, ui.ToInput(element))
+					content_center = append(content_center, ui.ToInput(element))
 				}
 
 			}
 
 			buttons_right := tmp[2].QuerySelectorAll("button")
+			content_right := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_right {
-				footer.Content.Right = append(footer.Content.Right, ui.ToButton(button))
+				content_right = append(content_right, ui.ToButton(button))
 			}
 
+			footer.Content.Left = content_left
+			footer.Content.Center = content_center
+			footer.Content.Right = content_right
 
 			for _, component := range footer.Content.Left {
 				component.Mount()
@@ -270,9 +271,9 @@ func (footer *Footer) Render() *dom.Element {
 
 			footer.Component.Element.SetAttribute("data-layout", footer.Layout.String())
 
-			elements_left   := make([]*dom.Element, 0)
+			elements_left := make([]*dom.Element, 0)
 			elements_center := make([]*dom.Element, 0)
-			elements_right  := make([]*dom.Element, 0)
+			elements_right := make([]*dom.Element, 0)
 
 			for _, component := range footer.Content.Left {
 				elements_left = append(elements_left, component.Render())

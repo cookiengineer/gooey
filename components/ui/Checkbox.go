@@ -33,9 +33,6 @@ func NewCheckbox(label string, value string) Checkbox {
 	checkbox.Value = false
 	checkbox.Disabled = false
 
-	checkbox.Mount()
-	checkbox.Render()
-
 	return checkbox
 
 }
@@ -51,8 +48,6 @@ func ToCheckbox(element *dom.Element) *Checkbox {
 	checkbox.Type = types.InputCheckbox
 	checkbox.Value = element.Value.Get("checked").Bool()
 	checkbox.Disabled = element.HasAttribute("disabled")
-
-	checkbox.Mount()
 
 	return &checkbox
 

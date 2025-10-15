@@ -18,32 +18,29 @@ type header_view_item struct {
 }
 
 type Header struct {
-	Layout types.Layout `json:"layout"`
-	View   string       `json:"view"`
+	Layout  types.Layout `json:"layout"`
+	View    string       `json:"view"`
 	Content struct {
 		Left  []interfaces.Component `json:"left"`
 		Right []interfaces.Component `json:"right"`
 	} `json:"content"`
 	Component *components.Component `json:"component"`
-	views map[string]*header_view_item
+	views     map[string]*header_view_item
 }
 
 func NewHeader() Header {
 
 	var header Header
 
-	element   := dom.Document.CreateElement("header")
+	element := dom.Document.CreateElement("header")
 	component := components.NewComponent(element)
 
-	header.Component     = &component
-	header.Layout        = types.LayoutFlex
-	header.Content.Left  = make([]interfaces.Component, 0)
+	header.Component = &component
+	header.Layout = types.LayoutFlex
+	header.Content.Left = make([]interfaces.Component, 0)
 	header.Content.Right = make([]interfaces.Component, 0)
-	header.View          = ""
-	header.views         = make(map[string]*header_view_item)
-
-	header.Mount()
-	header.Render()
+	header.View = ""
+	header.views = make(map[string]*header_view_item)
 
 	return header
 
@@ -55,13 +52,11 @@ func ToHeader(element *dom.Element) *Header {
 
 	component := components.NewComponent(element)
 
-	header.Component     = &component
-	header.Layout        = types.LayoutFlex
-	header.Content.Left  = make([]interfaces.Component, 0)
+	header.Component = &component
+	header.Layout = types.LayoutFlex
+	header.Content.Left = make([]interfaces.Component, 0)
 	header.Content.Right = make([]interfaces.Component, 0)
-	header.views         = make(map[string]*header_view_item)
-
-	header.Mount()
+	header.views = make(map[string]*header_view_item)
 
 	return &header
 
@@ -157,8 +152,8 @@ func (header *Header) Mount() bool {
 			if event.Target != nil {
 
 				action := event.Target.GetAttribute("data-action")
-				view   := event.Target.GetAttribute("data-view")
-				path   := event.Target.GetAttribute("href")
+				view := event.Target.GetAttribute("data-view")
+				path := event.Target.GetAttribute("href")
 
 				if action != "" {
 
@@ -195,11 +190,11 @@ func (header *Header) Mount() bool {
 
 		if len(tmp) == 3 && tmp[0].TagName == "DIV" && tmp[1].TagName == "UL" && tmp[2].TagName == "DIV" {
 
-			buttons_left    := tmp[0].QuerySelectorAll("button")
-			components_left := make([]interfaces.Component, 0)
+			buttons_left := tmp[0].QuerySelectorAll("button")
+			content_left := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_left {
-				components_left = append(components_left, ui.ToButton(button))
+				content_left = append(content_left, ui.ToButton(button))
 			}
 
 			items_center := tmp[1].QuerySelectorAll("li")
@@ -232,15 +227,23 @@ func (header *Header) Mount() bool {
 
 			}
 
-			buttons_right    := tmp[2].QuerySelectorAll("button")
-			components_right := make([]interfaces.Component, 0)
+			buttons_right := tmp[2].QuerySelectorAll("button")
+			content_right := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_right {
-				components_right = append(components_right, ui.ToButton(button))
+				content_right = append(content_right, ui.ToButton(button))
 			}
 
-			header.Content.Left  = components_left
-			header.Content.Right = components_right
+			header.Content.Left = content_left
+			header.Content.Right = content_right
+
+			for _, component := range header.Content.Left {
+				component.Mount()
+			}
+
+			for _, component := range header.Content.Right {
+				component.Mount()
+			}
 
 			return true
 
@@ -315,9 +318,9 @@ func (header *Header) Query(query string) interfaces.Component {
 
 func (header *Header) RegisterView(view interfaces.View) {
 
-	name  := view.Name()
+	name := view.Name()
 	label := view.Label()
-	path  := view.Path()
+	path := view.Path()
 
 	if name != "" && label != "" && path != "" {
 
@@ -325,9 +328,9 @@ func (header *Header) RegisterView(view interfaces.View) {
 
 		if ok == true {
 
-			item.Name  = name
+			item.Name = name
 			item.Label = label
-			item.Path  = path
+			item.Path = path
 
 		} else {
 
@@ -363,9 +366,9 @@ func (header *Header) Render() *dom.Element {
 				header.Component.Element.SetAttribute("data-layout", header.Layout.String())
 			}
 
-			elements_left   := make([]*dom.Element, 0)
+			elements_left := make([]*dom.Element, 0)
 			elements_center := make([]*dom.Element, 0)
-			elements_right  := make([]*dom.Element, 0)
+			elements_right := make([]*dom.Element, 0)
 
 			for _, component := range header.Content.Left {
 				elements_left = append(elements_left, component.Render())

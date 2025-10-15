@@ -23,9 +23,6 @@ func NewLabel(lbl string, typ string) Label {
 	label.Label = lbl
 	label.Type = strings.ToLower(typ)
 
-	label.Mount()
-	label.Render()
-
 	return label
 
 }
@@ -39,8 +36,6 @@ func ToLabel(element *dom.Element) *Label {
 	label.Component = &component
 	label.Label = strings.TrimSpace(element.TextContent)
 	label.Type = element.GetAttribute("data-type")
-
-	label.Mount()
 
 	return &label
 

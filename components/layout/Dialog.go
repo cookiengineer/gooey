@@ -21,17 +21,14 @@ func NewDialog() Dialog {
 
 	var dialog Dialog
 
-	element   := dom.Document.CreateElement("dialog")
+	element := dom.Document.CreateElement("dialog")
 	component := components.NewComponent(element)
 
 	dialog.Component = &component
-	dialog.Layout    = types.LayoutFlow
-	dialog.Title     = "Dialog"
-	dialog.Content   = nil
-	dialog.Footer    = nil
-
-	dialog.Mount()
-	dialog.Render()
+	dialog.Layout = types.LayoutFlow
+	dialog.Title = "Dialog"
+	dialog.Content = nil
+	dialog.Footer = nil
 
 	return dialog
 
@@ -44,11 +41,9 @@ func ToDialog(element *dom.Element) *Dialog {
 	component := components.NewComponent(element)
 
 	dialog.Component = &component
-	dialog.Layout    = types.LayoutFlow
-	dialog.Content   = nil
-	dialog.Footer    = nil
-
-	dialog.Mount()
+	dialog.Layout = types.LayoutFlow
+	dialog.Content = nil
+	dialog.Footer = nil
 
 	return &dialog
 
@@ -180,6 +175,14 @@ func (dialog *Dialog) Mount() bool {
 
 			}
 
+			if dialog.Content != nil {
+				dialog.Content.Mount()
+			}
+
+			if dialog.Footer != nil {
+				dialog.Footer.Mount()
+			}
+
 			return true
 
 		} else {
@@ -211,7 +214,7 @@ func (dialog *Dialog) Query(query string) interfaces.Component {
 
 				if dialog.Content != nil {
 
-					tmp_query     := utils.JoinQuery(selectors[1:])
+					tmp_query := utils.JoinQuery(selectors[1:])
 					tmp_component := dialog.Content.Query(tmp_query)
 
 					if tmp_component != nil {
@@ -222,7 +225,7 @@ func (dialog *Dialog) Query(query string) interfaces.Component {
 
 				if dialog.Footer != nil {
 
-					tmp_query     := utils.JoinQuery(selectors[1:])
+					tmp_query := utils.JoinQuery(selectors[1:])
 					tmp_component := dialog.Footer.Query(tmp_query)
 
 					if tmp_component != nil {

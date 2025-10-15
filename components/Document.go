@@ -69,7 +69,6 @@ func (document *Document) Mount() bool {
 					component := wrapper(element)
 
 					if component != nil {
-						// Custom Wrappers have to Mount() themselves
 						content = append(content, component)
 					}
 
@@ -77,7 +76,6 @@ func (document *Document) Mount() bool {
 
 					component := NewComponent(element)
 					traverseComponent(document, &component)
-					component.Mount()
 					content = append(content, &component)
 
 				}
@@ -87,6 +85,10 @@ func (document *Document) Mount() bool {
 		}
 
 		document.Content = content
+
+		for _, component := range document.Content {
+			component.Mount()
+		}
 
 		return true
 

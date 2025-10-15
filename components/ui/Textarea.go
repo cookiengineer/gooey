@@ -31,9 +31,6 @@ func NewTextarea(label string, value string) Textarea {
 	textarea.Value = value
 	textarea.Disabled = false
 
-	textarea.Mount()
-	textarea.Render()
-
 	return textarea
 
 }
@@ -56,8 +53,6 @@ func ToTextarea(element *dom.Element) *Textarea {
 	textarea.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
 	textarea.Type = types.InputTextarea
 	textarea.Disabled = element.HasAttribute("disabled")
-
-	textarea.Mount()
 
 	return &textarea
 

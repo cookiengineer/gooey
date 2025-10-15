@@ -43,8 +43,6 @@ func NewLineChart(name string, labels []string, properties []string, types []str
 	chart.ViewBox.Height = 256
 
 	chart.SetLabelsAndPropertiesAndTypes(labels, properties, types)
-	chart.Mount()
-	chart.Render()
 
 	return chart
 
@@ -66,9 +64,6 @@ func ToLineChart(element *dom.Element) *LineChart {
 
 	chart.ViewBox.Width = 512
 	chart.ViewBox.Height = 256
-
-	chart.Mount()
-	chart.Render()
 
 	return &chart
 
