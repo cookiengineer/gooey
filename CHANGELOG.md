@@ -1,4 +1,17 @@
 
+## [v0.0.6] - UNRELEASED
+
+### Changed
+
+The `Component.Mount()` method is now called separately *after* the Component Graph has been parsed
+by the [components.Document](/components/Document.go) and is now a top-down call tree. Each Component
+is responsible for Mounting and Unmounting its own nested Components.
+
+- Changed `gooey/components/app.To*` behavior (no auto-mount)
+- Changed `gooey/components/content.To*` behavior (no auto-mount)
+- Changed `gooey/components/layout.To*` behavior (no auto-mount)
+- Changed `gooey/components/ui.To*` behavior (no auto-mount)
+
 ## [v0.0.5] - 2025-10-10
 
 ### Changed
