@@ -8,26 +8,30 @@ import "time"
 
 func main() {
 
-	layout_dialog := layout.ToDialog(dom.Document.QuerySelector("dialog"))
-	layout_dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+	dialog := layout.ToDialog(dom.Document.QuerySelector("dialog"))
+	dialog.Mount()
+
+	dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		action, ok := attributes["action"].(string)
 
 		if ok == true {
 
 			if action == "cancel" {
-				layout_dialog.Hide()
+				dialog.Hide()
 			} else if action == "save" {
 				console.Log("Saved Settings!")
-				layout_dialog.Hide()
+				dialog.Hide()
 			}
 
 		}
 
 	}, false))
 
-	layout_header := layout.ToHeader(dom.Document.QuerySelector("header"))
-	layout_header.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+	header := layout.ToHeader(dom.Document.QuerySelector("header"))
+	header.Mount()
+
+	header.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("header action event")
 		console.Log(attributes)
@@ -38,14 +42,13 @@ func main() {
 		if ok == true {
 
 			if action == "settings" {
-				layout_dialog.Show()
+				dialog.Show()
 			}
 
 		}
 
 	}, false))
-
-	layout_header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]any) {
+	header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("header change-view event")
 		console.Log(attributes)
@@ -53,8 +56,10 @@ func main() {
 
 	}, false))
 
-	layout_footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
-	layout_footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+	footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
+	footer.Mount()
+
+	footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("footer action event")
 		console.Log(attributes)

@@ -8,8 +8,10 @@ import "time"
 
 func main() {
 
-	ui_button := ui.ToButton(dom.Document.QuerySelector("button"))
-	ui_button.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
+	button := ui.ToButton(dom.Document.QuerySelector("button"))
+	button.Mount()
+
+	button.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("button click event")
 		console.Log(attributes)
@@ -17,8 +19,10 @@ func main() {
 
 	}, false))
 
-	ui_input := ui.ToInput(dom.Document.QuerySelector("input"))
-	ui_input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
+	input := ui.ToInput(dom.Document.QuerySelector("input"))
+	input.Mount()
+
+	input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("input change-value event")
 		console.Log(attributes)
@@ -26,8 +30,10 @@ func main() {
 
 	}, false))
 
-	ui_select := ui.ToSelect(dom.Document.QuerySelector("select"))
-	ui_select.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
+	selekt := ui.ToSelect(dom.Document.QuerySelector("select"))
+	selekt.Mount()
+
+	selekt.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("select change-value event")
 		console.Log(attributes)
@@ -35,8 +41,10 @@ func main() {
 
 	}, false))
 
-	ui_textarea := ui.ToTextarea(dom.Document.QuerySelector("textarea"))
-	ui_textarea.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
+	textarea := ui.ToTextarea(dom.Document.QuerySelector("textarea"))
+	textarea.Mount()
+
+	textarea.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("textarea change-value event")
 		console.Log(attributes)

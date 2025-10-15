@@ -10,6 +10,10 @@ func main() {
 	chart2 := content.ToPieChart(dom.Document.QuerySelector("figure[data-name=\"floats\"]"))
 	chart3 := content.ToPieChart(dom.Document.QuerySelector("figure[data-name=\"percentages\"]"))
 
+	chart1.Mount()
+	chart2.Mount()
+	chart3.Mount()
+
 	chart1.Disable()
 	chart2.Disable()
 	chart3.Disable()
@@ -21,6 +25,10 @@ func main() {
 		chart1.Enable()
 		chart2.Enable()
 		chart3.Enable()
+
+		chart1.Render()
+		chart2.Render()
+		chart3.Render()
 
 	}()
 

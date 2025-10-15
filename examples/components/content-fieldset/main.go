@@ -13,6 +13,8 @@ func main() {
 	pre := dom.Document.QuerySelector("pre")
 
 	fieldset := content.ToFieldset(dom.Document.QuerySelector("fieldset"))
+	fieldset.Mount()
+
 	fieldset.Component.AddEventListener("change-field", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		console.Group("fieldset change-field event")
@@ -22,6 +24,8 @@ func main() {
 	}, false))
 
 	footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
+	footer.Mount()
+
 	footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
 		action, ok := attributes["action"]
@@ -53,6 +57,9 @@ func main() {
 		}
 
 	}, false))
+
+	fieldset.Render()
+	footer.Render()
 
 	for true {
 

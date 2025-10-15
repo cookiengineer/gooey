@@ -8,16 +8,21 @@ import "time"
 func main() {
 
 	performance_chart := content.ToLineChart(dom.Document.QuerySelector("figure[data-name=\"performance\"]"))
+	performance_chart.Mount()
+
 	performance_chart.Disable()
 
 	go func() {
 
 		time.Sleep(500 * time.Millisecond)
 		performance_chart.Enable()
+		performance_chart.Render()
 
 	}()
 
 	activity_chart := content.ToLineChart(dom.Document.QuerySelector("figure[data-name=\"activity\"]"))
+	activity_chart.Mount()
+
 	activity_dataset := data.ToDataset([]data.Data{
 		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
 		data.Data(map[string]any{"mouse-x": 0, "mouse-y": 0}),
