@@ -14,14 +14,34 @@ is responsible for Mounting and Unmounting its own nested Components.
 
 ### Added
 
-- Added [ui.Button](/components/ui/Button.go) methods `SetAction(action string)`, `SetLabel(label string)`
-- Added [ui.Checkbox](/components/ui/Checkbox.go) methods `SetLabel(label string)`, `SetValue(value bool)`
-- Added [ui.Input](/components/ui/Input.go) methods `SetLabel(label string)`, `SetValue(value string)`
-- Added [ui.Label](/components/ui/Label.go) methods `SetLabel(label string)`, `SetType(type string)`
-- Added [ui.Number](/components/ui/Number.go) methods `SetLabel(label string)`, `SetMinMaxStep(min_value int, max_value int, step int)`, `SetValue(value int)`
-- Added [ui.Range](/components/ui/Range.go) methods `SetLabel(label string)`, `SetMinMaxStep(min_value int, max_value int, step int)`, `SetValue(value int)`
-- Added [ui.Select](/components/ui/Select.go) methods `SetLabel(label string)`, `SetValue(value string)`, `SetValues(values []string)`
-- Added [ui.Textarea](/components/ui/Textarea.go) methods `SetLabel(label string)`, `SetValue(value string)`
+- Added [layout.Article](/components/layout/Article.go) method `SetContent([]interfaces.Component)`
+- Added [layout.Dialog](/components/layout/Dialog.go) method `SetContent([]interfaces.Component)`
+- Added [layout.Dialog](/components/layout/Dialog.go) method `SetFooter(*layout.Footer)`
+- Added [layout.Dialog](/components/layout/Dialog.go) method `SetTitle(string)`
+- Added [layout.Footer](/components/layout/Footer.go) method `SetContentCenter([]interfaces.Component)`
+- Added [layout.Footer](/components/layout/Footer.go) method `SetContentLeft([]interfaces.Component)`
+- Added [layout.Footer](/components/layout/Footer.go) method `SetContentRight([]interfaces.Component)`
+- Added [layout.Header](/components/layout/Header.go) method `SetContentLeft([]interfaces.Component)`
+- Added [layout.Header](/components/layout/Header.go) method `SetContentRight([]interfaces.Component)`
+- Added [ui.Button](/components/ui/Button.go) method `SetAction(string)`
+- Added [ui.Button](/components/ui/Button.go) method `SetLabel(string)`
+- Added [ui.Checkbox](/components/ui/Checkbox.go) method `SetLabel(string)`
+- Added [ui.Checkbox](/components/ui/Checkbox.go) method `SetValue(bool)`
+- Added [ui.Input](/components/ui/Input.go) method `SetLabel(string)`
+- Added [ui.Input](/components/ui/Input.go) method `SetValue(string)`
+- Added [ui.Label](/components/ui/Label.go) method `SetLabel(string)`
+- Added [ui.Label](/components/ui/Label.go) method `SetType(string)`
+- Added [ui.Number](/components/ui/Number.go) method `SetLabel(string)`
+- Added [ui.Number](/components/ui/Number.go) method `SetMinMaxStep(int, int, int)`
+- Added [ui.Number](/components/ui/Number.go) method `SetValue(int)`
+- Added [ui.Range](/components/ui/Range.go) method `SetLabel(string)`
+- Added [ui.Range](/components/ui/Range.go) method `SetMinMaxStep(int, int, int)`
+- Added [ui.Range](/components/ui/Range.go) method `SetValue(int)`
+- Added [ui.Select](/components/ui/Select.go) method `SetLabel(string)`
+- Added [ui.Select](/components/ui/Select.go) method `SetValue(string)`
+- Added [ui.Select](/components/ui/Select.go) method `SetValues([]string)`
+- Added [ui.Textarea](/components/ui/Textarea.go) method `SetLabel(string)`
+- Added [ui.Textarea](/components/ui/Textarea.go) method `SetValue(string)`
 
 ## [v0.0.5] - 2025-10-10
 

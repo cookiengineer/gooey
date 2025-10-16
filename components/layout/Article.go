@@ -182,6 +182,13 @@ func (article *Article) Render() *dom.Element {
 
 }
 
+func (article *Article) SetContent(components []interfaces.Component) {
+
+	article.Content = components
+	article.Render()
+
+}
+
 func (article *Article) String() string {
 
 	html := "<article"

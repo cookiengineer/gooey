@@ -299,15 +299,15 @@ func (footer *Footer) Render() *dom.Element {
 
 }
 
-func (footer *Footer) SetCenter(components []interfaces.Component) {
+func (footer *Footer) SetContentCenter(components []interfaces.Component) {
 	footer.Content.Center = components
 }
 
-func (footer *Footer) SetLeft(components []interfaces.Component) {
+func (footer *Footer) SetContentLeft(components []interfaces.Component) {
 	footer.Content.Left = components
 }
 
-func (footer *Footer) SetRight(components []interfaces.Component) {
+func (footer *Footer) SetContentRight(components []interfaces.Component) {
 	footer.Content.Right = components
 }
 

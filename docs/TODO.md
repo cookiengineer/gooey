@@ -3,6 +3,13 @@
 
 ## cookiestore Example
 
+## components/content
+
+- [ ] Implement `content.Fieldset` setter methods
+- [ ] Implement `content.LineChart` setter methods
+- [ ] Implement `content.PieChart` setter methods
+- [ ] Implement `content.Table` setter methods
+
 ## components/interfaces
 
 - [ ] Decide on an interface for a Schema of `N Data` (`map[string]any`) instances

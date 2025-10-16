@@ -397,11 +397,11 @@ func (header *Header) Render() *dom.Element {
 
 }
 
-func (header *Header) SetLeft(components []interfaces.Component) {
+func (header *Header) SetContentLeft(components []interfaces.Component) {
 	header.Content.Left = components
 }
 
-func (header *Header) SetRight(components []interfaces.Component) {
+func (header *Header) SetContentRight(components []interfaces.Component) {
 	header.Content.Right = components
 }
 
