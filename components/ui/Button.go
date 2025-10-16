@@ -21,8 +21,8 @@ func NewButton(label string, action string) Button {
 	component := components.NewComponent(element)
 
 	button.Component = &component
-	button.Label = label
-	button.Action = strings.ToLower(action)
+	button.Label = strings.TrimSpace(label)
+	button.Action = strings.TrimSpace(strings.ToLower(action))
 	button.Disabled = false
 
 	return button
@@ -37,7 +37,7 @@ func ToButton(element *dom.Element) *Button {
 
 	button.Component = &component
 	button.Label = strings.TrimSpace(element.TextContent)
-	button.Action = strings.ToLower(element.GetAttribute("data-action"))
+	button.Action = strings.TrimSpace(strings.ToLower(element.GetAttribute("data-action")))
 	button.Disabled = element.HasAttribute("disabled")
 
 	return &button
@@ -117,6 +117,20 @@ func (button *Button) Render() *dom.Element {
 	}
 
 	return button.Component.Element
+
+}
+
+func (button *Button) SetAction(action string) {
+
+	button.Action = strings.TrimSpace(strings.ToLower(action))
+	button.Render()
+
+}
+
+func (button *Button) SetLabel(label string) {
+
+	button.Label = strings.TrimSpace(label)
+	button.Render()
 
 }
 

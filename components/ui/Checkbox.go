@@ -160,6 +160,20 @@ func (checkbox *Checkbox) Reset() bool {
 
 }
 
+func (checkbox *Checkbox) SetLabel(label string) {
+
+	checkbox.Label = strings.TrimSpace(label)
+	checkbox.Render()
+
+}
+
+func (checkbox *Checkbox) SetValue(value bool) {
+
+	checkbox.Value = value
+	checkbox.Render()
+
+}
+
 func (checkbox *Checkbox) String() string {
 
 	html := "<input type=\"checkbox\""

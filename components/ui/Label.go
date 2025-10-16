@@ -91,6 +91,20 @@ func (label *Label) Render() *dom.Element {
 
 }
 
+func (label *Label) SetLabel(label_value string) {
+
+	label.Label = strings.TrimSpace(label_value)
+	label.Render()
+
+}
+
+func (label *Label) SetType(typ string) {
+
+	label.Type = strings.TrimSpace(strings.ToLower(typ))
+	label.Render()
+
+}
+
 func (label *Label) String() string {
 
 	html := ""

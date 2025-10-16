@@ -31,18 +31,14 @@ func NewSelect(label string, value string, values []string) Select {
 	self.Component = &component
 	self.Label = strings.TrimSpace(label)
 	self.Type = types.InputText
-	self.Value = strings.TrimSpace(value)
-	self.Values = make([]string, 0)
-	self.default_value = self.Value
+	self.Value = ""
+	self.Values = values
+	self.Disabled = false
+	self.default_value = ""
 
-	for _, val := range values {
-
-		tmp := strings.TrimSpace(val)
-
-		if tmp != "" {
-			self.Values = append(self.Values, tmp)
-		}
-
+	if slices.Contains(values, value) == true {
+		self.Value = value
+		self.default_value = value
 	}
 
 	return self
@@ -57,7 +53,43 @@ func ToSelect(element *dom.Element) *Select {
 
 	self.Component = &component
 	self.Type = types.InputText
+	self.Label = ""
+	self.Value = ""
+	self.Values = make([]string, 0)
 	self.Disabled = element.HasAttribute("disabled")
+	self.default_value = ""
+
+	placeholder := element.QuerySelector("option")
+
+	// First option element is the placeholder
+	if placeholder != nil && placeholder.GetAttribute("value") == "" {
+		self.Label = strings.TrimSpace(placeholder.TextContent)
+	} else {
+		self.Label = ""
+	}
+
+	options := element.QuerySelectorAll("option")
+
+	if len(options) > 0 {
+
+		for _, option := range options {
+
+			value := option.GetAttribute("value")
+
+			if value != "" {
+
+				if option.HasAttribute("selected") {
+					self.default_value = value
+					self.Value = value
+				}
+
+				self.Values = append(self.Values, value)
+
+			}
+
+		}
+
+	}
 
 	return &self
 
@@ -88,44 +120,6 @@ func (self *Select) Mount() bool {
 	}
 
 	if self.Component.Element != nil {
-
-		if len(self.Values) == 0 || self.default_value == "" {
-
-			tmp := self.Component.Element.QuerySelector("option")
-
-			// First option element is the placeholder
-			if tmp != nil && tmp.GetAttribute("value") == "" {
-				self.Label = tmp.TextContent
-			} else {
-				self.Label = ""
-			}
-
-			elements := self.Component.Element.QuerySelectorAll("option")
-
-			value := ""
-			values := make([]string, 0)
-
-			for _, element := range elements {
-
-				tmp := element.GetAttribute("value")
-
-				if tmp != "" {
-
-					if element.HasAttribute("selected") {
-						value = tmp
-					}
-
-					values = append(values, tmp)
-
-				}
-
-			}
-
-			self.default_value = value
-			self.Value = value
-			self.Values = values
-
-		}
 
 		self.Component.Element.AddEventListener("change", dom.ToEventListener(func(_ *dom.Event) {
 
@@ -272,6 +266,46 @@ func (self *Select) Reset() bool {
 	self.Render()
 
 	return true
+
+}
+
+func (self *Select) SetLabel(label string) {
+
+	self.Label = strings.TrimSpace(label)
+	self.Render()
+
+}
+
+func (self *Select) SetValue(value string) bool {
+
+	if slices.Contains(self.Values, value) == true {
+
+		self.Value = value
+		self.Render()
+
+		return true
+
+	}
+
+	return false
+
+}
+
+func (self *Select) SetValues(values []string) {
+
+	filtered := make([]string, 0)
+
+	for _, value := range values {
+
+		tmp := strings.TrimSpace(value)
+
+		if tmp != "" && slices.Contains(filtered, tmp) == false {
+			filtered = append(filtered, tmp)
+		}
+
+	}
+
+	self.Values = filtered
 
 }
 

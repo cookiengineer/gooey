@@ -12,6 +12,17 @@ is responsible for Mounting and Unmounting its own nested Components.
 - Changed `gooey/components/layout.To*` behavior (no auto-mount)
 - Changed `gooey/components/ui.To*` behavior (no auto-mount)
 
+### Added
+
+- Added [ui.Button](/components/ui/Button.go) methods `SetAction(action string)`, `SetLabel(label string)`
+- Added [ui.Checkbox](/components/ui/Checkbox.go) methods `SetLabel(label string)`, `SetValue(value bool)`
+- Added [ui.Input](/components/ui/Input.go) methods `SetLabel(label string)`, `SetValue(value string)`
+- Added [ui.Label](/components/ui/Label.go) methods `SetLabel(label string)`, `SetType(type string)`
+- Added [ui.Number](/components/ui/Number.go) methods `SetLabel(label string)`, `SetMinMaxStep(min_value int, max_value int, step int)`, `SetValue(value int)`
+- Added [ui.Range](/components/ui/Range.go) methods `SetLabel(label string)`, `SetMinMaxStep(min_value int, max_value int, step int)`, `SetValue(value int)`
+- Added [ui.Select](/components/ui/Select.go) methods `SetLabel(label string)`, `SetValue(value string)`, `SetValues(values []string)`
+- Added [ui.Textarea](/components/ui/Textarea.go) methods `SetLabel(label string)`, `SetValue(value string)`
+
 ## [v0.0.5] - 2025-10-10
 
 ### Changed

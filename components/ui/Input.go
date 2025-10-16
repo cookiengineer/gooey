@@ -41,20 +41,20 @@ func ToInput(element *dom.Element) *Input {
 
 	var input Input
 
-	tmp := element.Value.Get("value")
-
-	if !tmp.IsNull() && !tmp.IsUndefined() {
-		input.Value = strings.TrimSpace(tmp.String())
-	} else {
-		input.Value = ""
-	}
-
 	component := components.NewComponent(element)
 
 	input.Component = &component
 	input.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
 	input.Type = types.Input(element.GetAttribute("type"))
 	input.Disabled = element.HasAttribute("disabled")
+
+	value := element.Value.Get("value")
+
+	if !value.IsNull() && !value.IsUndefined() {
+		input.Value = strings.TrimSpace(value.String())
+	} else {
+		input.Value = ""
+	}
 
 	return &input
 
@@ -160,6 +160,20 @@ func (input *Input) Reset() bool {
 	input.Render()
 
 	return true
+
+}
+
+func (input *Input) SetLabel(label string) {
+
+	input.Label = strings.TrimSpace(label)
+	input.Render()
+
+}
+
+func (input *Input) SetValue(value string) {
+
+	input.Value = value
+	input.Render()
 
 }
 

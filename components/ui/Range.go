@@ -22,7 +22,7 @@ type Range struct {
 	Component *components.Component `json:"component"`
 }
 
-func NewRange(label string, step int, cur_value int, min_value int, max_value int) Range {
+func NewRange(label string, min_value int, max_value int, step int, cur_value int) Range {
 
 	var input Range
 
@@ -31,32 +31,26 @@ func NewRange(label string, step int, cur_value int, min_value int, max_value in
 
 	element.SetAttribute("type", "range")
 
-	if cur_value >= min_value && cur_value <= max_value {
-
-		input.Min = min_value
-		input.Max = max_value
-		input.Value = cur_value
-
-	} else if cur_value >= 0 && cur_value <= 100 {
-
-		input.Min = 0
-		input.Max = 100
-		input.Value = cur_value
-
-	}
-
-	if step > 0 {
-		input.Step = step
-	} else {
-		input.Step = 1
-	}
-
 	input.Component = &component
 	input.Label = label
 	input.Type = types.InputRange
+	input.Value = 0
+	input.Min = 0
+	input.Max = 100
+	input.Step = 1
+	input.Disabled = false
 
-	if input.Value > input.Max {
-		input.Max = input.Value
+	if min_value <= max_value - step && step != 0 {
+
+		input.Min = min_value
+		input.Max = max_value
+		input.Step = step
+
+		if (cur_value - min_value) % step == 0 {
+			input.Value = cur_value
+		} else {
+			input.Value = min_value
+		}
 	}
 
 	return input
@@ -67,67 +61,66 @@ func ToRange(element *dom.Element) *Range {
 
 	var input Range
 
-	tmp := element.Value.Get("value")
-
-	if !tmp.IsNull() && !tmp.IsUndefined() {
-
-		number, err := strconv.ParseInt(tmp.String(), 10, 64)
-
-		if err == nil {
-			input.Value = int(number)
-		} else {
-			input.Value = 0
-		}
-
-	} else {
-		input.Value = 0
-	}
-
-	max_str := strings.TrimSpace(element.GetAttribute("max"))
-	min_str := strings.TrimSpace(element.GetAttribute("min"))
-
-	if min_str != "" && max_str != "" {
-
-		min_number, err1 := strconv.ParseInt(min_str, 10, 64)
-		max_number, err2 := strconv.ParseInt(max_str, 10, 64)
-
-		if err1 == nil && err2 == nil && min_number < max_number {
-			input.Min = int(min_number)
-			input.Max = int(max_number)
-		} else {
-			input.Min = 0
-			input.Max = 100
-		}
-
-	} else {
-		input.Min = 0
-		input.Max = 100
-	}
-
-	if input.Value > input.Max {
-		input.Max = input.Value
-	}
-
-	step_str := strings.TrimSpace(element.GetAttribute("step"))
-
-	if step_str != "" {
-
-		step_number, err1 := strconv.ParseInt(step_str, 10, 64)
-
-		if err1 == nil && step_number > 0 {
-			input.Step = int(step_number)
-		} else {
-			input.Step = 1
-		}
-
-	}
-
 	component := components.NewComponent(element)
 
 	input.Component = &component
 	input.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
 	input.Type = types.Input(element.GetAttribute("type"))
+	input.Value = 0
+	input.Min = 0
+	input.Max = 100
+	input.Step = 1
 	input.Disabled = element.HasAttribute("disabled")
+
+	min_str := strings.TrimSpace(element.GetAttribute("min"))
+	max_str := strings.TrimSpace(element.GetAttribute("max"))
+	step_str := strings.TrimSpace(element.GetAttribute("step"))
+
+	if min_str != "" && max_str != "" && step_str != "" {
+
+		tmp1, err1 := strconv.ParseInt(step_str, 10, 64)
+		tmp2, err2 := strconv.ParseInt(min_str, 10, 64)
+		tmp3, err3 := strconv.ParseInt(max_str, 10, 64)
+
+		if err1 == nil && err2 == nil && err3 == nil {
+
+			step := int(tmp1)
+			min_value := int(tmp2)
+			max_value := int(tmp3)
+
+			if min_value <= max_value - step && step != 0 {
+
+				input.Min = min_value
+				input.Max = max_value
+				input.Step = step
+
+			}
+
+		}
+
+	}
+
+	value := element.Value.Get("value")
+
+	if !value.IsNull() && !value.IsUndefined() {
+
+		tmp1, err1 := strconv.ParseInt(value.String(), 10, 64)
+
+		if err1 == nil {
+
+			cur_value := int(tmp1)
+
+			if (cur_value - input.Min) % input.Step == 0 {
+				input.Value = cur_value
+			} else {
+				input.Value = input.Min
+			}
+
+		} else {
+			input.Value = input.Min
+		}
+
+	}
 
 	return &input
 
@@ -252,6 +245,44 @@ func (input *Range) Reset() bool {
 	input.Render()
 
 	return true
+
+}
+
+func (input *Range) SetLabel(label string) {
+
+	input.Label = strings.TrimSpace(label)
+	input.Render()
+
+}
+
+func (input *Range) SetMinMaxStep(min_value int, max_value int, step int) {
+
+	if min_value <= max_value - step {
+
+		input.Min = min_value
+		input.Max = max_value
+		input.Step = step
+
+		input.Render()
+
+	}
+
+}
+
+func (input *Range) SetValue(value int) {
+
+	if input.Step != 0 {
+
+		if input.Min <= value && value <= input.Max {
+
+			if (value - input.Min) % input.Step == 0 {
+				input.Value = value
+				input.Render()
+			}
+
+		}
+
+	}
 
 }
 

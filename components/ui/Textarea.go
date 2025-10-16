@@ -39,20 +39,20 @@ func ToTextarea(element *dom.Element) *Textarea {
 
 	var textarea Textarea
 
-	tmp := element.Value.Get("value")
-
-	if !tmp.IsNull() && !tmp.IsUndefined() {
-		textarea.Value = strings.TrimSpace(tmp.String())
-	} else {
-		textarea.Value = ""
-	}
-
 	component := components.NewComponent(element)
 
 	textarea.Component = &component
 	textarea.Label = strings.TrimSpace(element.GetAttribute("placeholder"))
 	textarea.Type = types.InputTextarea
 	textarea.Disabled = element.HasAttribute("disabled")
+
+	value := element.Value.Get("value")
+
+	if !value.IsNull() && !value.IsUndefined() {
+		textarea.Value = value.String()
+	} else {
+		textarea.Value = ""
+	}
 
 	return &textarea
 
@@ -156,6 +156,20 @@ func (textarea *Textarea) Reset() bool {
 	textarea.Render()
 
 	return true
+
+}
+
+func (textarea *Textarea) SetLabel(label string) {
+
+	textarea.Label = strings.TrimSpace(label)
+	textarea.Render()
+
+}
+
+func (textarea *Textarea) SetValue(value string) {
+
+	textarea.Value = value
+	textarea.Render()
 
 }
 
