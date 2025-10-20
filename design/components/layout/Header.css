@@ -18,16 +18,19 @@ header {
 	background: var(--header-background);
 	text-align: center;
 	box-sizing: border-box;
+	align-items: center;
 	justify-content: space-between;
 }
 
 header[data-layout="grid"] {
 	display: block grid;
+	align-items: unset;
 	justify-content: unset;
 }
 
 header[data-layout="flow"] {
 	display: block flow-root;
+	align-items: unset;
 	justify-content: unset;
 }
 

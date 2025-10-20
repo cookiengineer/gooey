@@ -18,16 +18,19 @@ footer {
 	color: var(--footer-color);
 	background: var(--footer-background);
 	box-sizing: border-box;
+	align-items: center;
 	justify-content: space-between;
 }
 
 footer[data-layout="grid"] {
 	display: block grid;
+	align-items: unset;
 	justify-content: unset;
 }
 
 footer[data-layout="flow"] {
 	display: block flow-root;
+	align-items: unset;
 	justify-content: unset;
 }
 
