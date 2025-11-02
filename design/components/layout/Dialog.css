@@ -1,6 +1,5 @@
 
 dialog {
-	display: block flow-root;
 	position: fixed;
 	width: 100%;
 	height: 100%;
@@ -18,12 +17,25 @@ dialog {
 	z-index: 30;
 }
 
+dialog,
+dialog[data-layout="flow"] {
+	display: block flow-root;
+	flex-direction: unset;
+	align-items: unset;
+	justify-content: unset;
+}
+
 dialog[data-layout="flex"] {
 	display: block flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: start;
 }
 
 dialog[data-layout="grid"] {
 	display: block grid;
+	align-items: unset;
+	justify-content: unset;
 }
 
 dialog[open] {

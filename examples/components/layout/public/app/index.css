@@ -1,4 +1,23 @@
 
+header ul li a[data-view="first"]:before,
+aside ul li a[data-view="first"]:before {
+	content: '\f1d0';
+}
+
+header ul li a[data-view="second"]:before,
+aside ul li a[data-view="second"]:before {
+	content: '\f188';
+}
+
+header ul li a[data-view="third"]:before,
+aside ul li a[data-view="third"]:before {
+	content: '\f0ec';
+}
+
+header button[data-action="settings"]:before {
+	content: '\e80d';
+}
+
 main article {
 	padding: 0px 16px 16px 16px;
 }

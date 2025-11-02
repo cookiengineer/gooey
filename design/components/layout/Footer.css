@@ -9,7 +9,6 @@ body > footer {
 }
 
 footer {
-	display: block flex;
 	width: auto;
 	height: 50px;
 	margin: 0px;
@@ -18,6 +17,12 @@ footer {
 	color: var(--footer-color);
 	background: var(--footer-background);
 	box-sizing: border-box;
+}
+
+footer,
+footer[data-layout="flex"] {
+	display: block flex;
+	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 }

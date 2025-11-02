@@ -35,18 +35,35 @@
 			<ul><li class="active"><a data-view="first" href="/index.html">Index</a></li><li><a data-view="second" href="/second.html">Second</a></li><li><a data-view="third" href="/third.html">Third</a></li></ul>
 			<div><button data-action="settings">Settings</button></div>
 		</header>
+		<aside>
+			<ul>
+				<li class="active"><a data-view="first" href="/index.html">Index</a></li>
+				<li><a data-view="second" href="/second.html">Second</a></li>
+				<li><a data-view="third" href="/third.html">Third</a></li>
+			</ul>
+			<div></div>
+			<div><button data-action="reload">Reload</button></div>
+		</aside>
 		<main>
 			<article>
 				<h3>layout.Header</h3>
 				<p>
 					The layout.Header Component fires an <q>action</q> event and a <q>change-view</q> event (see console output).
 				</p>
-				<hr>
+			</article>
+			<article>
+				<h3>layout.Aside</h3>
+				<p>
+					The layout.Aside Component fires an <q>action</q> event and a <q>change-view</q> event (see console output).
+				</p>
+			</article>
+			<article>
 				<h3>layout.Footer</h3>
 				<p>
 					The layout.Footer Component fires an <q>action</q> event (see console output).
 				</p>
-				<hr>
+			</article>
+			<article>
 				<h3>layout.Dialog</h3>
 				<p>
 					The layout.Dialog Component fires an <q>action</q> event (see console output).

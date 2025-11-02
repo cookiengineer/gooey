@@ -1,6 +1,5 @@
 
 main section {
-	display: block flow-root;
 	position: absolute;
 	top: 0px;
 	right: 0px;
@@ -21,16 +20,26 @@ main section[data-state="active"] {
 	z-index: 1;
 }
 
-main section[data-layout="flex"] {
-	display: block flex;
-}
-
+main section,
 main section[data-layout="flow"] {
 	display: block flow-root;
+	flex-direction: unset;
+	align-items: unset;
+	justify-content: unset;
+}
+
+main section[data-layout="flex"] {
+	display: block flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: start;
 }
 
 main section[data-layout="grid"] {
 	display: block grid;
+	flex-direction: unset;
+	align-items: unset;
+	justify-content: unset;
 }
 
 main article {

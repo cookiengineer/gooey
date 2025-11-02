@@ -1,0 +1,191 @@
+
+body > aside {
+	position: fixed;
+	top: 0px;
+	right: auto;
+	bottom: 0px;
+	left: 0px;
+	z-index: 19;
+}
+
+aside {
+	width: auto;
+	height: auto;
+	padding: 8px 8px;
+	color: var(--aside-color);
+	background: var(--aside-background);
+	text-align: center;
+	box-sizing: border-box;
+}
+
+aside,
+aside[data-layout="flex"] {
+	display: block flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+}
+
+aside[data-layout="grid"] {
+	display: block grid;
+	align-items: unset;
+	justify-content: unset;
+}
+
+aside[data-layout="flow"] {
+	display: block flow-root;
+	align-items: unset;
+	justify-content: unset;
+}
+
+aside ul {
+	display: block flow-root;
+	width: 100%;
+	/* XXX: Makes ul li's the size of their content */
+	/* width: auto; */
+	margin: 0px auto 0px auto;
+	padding: 0px;
+	list-style: none;
+	text-align: left;
+	user-select: none;
+}
+
+aside ul li {
+	display: block;
+	margin: 4px 0px;
+	padding: 0px;
+	border-top: 1px solid var(--button-default-border);
+	border-right: 1px solid var(--button-default-border);
+	border-bottom: 1px solid var(--button-default-border);
+	border-left: 1px solid var(--button-default-border);
+	border-radius: 4px 4px 4px 4px;
+}
+
+aside ul li {
+	color: var(--button-default-color);
+	background: var(--button-default-background);
+}
+
+aside ul li:hover {
+	background: var(--button-focus-background);
+}
+
+aside ul li:hover a {
+	color: var(--button-focus-color);
+}
+
+aside ul li[data-state="active"] {
+	background: var(--palette-primary-background);
+}
+
+aside ul li[data-state="active"] a {
+	color: var(--palette-primary-color);
+}
+
+aside ul li a {
+	display: block;
+	height: 32px;
+	line-height: 32px;
+	color: var(--button-default-color);
+	font-family: 'cantarell';
+	font-weight: normal;
+	font-size: 16px;
+	text-decoration: none;
+	margin: 0px;
+	padding: 0px 12px;
+	box-sizing: border-box;
+	transition: all 250ms ease-out;
+}
+
+aside ul li a[data-view] {
+	padding: 0px;
+}
+
+aside ul li a[data-view]:before {
+	display: inline-block;
+	content: '\e811';
+	width: auto;
+	margin: 0em 0.5em 0em 0.5em;
+	padding: 0px;
+	font-family: "icon";
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	text-align: center;
+	text-decoration: none;
+	text-transform: none;
+	font-smooth: antialiased;
+	white-space: nowrap;
+	transition: all 250ms ease-out;
+}
+
+aside > div:first-of-type {
+	margin-bottom: auto;
+}
+
+aside > div:last-of-type {
+	margin-top: auto;
+}
+
+body:has(> header) > aside {
+	top: 50px;
+}
+
+body:has(> footer) > aside {
+	bottom: 50px;
+}
+
+@supports (transition: all 250ms ease-out) {
+
+	aside {
+		width: 50px;
+		transition: all 250ms ease-out;
+	}
+
+	aside ul li {
+		width: 32px;
+		transition: all 250ms ease-out;
+	}
+
+	aside ul li a[data-view] {
+		color: transparent;
+		overflow: hidden;
+		text-overflow: clip;
+		transition: all 250ms ease-out;
+	}
+
+	aside ul li a[data-view]:before {
+		color: var(--button-default-color);
+	}
+
+	aside:hover,
+	aside[data-state="active"] {
+		width: 200px;
+		transition: all 250ms ease-out;
+	}
+
+	aside:hover ul li,
+	aside[data-state="active"] ul li {
+		width: calc(100%);
+		transition: all 250ms ease-out;
+	}
+
+	aside:hover ul li a[data-view],
+	aside[data-state="active"] ul li a[data-view] {
+		color: var(--button-default-color);
+		transition: all 250ms ease-out;
+	}
+
+	aside div button {
+		opacity: 0;
+		transition: all 250ms ease-out;
+	}
+
+	aside:hover div button,
+	aside[data-state="active"] div button {
+		opacity: 1;
+		transition: all 250ms ease-out 250ms;
+	}
+
+}
+

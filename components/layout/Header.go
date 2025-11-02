@@ -3,10 +3,10 @@ package layout
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/components"
-import "github.com/cookiengineer/gooey/components/ui"
-import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/components/interfaces"
 import "github.com/cookiengineer/gooey/components/types"
+import "github.com/cookiengineer/gooey/components/ui"
+import "github.com/cookiengineer/gooey/components/utils"
 import "sort"
 import "strings"
 
