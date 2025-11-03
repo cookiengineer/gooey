@@ -1,5 +1,25 @@
 
-## [v0.0.6] - UNRELEASED
+## [v0.0.7] - 2025-11-03
+
+### Changed
+
+- Fixes for [app.View](/design/components/app/View.css) stylesheets
+- Fixes for [content.Fieldset](/design/components/content/Fieldset.css) stylesheets
+- Fixes for [layout.Header](/design/components/layout/Header.css) stylesheets
+- Fixes for [layout.Aside](/design/components/layout/Aside.css) stylesheets
+- Fixes for [layout.Dialog](/design/components/layout/Dialog.css) stylesheets
+- Fixes for [layout.Footer](/design/components/layout/Footer.css) stylesheets
+
+### Added
+
+- Added [app.Main](/components/app/Main.go) property `Aside *layout.Aside`
+- Added [layout.Aside](/components/layout/Aside.go) component as an alternative to `layout.Header`
+
+### Removed
+
+- Removed `layout.Header` property `View string`
+
+## [v0.0.6] - 2025-10-15
 
 ### Changed
 
