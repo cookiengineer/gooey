@@ -6,9 +6,10 @@ import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/interfaces"
 import "github.com/cookiengineer/gooey/components/types"
 import "github.com/cookiengineer/gooey/components/ui"
-import "fmt"
+import "github.com/cookiengineer/gooey/components/utils"
+import "strings"
 
-type aside_menu_item struct {
+type aside_item struct {
 	Name    string
 	Label   string
 	Path    string
@@ -22,8 +23,8 @@ type Aside struct {
 		Bottom []interfaces.Component `json:"bottom"`
 	} `json:"content"`
 	Component *components.Component `json:"component"`
-	categories []string
-	menus      map[string][]*aside_menu_item
+	active    string                `json:"-"`
+	items     []*aside_item         `json:"-"`
 }
 
 func NewAside() Aside {
@@ -35,9 +36,9 @@ func NewAside() Aside {
 
 	aside.Component = &component
 	aside.Layout = types.LayoutFlex
-	aside.Content.Top = make([]interfaces.Component, 0)
 	aside.Content.Bottom = make([]interfaces.Component, 0)
-	aside.menus = make(map[string][]*aside_menu_item, 0)
+	aside.active = ""
+	aside.items = make([]*aside_item, 0)
 
 	return aside
 
@@ -51,11 +52,50 @@ func ToAside(element *dom.Element) *Aside {
 
 	aside.Component = &component
 	aside.Layout = types.LayoutFlex
-	aside.Content.Top = make([]interfaces.Component, 0)
 	aside.Content.Bottom = make([]interfaces.Component, 0)
-	aside.menus = make(map[string][]*aside_menu_item, 0)
+	aside.active = ""
+	aside.items = make([]*aside_item, 0)
 
 	return &aside
+
+}
+
+func (aside *Aside) ChangeView(name string) bool {
+
+	var found *aside_item = nil
+
+	for _, item := range aside.items {
+
+		if item.Name == name {
+			found = item
+			break
+		}
+
+	}
+
+	if found != nil {
+
+		for _, item := range aside.items {
+
+			if item.Element != nil {
+
+                if item.Name == found.Name {
+					item.Element.SetAttribute("data-state", "active")
+				} else {
+					item.Element.RemoveAttribute("data-state")
+				}
+
+			}
+
+		}
+
+		aside.active = name
+
+		return true
+
+	}
+
+	return false
 
 }
 
@@ -63,11 +103,7 @@ func (aside *Aside) Disable() bool {
 
 	var result bool
 
-	if len(aside.Content.Top) > 0 || len(aside.Content.Bottom) > 0 {
-
-		for _, component := range aside.Content.Top {
-			component.Disable()
-		}
+	if len(aside.Content.Bottom) > 0 {
 
 		for _, component := range aside.Content.Bottom {
 			component.Disable()
@@ -85,11 +121,7 @@ func (aside *Aside) Enable() bool {
 
 	var result bool
 
-	if len(aside.Content.Top) > 0 || len(aside.Content.Bottom) > 0 {
-
-		for _, component := range aside.Content.Top {
-			component.Enable()
-		}
+	if len(aside.Content.Bottom) > 0 {
 
 		for _, component := range aside.Content.Bottom {
 			component.Enable()
@@ -136,6 +168,7 @@ func (aside *Aside) Mount() bool {
 					event.PreventDefault()
 					event.StopPropagation()
 
+					aside.ChangeView(view)
 					aside.Component.FireEventListeners("change-view", map[string]any{
 						"name": view,
 						"path": path,
@@ -155,27 +188,51 @@ func (aside *Aside) Mount() bool {
 
 		tmp := aside.Component.Element.QuerySelectorAll("div, ul")
 
-		if len(tmp) == 2 && tmp[0].TagName == "DIV" && tmp[1].TagName == "DIV" {
+		if len(tmp) == 3 && tmp[0].TagName == "UL" && tmp[1].TagName == "DIV" && tmp[2].TagName == "DIV" {
 
-			lists_top := tmp[0].QuerySelectorAll("ul")
+			elements_top := tmp[0].QuerySelectorAll("li")
 
-			for _, list := range lists_top {
+			for _, element := range elements_top {
 
-				// TODO: Parse Top Menus into categories
-				// TODO: ul data-category="..."?
-				// TODO: How to sort correctly?
+				link := element.QuerySelector("a")
 
-				if 1 == 2 {
-					fmt.Println(list)
+				if link != nil {
+
+					item := aside_item{
+						Name:     link.GetAttribute("data-view"),
+						Label:    strings.TrimSpace(link.TextContent),
+						Path:     link.GetAttribute("href"),
+						Element:  element,
+					}
+
+					if item.Name != "" {
+
+						if element.GetAttribute("data-state") == "active" {
+							aside.active = item.Name
+							aside.items = append(aside.items, &item)
+						} else {
+							aside.items = append(aside.items, &item)
+						}
+
+					}
+
 				}
 
 			}
 
-			buttons_bottom := tmp[1].QuerySelectorAll("button")
+			// Layout constraint: Middle DIV must be empty
+
+			buttons_bottom := tmp[2].QuerySelectorAll("button")
 			content_bottom := make([]interfaces.Component, 0)
 
 			for _, button := range buttons_bottom {
 				content_bottom = append(content_bottom, ui.ToButton(button))
+			}
+
+			aside.Content.Bottom = content_bottom
+
+			for _, component := range aside.Content.Bottom {
+				component.Mount()
 			}
 
 			return true
@@ -183,7 +240,7 @@ func (aside *Aside) Mount() bool {
 		} else {
 
 			console.Group("Aside: Invalid Markup")
-			console.Error("Expected <ul></ul><div></div>")
+			console.Error("Expected <ul></ul><div></div><div></div>")
 			console.Error(aside.Component.Element.InnerHTML)
 			console.GroupEnd("Aside: Invalid Markup")
 
@@ -194,5 +251,209 @@ func (aside *Aside) Mount() bool {
 	} else {
 		return false
 	}
+
+}
+
+func (aside *Aside) Query(query string) interfaces.Component {
+
+	selectors := utils.SplitQuery(query)
+
+	if len(selectors) >= 2 {
+
+		if aside.Component.Element != nil {
+
+			if utils.MatchesQuery(aside.Component.Element, selectors[0]) == true {
+
+				tmp_query := utils.JoinQuery(selectors[1:])
+
+				for _, content := range aside.Content.Bottom {
+
+					tmp_component := content.Query(tmp_query)
+
+					if tmp_component != nil {
+						return tmp_component
+					}
+
+				}
+
+			}
+
+		}
+
+	} else if len(selectors) == 1 {
+
+		if aside.Component.Element != nil {
+
+			if utils.MatchesQuery(aside.Component.Element, selectors[0]) == true {
+				return aside
+			}
+
+		}
+
+	}
+
+	return nil
+
+}
+
+func (aside *Aside) RegisterView(view interfaces.View) bool {
+
+	name := view.Name()
+	label := view.Label()
+	path := view.Path()
+
+	if name != "" && label != "" && path != "" {
+
+		var found *aside_item = nil
+
+		for _, item := range aside.items {
+
+			if item.Name == name {
+				found = item
+				break
+			}
+
+		}
+
+		if found != nil {
+
+			found.Name = name
+			found.Label = label
+			found.Path = path
+
+			return true
+
+		} else {
+
+			item := aside_item{
+				Name:    name,
+				Label:   label,
+				Path:    path,
+				Element: dom.Document.CreateElement("li"),
+			}
+
+			aside.items = append(aside.items, &item)
+
+			return true
+
+		}
+
+	}
+
+	return false
+
+}
+
+func (aside *Aside) Render() *dom.Element {
+
+	if aside.Component.Element != nil {
+
+		tmp := aside.Component.Element.QuerySelectorAll("div, ul")
+
+		if len(tmp) == 0 {
+			aside.Component.Element.SetInnerHTML("<ul></ul><div></div><div></div>")
+			tmp = aside.Component.Element.QuerySelectorAll("div, ul")
+		}
+
+		if len(tmp) == 3 {
+
+			if aside.Layout != types.LayoutFlex {
+				aside.Component.Element.SetAttribute("data-layout", aside.Layout.String())
+			}
+
+			elements_top := make([]*dom.Element, 0)
+			elements_middle := make([]*dom.Element, 0)
+			elements_bottom := make([]*dom.Element, 0)
+
+			for _, item := range aside.items {
+
+				if item.Name == aside.active {
+					item.Element.SetAttribute("data-state", "active")
+				} else {
+					item.Element.RemoveAttribute("data-state")
+				}
+
+				item.Element.SetInnerHTML("<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>")
+				elements_top = append(elements_top, item.Element)
+
+			}
+
+			// Layout constraint: Middle DIV must be empty
+
+			for _, component := range aside.Content.Bottom {
+				elements_bottom = append(elements_bottom, component.Render())
+			}
+
+			tmp[0].ReplaceChildren(elements_top)
+			tmp[1].ReplaceChildren(elements_middle)
+			tmp[2].ReplaceChildren(elements_bottom)
+
+		}
+
+	}
+
+	return aside.Component.Element
+
+}
+
+func (aside *Aside) SetContentBottom(components []interfaces.Component) {
+	aside.Content.Bottom = components
+}
+
+func (aside *Aside) String() string {
+
+	html := "<aside"
+
+	if aside.Layout != types.LayoutFlex {
+		html += " data-layout=\"" + aside.Layout.String() + "\""
+	}
+
+	html += ">"
+	html += "<ul>"
+
+	for _, item := range aside.items {
+
+		html += "<li"
+
+		if item.Name == aside.active {
+			html += " data-state=\"active\""
+		}
+
+		html += ">"
+		html += "<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>"
+		html += "</li>"
+
+	}
+
+	html += "</ul>"
+	html += "<div>"
+
+	// Layout constraint: Middle DIV must be empty
+
+	html += "</div>"
+	html += "<div>"
+
+	if len(aside.Content.Bottom) > 0 {
+
+		for _, component := range aside.Content.Bottom {
+			html += component.String()
+		}
+
+	}
+
+	html += "</div>"
+	html += "</aside>"
+
+	return html
+
+}
+
+func (aside *Aside) Unmount() bool {
+
+	if aside.Component.Element != nil {
+		aside.Component.Element.RemoveEventListener("click", nil)
+	}
+
+	return true
 
 }

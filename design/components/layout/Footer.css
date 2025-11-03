@@ -39,6 +39,22 @@ footer[data-layout="flow"] {
 	justify-content: unset;
 }
 
+footer div {
+	display: inline-block;
+	width: auto;
+	margin: 0px auto 0px auto;
+	padding: 0px;
+	vertical-align: middle;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+footer div button {
+	width: auto;
+	line-height: 16px;
+	height: 32px;
+}
+
 footer div:first-of-type {
 	display: inline-block;
 	width: auto;
@@ -53,16 +69,6 @@ footer div:first-of-type button[data-action] {
 	color: var(--palette-secondary-color);
 	background: var(--palette-secondary-background);
 	cursor: pointer;
-}
-
-footer div {
-	display: inline-block;
-	width: auto;
-	margin: 0px auto 0px auto;
-	padding: 0px;
-	vertical-align: middle;
-	text-align: center;
-	box-sizing: border-box;
 }
 
 footer div:last-of-type {

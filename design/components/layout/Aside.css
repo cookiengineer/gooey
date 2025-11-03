@@ -119,12 +119,18 @@ aside ul li a[data-view]:before {
 	transition: all 250ms ease-out;
 }
 
-aside > div:first-of-type {
+aside div:first-of-type {
 	margin-bottom: auto;
 }
 
-aside > div:last-of-type {
+aside div:last-of-type {
 	margin-top: auto;
+}
+
+aside div:last-of-type button {
+	width: auto;
+	line-height: 16px;
+	height: 32px;
 }
 
 body:has(> header) > aside {
@@ -177,6 +183,8 @@ body:has(> footer) > aside {
 	}
 
 	aside div button {
+		overflow: hidden;
+		text-overflow: clip;
 		opacity: 0;
 		transition: all 250ms ease-out;
 	}

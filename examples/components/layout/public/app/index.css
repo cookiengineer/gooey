@@ -14,7 +14,8 @@ aside ul li a[data-view="third"]:before {
 	content: '\f0ec';
 }
 
-header button[data-action="settings"]:before {
+header button[data-action="settings"]:before,
+aside button[data-action="settings"]:before {
 	content: '\e80d';
 }
 

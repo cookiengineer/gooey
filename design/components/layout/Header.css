@@ -64,6 +64,12 @@ header ul {
 	user-select: none;
 }
 
+header div button {
+	width: auto;
+	line-height: 16px;
+	height: 32px;
+}
+
 header div:last-of-type {
 	display: inline-block;
 	width: auto;

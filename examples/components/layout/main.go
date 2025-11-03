@@ -29,7 +29,10 @@ func main() {
 	}, false))
 
 	header := layout.ToHeader(dom.Document.QuerySelector("header"))
+	aside := layout.ToAside(dom.Document.QuerySelector("aside"))
+
 	header.Mount()
+	aside.Mount()
 
 	header.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
 
@@ -50,9 +53,46 @@ func main() {
 	}, false))
 	header.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]any) {
 
+		name, ok := attributes["name"].(string)
+
+		if ok == true {
+			aside.ChangeView(name)
+		}
+
 		console.Group("header change-view event")
 		console.Log(attributes)
 		console.GroupEnd("header change-view event")
+
+	}, false))
+
+	aside.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+
+		console.Group("aside action event")
+		console.Log(attributes)
+		console.GroupEnd("aside action event")
+
+		action, ok := attributes["action"].(string)
+
+		if ok == true {
+
+			if action == "settings" {
+				dialog.Show()
+			}
+
+		}
+
+	}, false))
+	aside.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]any) {
+
+		name, ok := attributes["name"].(string)
+
+		if ok == true {
+			header.ChangeView(name)
+		}
+
+		console.Group("aside change-view event")
+		console.Log(attributes)
+		console.GroupEnd("aside change-view event")
 
 	}, false))
 

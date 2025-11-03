@@ -26,7 +26,7 @@ fieldset div {
 	margin: 0px 0px 16px 0px;
 	padding: 0px;
 	flex-direction: row;
-	align-items: stretch;
+	align-items: normal;
 	justify-content: space-between;
 	vertical-align: middle;
 }

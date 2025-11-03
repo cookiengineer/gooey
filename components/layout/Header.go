@@ -7,10 +7,9 @@ import "github.com/cookiengineer/gooey/components/interfaces"
 import "github.com/cookiengineer/gooey/components/types"
 import "github.com/cookiengineer/gooey/components/ui"
 import "github.com/cookiengineer/gooey/components/utils"
-import "sort"
 import "strings"
 
-type header_view_item struct {
+type header_item struct {
 	Name    string
 	Label   string
 	Path    string
@@ -19,13 +18,13 @@ type header_view_item struct {
 
 type Header struct {
 	Layout  types.Layout `json:"layout"`
-	View    string       `json:"view"`
 	Content struct {
 		Left  []interfaces.Component `json:"left"`
 		Right []interfaces.Component `json:"right"`
 	} `json:"content"`
 	Component *components.Component `json:"component"`
-	views     map[string]*header_view_item
+	active    string                `json:"-"`
+	items     []*header_item        `json:"-"`
 }
 
 func NewHeader() Header {
@@ -39,8 +38,8 @@ func NewHeader() Header {
 	header.Layout = types.LayoutFlex
 	header.Content.Left = make([]interfaces.Component, 0)
 	header.Content.Right = make([]interfaces.Component, 0)
-	header.View = ""
-	header.views = make(map[string]*header_view_item)
+	header.active = ""
+	header.items = make([]*header_item, 0)
 
 	return header
 
@@ -56,7 +55,8 @@ func ToHeader(element *dom.Element) *Header {
 	header.Layout = types.LayoutFlex
 	header.Content.Left = make([]interfaces.Component, 0)
 	header.Content.Right = make([]interfaces.Component, 0)
-	header.views = make(map[string]*header_view_item)
+	header.active = ""
+	header.items = make([]*header_item, 0)
 
 	return &header
 
@@ -64,21 +64,26 @@ func ToHeader(element *dom.Element) *Header {
 
 func (header *Header) ChangeView(name string) {
 
-	_, ok := header.views[name]
+	var found *header_item = nil
 
-	if ok == true {
+	for _, item := range header.items {
 
-		for other_name, item := range header.views {
+		if item.Name == name {
+			found = item
+			break
+		}
 
-			if other_name == name {
+	}
 
-				if item.Element != nil {
+	if found != nil {
+
+		for _, item := range header.items {
+
+			if item.Element != nil {
+
+				if item.Name == found.Name {
 					item.Element.SetAttribute("data-state", "active")
-				}
-
-			} else {
-
-				if item.Element != nil {
+				} else {
 					item.Element.RemoveAttribute("data-state")
 				}
 
@@ -86,7 +91,7 @@ func (header *Header) ChangeView(name string) {
 
 		}
 
-		header.View = name
+		header.active = name
 
 	}
 
@@ -169,6 +174,7 @@ func (header *Header) Mount() bool {
 					event.PreventDefault()
 					event.StopPropagation()
 
+					header.ChangeView(view)
 					header.Component.FireEventListeners("change-view", map[string]any{
 						"name": view,
 						"path": path,
@@ -197,28 +203,28 @@ func (header *Header) Mount() bool {
 				content_left = append(content_left, ui.ToButton(button))
 			}
 
-			items_center := tmp[1].QuerySelectorAll("li")
+			elements_center := tmp[1].QuerySelectorAll("li")
 
-			for _, item := range items_center {
+			for _, element := range elements_center {
 
-				link := item.QuerySelector("a")
+				link := element.QuerySelector("a")
 
 				if link != nil {
 
-					view_item := header_view_item{
+					item := header_item{
 						Name:    link.GetAttribute("data-view"),
 						Label:   strings.TrimSpace(link.TextContent),
 						Path:    link.GetAttribute("href"),
-						Element: item,
+						Element: element,
 					}
 
-					if view_item.Name != "" {
+					if item.Name != "" {
 
-						if item.ClassName == "active" {
-							header.View = view_item.Name
-							header.views[view_item.Name] = &view_item
+						if element.GetAttribute("data-state") == "active" {
+							header.active = item.Name
+							header.items = append(header.items, &item)
 						} else {
-							header.views[view_item.Name] = &view_item
+							header.items = append(header.items, &item)
 						}
 
 					}
@@ -316,7 +322,7 @@ func (header *Header) Query(query string) interfaces.Component {
 
 }
 
-func (header *Header) RegisterView(view interfaces.View) {
+func (header *Header) RegisterView(view interfaces.View) bool {
 
 	name := view.Name()
 	label := view.Label()
@@ -324,28 +330,43 @@ func (header *Header) RegisterView(view interfaces.View) {
 
 	if name != "" && label != "" && path != "" {
 
-		item, ok := header.views[name]
+		var found *header_item = nil
 
-		if ok == true {
+		for _, item := range header.items {
 
-			item.Name = name
-			item.Label = label
-			item.Path = path
+			if item.Name == name {
+				found = item
+				break
+			}
+
+		}
+
+		if found != nil {
+
+			found.Name = name
+			found.Label = label
+			found.Path = path
+
+			return true
 
 		} else {
 
-			item := header_view_item{
+			item := header_item{
 				Name:    name,
 				Label:   label,
 				Path:    path,
 				Element: dom.Document.CreateElement("li"),
 			}
 
-			header.views[name] = &item
+			header.items = append(header.items, &item)
+
+			return true
 
 		}
 
 	}
+
+	return false
 
 }
 
@@ -374,7 +395,13 @@ func (header *Header) Render() *dom.Element {
 				elements_left = append(elements_left, component.Render())
 			}
 
-			for _, item := range header.views {
+			for _, item := range header.items {
+
+				if item.Name == header.active {
+					item.Element.SetAttribute("data-state", "active")
+				} else {
+					item.Element.RemoveAttribute("data-state")
+				}
 
 				item.Element.SetInnerHTML("<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>")
 				elements_center = append(elements_center, item.Element)
@@ -427,31 +454,17 @@ func (header *Header) String() string {
 	html += "</div>"
 	html += "<ul>"
 
-	if len(header.views) > 0 {
+	for _, item := range header.items {
 
-		paths := make([]string, 0)
+		html += "<li"
 
-		for _, item := range header.views {
-			paths = append(paths, item.Path)
+		if item.Name == header.active {
+			html += " data-state=\"active\""
 		}
 
-		sort.Strings(paths)
-
-		for p := 0; p < len(paths); p++ {
-
-			item := getHeaderItemByPath(paths[p], header.views)
-
-			html += "<li"
-
-			if item.Name == header.View {
-				html += " class=\"active\""
-			}
-
-			html += ">"
-			html += "<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>"
-			html += "</li>"
-
-		}
+		html += ">"
+		html += "<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>"
+		html += "</li>"
 
 	}
 
