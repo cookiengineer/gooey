@@ -16,6 +16,7 @@ type Main struct {
 	Storage *Storage `json:"storage"`
 
 	Header *layout.Header `json:"header"`
+	Aside  *layout.Aside  `json:"aside"`
 	Footer *layout.Footer `json:"footer"`
 	Dialog *layout.Dialog `json:"dialog"`
 
@@ -93,6 +94,10 @@ func (main *Main) ChangeView(name string) bool {
 			main.Header.ChangeView(name)
 		}
 
+		if main.Aside != nil {
+			main.Aside.ChangeView(name)
+		}
+
 		main.View = view
 		main.View.Enter()
 
@@ -118,6 +123,7 @@ func (main *Main) GetView(name string) interfaces.View {
 
 func (main *Main) Mount() bool {
 
+	main.Document.Register("aside", components.WrapComponent(layout.ToAside))
 	main.Document.Register("header", components.WrapComponent(layout.ToHeader))
 	main.Document.Register("footer", components.WrapComponent(layout.ToFooter))
 	main.Document.Register("dialog", components.WrapComponent(layout.ToDialog))
@@ -173,7 +179,7 @@ func (main *Main) Mount() bool {
 
 	})
 
-	// Don't mount Components
+	// Mount all Components recursively
 	main.Document.Mount()
 
 	header, ok1 := components.UnwrapComponent[*layout.Header](main.Document.QueryComponent("body > header"))
@@ -211,26 +217,61 @@ func (main *Main) Mount() bool {
 		main.Header = nil
 	}
 
-	footer, ok2 := components.UnwrapComponent[*layout.Footer](main.Document.QueryComponent("body > footer"))
+	aside, ok2 := components.UnwrapComponent[*layout.Aside](main.Document.QueryComponent("body > aside"))
 
-	if footer != nil && ok2 == true {
+	if aside != nil && ok2 == true {
+
+		main.Aside = aside
+		main.Aside.Component.AddEventListener("change-view", components.ToEventListener(func(event string, attributes map[string]any) {
+
+			name, ok1 := attributes["name"].(string)
+			path, ok2 := attributes["path"].(string)
+
+			if ok1 == true && ok2 == true {
+
+				_, ok3 := main.views[name]
+
+				if ok3 == true {
+
+					// Single-page web app
+					main.ChangeView(name)
+
+				} else {
+
+					// TODO: History API integration?
+					// Multi-page web app
+					location.Location.Replace(path)
+
+				}
+
+			}
+
+		}, false))
+
+	} else {
+		main.Aside = nil
+	}
+
+	footer, ok3 := components.UnwrapComponent[*layout.Footer](main.Document.QueryComponent("body > footer"))
+
+	if footer != nil && ok3 == true {
 		main.Footer = footer
 	} else {
 		main.Footer = nil
 	}
 
-	dialog, ok3 := components.UnwrapComponent[*layout.Dialog](main.Document.QueryComponent("body > dialog"))
+	dialog, ok4 := components.UnwrapComponent[*layout.Dialog](main.Document.QueryComponent("body > dialog"))
 
-	if dialog != nil && ok3 == true {
+	if dialog != nil && ok4 == true {
 		main.Dialog = dialog
 	} else {
 		main.Dialog = nil
 	}
 
 	// XXX: Initialize Controllers AFTER the Component Graph is ready
-	main_component, ok4 := components.UnwrapComponent[*components.Component](main.Document.QueryComponent("body > main"))
+	main_component, ok5 := components.UnwrapComponent[*components.Component](main.Document.QueryComponent("body > main"))
 
-	if len(main.views) > 0 && main_component != nil && ok4 == true {
+	if len(main.views) > 0 && main_component != nil && ok5 == true {
 
 		for name, _ := range main.views {
 
