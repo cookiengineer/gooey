@@ -88,6 +88,11 @@ func (main *Main) ChangeView(name string) bool {
 			main.View = nil
 		}
 
+		if main.Controller != nil {
+			main.Controller.Leave()
+			main.Controller = nil
+		}
+
 		main.Element.SetAttribute("data-view", name)
 
 		if main.Header != nil {
@@ -96,6 +101,13 @@ func (main *Main) ChangeView(name string) bool {
 
 		if main.Aside != nil {
 			main.Aside.ChangeView(name)
+		}
+
+		controller, ok2 := main.controllers[name]
+
+		if ok2 == true {
+			main.Controller = controller
+			main.Controller.Enter()
 		}
 
 		main.View = view

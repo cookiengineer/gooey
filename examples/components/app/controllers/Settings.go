@@ -18,9 +18,23 @@ func NewSettings(main *app.Main, view interfaces.View) *Settings {
 	controller.Schema = &schemas.Settings{}
 	controller.View = view.(*app.View)
 
-	// TODO
-
 	return &controller
+
+}
+
+func (controller *Settings) Enter() bool {
+
+	// TODO: Add EventListeners
+
+	return true
+
+}
+
+func (controller *Settings) Leave() bool {
+
+	// TODO: Remove EventListeners
+
+	return true
 
 }
 

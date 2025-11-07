@@ -1,4 +1,17 @@
 
+## [v0.0.8] - UNRELEASED
+
+### Changed
+
+- Changed [app.Main](/components/app/Main.go) method `ChangeView()` which now calls both the `View`'s and the `Controller`'s `Leave()` and `Enter()` methods correctly
+- Added [interfaces.Controller](/components/interfaces/Controller.go) method `Enter()`
+- Added [interfaces.Controller](/components/interfaces/Controller.go) method `Leave()`
+
+### Added
+
+- Added [app.Controller](/components/app/Controller.go) method `Enter()`
+- Added [app.Controller](/components/app/Controller.go) method `Leave()`
+
 ## [v0.0.7] - 2025-11-03
 
 ### Changed

@@ -31,27 +31,29 @@
 			<ul><li><a data-view="tasks" href="/index.html">Tasks</a></li><li class="active"><a data-view="settings" href="/settings.html">Settings</a></li></ul>
 		</header>
 		<main data-view="settings">
-			<article>
-				<h3 data-type="settings">Settings</h3>
-				<fieldset>
-					<div>
-						<label for="settings-user" data-type="user">User</label>
-						<input id="settings-user" type="text" placeholder="John Doe"/>
-					</div>
-					<div>
-						<label for="settings-password" data-type="password">Password</label>
-						<input id="settings-password" type="password"/>
-					</div>
-					<div>
-						<label for="settings-folder" data-type="folder">Folder</label>
-						<input id="settings-folder" type="text" placeholder="/path/to/folder"/>
-					</div>
-					<div>
-						<label for="settings-port" data-type="port">Port</label>
-						<input id="settings-port" type="number" min="1" max="65534" value="1234"/>
-					</div>
-				</fieldset>
-			</article>
+			<section data-name="settings" data-label="Settings" data-path="/settings.html" data-state="active">
+				<article>
+					<h3 data-type="settings">Settings</h3>
+					<fieldset>
+						<div>
+							<label for="settings-user" data-type="user">User</label>
+							<input id="settings-user" type="text" placeholder="John Doe"/>
+						</div>
+						<div>
+							<label for="settings-password" data-type="password">Password</label>
+							<input id="settings-password" type="password"/>
+						</div>
+						<div>
+							<label for="settings-folder" data-type="folder">Folder</label>
+							<input id="settings-folder" type="text" placeholder="/path/to/folder"/>
+						</div>
+						<div>
+							<label for="settings-port" data-type="port">Port</label>
+							<input id="settings-port" type="number" min="1" max="65534" value="1234"/>
+						</div>
+					</fieldset>
+				</article>
+			</section>
 		</main>
 		<footer>
 			<div><button class="secondary" data-action="cancel" disabled>Cancel</button></div>

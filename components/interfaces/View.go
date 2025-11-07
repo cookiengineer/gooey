@@ -16,8 +16,10 @@ type View interface {
 	Disable() bool
 	Mount()   bool
 	Unmount() bool
-	Enter()   bool
-	Leave()   bool
+
+	// State Transition Methods
+	Enter() bool
+	Leave() bool
 
 	// Component Methods
 	Query(string) Component

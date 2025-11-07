@@ -22,6 +22,14 @@ func NewController(name string, main *Main, view *View) *Controller {
 
 }
 
+func (controller *Controller) Enter() bool {
+	return true
+}
+
+func (controller *Controller) Leave() bool {
+	return true
+}
+
 func (controller *Controller) Name() string {
 	return controller.name
 }

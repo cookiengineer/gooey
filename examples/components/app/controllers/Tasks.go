@@ -23,6 +23,12 @@ func NewTasks(main *app.Main, view interfaces.View) *Tasks {
 	controller.Schema = &schemas.Tasks{}
 	controller.View = view.(*app.View)
 
+	return &controller
+
+}
+
+func (controller *Tasks) Enter() bool {
+
 	// IMPORTANT: The Component Query API is self-including
 
 	fieldset, ok0 := components.UnwrapComponent[*content.Fieldset](controller.Main.Dialog.Query("dialog > fieldset"))
@@ -230,9 +236,18 @@ func NewTasks(main *app.Main, view interfaces.View) *Tasks {
 
 	}, false))
 
-	controller.Update()
+	go controller.Update()
 
-	return &controller
+	return true
+
+}
+
+func (controller *Tasks) Leave() bool {
+
+	controller.Main.Footer.Component.RemoveEventListener("action", nil)
+	controller.Main.Dialog.Component.RemoveEventListener("action", nil)
+
+	return true
 
 }
 
