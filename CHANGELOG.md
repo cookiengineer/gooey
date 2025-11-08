@@ -4,13 +4,16 @@
 ### Changed
 
 - Changed [app.Main](/components/app/Main.go) method `ChangeView()` which now calls both the `View`'s and the `Controller`'s `Leave()` and `Enter()` methods correctly
-- Added [interfaces.Controller](/components/interfaces/Controller.go) method `Enter()`
-- Added [interfaces.Controller](/components/interfaces/Controller.go) method `Leave()`
+- Changed [app.View](/components/app/View.go) method `Mount()` which now uses the `app.Main.Document`'s Component Registry
+- Added [interfaces.Controller](/components/interfaces/Controller.go) method `Enter() bool`
+- Added [interfaces.Controller](/components/interfaces/Controller.go) method `Leave() bool`
 
 ### Added
 
-- Added [app.Controller](/components/app/Controller.go) method `Enter()`
-- Added [app.Controller](/components/app/Controller.go) method `Leave()`
+- Added [components.Document](/components/Document.go) method `CreateComponent(*dom.Element) interfaces.Component`
+- Added [components.Document](/components/Document.go) method `IsRegistered(tagname string) bool`
+- Added [app.Controller](/components/app/Controller.go) method `Enter() bool`
+- Added [app.Controller](/components/app/Controller.go) method `Leave() bool`
 
 ## [v0.0.7] - 2025-11-03
 
