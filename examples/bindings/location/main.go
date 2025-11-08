@@ -9,15 +9,16 @@ import "time"
 func main() {
 
 	document := dom.GetDocument()
+	location := location.GetLocation()
 
 	element := document.QuerySelector("#location")
-	details, err := json.MarshalIndent(location.Location, "", "\t")
+	details, err := json.MarshalIndent(location, "", "\t")
 
 	if err == nil {
 		element.SetInnerHTML(string(details))
 	}
 
-	console.Log(location.Location)
+	console.Log(location)
 
 	for true {
 

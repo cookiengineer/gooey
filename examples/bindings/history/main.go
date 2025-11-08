@@ -11,7 +11,7 @@ func renderEvent(event *history.PopStateEvent) string {
 	html := ""
 	html += "<li>"
 
-	data1, err1 := json.Marshal(history.History.State)
+	data1, err1 := json.Marshal(history.GetHistory().State)
 	data2, err2 := json.Marshal(event)
 
 	if err1 == nil {
@@ -31,12 +31,13 @@ func renderEvent(event *history.PopStateEvent) string {
 func main() {
 
 	document := dom.GetDocument()
+	history1 := history.GetHistory()
 
 	list_events    := document.QuerySelector("main ul")
 	button_back    := document.QuerySelector("main button[data-action=\"back\"]")
 	button_forward := document.QuerySelector("main button[data-action=\"forward\"]")
 
-	history.History.AddEventListener(history.ToEventListener(func(event *history.PopStateEvent) {
+	history1.AddEventListener(history.ToEventListener(func(event *history.PopStateEvent) {
 
 		html := renderEvent(event)
 		list_events.InsertAdjacentHTML("beforeend", html)
@@ -47,16 +48,16 @@ func main() {
 	}))
 
 	button_back.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
-		history.History.Back()
+		history1.Back()
 	}))
 
 	button_forward.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
-		history.History.Forward()
+		history1.Forward()
 	}))
 
-	history.History.PushState(&map[string]any{"page": 1}, "first page",  "/page-1.html")
-	history.History.PushState(&map[string]any{"page": 2}, "second page", "/page-2.html")
-	history.History.PushState(&map[string]any{"page": 3}, "third page", "/page-3.html")
+	history1.PushState(&map[string]any{"page": 1}, "first page",  "/page-1.html")
+	history1.PushState(&map[string]any{"page": 2}, "second page", "/page-2.html")
+	history1.PushState(&map[string]any{"page": 3}, "third page", "/page-3.html")
 
 	for true {
 

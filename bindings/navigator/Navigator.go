@@ -4,9 +4,13 @@ package navigator
 
 import "syscall/js"
 
-var Navigator navigator
+var global_navigator *Navigator
 
-type navigator struct {
+func init() {
+	global_navigator = GetNavigator()
+}
+
+type Navigator struct {
 	AppCodeName         string    `json:"appCodeName"`
 	AppName             string    `json:"appName"`
 	AppVersion          string    `json:"appVersion"`
@@ -32,54 +36,64 @@ type navigator struct {
 
 }
 
-func init() {
+func GetNavigator() *Navigator {
 
-	navigator_value := js.Global().Get("navigator")
+	if global_navigator != nil {
 
-	do_not_track := false
-	languages := make([]string, 0)
+		return global_navigator
 
-	tmp1 := navigator_value.Get("doNotTrack")
+	} else {
 
-	if !tmp1.IsNull() && !tmp1.IsUndefined() && tmp1.String() == "1" {
-		do_not_track = true
-	}
+		navigator_value := js.Global().Get("navigator")
 
-	tmp2 := navigator_value.Get("languages")
+		do_not_track := false
+		languages := make([]string, 0)
 
-	if !tmp2.IsNull() && !tmp2.IsUndefined() {
+		tmp1 := navigator_value.Get("doNotTrack")
 
-		for t := 0; t < tmp2.Length(); t++ {
+		if !tmp1.IsNull() && !tmp1.IsUndefined() && tmp1.String() == "1" {
+			do_not_track = true
+		}
 
-			val := tmp2.Index(t)
+		tmp2 := navigator_value.Get("languages")
 
-			if !val.IsNull() && !val.IsUndefined() && val.String() != "" {
-				languages = append(languages, val.String())
+		if !tmp2.IsNull() && !tmp2.IsUndefined() {
+
+			for t := 0; t < tmp2.Length(); t++ {
+
+				val := tmp2.Index(t)
+
+				if !val.IsNull() && !val.IsUndefined() && val.String() != "" {
+					languages = append(languages, val.String())
+				}
+
 			}
 
 		}
 
-	}
+		navigator := Navigator{
+			AppCodeName:         navigator_value.Get("appCodeName").String(),
+			AppName:             navigator_value.Get("appName").String(),
+			AppVersion:          navigator_value.Get("appVersion").String(),
+			CookieEnabled:       navigator_value.Get("cookieEnabled").Bool(),
+			DoNotTrack:          do_not_track,
+			HardwareConcurrency: uint(navigator_value.Get("hardwareConcurrency").Int()),
+			Language:            navigator_value.Get("language").String(),
+			Languages:           languages,
+			MaxTouchPoints:      uint(navigator_value.Get("maxTouchPoints").Int()),
+			OnLine:              navigator_value.Get("onLine").Bool(),
+			Platform:            navigator_value.Get("platform").String(),
+			Product:             navigator_value.Get("product").String(),
+			ProductSub:          navigator_value.Get("productSub").String(),
+			PDFViewerEnabled:    navigator_value.Get("pdfViewerEnabled").Bool(),
+			UserAgent:           navigator_value.Get("userAgent").String(),
+			Vendor:              navigator_value.Get("vendor").String(),
+			VendorSub:           navigator_value.Get("vendorSub").String(),
+			Webdriver:           navigator_value.Get("webdriver").Bool(),
+		}
 
-	Navigator = navigator{
-		AppCodeName:         navigator_value.Get("appCodeName").String(),
-		AppName:             navigator_value.Get("appName").String(),
-		AppVersion:          navigator_value.Get("appVersion").String(),
-		CookieEnabled:       navigator_value.Get("cookieEnabled").Bool(),
-		DoNotTrack:          do_not_track,
-		HardwareConcurrency: uint(navigator_value.Get("hardwareConcurrency").Int()),
-		Language:            navigator_value.Get("language").String(),
-		Languages:           languages,
-		MaxTouchPoints:      uint(navigator_value.Get("maxTouchPoints").Int()),
-		OnLine:              navigator_value.Get("onLine").Bool(),
-		Platform:            navigator_value.Get("platform").String(),
-		Product:             navigator_value.Get("product").String(),
-		ProductSub:          navigator_value.Get("productSub").String(),
-		PDFViewerEnabled:    navigator_value.Get("pdfViewerEnabled").Bool(),
-		UserAgent:           navigator_value.Get("userAgent").String(),
-		Vendor:              navigator_value.Get("vendor").String(),
-		VendorSub:           navigator_value.Get("vendorSub").String(),
-		Webdriver:           navigator_value.Get("webdriver").Bool(),
+		return &navigator
+
 	}
 
 }

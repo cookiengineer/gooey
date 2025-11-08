@@ -3,8 +3,13 @@
 
 ### Changed
 
-- Changed [bindings.Window](/bindings/Window.go) method `GetWindow() *Window` behavior for better API docs
-- Changed [dom.Document](/bindings/Document.go) method `GetDocument() *Document` behavior for better API docs
+- Changed [bindings.Window](/bindings/Window.go) to method `GetWindow() *Window` for better API docs
+- Changed [dom.Document](/bindings/dom/Document.go) to method `GetDocument() *Document` for better API docs
+- Changed [history.History](/bindings/history/History.go) to method `GetHistory() *History` for better API docs
+- Changed [location.Location](/bindings/location/Location.go) to method `GetLocation() *Location` for better API docs
+- Changed [navigator.Navigator](/bindings/navigator/Navigator.go) to method `GetNavigator() *Navigator` for better API docs
+- Changed [storages.LocalStorage](/bindings/storages/LocalStorage.go) to method `GetLocalStorage() *Storage` for better API docs
+- Changed [storages.SessionStorage](/bindings/storages/SessionStorage.go) to method `GetSessionStorage() *Storage` for better API docs
 - Changed [app.Main](/components/app/Main.go) method `ChangeView()` which now calls both the `View`'s and the `Controller`'s `Leave()` and `Enter()` methods correctly
 - Changed [app.View](/components/app/View.go) method `Mount()` which now uses the `app.Main.Document`'s Component Registry
 - Added [interfaces.Controller](/components/interfaces/Controller.go) method `Enter() bool`

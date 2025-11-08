@@ -2,12 +2,17 @@
 
 package storages
 
-var SessionStorage Storage
+var global_sessionstorage *Storage
 
 func init() {
 
-	SessionStorage = Storage{
+	global_sessionstorage = &Storage{
 		name: "sessionStorage",
 	}
 
 }
+
+func GetSessionStorage() *Storage {
+	return global_sessionstorage
+}
+

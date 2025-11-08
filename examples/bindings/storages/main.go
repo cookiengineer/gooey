@@ -9,11 +9,12 @@ import "time"
 func main() {
 
 	document := dom.GetDocument()
+	storage := storages.GetSessionStorage()
 	element := document.QuerySelector("#seconds")
 
 	var seconds int = 0
 
-	tmp := storages.SessionStorage.GetItemInt("seconds")
+	tmp := storage.GetItemInt("seconds")
 
 	if tmp > 0 {
 		seconds = tmp
@@ -21,7 +22,7 @@ func main() {
 
 	timers.SetInterval(func() {
 		seconds++
-		storages.SessionStorage.SetItem("seconds", seconds)
+		storage.SetItem("seconds", seconds)
 		element.SetInnerHTML("This page has been running for " + strconv.Itoa(seconds) + " seconds!")
 	}, 1000)
 

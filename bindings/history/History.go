@@ -4,9 +4,13 @@ package history
 
 import "syscall/js"
 
-var History history
+var global_history *History
 
-type history struct {
+func init() {
+	global_history = GetHistory()
+}
+
+type History struct {
 	listeners []*EventListener `json:"listeners"`
 	stack     []*HistoryState  `json:"stack"`
 	Length    uint             `json:"length"`
@@ -14,18 +18,28 @@ type history struct {
 	Value     *js.Value        `json:"value"`
 }
 
-func init() {
+func GetHistory() *History {
 
-	value := js.Global().Get("window").Get("history")
+	if global_history != nil {
 
-	History = history{
-		listeners: make([]*EventListener, 0),
-		Value:     &value,
+		return global_history
+
+	} else {
+
+		value := js.Global().Get("window").Get("history")
+
+		history := History{
+			listeners: make([]*EventListener, 0),
+			Value:     &value,
+		}
+
+		return &history
+
 	}
 
 }
 
-func (history *history) AddEventListener(listener *EventListener) bool {
+func (history *History) AddEventListener(listener *EventListener) bool {
 
 	if listener != nil {
 
@@ -63,7 +77,7 @@ func (history *history) AddEventListener(listener *EventListener) bool {
 
 }
 
-func (history *history) getListenerById(id uint) *EventListener {
+func (history *History) getListenerById(id uint) *EventListener {
 
 	var result *EventListener
 
@@ -80,7 +94,7 @@ func (history *history) getListenerById(id uint) *EventListener {
 
 }
 
-func (history *history) RemoveEventListener(listener *EventListener) bool {
+func (history *History) RemoveEventListener(listener *EventListener) bool {
 
 	var result bool
 
@@ -133,7 +147,7 @@ func (history *history) RemoveEventListener(listener *EventListener) bool {
 
 }
 
-func (history *history) Back() {
+func (history *History) Back() {
 
 	if len(history.stack) > 0 {
 
@@ -169,7 +183,7 @@ func (history *history) Back() {
 
 }
 
-func (history *history) Forward() {
+func (history *History) Forward() {
 
 	if len(history.stack) > 0 {
 
@@ -204,7 +218,7 @@ func (history *history) Forward() {
 
 }
 
-func (history *history) Go(delta int) {
+func (history *History) Go(delta int) {
 
 	if delta > 0 {
 
@@ -226,7 +240,7 @@ func (history *history) Go(delta int) {
 
 }
 
-func (history *history) PushState(statemap *map[string]any, title string, url string) bool {
+func (history *History) PushState(statemap *map[string]any, title string, url string) bool {
 
 	var result bool
 
@@ -271,7 +285,7 @@ func (history *history) PushState(statemap *map[string]any, title string, url st
 
 }
 
-func (history *history) ReplaceState(statemap *map[string]any, title string, url string) bool {
+func (history *History) ReplaceState(statemap *map[string]any, title string, url string) bool {
 
 	var result bool
 

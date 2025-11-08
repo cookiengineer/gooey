@@ -2,12 +2,17 @@
 
 package storages
 
-var LocalStorage Storage
+var global_localstorage *Storage
 
 func init() {
 
-	LocalStorage = Storage{
+	global_localstorage = &Storage{
 		name: "localStorage",
 	}
 
 }
+
+func GetLocalStorage() *Storage {
+	return global_localstorage
+}
+

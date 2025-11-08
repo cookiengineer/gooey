@@ -9,15 +9,16 @@ import "time"
 func main() {
 
 	document := dom.GetDocument()
+	navigator1 := navigator.GetNavigator()
 
 	element := document.QuerySelector("#navigator")
-	details, err := json.MarshalIndent(navigator.Navigator, "", "\t")
+	details, err := json.MarshalIndent(navigator1, "", "\t")
 
 	if err == nil {
 		element.SetInnerHTML(string(details))
 	}
 
-	console.Log(navigator.Navigator)
+	console.Log(navigator1)
 
 	for true {
 
