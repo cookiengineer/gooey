@@ -37,8 +37,46 @@ func ToDocument(element *dom.Element) *Document {
 
 }
 
-func (document *Document) Register(tagname string, wrapper ComponentConstructor) {
-	document.Registry[strings.ToLower(tagname)] = wrapper
+func (document *Document) CreateComponent(element *dom.Element) interfaces.Component {
+
+	if element != nil {
+
+		tagname := strings.ToLower(element.TagName)
+		wrapper, ok := document.Registry[tagname]
+
+		if ok == true {
+
+			wrapped_component := wrapper(element)
+
+			if wrapped_component != nil {
+				return wrapped_component
+			}
+
+		} else {
+
+			component := NewComponent(element)
+			return interfaces.Component(&component)
+
+		}
+
+	}
+
+	return nil
+
+}
+
+func (document *Document) IsRegistered(tagname string) bool {
+
+	var result bool
+
+	_, ok := document.Registry[strings.ToLower(tagname)]
+
+	if ok == true {
+		result = true
+	}
+
+	return result
+
 }
 
 func (document *Document) Mount() bool {
@@ -75,7 +113,7 @@ func (document *Document) Mount() bool {
 				} else {
 
 					component := NewComponent(element)
-					traverseComponent(document, &component)
+					document.traverseComponent(&component)
 					content = append(content, &component)
 
 				}
@@ -219,6 +257,10 @@ func (document *Document) QuerySelectorAll(query string) []*dom.Element {
 
 }
 
+func (document *Document) Register(tagname string, wrapper ComponentConstructor) {
+	document.Registry[strings.ToLower(tagname)] = wrapper
+}
+
 func (document *Document) String() string {
 
 	html := "<!DOCTYPE html>"
@@ -233,6 +275,39 @@ func (document *Document) String() string {
 	html += "</html>"
 
 	return html
+
+}
+
+func (document *Document) traverseComponent(component *Component) {
+
+	if component != nil {
+
+		nested_content := make([]interfaces.Component, 0)
+		nested_children := component.Element.Children()
+
+		for _, nested_element := range nested_children {
+
+			if document.IsRegistered(nested_element.TagName) == true {
+
+				nested_component := document.CreateComponent(nested_element)
+
+				if nested_component != nil {
+					nested_content = append(nested_content, nested_component)
+				}
+
+			} else {
+
+				nested_component := NewComponent(nested_element)
+				document.traverseComponent(&nested_component)
+				nested_content = append(nested_content, &nested_component)
+
+			}
+
+		}
+
+		component.SetContent(nested_content)
+
+	}
 
 }
 

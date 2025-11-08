@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Gooey App Views Example</title>
+
+		<!-- WebView -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'">
+		<meta http-equiv="Content-Security-Policy" content="script-src-elem 'self'">
+		<meta http-equiv="Content-Security-Policy" content="frame-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="worker-src 'self'">
+		<meta http-equiv="Content-Security-Policy" content="connect-src 'self'">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="manifest" href="/design/site.webmanifest" />
+
+		<!-- Favicon -->
+		<link rel="icon" type="image/png" href="/design/favicon/favicon-96x96.png" sizes="96x96" />
+		<link rel="icon" type="image/svg+xml" href="/design/favicon/favicon.svg" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/design/favicon/apple-touch-icon.png" sizes="180x180" />
+
+		<!-- Design -->
+		<link rel="stylesheet" href="/design/index.css" />
+
+		<!-- App Design -->
+		<link rel="stylesheet" href="/app/index.css" />
+	</head>
+	<body>
+		<header>
+			<div></div>
+			<ul><li class="active"><a data-view="settings" href="/index.html">Settings</a></li></ul>
+			<div></div>
+		</header>
+		<main data-view="settings">
+			<section data-name="settings" data-label="Settings" data-path="/index.html" data-state="active">
+				<app-custom-component data-name="example">
+					<h3>This is a custom App Component</h3>
+					<p>
+						It automatically parses and maps nested &lt;button&gt;, &lt;input&gt;,
+						&lt;select&gt; and &lt;textarea&gt; elements.
+						It is mounted manually by the custom <q>Settings</q> view.
+					</p>
+					<p>
+						Gooey default stylesheets are also applied to demonstrate flexibility.
+					</p>
+					<button data-action="create">Example Button</button>
+					<input type="number" min="1" max="100" value="50"/>
+					<textarea>
+						Example Textarea
+					</textarea>
+				</app-custom-component>
+			</section>
+		</main>
+		<footer>
+			<div></div>
+			<div></div>
+			<div></div>
+		</footer>
+		<script src="wasm_exec.js"></script>
+		<script src="wasm_init.js"></script>
+	</body>
+</html>

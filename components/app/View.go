@@ -3,8 +3,6 @@
 package app
 
 import "github.com/cookiengineer/gooey/bindings/dom"
-import "github.com/cookiengineer/gooey/components/content"
-import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/components/interfaces"
 import "github.com/cookiengineer/gooey/components/types"
@@ -12,12 +10,12 @@ import "sort"
 import "strings"
 
 type View struct {
-	Element *dom.Element           `json:"element"`
-	Layout  types.Layout           `json:"layout"`
-	Content []interfaces.Component `json:"content"`
-	name    string                 `json:"name"`
-	label   string                 `json:"label"`
-	path    string                 `json:"path"`
+	Element  *dom.Element           `json:"element"`
+	Layout   types.Layout           `json:"layout"`
+	Content  []interfaces.Component `json:"content"`
+	name     string                 `json:"-"`
+	label    string                 `json:"-"`
+	path     string                 `json:"-"`
 }
 
 func NewView(name string, label string, path string) *View {
@@ -114,20 +112,7 @@ func (view *View) Mount() bool {
 			view.path = strings.ToLower(tmp_path)
 		}
 
-		elements := view.Element.Children()
-		components := make([]interfaces.Component, 0)
-
-		for _, element := range elements {
-
-			if element.TagName == "ARTICLE" {
-				components = append(components, layout.ToArticle(element))
-			} else if element.TagName == "TABLE" {
-				components = append(components, content.ToTable(element))
-			}
-
-		}
-
-		view.Content = components
+		// Components are mapped inside app.Main due to cyclic dependency on interfaces
 
 		for _, component := range view.Content {
 			component.Mount()

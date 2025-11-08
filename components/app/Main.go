@@ -160,13 +160,25 @@ func (main *Main) Mount() bool {
 					if custom_view != nil {
 						main.views[name] = custom_view
 					} else {
-						main.views[name] = ToView(element)
+
+						view := ToView(element)
+						main.prepareViewContent(view)
+
+						main.views[name] = interfaces.View(view)
+
 					}
 
 				} else {
 
-					main.views[name] = ToView(element)
+					view := ToView(element)
+					main.prepareViewContent(view)
 
+					main.views[name] = interfaces.View(view)
+
+				}
+
+				if main.Aside != nil {
+					main.Aside.RegisterView(main.views[name])
 				}
 
 				if main.Header != nil {
@@ -316,6 +328,29 @@ func (main *Main) Mount() bool {
 	}
 
 	return false
+
+}
+
+func (main *Main) prepareViewContent(view *View) {
+
+	if view.Element != nil {
+
+		elements := view.Element.Children()
+		components := make([]interfaces.Component, 0)
+
+		for _, element := range elements {
+
+			component := main.Document.CreateComponent(element)
+
+			if component != nil {
+				components = append(components, component)
+			}
+
+		}
+
+		view.Content = components
+
+	}
 
 }
 

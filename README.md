@@ -92,6 +92,7 @@ upstream via `go test -c`, the plan is to migrate towards fully integrated unit 
 
 - [app](/examples/components/app)
 - [app-components](/examples/components/app-components)
+- [app-views](/examples/components/app-views)
 - [content-fieldset](/examples/components/content-fieldset)
 - [content-linechart](/examples/components/content-linechart)
 - [content-piechart](/examples/components/content-piechart)

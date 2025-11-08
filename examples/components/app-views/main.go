@@ -6,6 +6,7 @@ import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/components/ui"
 import app_components "example/components"
 import app_controllers "example/controllers"
+import app_views "example/views"
 import "time"
 
 func main() {
@@ -22,6 +23,9 @@ func main() {
 
 	// Register App Controllers
 	app_controllers.RegisterTo(main)
+
+	// Register App Views
+	app_views.RegisterTo(main)
 
 	// Start the App
 	main.Mount()
