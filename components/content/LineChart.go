@@ -28,7 +28,7 @@ func NewLineChart(name string, labels []string, properties []string, types []str
 
 	var chart LineChart
 
-	element := dom.Document.CreateElement("figure")
+	element := dom.GetDocument().CreateElement("figure")
 	component := components.NewComponent(element)
 	dataset := data.NewDataset(0)
 
@@ -310,7 +310,7 @@ func (chart *LineChart) Render() *dom.Element {
 
 				for p, property := range chart.Properties {
 
-					layer := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "g")
+					layer := dom.GetDocument().CreateElementNS("http://www.w3.org/2000/svg", "g")
 					layer.SetAttribute("data-property", property)
 					layer.SetAttribute("data-palette", strconv.Itoa(p+1))
 
@@ -353,7 +353,7 @@ func (chart *LineChart) Render() *dom.Element {
 
 			for p, property := range chart.Properties {
 
-				label := dom.Document.CreateElement("label")
+				label := dom.GetDocument().CreateElement("label")
 				label.SetAttribute("data-palette", strconv.Itoa(p+1))
 				label.SetAttribute("data-property", property)
 				label.SetInnerHTML(chart.Labels[p])

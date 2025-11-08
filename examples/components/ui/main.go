@@ -8,7 +8,9 @@ import "time"
 
 func main() {
 
-	button := ui.ToButton(dom.Document.QuerySelector("button"))
+	document := dom.GetDocument()
+
+	button := ui.ToButton(document.QuerySelector("button"))
 	button.Mount()
 
 	button.Component.AddEventListener("click", components.ToEventListener(func(event string, attributes map[string]any) {
@@ -19,7 +21,7 @@ func main() {
 
 	}, false))
 
-	input := ui.ToInput(dom.Document.QuerySelector("input"))
+	input := ui.ToInput(document.QuerySelector("input"))
 	input.Mount()
 
 	input.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
@@ -30,7 +32,7 @@ func main() {
 
 	}, false))
 
-	selekt := ui.ToSelect(dom.Document.QuerySelector("select"))
+	selekt := ui.ToSelect(document.QuerySelector("select"))
 	selekt.Mount()
 
 	selekt.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {
@@ -41,7 +43,7 @@ func main() {
 
 	}, false))
 
-	textarea := ui.ToTextarea(dom.Document.QuerySelector("textarea"))
+	textarea := ui.ToTextarea(document.QuerySelector("textarea"))
 	textarea.Mount()
 
 	textarea.Component.AddEventListener("change-value", components.ToEventListener(func(event string, attributes map[string]any) {

@@ -25,7 +25,7 @@ func NewSelect(label string, value string, values []string) Select {
 
 	var self Select
 
-	element := dom.Document.CreateElement("select")
+	element := dom.GetDocument().CreateElement("select")
 	component := components.NewComponent(element)
 
 	self.Component = &component
@@ -204,7 +204,7 @@ func (self *Select) Render() *dom.Element {
 
 		if self.Label != "" {
 
-			placeholder := dom.Document.CreateElement("option")
+			placeholder := dom.GetDocument().CreateElement("option")
 			placeholder.SetAttribute("value", "")
 			placeholder.SetInnerHTML(self.Label)
 
@@ -218,7 +218,7 @@ func (self *Select) Render() *dom.Element {
 
 			if ok == false {
 
-				element = dom.Document.CreateElement("option")
+				element = dom.GetDocument().CreateElement("option")
 				element.SetAttribute("value", value)
 				element.SetInnerHTML(value)
 

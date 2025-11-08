@@ -29,13 +29,13 @@ func GetAll(options *GetOptions) ([]*Cookie, error) {
 	on_success := js.FuncOf(func(this js.Value, args []js.Value) any {
 
 		cookies := make([]*Cookie, 0)
-		values  := args[0]
+		values := args[0]
 
 		if !values.IsNull() && !values.IsUndefined() && values.Length() > 0 {
 
 			for v := 0; v < values.Length(); v++ {
 
-				value  := values.Index(v)
+				value := values.Index(v)
 				cookie := ToCookie(value)
 
 				if cookie.Name != "" && cookie.Value != "" {
@@ -77,4 +77,3 @@ func GetAll(options *GetOptions) ([]*Cookie, error) {
 	return state.cookies, state.err
 
 }
-

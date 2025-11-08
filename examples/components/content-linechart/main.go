@@ -7,7 +7,9 @@ import "time"
 
 func main() {
 
-	performance_chart := content.ToLineChart(dom.Document.QuerySelector("figure[data-name=\"performance\"]"))
+	document := dom.GetDocument()
+
+	performance_chart := content.ToLineChart(document.QuerySelector("figure[data-name=\"performance\"]"))
 	performance_chart.Mount()
 
 	performance_chart.Disable()
@@ -20,7 +22,7 @@ func main() {
 
 	}()
 
-	activity_chart := content.ToLineChart(dom.Document.QuerySelector("figure[data-name=\"activity\"]"))
+	activity_chart := content.ToLineChart(document.QuerySelector("figure[data-name=\"activity\"]"))
 	activity_chart.Mount()
 
 	activity_dataset := data.ToDataset([]data.Data{
@@ -56,7 +58,7 @@ func main() {
 
 	})
 
-	dom.Document.AddEventListener("mousemove", listener)
+	document.AddEventListener("mousemove", listener)
 
 	for true {
 

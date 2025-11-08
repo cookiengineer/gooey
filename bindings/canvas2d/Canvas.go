@@ -1,3 +1,5 @@
+//go:build wasm
+
 package canvas2d
 
 import "github.com/cookiengineer/gooey/bindings/dom"

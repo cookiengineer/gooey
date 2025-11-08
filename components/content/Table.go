@@ -36,7 +36,7 @@ func NewTable(name string, labels []string, properties []string, types []string,
 
 	var table Table
 
-	element := dom.Document.CreateElement("table")
+	element := dom.GetDocument().CreateElement("table")
 	component := components.NewComponent(element)
 	dataset := data.NewDataset(0)
 
@@ -534,7 +534,7 @@ func (table *Table) Render() *dom.Element {
 
 			for _, position := range table.sorted {
 
-				tr := dom.Document.CreateElement("tr")
+				tr := dom.GetDocument().CreateElement("tr")
 
 				tr.SetAttribute("data-id", strconv.FormatInt(int64(position), 10))
 

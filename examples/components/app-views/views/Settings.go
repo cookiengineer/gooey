@@ -25,7 +25,7 @@ func NewSettings(name string, label string, path string) *Settings {
 
 	var view Settings
 
-	element := dom.Document.CreateElement("section")
+	element := dom.GetDocument().CreateElement("section")
 
 	view.Element = element
 	view.Layout  = types.LayoutFlow

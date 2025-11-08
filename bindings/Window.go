@@ -5,9 +5,13 @@ package bindings
 import "github.com/cookiengineer/gooey/bindings/dom"
 import "syscall/js"
 
-var Window window
+var global_window *Window
 
-type window struct {
+func init() {
+	global_window = GetWindow()
+}
+
+type Window struct {
 	listeners   map[dom.EventType][]*dom.EventListener `json:"listeners"`
 	Closed      bool                                   `json:"closed"`
 	InnerWidth  uint                                   `json:"innerWidth"`
@@ -20,98 +24,110 @@ type window struct {
 	Value       *js.Value                              `json:"value"`
 }
 
-func init() {
+// Returns the global Window instance.
+func GetWindow() *Window {
 
-	window_value := js.Global().Get("window")
-	screen_value := window_value.Get("screen")
-	screen_orientation := ScreenOrientation{}
+	if global_window != nil {
 
-	orientation := screen_value.Get("orientation")
+		return global_window
 
-	if !orientation.IsNull() && !orientation.IsUndefined() {
+	} else {
 
-		screen_orientation = ScreenOrientation{
-			Angle: uint(orientation.Get("angle").Int()),
-			Type:  orientation.Get("type").String(),
+		window_value := js.Global().Get("window")
+		screen_value := window_value.Get("screen")
+		screen_orientation := ScreenOrientation{}
+
+		orientation := screen_value.Get("orientation")
+
+		if !orientation.IsNull() && !orientation.IsUndefined() {
+
+			screen_orientation = ScreenOrientation{
+				Angle: uint(orientation.Get("angle").Int()),
+				Type:  orientation.Get("type").String(),
+			}
+
 		}
 
-	}
+		screen := Screen{
+			listeners:   make(map[dom.EventType][]*dom.EventListener),
+			Width:       uint(screen_value.Get("width").Int()),
+			Height:      uint(screen_value.Get("height").Int()),
+			AvailWidth:  uint(screen_value.Get("availWidth").Int()),
+			AvailHeight: uint(screen_value.Get("availHeight").Int()),
+			ColorDepth:  uint(screen_value.Get("colorDepth").Int()),
+			PixelDepth:  uint(screen_value.Get("pixelDepth").Int()),
+			IsExtended:  false,
+			Orientation: &screen_orientation,
+			Value:       &screen_value,
+		}
 
-	screen := Screen{
-		listeners:   make(map[dom.EventType][]*dom.EventListener),
-		Width:       uint(screen_value.Get("width").Int()),
-		Height:      uint(screen_value.Get("height").Int()),
-		AvailWidth:  uint(screen_value.Get("availWidth").Int()),
-		AvailHeight: uint(screen_value.Get("availHeight").Int()),
-		ColorDepth:  uint(screen_value.Get("colorDepth").Int()),
-		PixelDepth:  uint(screen_value.Get("pixelDepth").Int()),
-		IsExtended:  false,
-		Orientation: &screen_orientation,
-		Value:       &screen_value,
-	}
+		// Firefox doesn't expose this in Tracking Protection Mode
+		screen_isextended := screen_value.Get("isExtended")
 
-	// Firefox doesn't expose this in Tracking Protection Mode
-	screen_isextended := screen_value.Get("isExtended")
+		if !screen_isextended.IsNull() && !screen_isextended.IsUndefined() {
+			screen.IsExtended = screen_isextended.Bool()
+		}
 
-	if !screen_isextended.IsNull() && !screen_isextended.IsUndefined() {
-		screen.IsExtended = screen_isextended.Bool()
-	}
+		window := Window{
+			listeners:   make(map[dom.EventType][]*dom.EventListener),
+			Closed:      window_value.Get("closed").Bool(),
+			InnerWidth:  uint(window_value.Get("innerWidth").Int()),
+			InnerHeight: uint(window_value.Get("innerHeight").Int()),
+			OuterWidth:  uint(window_value.Get("outerWidth").Int()),
+			OuterHeight: uint(window_value.Get("outerHeight").Int()),
+			Screen:      &screen,
+			ScrollX:     uint(window_value.Get("scrollX").Int()),
+			ScrollY:     uint(window_value.Get("scrollY").Int()),
+			Value:       &window_value,
+		}
 
-	Window = window{
-		listeners:   make(map[dom.EventType][]*dom.EventListener),
-		Closed:      window_value.Get("closed").Bool(),
-		InnerWidth:  uint(window_value.Get("innerWidth").Int()),
-		InnerHeight: uint(window_value.Get("innerHeight").Int()),
-		OuterWidth:  uint(window_value.Get("outerWidth").Int()),
-		OuterHeight: uint(window_value.Get("outerHeight").Int()),
-		Screen:      &screen,
-		ScrollX:     uint(window_value.Get("scrollX").Int()),
-		ScrollY:     uint(window_value.Get("scrollY").Int()),
-		Value:       &window_value,
-	}
+		window.Value.Call("addEventListener", "resize", js.FuncOf(func(this js.Value, args []js.Value) any {
 
-	Window.Value.Call("addEventListener", "resize", js.FuncOf(func(this js.Value, args []js.Value) any {
-
-		Window.InnerWidth = uint(Window.Value.Get("innerWidth").Int())
-		Window.InnerHeight = uint(Window.Value.Get("innerHeight").Int())
-		Window.OuterWidth = uint(Window.Value.Get("outerWidth").Int())
-		Window.OuterHeight = uint(Window.Value.Get("outerHeight").Int())
-
-		return nil
-
-	}))
-
-	Window.Value.Call("addEventListener", "scroll", js.FuncOf(func(this js.Value, args []js.Value) any {
-
-		Window.ScrollX = uint(Window.Value.Get("scrollX").Int())
-		Window.ScrollY = uint(Window.Value.Get("scrollY").Int())
-
-		return nil
-
-	}))
-
-	if !orientation.IsNull() && !orientation.IsUndefined() {
-
-		Window.Screen.Value.Call("addEventListener", "change", js.FuncOf(func(this js.Value, args []js.Value) any {
-
-			Window.Screen.Orientation.Angle = uint(orientation.Get("angle").Int())
-			Window.Screen.Orientation.Type = orientation.Get("type").String()
+			window.InnerWidth = uint(window.Value.Get("innerWidth").Int())
+			window.InnerHeight = uint(window.Value.Get("innerHeight").Int())
+			window.OuterWidth = uint(window.Value.Get("outerWidth").Int())
+			window.OuterHeight = uint(window.Value.Get("outerHeight").Int())
 
 			return nil
 
 		}))
 
+		window.Value.Call("addEventListener", "scroll", js.FuncOf(func(this js.Value, args []js.Value) any {
+
+			window.ScrollX = uint(window.Value.Get("scrollX").Int())
+			window.ScrollY = uint(window.Value.Get("scrollY").Int())
+
+			return nil
+
+		}))
+
+		if !orientation.IsNull() && !orientation.IsUndefined() {
+
+			window.Screen.Value.Call("addEventListener", "change", js.FuncOf(func(this js.Value, args []js.Value) any {
+
+				window.Screen.Orientation.Angle = uint(orientation.Get("angle").Int())
+				window.Screen.Orientation.Type = orientation.Get("type").String()
+
+				return nil
+
+			}))
+
+		}
+
+		return &window
+
 	}
 
 }
 
-func (win *window) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
+// Adds an EventListener to the global Window. Only the "resize" and "scroll" EventType is supported.
+func (win *Window) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
 
 	var result bool
 
 	check := string(typ)
 
-	if check == "resize" {
+	if check == "resize" || check == "scroll" {
 
 		wrapped_type := js.ValueOf(string(typ))
 		wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
@@ -154,7 +170,9 @@ func (win *window) AddEventListener(typ dom.EventType, listener dom.EventListene
 
 }
 
-func (win *window) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
+// Removes an EventListener from the global Window. If listener is set to nil, all EventListeners are
+// removed.
+func (win *Window) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
 	var result bool
 
@@ -219,14 +237,14 @@ func (win *window) RemoveEventListener(typ dom.EventType, listener *dom.EventLis
 
 }
 
-func (win *window) Close() {
+func (win *Window) Close() {
 
 	win.Value.Call("close")
 	win.Closed = win.Value.Get("closed").Bool()
 
 }
 
-func (win *window) Confirm(message string) bool {
+func (win *Window) Confirm(message string) bool {
 
 	var result bool
 
@@ -244,25 +262,28 @@ func (win *window) Confirm(message string) bool {
 
 }
 
-func (win *window) Focus() {
+func (win *Window) Focus() {
 
 	win.Value.Call("focus")
 
 }
 
-func (win *window) MoveBy(delta_x int, delta_y int) {
+// Moves the Window by a specified delta x and y.
+func (win *Window) MoveBy(delta_x int, delta_y int) {
 
 	win.Value.Call("moveBy", js.ValueOf(delta_x), js.ValueOf(delta_y))
 
 }
 
-func (win *window) MoveTo(x uint, y uint) {
+// Moves the Window to a specified position x and y.
+func (win *Window) MoveTo(x uint, y uint) {
 
 	win.Value.Call("moveTo", js.ValueOf(x), js.ValueOf(y))
 
 }
 
-func (win *window) ResizeBy(delta_x int, delta_y int) {
+// Resizes the Window by a specified delta x and y.
+func (win *Window) ResizeBy(delta_x int, delta_y int) {
 
 	win.Value.Call("resizeBy", js.ValueOf(delta_x), js.ValueOf(delta_y))
 	win.InnerWidth = uint(win.Value.Get("innerWidth").Int())
@@ -272,9 +293,10 @@ func (win *window) ResizeBy(delta_x int, delta_y int) {
 
 }
 
-func (win *window) ResizeTo(x uint, y uint) {
+// Resizes the Window to a specified width and height.
+func (win *Window) ResizeTo(width uint, height uint) {
 
-	win.Value.Call("resizeTo", js.ValueOf(x), js.ValueOf(y))
+	win.Value.Call("resizeTo", js.ValueOf(width), js.ValueOf(height))
 	win.InnerWidth = uint(win.Value.Get("innerWidth").Int())
 	win.InnerHeight = uint(win.Value.Get("innerHeight").Int())
 	win.OuterWidth = uint(win.Value.Get("outerWidth").Int())
@@ -282,7 +304,8 @@ func (win *window) ResizeTo(x uint, y uint) {
 
 }
 
-func (win *window) ScrollBy(delta_x int, delta_y int) {
+// Scrolls the Window by a specified delta x and y.
+func (win *Window) ScrollBy(delta_x int, delta_y int) {
 
 	win.Value.Call("scrollBy", js.ValueOf(delta_x), js.ValueOf(delta_y))
 	win.ScrollX = uint(win.Value.Get("scrollX").Int())
@@ -290,7 +313,8 @@ func (win *window) ScrollBy(delta_x int, delta_y int) {
 
 }
 
-func (win *window) ScrollTo(x uint, y uint) {
+// Scrolls the Window to a specified position x and y.
+func (win *Window) ScrollTo(x uint, y uint) {
 
 	win.Value.Call("scrollTo", js.ValueOf(x), js.ValueOf(y))
 	win.ScrollX = uint(win.Value.Get("scrollX").Int())

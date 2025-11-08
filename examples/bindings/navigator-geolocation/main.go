@@ -7,11 +7,13 @@ import "time"
 
 func main() {
 
-	element_latitude := dom.Document.QuerySelector("#latitude")
-	element_longitude := dom.Document.QuerySelector("#longitude")
-	element_altitude := dom.Document.QuerySelector("#altitude")
-	element_accuracy := dom.Document.QuerySelector("#accuracy")
-	element_error := dom.Document.QuerySelector("#error")
+	document := dom.GetDocument()
+
+	element_latitude := document.QuerySelector("#latitude")
+	element_longitude := document.QuerySelector("#longitude")
+	element_altitude := document.QuerySelector("#altitude")
+	element_accuracy := document.QuerySelector("#accuracy")
+	element_error := document.QuerySelector("#error")
 
 	geolocation.Geolocation.GetCurrentPosition(func(position geolocation.GeolocationPosition) {
 

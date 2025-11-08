@@ -7,8 +7,9 @@ import "time"
 
 func main() {
 
-	element1 := dom.Document.QuerySelector("#fetch-response")
-	element2 := dom.Document.QuerySelector("#fetch-error")
+	document := dom.GetDocument()
+	element1 := document.QuerySelector("#fetch-response")
+	element2 := document.QuerySelector("#fetch-error")
 
 	response, err := fetch.Fetch("/api/test", &fetch.Request{
 		Method: fetch.MethodGet,

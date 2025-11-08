@@ -7,8 +7,10 @@ import "time"
 
 func main() {
 
-	table1 := content.ToTable(dom.Document.QuerySelector("table[data-name=\"candidates\"]"))
-	table2 := content.ToTable(dom.Document.QuerySelector("table[data-name=\"interviews\"]"))
+	document := dom.GetDocument()
+
+	table1 := content.ToTable(document.QuerySelector("table[data-name=\"candidates\"]"))
+	table2 := content.ToTable(document.QuerySelector("table[data-name=\"interviews\"]"))
 
 	table1.Mount()
 	table2.Mount()

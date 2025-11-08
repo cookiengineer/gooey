@@ -17,8 +17,8 @@ func getArcCoordinates(percentage float64) (float64, float64) {
 
 func renderPieChartData(data *data.Data, width int, height int, min_value int64, max_value int64, property string, offset float64) (*dom.Element, *dom.Element, float64) {
 
-	path := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "path")
-	text := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "text")
+	path := dom.GetDocument().CreateElementNS("http://www.w3.org/2000/svg", "path")
+	text := dom.GetDocument().CreateElementNS("http://www.w3.org/2000/svg", "text")
 	percentage := 0.0
 
 	delta := float64(max_value)

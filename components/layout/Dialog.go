@@ -21,7 +21,7 @@ func NewDialog() Dialog {
 
 	var dialog Dialog
 
-	element := dom.Document.CreateElement("dialog")
+	element := dom.GetDocument().CreateElement("dialog")
 	component := components.NewComponent(element)
 
 	dialog.Component = &component

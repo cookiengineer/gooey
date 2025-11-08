@@ -8,7 +8,9 @@ import "time"
 
 func main() {
 
-	element := dom.Document.QuerySelector("#navigator")
+	document := dom.GetDocument()
+
+	element := document.QuerySelector("#navigator")
 	details, err := json.MarshalIndent(navigator.Navigator, "", "\t")
 
 	if err == nil {

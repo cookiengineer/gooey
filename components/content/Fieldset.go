@@ -36,7 +36,7 @@ func NewFieldset(name string, label string) Fieldset {
 
 	var fieldset Fieldset
 
-	element := dom.Document.CreateElement("fieldset")
+	element := dom.GetDocument().CreateElement("fieldset")
 	component := components.NewComponent(element)
 
 	fieldset.Name = strings.TrimSpace(strings.ToLower(name))
@@ -498,7 +498,7 @@ func (fieldset *Fieldset) Render() *dom.Element {
 
 		for _, field := range fieldset.fields {
 
-			div := dom.Document.CreateElement("div")
+			div := dom.GetDocument().CreateElement("div")
 			id := toIdentifier(strings.ToLower(fieldset.Name + "-" + field.Name))
 			label := field.Label.Render()
 			input := field.Input.Render()

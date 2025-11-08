@@ -7,7 +7,8 @@ import "time"
 
 func main() {
 
-	element := dom.Document.QuerySelector("canvas")
+	document := dom.GetDocument()
+	element := document.QuerySelector("canvas")
 	canvas  := canvas2d.ToCanvas(element)
 	image := canvas2d.NewImage(42, 42, "/images/gooey.png")
 

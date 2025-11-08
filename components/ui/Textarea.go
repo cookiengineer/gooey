@@ -22,7 +22,7 @@ func NewTextarea(label string, value string) Textarea {
 
 	var textarea Textarea
 
-	element := dom.Document.CreateElement("textarea")
+	element := dom.GetDocument().CreateElement("textarea")
 	component := components.NewComponent(element)
 
 	textarea.Component = &component

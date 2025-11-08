@@ -19,7 +19,7 @@ func NewDocument() *Document {
 
 	document.Content = make([]interfaces.Component, 0)
 	document.Registry = make(map[string]ComponentConstructor)
-	document.body = dom.Document.QuerySelector("body")
+	document.body = dom.GetDocument().QuerySelector("body")
 
 	return &document
 

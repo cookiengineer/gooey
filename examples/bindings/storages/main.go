@@ -8,7 +8,8 @@ import "time"
 
 func main() {
 
-	element := dom.Document.QuerySelector("#seconds")
+	document := dom.GetDocument()
+	element := document.QuerySelector("#seconds")
 
 	var seconds int = 0
 

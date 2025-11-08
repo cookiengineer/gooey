@@ -6,9 +6,11 @@ import "time"
 
 func main() {
 
-	chart1 := content.ToPieChart(dom.Document.QuerySelector("figure[data-name=\"integers\"]"))
-	chart2 := content.ToPieChart(dom.Document.QuerySelector("figure[data-name=\"floats\"]"))
-	chart3 := content.ToPieChart(dom.Document.QuerySelector("figure[data-name=\"percentages\"]"))
+	document := dom.GetDocument()
+
+	chart1 := content.ToPieChart(document.QuerySelector("figure[data-name=\"integers\"]"))
+	chart2 := content.ToPieChart(document.QuerySelector("figure[data-name=\"floats\"]"))
+	chart3 := content.ToPieChart(document.QuerySelector("figure[data-name=\"percentages\"]"))
 
 	chart1.Mount()
 	chart2.Mount()

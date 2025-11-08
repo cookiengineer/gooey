@@ -8,7 +8,9 @@ import "time"
 
 func main() {
 
-	element := dom.Document.QuerySelector("#location")
+	document := dom.GetDocument()
+
+	element := document.QuerySelector("#location")
 	details, err := json.MarshalIndent(location.Location, "", "\t")
 
 	if err == nil {

@@ -18,6 +18,7 @@ type Screen struct {
 	Value       *js.Value                              `json:"value"`
 }
 
+// Adds an Event Listener to the Screen. Only the "change" EventType is supported.
 func (screen *Screen) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
 
 	var result bool
@@ -67,6 +68,8 @@ func (screen *Screen) AddEventListener(typ dom.EventType, listener dom.EventList
 
 }
 
+// Removes an Event Listener from the Screen. If listener is set to nil, all EventListeners are
+// removed.
 func (screen *Screen) RemoveEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
 	var result bool

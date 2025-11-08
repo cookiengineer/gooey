@@ -10,9 +10,11 @@ import "time"
 
 func main() {
 
-	pre := dom.Document.QuerySelector("pre")
+	document := dom.GetDocument()
 
-	fieldset := content.ToFieldset(dom.Document.QuerySelector("fieldset"))
+	pre := document.QuerySelector("pre")
+
+	fieldset := content.ToFieldset(document.QuerySelector("fieldset"))
 	fieldset.Mount()
 
 	fieldset.Component.AddEventListener("change-field", components.ToEventListener(func(event string, attributes map[string]any) {
@@ -23,7 +25,7 @@ func main() {
 
 	}, false))
 
-	footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
+	footer := layout.ToFooter(document.QuerySelector("footer"))
 	footer.Mount()
 
 	footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {

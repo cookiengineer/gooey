@@ -16,7 +16,7 @@ func NewLabel(lbl string, typ string) Label {
 
 	var label Label
 
-	element := dom.Document.CreateElement("label")
+	element := dom.GetDocument().CreateElement("label")
 	component := components.NewComponent(element)
 
 	label.Component = &component

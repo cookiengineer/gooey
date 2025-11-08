@@ -4,26 +4,13 @@ package dom
 
 import "syscall/js"
 
-var Document document
+var global_document *Document
 
 func init() {
-
-	doc := js.Global().Get("document")
-	html := ToElement(doc.Call("querySelector", "html"))
-	head := ToElement(doc.Get("head"))
-	body := ToElement(doc.Get("body"))
-
-	Document = document{
-		listeners: make(map[EventType][]*EventListener),
-		Element:   html,
-		Head:      head,
-		Body:      body,
-		Value:     &doc,
-	}
-
+	global_document = GetDocument()
 }
 
-type document struct {
+type Document struct {
 	listeners map[EventType][]*EventListener `json:"listeners"`
 	Element   *Element                       `json:"element"`
 	Head      *Element                       `json:"head"`
@@ -31,7 +18,36 @@ type document struct {
 	Value     *js.Value                      `json:"value"`
 }
 
-func (doc *document) AddEventListener(typ EventType, listener *EventListener) bool {
+// Returns the global Document instance.
+func GetDocument() *Document {
+
+	if global_document != nil {
+
+		return global_document
+
+	} else {
+
+		doc := js.Global().Get("document")
+		html := ToElement(doc.Call("querySelector", "html"))
+		head := ToElement(doc.Get("head"))
+		body := ToElement(doc.Get("body"))
+
+		document := Document{
+			listeners: make(map[EventType][]*EventListener),
+			Element:   html,
+			Head:      head,
+			Body:      body,
+			Value:     &doc,
+		}
+
+		return &document
+
+	}
+
+}
+
+// Adds an EventListener to the global Document.
+func (doc *Document) AddEventListener(typ EventType, listener *EventListener) bool {
 
 	var result bool
 
@@ -78,7 +94,8 @@ func (doc *document) AddEventListener(typ EventType, listener *EventListener) bo
 
 }
 
-func (doc *document) CreateElement(tagname string) *Element {
+// Returns a DOM Element with a given tagname.
+func (doc *Document) CreateElement(tagname string) *Element {
 
 	var result *Element = nil
 
@@ -92,7 +109,8 @@ func (doc *document) CreateElement(tagname string) *Element {
 
 }
 
-func (doc *document) CreateElementNS(url string, tagname string) *Element {
+// Returns a DOM Element with a custom XML namespace and a given tagname.
+func (doc *Document) CreateElementNS(url string, tagname string) *Element {
 
 	var result *Element = nil
 
@@ -107,7 +125,8 @@ func (doc *document) CreateElementNS(url string, tagname string) *Element {
 }
 
 
-func (doc *document) QuerySelector(query string) *Element {
+// Returns a DOM element for a matching query selector.
+func (doc *Document) QuerySelector(query string) *Element {
 
 	var result *Element = nil
 
@@ -121,7 +140,8 @@ func (doc *document) QuerySelector(query string) *Element {
 
 }
 
-func (doc *document) QuerySelectorAll(query string) []*Element {
+// Returns a slice of DOM elements for a matching query selector.
+func (doc *Document) QuerySelectorAll(query string) []*Element {
 
 	var result []*Element
 
@@ -141,7 +161,9 @@ func (doc *document) QuerySelectorAll(query string) []*Element {
 
 }
 
-func (doc *document) RemoveEventListener(typ EventType, listener *EventListener) bool {
+// Removes an EventListener from the global Document. If listener is nil, all EventListeners are
+// removed.
+func (doc *Document) RemoveEventListener(typ EventType, listener *EventListener) bool {
 
 	var result bool
 

@@ -31,7 +31,7 @@ func NewHeader() Header {
 
 	var header Header
 
-	element := dom.Document.CreateElement("header")
+	element := dom.GetDocument().CreateElement("header")
 	component := components.NewComponent(element)
 
 	header.Component = &component
@@ -355,7 +355,7 @@ func (header *Header) RegisterView(view interfaces.View) bool {
 				Name:    name,
 				Label:   label,
 				Path:    path,
-				Element: dom.Document.CreateElement("li"),
+				Element: dom.GetDocument().CreateElement("li"),
 			}
 
 			header.items = append(header.items, &item)

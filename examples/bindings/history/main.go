@@ -30,9 +30,11 @@ func renderEvent(event *history.PopStateEvent) string {
 
 func main() {
 
-	list_events    := dom.Document.QuerySelector("main ul")
-	button_back    := dom.Document.QuerySelector("main button[data-action=\"back\"]")
-	button_forward := dom.Document.QuerySelector("main button[data-action=\"forward\"]")
+	document := dom.GetDocument()
+
+	list_events    := document.QuerySelector("main ul")
+	button_back    := document.QuerySelector("main button[data-action=\"back\"]")
+	button_forward := document.QuerySelector("main button[data-action=\"forward\"]")
 
 	history.History.AddEventListener(history.ToEventListener(func(event *history.PopStateEvent) {
 

@@ -7,7 +7,7 @@ import "strings"
 
 func renderTextAt(x int, y int, label string) *dom.Element {
 
-	text := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "text")
+	text := dom.GetDocument().CreateElementNS("http://www.w3.org/2000/svg", "text")
 	text.SetAttribute("text-anchor", "middle")
 	text.SetAttribute("dominant-baseline", "middle")
 	text.SetAttribute("x", strconv.Itoa(x))
@@ -20,7 +20,7 @@ func renderTextAt(x int, y int, label string) *dom.Element {
 
 func renderLineChartDataset(dataset *data.Dataset, width int, height int, min_value int64, max_value int64, property string) (*dom.Element, []*dom.Element) {
 
-	path := dom.Document.CreateElementNS("http://www.w3.org/2000/svg", "path")
+	path := dom.GetDocument().CreateElementNS("http://www.w3.org/2000/svg", "path")
 	texts := make([]*dom.Element, 0)
 	delta_x := float64(width)
 	delta_y := float64(height)

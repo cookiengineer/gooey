@@ -22,7 +22,7 @@ func NewInput(label string, value string, typ types.Input) Input {
 
 	var input Input
 
-	element := dom.Document.CreateElement("input")
+	element := dom.GetDocument().CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", typ.String())

@@ -18,7 +18,7 @@ func NewArticle() Article {
 
 	var article Article
 
-	element := dom.Document.CreateElement("article")
+	element := dom.GetDocument().CreateElement("article")
 	component := components.NewComponent(element)
 
 	article.Layout = types.LayoutFlow

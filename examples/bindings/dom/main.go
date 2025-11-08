@@ -6,6 +6,8 @@ import "time"
 
 func main() {
 
+	document := dom.GetDocument()
+
 	var count int = 0
 
 	listener := dom.ToEventListener(func(event *dom.Event) {
@@ -28,15 +30,15 @@ func main() {
 
 	})
 
-	dom.Document.AddEventListener("click", listener)
+	document.AddEventListener("click", listener)
 
 	for true {
 
 		if count > 10 {
 
-			dom.Document.RemoveEventListener("click", listener)
+			document.RemoveEventListener("click", listener)
 
-			clickable := dom.Document.QuerySelector("#clickable")
+			clickable := document.QuerySelector("#clickable")
 			clickable.SetClassName("disabled")
 			clickable.SetInnerHTML("Stop clicking me!")
 

@@ -26,7 +26,7 @@ func NewNumber(label string, min_value int, max_value int, step int, cur_value i
 
 	var input Number
 
-	element := dom.Document.CreateElement("input")
+	element := dom.GetDocument().CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", "number")

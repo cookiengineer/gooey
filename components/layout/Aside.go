@@ -31,7 +31,7 @@ func NewAside() Aside {
 
 	var aside Aside
 
-	element := dom.Document.CreateElement("aside")
+	element := dom.GetDocument().CreateElement("aside")
 	component := components.NewComponent(element)
 
 	aside.Component = &component
@@ -329,7 +329,7 @@ func (aside *Aside) RegisterView(view interfaces.View) bool {
 				Name:    name,
 				Label:   label,
 				Path:    path,
-				Element: dom.Document.CreateElement("li"),
+				Element: dom.GetDocument().CreateElement("li"),
 			}
 
 			aside.items = append(aside.items, &item)

@@ -22,7 +22,7 @@ func NewFooter() Footer {
 
 	var footer Footer
 
-	element := dom.Document.CreateElement("footer")
+	element := dom.GetDocument().CreateElement("footer")
 	component := components.NewComponent(element)
 
 	footer.Component = &component

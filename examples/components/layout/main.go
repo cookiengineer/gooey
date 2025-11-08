@@ -8,7 +8,9 @@ import "time"
 
 func main() {
 
-	dialog := layout.ToDialog(dom.Document.QuerySelector("dialog"))
+	document := dom.GetDocument()
+
+	dialog := layout.ToDialog(document.QuerySelector("dialog"))
 	dialog.Mount()
 
 	dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
@@ -28,8 +30,8 @@ func main() {
 
 	}, false))
 
-	header := layout.ToHeader(dom.Document.QuerySelector("header"))
-	aside := layout.ToAside(dom.Document.QuerySelector("aside"))
+	header := layout.ToHeader(document.QuerySelector("header"))
+	aside := layout.ToAside(document.QuerySelector("aside"))
 
 	header.Mount()
 	aside.Mount()
@@ -96,7 +98,7 @@ func main() {
 
 	}, false))
 
-	footer := layout.ToFooter(dom.Document.QuerySelector("footer"))
+	footer := layout.ToFooter(document.QuerySelector("footer"))
 	footer.Mount()
 
 	footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {

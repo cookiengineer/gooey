@@ -18,7 +18,7 @@ func NewCustomComponent() CustomComponent {
 
 	var self CustomComponent
 
-	element   := dom.Document.CreateElement("app-custom-component")
+	element   := dom.GetDocument().CreateElement("app-custom-component")
 	component := components.NewComponent(element)
 
 	self.Component = &component

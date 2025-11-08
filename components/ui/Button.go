@@ -17,7 +17,7 @@ func NewButton(label string, action string) Button {
 
 	var button Button
 
-	element := dom.Document.CreateElement("button")
+	element := dom.GetDocument().CreateElement("button")
 	component := components.NewComponent(element)
 
 	button.Component = &component

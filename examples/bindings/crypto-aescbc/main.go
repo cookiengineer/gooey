@@ -11,6 +11,8 @@ import "time"
 
 func main() {
 
+	document := dom.GetDocument()
+
 	// This is the example message
 	message := []byte("This was the plaintext message as a string")
 
@@ -25,7 +27,7 @@ func main() {
 	}
 
 	details1, _ := json.MarshalIndent(key, "", "\t")
-	element1 := dom.Document.QuerySelector("#generated-cryptokey")
+	element1 := document.QuerySelector("#generated-cryptokey")
 	element1.SetInnerHTML(string(details1))
 
 	// Step 2: Generate IV (Initialization Vector)
@@ -36,7 +38,7 @@ func main() {
 		details2 = append(details2, "0x" + hex.EncodeToString([]byte{iv[i]}))
 	}
 
-	element2 := dom.Document.QuerySelector("#generated-iv")
+	element2 := document.QuerySelector("#generated-iv")
 	element2.SetInnerHTML(strings.Join(details2, " "))
 
 
@@ -52,7 +54,7 @@ func main() {
 		details3 = append(details3, "0x" + hex.EncodeToString([]byte{encrypted[e]}))
 	}
 
-	element3 := dom.Document.QuerySelector("#encrypted-buffer")
+	element3 := document.QuerySelector("#encrypted-buffer")
 	element3.SetInnerHTML(strings.Join(details3, " "))
 
 
@@ -64,7 +66,7 @@ func main() {
 	}
 
 	details4 := string(decrypted)
-	element4 := dom.Document.QuerySelector("#decrypted-buffer")
+	element4 := document.QuerySelector("#decrypted-buffer")
 	element4.SetInnerHTML(details4)
 
 
@@ -76,7 +78,7 @@ func main() {
 	}
 
 	details5 := string(exported)
-	element5 := dom.Document.QuerySelector("#exported-keydata")
+	element5 := document.QuerySelector("#exported-keydata")
 	element5.SetInnerHTML(details5)
 
 
@@ -91,7 +93,7 @@ func main() {
 	}
 
 	details6, _ := json.MarshalIndent(imported, "", "\t")
-	element6 := dom.Document.QuerySelector("#imported-cryptokey")
+	element6 := document.QuerySelector("#imported-cryptokey")
 	element6.SetInnerHTML(string(details6))
 
 	for true {

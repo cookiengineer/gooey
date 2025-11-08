@@ -22,7 +22,7 @@ func NewView(name string, label string, path string) *View {
 
 	var view View
 
-	element := dom.Document.CreateElement("section")
+	element := dom.GetDocument().CreateElement("section")
 
 	view.Element = element
 	view.Layout = types.LayoutFlow

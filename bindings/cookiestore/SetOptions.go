@@ -1,3 +1,5 @@
+//go:build wasm
+
 package cookiestore
 
 type SetOptions struct {

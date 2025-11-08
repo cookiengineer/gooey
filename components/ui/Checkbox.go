@@ -22,7 +22,7 @@ func NewCheckbox(label string, value string) Checkbox {
 
 	var checkbox Checkbox
 
-	element := dom.Document.CreateElement("input")
+	element := dom.GetDocument().CreateElement("input")
 	component := components.NewComponent(element)
 
 	element.SetAttribute("type", "checkbox")
