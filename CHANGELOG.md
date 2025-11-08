@@ -3,6 +3,7 @@
 
 ### Changed
 
+- Changed [console.Console](/bindings/console) to method `GetConsole() *Console` for better API docs
 - Changed [bindings.Window](/bindings/Window.go) to method `GetWindow() *Window` for better API docs
 - Changed [dom.Document](/bindings/dom/Document.go) to method `GetDocument() *Document` for better API docs
 - Changed [history.History](/bindings/history/History.go) to method `GetHistory() *History` for better API docs
