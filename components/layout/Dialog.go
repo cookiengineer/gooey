@@ -187,10 +187,11 @@ func (dialog *Dialog) Mount() bool {
 
 		} else {
 
-			console.Group("Dialog: Invalid Markup")
-			console.Error("Expected <article><h3></h3><footer></footer></article>")
-			console.Error(dialog.Component.Element.InnerHTML)
-			console.GroupEnd("Dialog: Invalid Markup")
+			console1 := console.GetConsole()
+			console1.Group("gooey/components/layout.Dialog: Invalid markup")
+			console1.Error("Expected <article><h3/><footer/></article> but got this instead:")
+			console1.Error(dialog.Component.Element.InnerHTML)
+			console1.GroupEnd()
 
 			return false
 

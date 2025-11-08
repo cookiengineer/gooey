@@ -255,10 +255,11 @@ func (header *Header) Mount() bool {
 
 		} else {
 
-			console.Group("Header: Invalid Markup")
-			console.Error("Expected <div></div><ul></ul><div></div>")
-			console.Error(header.Component.Element.InnerHTML)
-			console.GroupEnd("Header: Invalid Markup")
+			console1 := console.GetConsole()
+			console1.Group("gooey/components/layout.Header: Invalid markup")
+			console1.Error("Expected <div/><ul/><div/> but got this instead:")
+			console1.Error(header.Component.Element.InnerHTML)
+			console1.GroupEnd()
 
 			return false
 

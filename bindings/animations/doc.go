@@ -8,9 +8,11 @@
 //	import "github.com/cookiengineer/bindings/animations"
 //	import "github.com/cookiengineer/bindings/console"
 //
+//	console := console.GetConsole()
+//
 //	// Request an animation frame
 //	identifier := animations.RequestAnimationFrame(func(timestamp float64) {
-//	  console.Log(identifier, timestamp)
+//		console.Log(identifier, timestamp)
 //	})
 //
 //	// Cancel an animation frame

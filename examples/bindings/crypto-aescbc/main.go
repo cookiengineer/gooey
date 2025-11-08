@@ -11,6 +11,7 @@ import "time"
 
 func main() {
 
+	console := console.GetConsole()
 	document := dom.GetDocument()
 
 	// This is the example message

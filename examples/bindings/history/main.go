@@ -30,6 +30,7 @@ func renderEvent(event *history.PopStateEvent) string {
 
 func main() {
 
+	console := console.GetConsole()
 	document := dom.GetDocument()
 	history1 := history.GetHistory()
 

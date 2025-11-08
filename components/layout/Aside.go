@@ -79,7 +79,7 @@ func (aside *Aside) ChangeView(name string) bool {
 
 			if item.Element != nil {
 
-                if item.Name == found.Name {
+				if item.Name == found.Name {
 					item.Element.SetAttribute("data-state", "active")
 				} else {
 					item.Element.RemoveAttribute("data-state")
@@ -199,10 +199,10 @@ func (aside *Aside) Mount() bool {
 				if link != nil {
 
 					item := aside_item{
-						Name:     link.GetAttribute("data-view"),
-						Label:    strings.TrimSpace(link.TextContent),
-						Path:     link.GetAttribute("href"),
-						Element:  element,
+						Name:    link.GetAttribute("data-view"),
+						Label:   strings.TrimSpace(link.TextContent),
+						Path:    link.GetAttribute("href"),
+						Element: element,
 					}
 
 					if item.Name != "" {
@@ -239,10 +239,11 @@ func (aside *Aside) Mount() bool {
 
 		} else {
 
-			console.Group("Aside: Invalid Markup")
-			console.Error("Expected <ul></ul><div></div><div></div>")
-			console.Error(aside.Component.Element.InnerHTML)
-			console.GroupEnd("Aside: Invalid Markup")
+			console1 := console.GetConsole()
+			console1.Group("gooey/components/layout.Aside: Invalid markup")
+			console1.Error("Expected <ul/><div/><div/> but got this instead:")
+			console1.Error(aside.Component.Element.InnerHTML)
+			console1.GroupEnd()
 
 			return false
 

@@ -186,6 +186,17 @@ func (table *Table) Mount() bool {
 		}
 
 		thead := table.Component.Element.QuerySelector("thead")
+		tbody := table.Component.Element.QuerySelector("tbody")
+
+		if thead == nil || tbody == nil {
+
+			console1 := console.GetConsole()
+			console1.Group("gooey/components/content.Table: Invalid markup")
+			console1.Error("Expected <thead/><tbody/><tfoot/> but got this instead:")
+			console1.Error(table.Component.Element.InnerHTML)
+			console1.GroupEnd()
+
+		}
 
 		if thead != nil && len(table.Labels) == 0 && len(table.Properties) == 0 && len(table.Types) == 0 {
 
@@ -234,8 +245,6 @@ func (table *Table) Mount() bool {
 			table.Selectable = selectable
 
 		}
-
-		tbody := table.Component.Element.QuerySelector("tbody")
 
 		if tbody != nil {
 
@@ -309,12 +318,6 @@ func (table *Table) Mount() bool {
 			table.sorted = sorted
 			table.selected = selected
 
-		} else {
-
-			console.Group("Table Body: Invalid Markup")
-			console.Error("Expected <tr>...</tr>")
-			console.GroupEnd("Table Body: Invalid Markup")
-
 		}
 
 		tfoot := table.Component.Element.QuerySelector("tfoot")
@@ -360,9 +363,11 @@ func (table *Table) Mount() bool {
 
 			} else {
 
-				console.Group("Table Footer: Invalid Markup")
-				console.Error("Expected <tr><td></td><td colspan></td><td></td></tr>")
-				console.GroupEnd("Table Footer: Invalid Markup")
+				console1 := console.GetConsole()
+				console1.Group("gooey/components/content.Table: Invalid <tfoot/> markup")
+				console1.Error("Expected <tr><td/><td colspan/><td/></tr> but got this instead:")
+				console1.Error(tfoot.InnerHTML)
+				console1.GroupEnd()
 
 			}
 

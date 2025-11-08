@@ -8,6 +8,7 @@ import "time"
 
 func main() {
 
+	console := console.GetConsole()
 	document := dom.GetDocument()
 	location := location.GetLocation()
 

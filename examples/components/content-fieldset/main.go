@@ -10,6 +10,7 @@ import "time"
 
 func main() {
 
+	console := console.GetConsole()
 	document := dom.GetDocument()
 
 	pre := document.QuerySelector("pre")
@@ -21,7 +22,7 @@ func main() {
 
 		console.Group("fieldset change-field event")
 		console.Log(attributes)
-		console.GroupEnd("fieldset change-field event")
+		console.GroupEnd()
 
 	}, false))
 

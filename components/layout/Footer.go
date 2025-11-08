@@ -179,10 +179,11 @@ func (footer *Footer) Mount() bool {
 
 		} else {
 
-			console.Group("Footer: Invalid Markup")
-			console.Error("Expected <div></div><div></div><div></div>")
-			console.Error(footer.Component.Element.InnerHTML)
-			console.GroupEnd("Footer: Invalid Markup")
+			console1 := console.GetConsole()
+			console1.Group("gooey/components/layout.Footer: Invalid markup")
+			console1.Error("Expected <div/><div/><div/> but got this instead:")
+			console1.Error(footer.Component.Element.InnerHTML)
+			console1.GroupEnd()
 
 			return false
 

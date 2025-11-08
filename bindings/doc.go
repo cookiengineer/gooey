@@ -9,12 +9,15 @@
 //	import "github.com/cookiengineer/gooey/bindings/console"
 //	import "github.com/cookiengineer/gooey/bindings/dom"
 //
-//	bindings.Window.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
-//	  console.Log(event)
+//	console := console.GetConsole()
+//	window := bindings.GetWindow()
+//
+//	window.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
+//		console1.Log(event)
 //	}))
 //
-//	console.Log(bindings.Window)
-//	console.Log(bindings.Window.Screen)
+//	console.Log(window1)
+//	console.Log(window1.Screen)
 //
 // The global Window object is instantiated via init() and the properties are automatically
 // integrated with their respective events.
@@ -22,21 +25,24 @@
 //	import "github.com/cookiengineer/gooey/bindings"
 //	import "github.com/cookiengineer/gooey/bindings/console"
 //
+//	console := console.GetConsole()
+//	window := bindings.GetWindow()
+//
 //	// The Window's InnerWidth/InnerHeight properties are automatically updated
-//	bindings.Window.AddEventListener("resize", dom.ToEventListener(func(event *dom.Event) {
-//	  console.Log(bindings.Window.InnerWidth)
-//	  console.Log(bindings.Window.InnerHeight)
+//	window.AddEventListener("resize", dom.ToEventListener(func(event *dom.Event) {
+//		console.Log(window1.InnerWidth)
+//		console.Log(window1.InnerHeight)
 //	}))
 //
 //	// The Window's ScrollX/ScrollY properties are automatically updated
-//	bindings.Window.AddEventListener("scroll", dom.ToEventListener(func(event *dom.Event) {
-//	  console.Log(bindings.Window.ScrollX)
-//	  console.Log(bindings.Window.ScrollY)
+//	window.AddEventListener("scroll", dom.ToEventListener(func(event *dom.Event) {
+//		console.Log(window1.ScrollX)
+//		console.Log(window1.ScrollY)
 //	}))
 //
 //	// The Screen.Orientation's Angle/Type properties are automatically updated
-//	bindings.Window.Screen.AddEventListener("change", dom.ToEventListener(func(event *dom.Event) {
-//	  console.Log(bindings.Window.Screen.Orientation.Angle)
-//	  console.Log(bindings.Window.Screen.Orientation.Type)
+//	window.Screen.AddEventListener("change", dom.ToEventListener(func(event *dom.Event) {
+//		console.Log(window1.Screen.Orientation.Angle)
+//		console.Log(window1.Screen.Orientation.Type)
 //	}))
 package bindings

@@ -13,19 +13,23 @@ type Message struct {
 
 func main() {
 
+	console := console.GetConsole()
+
+	console.Time("example")
+
 	// console.Log supports go-native data types
 	bytes := []byte{0x01,0x03,0x03,0x07}
 
 	console.Group("bytes")
 	console.Log(bytes)
-	console.GroupEnd("bytes")
+	console.GroupEnd()
 
 	// console supports errors
 	err := errors.New("This is an error with a custom message")
 
 	console.Group("error")
 	console.Error(err)
-	console.GroupEnd("error")
+	console.GroupEnd()
 
 	// console supports js.Value instances
 	js_value := js.Global().Get("Uint8Array").New(4)
@@ -36,7 +40,7 @@ func main() {
 
 	console.Group("js.Value")
 	console.Log(js_value)
-	console.GroupEnd("js.Value")
+	console.GroupEnd()
 
 	// console supports struct instances
 	message := Message{
@@ -47,12 +51,14 @@ func main() {
 
 	console.Group("structs")
 	console.Log(message)
-	console.GroupEnd("structs")
+	console.GroupEnd()
 
 	console.Log("This is a Log")
 	console.Info("This is an Information")
 	console.Warn("This is a Warning")
 	console.Error("This is an Error")
+
+	console.TimeEnd("example")
 
 	for true {
 

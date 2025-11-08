@@ -8,6 +8,7 @@ import "time"
 
 func main() {
 
+	console := console.GetConsole()
 	document := dom.GetDocument()
 
 	dialog := layout.ToDialog(document.QuerySelector("dialog"))
@@ -20,10 +21,15 @@ func main() {
 		if ok == true {
 
 			if action == "cancel" {
+
+				console.Warn("Cancelled Settings!")
 				dialog.Hide()
+
 			} else if action == "save" {
-				console.Log("Saved Settings!")
+
+				console.Info("Saved Settings!")
 				dialog.Hide()
+
 			}
 
 		}
@@ -40,7 +46,7 @@ func main() {
 
 		console.Group("header action event")
 		console.Log(attributes)
-		console.GroupEnd("header action event")
+		console.GroupEnd()
 
 		action, ok := attributes["action"].(string)
 
@@ -63,7 +69,7 @@ func main() {
 
 		console.Group("header change-view event")
 		console.Log(attributes)
-		console.GroupEnd("header change-view event")
+		console.GroupEnd()
 
 	}, false))
 
@@ -71,7 +77,7 @@ func main() {
 
 		console.Group("aside action event")
 		console.Log(attributes)
-		console.GroupEnd("aside action event")
+		console.GroupEnd()
 
 		action, ok := attributes["action"].(string)
 
@@ -94,7 +100,7 @@ func main() {
 
 		console.Group("aside change-view event")
 		console.Log(attributes)
-		console.GroupEnd("aside change-view event")
+		console.GroupEnd()
 
 	}, false))
 
@@ -105,7 +111,7 @@ func main() {
 
 		console.Group("footer action event")
 		console.Log(attributes)
-		console.GroupEnd("footer action event")
+		console.GroupEnd()
 
 	}, false))
 

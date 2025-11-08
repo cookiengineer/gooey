@@ -8,6 +8,7 @@ import "time"
 
 func main() {
 
+	console := console.GetConsole()
 	document := dom.GetDocument()
 
 	button := ui.ToButton(document.QuerySelector("button"))
@@ -17,7 +18,7 @@ func main() {
 
 		console.Group("button click event")
 		console.Log(attributes)
-		console.GroupEnd("button click event")
+		console.GroupEnd()
 
 	}, false))
 
@@ -28,7 +29,7 @@ func main() {
 
 		console.Group("input change-value event")
 		console.Log(attributes)
-		console.GroupEnd("input change-value event")
+		console.GroupEnd()
 
 	}, false))
 
@@ -39,7 +40,7 @@ func main() {
 
 		console.Group("select change-value event")
 		console.Log(attributes)
-		console.GroupEnd("select change-value event")
+		console.GroupEnd()
 
 	}, false))
 
@@ -50,7 +51,7 @@ func main() {
 
 		console.Group("textarea change-value event")
 		console.Log(attributes)
-		console.GroupEnd("textarea change-value event")
+		console.GroupEnd()
 
 	}, false))
 

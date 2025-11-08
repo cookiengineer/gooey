@@ -17,7 +17,9 @@ func ExampleWindow_AddEventListener() {
 	// import "github.com/cookiengineer/gooey/bindings/console"
 	// import "github.com/cookiengineer/gooey/bindings/dom"
 
+	console := console.GetConsole()
 	window := GetWindow()
+
 	window.AddEventListener("resize", dom.ToEventListener(func(event *dom.Event) {
 		console.Log(event.Target)
 	}))
@@ -29,11 +31,13 @@ func ExampleWindow_RemoveEventListener() {
 	// import "github.com/cookiengineer/gooey/bindings/console"
 	// import "github.com/cookiengineer/gooey/bindings/dom"
 
+	console := console.GetConsole()
+	window := GetWindow()
+
 	event_listener := dom.ToEventListener(func(event *dom.Event) {
 		console.Log(event.Target)
 	})
 
-	window := GetWindow()
 	window.AddEventListener("resize", event_listener)
 
 	// Remove specified event listener
