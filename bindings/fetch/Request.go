@@ -14,7 +14,7 @@ type Request struct {
 	Cache          Cache             `json:"cache"`
 	Redirect       Redirect          `json:"redirect"`
 	Referrer       string            `json:"referrer"`
-	ReferrerPolicy string            `json:"referrerPolicy"`
+	ReferrerPolicy ReferrerPolicy    `json:"referrerPolicy"`
 	Integrity      string            `json:"integrity"`
 	KeepAlive      bool              `json:"keepalive"`
 	Signal         context.Context
@@ -58,8 +58,8 @@ func (request *Request) MapToJS() map[string]any {
 		result["referrer"] = request.Referrer
 	}
 
-	if request.ReferrerPolicy != "" {
-		result["referrerPolicy"] = request.ReferrerPolicy
+	if tmp := request.ReferrerPolicy.String(); tmp != "" {
+		result["referrerPolicy"] = request.ReferrerPolicy.String()
 	}
 
 	if request.Integrity != "" {

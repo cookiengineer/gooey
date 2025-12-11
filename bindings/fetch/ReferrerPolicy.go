@@ -14,3 +14,7 @@ const (
 	ReferrerPolicyStrictOriginWhenCrossOrigin ReferrerPolicy = "strict-origin-when-cross-origin"
 	ReferrerPolicyUnsafeURL                   ReferrerPolicy = "unsafe-url"
 )
+
+func (policy ReferrerPolicy) String() string {
+	return string(policy)
+}
