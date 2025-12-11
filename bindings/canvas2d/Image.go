@@ -99,7 +99,11 @@ func (image *Image) SetSrc(url string) {
 		image.Src = url
 		image.Value = &wrapped_image
 
-		console.Error(state.err)
+		the_console := console.GetConsole()
+
+		if the_console != nil {
+			the_console.Error(state.err)
+		}
 
 	} else {
 
