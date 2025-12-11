@@ -228,7 +228,7 @@ func (main *Main) Mount() bool {
 
 					// TODO: History API integration?
 					// Multi-page web app
-					location.Location.Replace(path)
+					location.GetLocation().Replace(path)
 
 				}
 
@@ -263,7 +263,7 @@ func (main *Main) Mount() bool {
 
 					// TODO: History API integration?
 					// Multi-page web app
-					location.Location.Replace(path)
+					location.GetLocation().Replace(path)
 
 				}
 

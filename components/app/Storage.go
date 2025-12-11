@@ -7,11 +7,14 @@ import "encoding/json"
 import "errors"
 
 type Storage struct {
+	storage *storages.Storage `json:"-"`
 }
 
 func NewStorage() *Storage {
 
 	var storage Storage
+
+	storage.storage = storages.GetLocalStorage()
 
 	return &storage
 
@@ -21,7 +24,7 @@ func (storage *Storage) Read(name string, schema any) error {
 
 	var result error = nil
 
-	buffer := storages.LocalStorage.GetItemBytes(name)
+	buffer := storage.storage.GetItemBytes(name)
 
 	if len(buffer) > 0 {
 
@@ -40,7 +43,7 @@ func (storage *Storage) Read(name string, schema any) error {
 }
 
 func (storage *Storage) Remove(name string) {
-	storages.LocalStorage.RemoveItem(name)
+	storage.storage.RemoveItem(name)
 }
 
 func (storage *Storage) Write(name string, value any) error {
@@ -50,7 +53,7 @@ func (storage *Storage) Write(name string, value any) error {
 	buffer, err := json.Marshal(value)
 
 	if err == nil {
-		storages.LocalStorage.SetItem(name, buffer)
+		storage.storage.SetItem(name, buffer)
 	} else {
 		result = err
 	}
