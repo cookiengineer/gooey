@@ -1,25 +1,43 @@
 
-# Bindings
+# Gooey Bindings
 
-- [bindings.Document](/bindings/Document.go)
-- [bindings.Screen](/bindings/Screen.go)
-- [bindings.ScreenOrientation](/bindings/ScreenOrientation.go)
-- [bindings.Window](/bindings/Window.go)
+## Implementation Status
 
-**animations**
+This table documents the implementation status of the Gooey [bindings](/bindings)
+package, and whether or not the bindings themselves are considered stable. If a
+package is documented more thoroughly and has examples in the API documentation,
+it is considered stable for public use.
 
-- [animations.CancelAnimationFrame](/bindings/animations/CancelAnimationFrame.go)
-- [animations.RequestAnimationFrame](/bindings/animations/RequestAnimationFrame.go)
+As gooey will run via WebASM in Web Browsers, no assumption is being made about
+compatibility of Web Browser Engines. Use at your own risk, test at your own peril.
 
-**console**
+| Stable? | Implementation                                               | API Docs                                                                                    |
+|:-------:|:-------------------------------------------------------------|:-------------------------------------------------------------------------------------------:|
+| yes     | [bindings.Screen](/bindings/Screen.go)                       | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings#Screen)                   |
+| yes     | [bindings.ScreenOrientation](/bindings/ScreenOrientation.go) | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings#ScreenOrientation)        |
+| yes     | [bindings.Window](/bindings/Window.go)                       | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings#Window)                   |
+| yes     | [bindings/animations.CancelAnimationFrame](/bindings/animations/CancelAnimationFrame.go) | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/animations#CancelAnimationFrame) |
+| yes     | [bindings/animations.RequestAnimationFrame](/bindings/animations/RequestAnimationFrame.go) | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/animations#RequestAnimationFrame) |
+| TODO    | bindings/canvas2d | |
+| yes     | [bindings/console.Console](/bindings/console/Console.go) | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/console#Console) |
+| TODO    | bindings/cookiestore | |
+| TODO    | bindings/crypto | |
+| TODO    | bindings/crypto/aescbc | |
+| TODO    | bindings/crypto/aesctr | |
+| TODO    | bindings/crypto/aesgcm | |
+| TODO    | bindings/dom | |
+| TODO    | bindings/encoding | |
+| yes     | [bindings/fetch.Fetch](/bindings/fetch/Fetch.go) | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/fetch#Fetch) |
+| TODO    | bindings/fetch | |
+| TODO    | bindings/history | |
+| TODO    | bindings/location | |
+| TODO    | bindings/navigator | |
+| TODO    | bindings/navigator/geolocation | |
+| TODO    | bindings/storages | |
+| TODO    | bindings/timers | |
+| TODO    | bindings/xhr | |
 
-- [console.Clear](/bindings/console/Clear.go)
-- [console.Error](/bindings/console/Error.go)
-- [console.Group](/bindings/console/Group.go)
-- [console.GroupEnd](/bindings/console/GroupEnd.go)
-- [console.Info](/bindings/console/Info.go)
-- [console.Log](/bindings/console/Log.go)
-- [console.Warn](/bindings/console/Warn.go)
+
 
 **cookiestore**
 
@@ -74,6 +92,7 @@ object not being implementable as a reusable struct that would make sense.
 
 **dom**
 
+- [dom.Document](/bindings/dom/Document.go)
 - [dom.Element](/bindings/dom/Element.go)
 - [dom.Event](/bindings/dom/Event.go)
 - [dom.EventListener](/bindings/dom/EventListener.go)

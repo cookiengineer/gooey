@@ -1,7 +1,9 @@
 
 # Components
 
-## cookiestore Example
+## bindings/cookiestore
+
+- [ ] Implement `bindings/cookiestore/GetCookieStore() *CookieStore`
 
 ## components/content
 
