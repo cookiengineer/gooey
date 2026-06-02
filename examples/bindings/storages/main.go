@@ -24,7 +24,7 @@ func main() {
 		seconds++
 		storage.SetItem("seconds", seconds)
 		element.SetInnerHTML("This page has been running for " + strconv.Itoa(seconds) + " seconds!")
-	}, 1000)
+	}, 1 * timers.Second)
 
 	for true {
 

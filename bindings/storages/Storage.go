@@ -13,6 +13,7 @@ func (storage *Storage) Clear() {
 	js.Global().Get(storage.name).Call("clear")
 }
 
+// Returns the item as a string.
 func (storage *Storage) GetItem(key string) string {
 
 	var result string
@@ -28,6 +29,7 @@ func (storage *Storage) GetItem(key string) string {
 
 }
 
+// Returns the item as a []byte slice.
 func (storage *Storage) GetItemBytes(key string) []byte {
 
 	var result []byte
@@ -42,6 +44,7 @@ func (storage *Storage) GetItemBytes(key string) []byte {
 
 }
 
+// Returns the item as a float32.
 func (storage *Storage) GetItemFloat32(key string) float32 {
 
 	var result float32
@@ -57,6 +60,7 @@ func (storage *Storage) GetItemFloat32(key string) float32 {
 
 }
 
+// Returns the item as a float64.
 func (storage *Storage) GetItemFloat64(key string) float64 {
 
 	var result float64
@@ -72,6 +76,7 @@ func (storage *Storage) GetItemFloat64(key string) float64 {
 
 }
 
+// Returns the item as an int.
 func (storage *Storage) GetItemInt(key string) int {
 
 	var result int
@@ -87,6 +92,7 @@ func (storage *Storage) GetItemInt(key string) int {
 
 }
 
+// Returns the item as an int8.
 func (storage *Storage) GetItemInt8(key string) int8 {
 
 	var result int8
@@ -102,6 +108,7 @@ func (storage *Storage) GetItemInt8(key string) int8 {
 
 }
 
+// Returns the item as an int16.
 func (storage *Storage) GetItemInt16(key string) int16 {
 
 	var result int16
@@ -117,6 +124,7 @@ func (storage *Storage) GetItemInt16(key string) int16 {
 
 }
 
+// Returns the item as an int32.
 func (storage *Storage) GetItemInt32(key string) int32 {
 
 	var result int32
@@ -132,6 +140,7 @@ func (storage *Storage) GetItemInt32(key string) int32 {
 
 }
 
+// Returns the item as an int64.
 func (storage *Storage) GetItemInt64(key string) int64 {
 
 	var result int64
@@ -147,6 +156,7 @@ func (storage *Storage) GetItemInt64(key string) int64 {
 
 }
 
+// Returns the item as a uint.
 func (storage *Storage) GetItemUint(key string) uint {
 
 	var result uint
@@ -162,6 +172,7 @@ func (storage *Storage) GetItemUint(key string) uint {
 
 }
 
+// Returns the item as a uint8.
 func (storage *Storage) GetItemUint8(key string) uint8 {
 
 	var result uint8
@@ -177,6 +188,7 @@ func (storage *Storage) GetItemUint8(key string) uint8 {
 
 }
 
+// Returns the item as a uint16.
 func (storage *Storage) GetItemUint16(key string) uint16 {
 
 	var result uint16
@@ -192,6 +204,7 @@ func (storage *Storage) GetItemUint16(key string) uint16 {
 
 }
 
+// Returns the item as a uint32.
 func (storage *Storage) GetItemUint32(key string) uint32 {
 
 	var result uint32
@@ -207,6 +220,7 @@ func (storage *Storage) GetItemUint32(key string) uint32 {
 
 }
 
+// Returns the item as a uint64.
 func (storage *Storage) GetItemUint64(key string) uint64 {
 
 	var result uint64
@@ -222,6 +236,7 @@ func (storage *Storage) GetItemUint64(key string) uint64 {
 
 }
 
+// Returns the nth key in the Storage.
 func (storage *Storage) Key(index uint) string {
 
 	var result string
@@ -238,6 +253,7 @@ func (storage *Storage) Key(index uint) string {
 
 }
 
+// Returns the number of items in the Storage.
 func (storage *Storage) Length() uint {
 
 	var result uint
@@ -252,10 +268,12 @@ func (storage *Storage) Length() uint {
 
 }
 
+// Removes an item from the Storage.
 func (storage *Storage) RemoveItem(key string) {
 	js.Global().Get(storage.name).Call("removeItem", js.ValueOf(key))
 }
 
+// Sets an item in the Storage.
 func (storage *Storage) SetItem(key string, value any) {
 
 	switch value.(type) {

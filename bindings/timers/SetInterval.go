@@ -4,20 +4,21 @@ package timers
 
 import "syscall/js"
 
-func SetInterval(callback func(), milliseconds uint) uint {
+// Returns the handler identifier used with ClearInterval(handler_id)
+func SetInterval(callback func(), delay Duration) uint64 {
 
-	var result uint = 0
+	var result uint64 = 0
 
 	wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
 		callback()
 		return nil
 	})
-	wrapped_delay := js.ValueOf(milliseconds)
+	wrapped_delay := js.ValueOf(delay)
 
 	tmp := js.Global().Call("setInterval", wrapped_callback, wrapped_delay)
 
 	if !tmp.IsNull() && !tmp.IsUndefined() {
-		result = uint(tmp.Int())
+		result = uint64(tmp.Int())
 	}
 
 	return result

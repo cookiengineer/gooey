@@ -3,11 +3,13 @@
 
 ### Changed
 
+- Changed [cookiestore.CookieStore](/bindings/cookiestore/CookieStore.go) to method `GetCookieStore() *CookieStore` for better API docs
 - Changed [console.Console](/bindings/console) to method `GetConsole() *Console` for better API docs
 - Changed [bindings.Window](/bindings/Window.go) to method `GetWindow() *Window` for better API docs
 - Changed [dom.Document](/bindings/dom/Document.go) to method `GetDocument() *Document` for better API docs
 - Changed [history.History](/bindings/history/History.go) to method `GetHistory() *History` for better API docs
 - Changed [location.Location](/bindings/location/Location.go) to method `GetLocation() *Location` for better API docs
+- Changed [navigator.Geolocation](/bindings/navigator/Geolocation.go) to method `GetGeolocation() *Geolocation` for better API docs
 - Changed [navigator.Navigator](/bindings/navigator/Navigator.go) to method `GetNavigator() *Navigator` for better API docs
 - Changed [storages.LocalStorage](/bindings/storages/LocalStorage.go) to method `GetLocalStorage() *Storage` for better API docs
 - Changed [storages.SessionStorage](/bindings/storages/SessionStorage.go) to method `GetSessionStorage() *Storage` for better API docs

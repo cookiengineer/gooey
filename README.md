@@ -5,30 +5,32 @@
     <img width="256" height="256" src="https://raw.githubusercontent.com/cookiengineer/gooey/master/assets/gooey.jpg">
 </p>
 
-[Gooey](https://github.com/cookiengineer/gooey) (pronounced as `/'ɡu.i/` or `GUI`) is divided in two parts:
+[Gooey](https://github.com/cookiengineer/gooey) (pronounced as `/'ɡu.i/` or `GUI`) is divided in three parts:
 
 - A pure Go WebASM [bindings](/bindings) framework that bridges the gaps between Go, WebASM and Browser APIs.
-- A pure Go Web UI [components](/components) framework that structures a Web Application, ready to be used in local Web Views.
+- A pure Go Web UI [components](/components) framework that structures a Web Application, ready for use in local Web Views.
+- A pure CSS [design](/design) theme optimized for accessibility, readability, and light/dark mode support.
 
 
 ## Motivation
 
-Problems in modern Web App Development:
+**Problems in modern Web App development**:
 
 - Web Components are great as a separation of feature concept.
-- Web Components are bad for web accessibility (`aria-` property fatigue).
-- Frontend-to-Backend communication is always a problem.
-- Frontend schema safety and validation is always implemented redundantly in another language (be it ECMAScript, TypeScript, or whatever).
-- Backend schema safety and validation is great with `Marshal` / `Unmarshal`, but is hard to keep on bug-to-bug parity with Frontend.
-- Using online-first Web Apps with slow internet connections is very painful.
+- Web Components are bad for web accessibility (e.g. `aria-` property fatigue).
+- Frontend-to-Backend communication is always a redundancy problem.
+- Frontend schema safety and validation is always implemented in another language (e.g. `ECMAScript`, `TypeScript`, etc).
+- Backend schema safety and validation is great with `Marshal` / `Unmarshal`.
+- Bug-to-bug differences from Frontend and Backend eat up a lot of development time.
+- Using online-first Web Apps with slow internet connections is painful.
 
-Conclusions:
+**Conclusions**:
 
-- Use Go's types, structs and schemas on the Frontend via WebASM and on the Backend via its native builds.
-- Use dynamic Web Components for the Frontend via WebASM.
-- Use static Web Components for the Backend via Go's native builds to provide server-side rendering.
-- Deploy offline-first Apps via `webview/webview` that point towards a local web server.
-- Bundle all assets in `/public` via `go:embed` with the application binary.
+- Use Go's types, structs and schemas both on the Frontend and on the Backend side.
+- Use dynamic Web Components for the Frontend.
+- Use static Web Components for the Backend to provide server-side rendering.
+- Build offline-first Web Apps with `webview/webview` pointing to a local web server.
+- Bundle all assets in `/public` via `go:embed` within the application binary.
 
 
 ## Architecture
@@ -63,11 +65,11 @@ Web Browser and the quirks that come with it.
 
 ## Examples
 
-The [examples](/examples) folder contains minimal test cases that show how you can
-use the bindings. They also contain a separate `main.go` which is compiled into a
-`main.wasm` file and a `serve.go` which reflects the local webserver.
+The [examples](/examples) folder contains minimal demos that show how to use the gooey
+bindings and components. They also contain a `main.go` that is compiled into a `main.wasm`
+file and a `serve.go` that reflects the local webserver.
 
-All examples are served on `http://localhost:3000` when the `build.sh` is executed.
+Each example contains a `build.sh` that builds and serves the demo on `http://localhost:3000`.
 
 **Important**: The examples also serve as unit tests, because `go test` cannot generate
 binaries for the `syscall/js` platform right now. As soon as unit tests are available

@@ -4,9 +4,9 @@ package timers
 
 import "syscall/js"
 
-func ClearInterval(identifier uint) {
+func ClearInterval(handler_id uint64) {
 
-	wrapped_identifier := js.ValueOf(identifier)
+	wrapped_identifier := js.ValueOf(handler_id)
 
 	js.Global().Call("clearInterval", wrapped_identifier)
 

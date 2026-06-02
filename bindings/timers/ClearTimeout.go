@@ -4,9 +4,9 @@ package timers
 
 import "syscall/js"
 
-func ClearTimeout(identifier uint) {
+func ClearTimeout(handler_id uint) {
 
-	wrapped_identifier := js.ValueOf(identifier)
+	wrapped_identifier := js.ValueOf(handler_id)
 
 	js.Global().Call("clearTimeout", wrapped_identifier)
 
