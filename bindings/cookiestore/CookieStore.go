@@ -36,7 +36,7 @@ func GetCookieStore() *CookieStore {
 
 		value := js.Global().Get("cookieStore")
 		cookiestore := CookieStore{
-			Value: &store,
+			Value: &value,
 		}
 
 		return &cookiestore
@@ -86,7 +86,7 @@ func (cookiestore *CookieStore) Delete(options DeleteOptions) error {
 func (cookiestore *CookieStore) Get(options GetOptions) (*Cookie, error) {
 
 	if cookiestore.Value.IsNull() || cookiestore.Value.IsUndefined() {
-		return errors.New("Error: CookieStore API not supported.")
+		return nil, errors.New("Error: CookieStore API not supported.")
 	}
 
 	channel := make(chan *get_state)
@@ -141,10 +141,10 @@ func (cookiestore *CookieStore) Get(options GetOptions) (*Cookie, error) {
 }
 
 // Returns all matching Cookies from the CookieStore.
-func (cookiestore *CookieStore) GetAll(options GetOptions) ([]*Cookie, error) {
+func (cookiestore *CookieStore) GetAll(options *GetOptions) ([]*Cookie, error) {
 
 	if cookiestore.Value.IsNull() || cookiestore.Value.IsUndefined() {
-		return errors.New("Error: CookieStore API not supported.")
+		return []*Cookie{}, errors.New("Error: CookieStore API not supported.")
 	}
 
 	channel := make(chan *getall_state)

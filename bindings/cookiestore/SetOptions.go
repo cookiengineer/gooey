@@ -23,10 +23,8 @@ func (options SetOptions) MapToJS() map[string]any {
 		mapped["domain"] = options.Domain
 	}
 
-	if options.Expires != 0 {
+	if options.Expires > 0 {
 		mapped["expires"] = options.Expires
-	} else {
-		mapped["expires"] = 0
 	}
 
 	if options.Path != "" {
@@ -36,9 +34,7 @@ func (options SetOptions) MapToJS() map[string]any {
 	}
 
 	if options.SameSite != nil {
-		mapped["samesite"] = options.SameSite.String()
-	} else {
-		mapped["samesite"] = SameSiteStrict.String()
+		mapped["sameSite"] = options.SameSite.String()
 	}
 
 	return mapped
