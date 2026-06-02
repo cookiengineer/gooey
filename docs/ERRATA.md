@@ -40,7 +40,7 @@ for d := 0; d < len(dataset); d++ {
 
 	// XXX: This will hang up the main thread, when the Promise API is called
 	// and the internal fetch_state channel is read
-	response, err2 := fetch.Fetch("/api/whatever", &fetch.Request{
+	response, err2 := fetch.Fetch("/api/whatever", &fetch.RequestInit{
 		Method:      fetch.MethodPost,
 		Mode:        fetch.ModeSameOrigin,
 		Cache:       fetch.CacheDefault,
@@ -70,7 +70,7 @@ for d := 0; d < len(dataset); d++ {
 
 		fmt.Println("This will be printed")
 
-		response, err2 := fetch.Fetch("/api/whatever", &fetch.Request{
+		response, err2 := fetch.Fetch("/api/whatever", &fetch.RequestInit{
 			// Same as above
 		})
 

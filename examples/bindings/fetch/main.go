@@ -11,7 +11,7 @@ func main() {
 	element1 := document.QuerySelector("#fetch-response")
 	element2 := document.QuerySelector("#fetch-error")
 
-	response, err := fetch.Fetch("/api/test", &fetch.Request{
+	response, err := fetch.Fetch("/api/test", &fetch.RequestInit{
 		Method: fetch.MethodGet,
 		Mode:   fetch.ModeCORS,
 	})

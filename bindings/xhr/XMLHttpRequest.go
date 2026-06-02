@@ -2,24 +2,25 @@
 
 package xhr
 
+import "io"
 import "syscall/js"
 import "time"
 
 type XMLHttpRequest struct {
-	OnLoad      func(int, []byte) `json:"onload"`
-	OnError     func()            `json:"onerror"`
-	OnTimeout   func()            `json:"ontimeout"`
-	ReadyState  int               `json:"readyState"`
-	Response    []byte            `json:"response"`
-	ResponseURL string            `json:"responseURL"`
-	Status      int               `json:"status"`
-	StatusText  string            `json:"statusText"`
-	Timeout     time.Duration     `json:"timeout"`
-	// Upload not supportable without reimplementing Event API
-	WithCredentials bool      `json:"withCredentials"`
-	Value           *js.Value `json:"value"`
+	OnLoad          func(int, []byte) `json:"onload"`
+	OnError         func()            `json:"onerror"`
+	OnTimeout       func()            `json:"ontimeout"`
+	ReadyState      int               `json:"readyState"`
+	Response        []byte            `json:"response"`
+	ResponseURL     string            `json:"responseURL"`
+	Status          int               `json:"status"`
+	StatusText      string            `json:"statusText"`
+	Timeout         time.Duration     `json:"timeout"`
+	WithCredentials bool              `json:"withCredentials"`
+	Value           *js.Value         `json:"value"`
 }
 
+// Returns a new XMLHttpRequest instance.
 func NewXMLHttpRequest() XMLHttpRequest {
 
 	var xhr XMLHttpRequest
@@ -38,10 +39,12 @@ func NewXMLHttpRequest() XMLHttpRequest {
 
 }
 
+// Aborts the ongoing XMLHttpRequest.
 func (xhr *XMLHttpRequest) Abort() {
 	xhr.Value.Call("abort")
 }
 
+// Returns a string of all HTTP response headers, separated by CRLF ("\r\n").
 func (xhr *XMLHttpRequest) GetAllResponseHeaders() string {
 
 	var result string = ""
@@ -56,6 +59,7 @@ func (xhr *XMLHttpRequest) GetAllResponseHeaders() string {
 
 }
 
+// Returns the matching HTTP response header. Returns an empty string if a Network Error happened.
 func (xhr *XMLHttpRequest) GetResponseHeader(key string) string {
 
 	var result string = ""
@@ -78,6 +82,7 @@ func (xhr *XMLHttpRequest) OpenWithUserAndPassword(method Method, url string, us
 
 }
 
+// Opens an XMLHttpRequest.
 func (xhr *XMLHttpRequest) Open(method Method, url string) {
 
 	if method.String() != "" && url != "" {
@@ -86,7 +91,8 @@ func (xhr *XMLHttpRequest) Open(method Method, url string) {
 
 }
 
-func (xhr *XMLHttpRequest) Send() {
+// Sends an XMLHttpRequest with an optional Request Body.
+func (xhr *XMLHttpRequest) Send(body *io.Reader) {
 
 	on_load := js.FuncOf(func(this js.Value, args []js.Value) any {
 
@@ -144,16 +150,39 @@ func (xhr *XMLHttpRequest) Send() {
 
 	xhr.Value.Set("responseType", js.ValueOf("arraybuffer"))
 
-	xhr.Value.Call("send", js.ValueOf(nil))
+	wrapped_body := js.ValueOf(nil)
+
+	if body != nil {
+
+		buffer := make([]byte, 0)
+
+		switch tmp1 := body.(type) {
+		case *bytes.Buffer:
+
+			buffer = tmp1.Bytes()
+
+		default:
+
+			tmp2, err := io.ReadAll(body)
+
+			if err == nil {
+				buffer = tmp2
+			}
+
+		}
+
+		array := js.Global().Get("Uint8Array").New(len(buffer))
+		js.CopyBytesToJS(array, buffer)
+
+		wrapped_body = array
+
+	}
+
+	xhr.Value.Call("send", wrapped_body)
 
 }
 
-func (xhr *XMLHttpRequest) SendBytes(body []byte) {
-
-	// TODO
-
-}
-
+// Sets a Request Header of the XMLHttpRequest.
 func (xhr *XMLHttpRequest) SetRequestHeader(header string, value string) {
 	xhr.Value.Call("setRequestHeader", header, value)
 }

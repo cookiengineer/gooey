@@ -12,18 +12,18 @@ type fetch_state struct {
 	err      error
 }
 
-func Fetch(url string, request *Request) (*Response, error) {
+func Fetch(url string, options *RequestInit) (*Response, error) {
 
 	channel := make(chan *fetch_state)
 	done := make(chan struct{}, 1)
 
 	wrapped_options := make(map[string]interface{})
 
-	if request != nil {
+	if options != nil {
 
-		wrapped_options = request.MapToJS()
+		wrapped_options = options.MapToJS()
 
-		if request.Signal != nil {
+		if options.Signal != nil {
 
 			controller := js.Global().Get("AbortController").New()
 			signal := controller.Get("signal")
@@ -31,7 +31,7 @@ func Fetch(url string, request *Request) (*Response, error) {
 
 			go func() {
 				select {
-				case <-request.Signal.Done():
+				case <-options.Signal.Done():
 					controller.Call("abort")
 				case <-done:
 				}
@@ -39,18 +39,18 @@ func Fetch(url string, request *Request) (*Response, error) {
 
 		}
 
-		if request.Body != nil {
+		if options.Body != nil {
 
 			buffer := make([]byte, 0)
 
-			switch tmp1 := request.Body.(type) {
+			switch tmp1 := options.Body.(type) {
 			case *bytes.Buffer:
 
 				buffer = tmp1.Bytes()
 
 			default:
 
-				tmp2, err := io.ReadAll(request.Body)
+				tmp2, err := io.ReadAll(options.Body)
 
 				if err == nil {
 					buffer = tmp2

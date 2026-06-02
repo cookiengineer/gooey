@@ -9,12 +9,15 @@ func ExampleFetch() {
 	// import "github.com/cookiengineer/gooey/bindings/console"
 
 	console := console.GetConsole()
-	response, err := Fetch("/api/example", &Request{
+	body := strings.NewReader("{\"message\": \"Hello, world!\"}")
+
+	response, err := Fetch("/api/example", &RequestInit{
 		Method:  MethodGet,
 		Headers: map[string]string{
 			"Accept": "application/json",
 			"X-Application": "gooey-example",
 		},
+		Body:           body,
 		Mode:           ModeCORS,
 		Credentials:    CredentialsOmit,
 		Cache:          CacheDefault,

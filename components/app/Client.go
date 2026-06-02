@@ -97,7 +97,7 @@ func (client *Client) Create(path string, payload []byte) (*fetch.Response, erro
 
 		go func() {
 
-			response, err := fetch.Fetch(path, &fetch.Request{
+			response, err := fetch.Fetch(path, &fetch.RequestInit{
 				Method:      fetch.MethodPost,
 				Mode:        fetch.ModeSameOrigin,
 				Cache:       fetch.CacheDefault,
@@ -156,7 +156,7 @@ func (client *Client) Read(path string) (*fetch.Response, error) {
 
 		go func() {
 
-			response, err := fetch.Fetch(path, &fetch.Request{
+			response, err := fetch.Fetch(path, &fetch.RequestInit{
 				Method:      fetch.MethodGet,
 				Mode:        fetch.ModeSameOrigin,
 				Cache:       fetch.CacheDefault,
@@ -212,7 +212,7 @@ func (client *Client) Update(path string, payload []byte) (*fetch.Response, erro
 
 		go func() {
 
-			response, err := fetch.Fetch(path, &fetch.Request{
+			response, err := fetch.Fetch(path, &fetch.RequestInit{
 				Method:      fetch.MethodPatch,
 				Mode:        fetch.ModeSameOrigin,
 				Cache:       fetch.CacheDefault,
@@ -271,7 +271,7 @@ func (client *Client) Delete(path string, payload []byte) (*fetch.Response, erro
 
 		go func() {
 
-			response, err := fetch.Fetch(path, &fetch.Request{
+			response, err := fetch.Fetch(path, &fetch.RequestInit{
 				Method:      fetch.MethodDelete,
 				Mode:        fetch.ModeSameOrigin,
 				Cache:       fetch.CacheDefault,
