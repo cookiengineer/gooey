@@ -1,13 +1,13 @@
 
 # Components
 
+## bindings/cookiestore
+
+- [ ] Implement examples/cookiestore
+
 ## bindings/console
 
 - [ ] Write API examples and docs
-
-## bindings/navigator/geolocation
-
-- [ ] Implement `bindings/navigator/geolocation/GetGeolocation() *Geolocation` for better API docs
 
 ## bindings/canvas2d
 

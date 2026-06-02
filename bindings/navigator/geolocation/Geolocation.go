@@ -4,23 +4,47 @@ package geolocation
 
 import "syscall/js"
 
-var Geolocation geolocation
+var global_geolocation *Geolocation
 
-type geolocation struct {
+func init() {
+	global_geolocation = GetGeolocation()
+}
+
+type Geolocation struct {
 	Value *js.Value `json:"value"`
 }
 
-func init() {
+// Returns the global Geolocation instance.
+func GetGeolocation() *Geolocation {
 
-	geo := js.Global().Get("window").Get("navigator").Get("geolocation")
+	if global_geolocation != nil {
 
-	Geolocation = geolocation{
-		Value: &geo,
+		return global_geolocation
+
+	} else {
+
+		geo := js.Global().Get("window").Get("navigator").Get("geolocation")
+
+		geolocation := Geolocation{
+			Value: &geo,
+		}
+
+		return &geolocation
+
 	}
 
 }
 
-func (geolocation *geolocation) GetCurrentPosition(onsuccess func(GeolocationPosition), onerror func(GeolocationPositionError)) {
+// Clears the watch handler with an identifier obtained by handler_id := WatchPosition(func(GeolocationPostion){}, func(GeolocationError){})
+func (geolocation *Geolocation) ClearWatch(handler_id int) {
+
+	wrapped_id := js.ValueOf(handler_id)
+	geolocation.Value.Call("clearWatch", wrapped_id)
+
+}
+
+// Gets the current position of the device.
+func (geolocation *Geolocation) GetCurrentPosition(onsuccess func(GeolocationPosition), onerror func(GeolocationPositionError)) {
 
 	wrapped_onsuccess := js.FuncOf(func(this js.Value, args []js.Value) any {
 
@@ -68,7 +92,8 @@ func (geolocation *geolocation) GetCurrentPosition(onsuccess func(GeolocationPos
 
 }
 
-func (geolocation *geolocation) WatchPosition(onsuccess func(GeolocationPosition), onerror func(GeolocationPositionError)) int {
+// Watches the current position of the device. Returns the identifier used for ClearWatch(handler_id).
+func (geolocation *Geolocation) WatchPosition(onsuccess func(GeolocationPosition), onerror func(GeolocationPositionError)) int {
 
 	var handler_id int = -1
 

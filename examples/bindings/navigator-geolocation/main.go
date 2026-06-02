@@ -8,6 +8,7 @@ import "time"
 func main() {
 
 	document := dom.GetDocument()
+	location := geolocation.GetGeolocation()
 
 	element_latitude := document.QuerySelector("#latitude")
 	element_longitude := document.QuerySelector("#longitude")
@@ -15,7 +16,7 @@ func main() {
 	element_accuracy := document.QuerySelector("#accuracy")
 	element_error := document.QuerySelector("#error")
 
-	geolocation.Geolocation.GetCurrentPosition(func(position geolocation.GeolocationPosition) {
+	location.GetCurrentPosition(func(position geolocation.GeolocationPosition) {
 
 		element_latitude.SetInnerHTML(strconv.FormatFloat(position.Coords.Latitude, 'g', -1, 64))
 		element_longitude.SetInnerHTML(strconv.FormatFloat(position.Coords.Longitude, 'g', -1, 64))
