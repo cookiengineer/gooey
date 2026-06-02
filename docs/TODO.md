@@ -3,7 +3,16 @@
 
 ## bindings/cookiestore
 
-- [ ] Implement `bindings/cookiestore/GetCookieStore() *CookieStore`
+- [ ] Implement `bindings/cookiestore/GetCookieStore() *CookieStore` for better API docs
+- [ ] Implement `examples/cookiestore`
+
+## bindings/geolocation
+
+- [ ] Implement `bindings/geolocation/GetGeolocation() *Geolocation` for better API docs
+
+## bindings/canvas2d
+
+- [ ] Write API docs comments
 
 ## components/content
 
