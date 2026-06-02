@@ -1,10 +1,9 @@
 
 # Components
 
-## bindings/cookiestore
+## bindings/console
 
-- [ ] Implement `bindings/cookiestore/GetCookieStore() *CookieStore` for better API docs
-- [ ] Implement `examples/cookiestore`
+- [ ] Write API examples and docs
 
 ## bindings/geolocation
 
@@ -71,6 +70,7 @@
 
 ## bindings/canvas2d
 
+- [ ] Write API docs and examples
 - [ ] `context.RoundRect()`
 
 Canvas Images:
