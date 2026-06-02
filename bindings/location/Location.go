@@ -2,6 +2,7 @@
 
 package location
 
+import "github.com/cookiengineer/gooey/bindings/quirks"
 import "syscall/js"
 
 var global_location *Location
@@ -23,6 +24,7 @@ type Location struct {
 	Value    *js.Value `json:"value"`
 }
 
+// Returns the global Location instance.
 func GetLocation() *Location {
 
 	if global_location != nil {
@@ -61,28 +63,89 @@ func GetLocation() *Location {
 
 }
 
-func (location *Location) Assign(url string) {
+// Assigns a new URL to the window and forces a (re-)load while preserving a Browser History entry.
+func (location *Location) Assign(url string) error {
 
-	if location.Value != nil && !location.Value.IsNull() && !location.Value.IsUndefined() {
-		location.Value.Call("assign", js.ValueOf(url))
-		onchange(location)
+	if location.Value != nil {
+
+		if location.Value.IsNull() == false && location.Value.IsUndefined() == false {
+
+			err := quirks.GoTryCatch(func() {
+				location.Value.Call("assign", js.ValueOf(url))
+			})
+
+			if err == nil {
+
+				onchange(location)
+				return nil
+
+			} else {
+				return err
+			}
+
+		} else {
+			return errors.New("Error: Location API not supported")
+		}
+
+	} else {
+		return errors.New("Error: Location API not supported")
 	}
 
 }
 
+// Reloads the current URL in the current window.
 func (location *Location) Reload() {
 
-	if location.Value != nil && !location.Value.IsNull() && !location.Value.IsUndefined() {
-		location.Value.Call("reload")
+	if location.Value != nil {
+
+		if location.Value.IsNull() == false && location.Value.IsUndefined() == false {
+
+			err := quirks.GoTryCatch(func() {
+				location.Value.Call("reload")
+			})
+
+			if err == nil {
+				return nil
+			} else {
+				return err
+			}
+
+		} else {
+			return errors.New("Error: Location API not supported")
+		}
+
+	} else {
+		return errors.New("Error: Location API not supported")
 	}
 
 }
 
+// Replaces the current URL in the current window without preserving a Browser History entry.
 func (location *Location) Replace(url string) {
 
-	if location.Value != nil && !location.Value.IsNull() && !location.Value.IsUndefined() {
-		location.Value.Call("replace", js.ValueOf(url))
-		onchange(location)
+	if location.Value != nil {
+
+		if location.Value.IsNull() == false && location.Value.IsUndefined() == false {
+
+			err := quirks.GoTryCatch(func() {
+				location.Value.Call("replace", js.ValueOf(url))
+			})
+
+			if err == nil {
+
+				onchange(location)
+				return nil
+
+			} else {
+				return err
+			}
+
+		} else {
+			return errors.New("Error: Location API not supported")
+		}
+
+	} else {
+		return errors.New("Error: Location API not supported")
 	}
 
 }

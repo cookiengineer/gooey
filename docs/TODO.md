@@ -5,9 +5,9 @@
 
 - [ ] Write API examples and docs
 
-## bindings/geolocation
+## bindings/navigator/geolocation
 
-- [ ] Implement `bindings/geolocation/GetGeolocation() *Geolocation` for better API docs
+- [ ] Implement `bindings/navigator/geolocation/GetGeolocation() *Geolocation` for better API docs
 
 ## bindings/canvas2d
 
