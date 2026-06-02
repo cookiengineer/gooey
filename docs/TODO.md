@@ -1,10 +1,6 @@
 
 # Components
 
-## bindings/cookiestore
-
-- [ ] Implement examples/cookiestore
-
 ## bindings/console
 
 - [ ] Write API examples and docs
