@@ -31,7 +31,9 @@ compatibility of Web Browser Engines. Use at your own risk, test at your own per
 | TODO    | bindings/crypto/aesctr | |
 | TODO    | bindings/crypto/aesgcm | |
 | TODO    | bindings/dom | |
-| TODO    | bindings/encoding | |
+| yes     | [bindings/encoding#TextDecoder](/bindings/encoding/TextDecoder.go)                                                         | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/encoding#TextDecoder)                             |
+| yes     | [bindings/encoding#TextDecoderOptions](/bindings/encoding/TextDecoderOptions.go)                                           | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/encoding#TextDecoderOptions)                      |
+| yes     | [bindings/encoding#TextEncoder](/bindings/encoding/TextEncoder.go)                                                         | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/encoding#TextEncoder)                             |
 | yes     | [bindings/fetch#Cache](/bindings/fetch/Cache.go)                                                                           | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/fetch#Cache)                                      |
 | yes     | [bindings/fetch#Credentials](/bindings/fetch/Credentials.go)                                                               | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/fetch#Credentials)                                |
 | yes     | [bindings/fetch#Fetch](/bindings/fetch/Fetch.go)                                                                       [1] | [link](https://pkg.go.dev/github.com/cookiengineer/gooey/bindings/fetch#Fetch)                                      |
