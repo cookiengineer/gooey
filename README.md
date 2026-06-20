@@ -89,6 +89,7 @@ upstream via `go test -c`, the plan is to migrate towards fully integrated unit 
 - [navigator](/examples/bindings/navigator)
 - [navigator-geolocation](/examples/bindings/navigator-geolocation)
 - [storages](/examples/bindings/storages)
+- [websockets](/examples/bindings/websockets)
 
 **Components Examples**:
 
