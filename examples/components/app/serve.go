@@ -2,7 +2,6 @@ package main
 
 import "example/schemas"
 import "encoding/json"
-import "fmt"
 import "io"
 import "log"
 import "net/http"
@@ -66,7 +65,7 @@ func main() {
 
 			if err == nil {
 
-				fmt.Println("> GET /api/tasks: ok")
+				log.Println("> GET /api/tasks: ok")
 
 				response.Header().Set("Content-Type", "application/json")
 				response.WriteHeader(http.StatusOK)
@@ -74,7 +73,7 @@ func main() {
 
 			} else {
 
-				fmt.Println("> GET /api/tasks: error")
+				log.Println("> GET /api/tasks: error")
 
 				response.Header().Set("Content-Type", "application/json")
 				response.WriteHeader(http.StatusInternalServerError)
@@ -108,7 +107,7 @@ func main() {
 
 					if err2 == nil {
 
-						fmt.Println("> GET /api/tasks/" + strconv.Itoa(int(id)) + ": ok")
+						log.Println("> GET /api/tasks/" + strconv.Itoa(int(id)) + ": ok")
 
 						response.Header().Set("Content-Type", "application/json")
 						response.WriteHeader(http.StatusOK)
@@ -116,7 +115,7 @@ func main() {
 
 					} else {
 
-						fmt.Println("> GET /api/tasks/" + strconv.Itoa(int(id)) + ": error")
+						log.Println("> GET /api/tasks/" + strconv.Itoa(int(id)) + ": error")
 
 						response.Header().Set("Content-Type", "application/json")
 						response.WriteHeader(http.StatusInternalServerError)
@@ -162,7 +161,7 @@ func main() {
 
 						if err2 == nil {
 
-							fmt.Println("> POST /api/tasks/" + strconv.Itoa(int(id)) + ": ok")
+							log.Println("> POST /api/tasks/" + strconv.Itoa(int(id)) + ": ok")
 
 							response.Header().Set("Content-Type", "application/json")
 							response.WriteHeader(http.StatusOK)
@@ -170,7 +169,7 @@ func main() {
 
 						} else {
 
-							fmt.Println("> POST /api/tasks/" + strconv.Itoa(int(id)) + ": error")
+							log.Println("> POST /api/tasks/" + strconv.Itoa(int(id)) + ": error")
 
 							response.Header().Set("Content-Type", "application/json")
 							response.WriteHeader(http.StatusInternalServerError)
@@ -224,7 +223,7 @@ func main() {
 
 						if err2 == nil {
 
-							fmt.Println("> PATCH /api/tasks/" + strconv.Itoa(schema.ID) + ": ok")
+							log.Println("> PATCH /api/tasks/" + strconv.Itoa(schema.ID) + ": ok")
 
 							response.Header().Set("Content-Type", "application/json")
 							response.WriteHeader(http.StatusOK)
@@ -232,7 +231,7 @@ func main() {
 
 						} else {
 
-							fmt.Println("> PATCH /api/tasks/" + strconv.Itoa(schema.ID) + ": error")
+							log.Println("> PATCH /api/tasks/" + strconv.Itoa(schema.ID) + ": error")
 
 							response.Header().Set("Content-Type", "application/json")
 							response.WriteHeader(http.StatusInternalServerError)
@@ -274,7 +273,7 @@ func main() {
 
 	})
 
-	fmt.Println("Listening on http://localhost:3000")
+	log.Println("Listening on http://localhost:3000")
 
 	err := http.ListenAndServe(":3000", nil)
 

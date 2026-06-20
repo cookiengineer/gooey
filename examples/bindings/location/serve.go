@@ -1,6 +1,5 @@
 package main
 
-import "fmt"
 import "log"
 import "net/http"
 import "os"
@@ -12,7 +11,7 @@ func main() {
 
 	http.Handle("/", fsrv)
 
-	fmt.Println("Listening on http://localhost:3000")
+	log.Println("Listening on http://localhost:3000")
 
 	err := http.ListenAndServe(":3000", nil)
 
