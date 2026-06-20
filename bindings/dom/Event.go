@@ -19,7 +19,7 @@ type Event struct {
 
 func ToEvent(value js.Value) *Event {
 
-	var event Event
+	event := &Event{}
 
 	event.Bubbles = value.Get("bubbles").Bool()
 	event.Cancelable = value.Get("cancelable").Bool()
@@ -32,7 +32,7 @@ func ToEvent(value js.Value) *Event {
 
 	event.Value = &value
 
-	return &event
+	return event
 
 }
 

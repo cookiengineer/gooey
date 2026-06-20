@@ -233,7 +233,7 @@ func (websocket *WebSocket) Close(status Status, reason string) error {
 
 }
 
-func (websocket *WebSocket) Send(data []byte) {
+func (websocket *WebSocket) Send(data []byte) error {
 
 	err := quirks.GoTryCatch(func() {
 
@@ -241,8 +241,6 @@ func (websocket *WebSocket) Send(data []byte) {
 		js.CopyBytesToJS(wrapped_data, data)
 
 		websocket.Value.Call("send", wrapped_data)
-
-		return nil
 
 	})
 
