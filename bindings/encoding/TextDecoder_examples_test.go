@@ -7,7 +7,7 @@ func ExampleNewTextDecoder() {
 
 	// import "github.com/cookiengineer/gooey/bindings/console"
 
-	console := console.NewConsole()
+	console := console.GetConsole()
 	decoder := NewTextDecoder(
 		EncodingKOI8R,
 		TextDecoderOptions{},
@@ -33,7 +33,7 @@ func ExampleTextDecoder_Decode() {
 
 	// import "github.com/cookiengineer/gooey/bindings/console"
 
-	console := console.NewConsole()
+	console := console.GetConsole()
 	decoder := NewTextDecoder(
 		EncodingUTF8,
 		TextDecoderOptions{},
@@ -60,7 +60,7 @@ func ExampleTextDecoderOptions() {
 	// import "github.com/cookiengineer/gooey/bindings/console"
 	// import "fmt"
 
-	console := console.NewConsole()
+	console := console.GetConsole()
 	decoder := NewTextDecoder(
 		EncodingUTF8,
 		TextDecoderOptions{

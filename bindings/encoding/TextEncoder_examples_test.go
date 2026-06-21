@@ -8,7 +8,7 @@ func ExampleTextEncoder_Encode() {
 
 	// import "github.com/cookiengineer/gooey/bindings/console"
 
-	console := console.NewConsole()
+	console := console.GetConsole()
 	encoder := NewTextEncoder(EncodingUTF8)
 
 	data := encoder.Encode("Hello, 世界")
