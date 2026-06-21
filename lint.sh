@@ -13,6 +13,60 @@ run_tests() {
 
 }
 
+check_doc() {
+
+	local base="$1";
+
+	for dir in "${ROOT_DIR}/${base}"/*/; do
+
+		[ -d "$dir" ] || continue;
+
+		if [ ! -f "$dir/doc.go" ]; then
+			echo "[!] Missing ${dir#"${ROOT_DIR}/"}doc.go";
+		fi;
+
+	done;
+
+}
+
+check_examples() {
+
+	local base="$1";
+
+	shopt -s nullglob
+
+	for dir in "${ROOT_DIR}/${base}"/*/; do
+
+		for file in "$dir"/*.go; do
+
+			[ -f "$file" ] || continue
+			[[ "$file" == *_test.go ]] && continue
+
+			# Must contain a struct
+			grep -qE '^type[[:space:]]+[A-Z][A-Za-z0-9_]*[[:space:]]+struct' "$file" || continue
+
+			# Must contain at least one method receiver
+			grep -qE 'func[[:space:]]*\(' "$file" || continue
+			# grep -qE 'func[[:space:]]*\(\s*\*?[A-Z][A-Za-z0-9_]*\s*[[:alnum:][:space:]*]*\)' "$file" || continue
+
+			# Extract struct names and check for examples
+			grep -E '^type[[:space:]]+[A-Z][A-Za-z0-9_]*[[:space:]]+struct' "$file" | while read -r line; do
+
+				type_name=$(echo "$line" | sed -E 's/^type[[:space:]]+([A-Za-z0-9_]+)[[:space:]]+struct.*/\1/')
+
+				if [ ! -f "$dir/${type_name}_examples_test.go" ]; then
+					echo "[!] Missing ${dir#"${ROOT_DIR}/"}${type_name}_examples_test.go";
+				fi
+
+			done
+
+		done
+
+	done
+
+}
+
+
 # Missing doc.go files
 for base in bindings components; do
 
@@ -21,15 +75,7 @@ for base in bindings components; do
 	echo "";
 
 	run_tests "${base}";
-
-	for dir in "${ROOT_DIR}/${base}"/*/; do
-
-		[ -d "$dir" ] || continue
-
-		if [ ! -f "$dir/doc.go" ]; then
-			echo "[!] Missing ${dir#"${ROOT_DIR}/"}doc.go";
-		fi
-
-	done
+	check_doc "${base}";
+	check_examples "${base}";
 
 done
