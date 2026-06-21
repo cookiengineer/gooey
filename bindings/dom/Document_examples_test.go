@@ -4,6 +4,26 @@ package dom
 
 import "github.com/cookiengineer/gooey/bindings/console"
 
+func Example() {
+
+	// import "github.com/cookiengineer/gooey/bindings/console"
+
+	console  := console.GetConsole()
+	document := GetDocument()
+	element  := document.CreateElement("hello-world")
+
+	element.SetAttribute("data-example", "my-value")
+	element.SetInnerHTML("Hello, world!<br>Please click me!")
+
+	element.AddEventListener(EventTypeClick, ToEventListener(func(event *Event) {
+		console.Log("Click Event")
+		console.Log(event)
+	}))
+
+	document.Body.Append(element)
+
+}
+
 func ExampleDocument_AddEventListener() {
 
 	// import "github.com/cookiengineer/gooey/bindings/console"

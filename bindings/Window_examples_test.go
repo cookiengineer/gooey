@@ -5,13 +5,48 @@ package bindings
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 
+func Example() {
+
+	// import "github.com/cookiengineer/gooey/bindings/console"
+	// import "github.com/cookiengineer/gooey/bindings/dom"
+
+	console := console.GetConsole()
+	window  := GetWindow()
+
+	window.AddEventListener("click", dom.ToEventListener(func(event *dom.Event) {
+		console.Log(event)
+	}))
+
+	// The Window's InnerWidth/InnerHeight properties are automatically updated
+	window.AddEventListener("resize", dom.ToEventListener(func(event *dom.Event) {
+		console.Log(window.InnerWidth)
+		console.Log(window.InnerHeight)
+	}))
+
+	// The Window's ScrollX/ScrollY properties are automatically updated
+	window.AddEventListener("scroll", dom.ToEventListener(func(event *dom.Event) {
+		console.Log(window.ScrollX)
+		console.Log(window.ScrollY)
+	}))
+
+	// The Screen.Orientation's Angle/Type properties are automatically updated
+	window.Screen.AddEventListener("change", dom.ToEventListener(func(event *dom.Event) {
+		console.Log(window.Screen.Orientation.Angle)
+		console.Log(window.Screen.Orientation.Type)
+	}))
+
+	console.Log(window)
+	console.Log(window.Screen)
+
+}
+
 func ExampleWindow_AddEventListener() {
 
 	// import "github.com/cookiengineer/gooey/bindings/console"
 	// import "github.com/cookiengineer/gooey/bindings/dom"
 
 	console := console.GetConsole()
-	window := GetWindow()
+	window  := GetWindow()
 
 	window.AddEventListener("resize", dom.ToEventListener(func(event *dom.Event) {
 		console.Log(event.Target)
