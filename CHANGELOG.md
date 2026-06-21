@@ -1,5 +1,11 @@
 
-## [v0.0.8] - UNRELEASED
+## [v0.0.9] - UNRELEASED
+
+### Changed
+
+### Added
+
+## [v0.0.8] - 2026-06-20
 
 ### Changed
 
@@ -17,6 +23,10 @@
 - Changed [app.View](/components/app/View.go) method `Mount()` which now uses the `app.Main.Document`'s Component Registry
 - Added [interfaces.Controller](/components/interfaces/Controller.go) method `Enter() bool`
 - Added [interfaces.Controller](/components/interfaces/Controller.go) method `Leave() bool`
+- Added [cookiestore](/bindings/cookiestore) bindings
+- Added [encoding](/bindings/encoding) bindings
+- Added [location](/bindings/location) bindings
+- Added [websockets](/bindings/websockets) bindings
 
 ### Added
 

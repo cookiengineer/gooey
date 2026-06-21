@@ -9,22 +9,22 @@
 
 - A pure Go WebASM [bindings](/bindings) framework that bridges the gaps between Go, WebASM and Browser APIs.
 - A pure Go Web UI [components](/components) framework that structures a Web Application, ready for use in local Web Views.
-- A pure CSS [design](/design) theme optimized for accessibility, readability, and light/dark mode support.
+- A pure CSS theme [design](/design) optimized for accessibility, readability, and light/dark mode support.
 
 
 ## Motivation
 
-**Problems in modern Web App development**:
+### Problems in Web App Development
 
 - Web Components are great as a separation of feature concept.
 - Web Components are bad for web accessibility (e.g. `aria-` property fatigue).
 - Frontend-to-Backend communication is always a redundancy problem.
-- Frontend schema safety and validation is always implemented in another language (e.g. `ECMAScript`, `TypeScript`, etc).
+- Frontend schema safety and validation is always implemented in another language (e.g. `ECMAScript`, `TypeScript`).
 - Backend schema safety and validation is great with `Marshal` / `Unmarshal`.
 - Bug-to-bug differences from Frontend and Backend eat up a lot of development time.
 - Using online-first Web Apps with slow internet connections is painful.
 
-**Conclusions**:
+### Conclusions for Gooey
 
 - Use Go's types, structs and schemas both on the Frontend and on the Backend side.
 - Use dynamic Web Components for the Frontend.
@@ -62,20 +62,23 @@ Web Browser and the quirks that come with it.
 - [COMPONENTS.md](/docs/COMPONENTS.md) documents the state of implemented Web Components.
 - [TODO.md](/docs/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
 
+The [lint.sh](/lint.sh) script shows a list of syntax errors, missing build tags and missing
+files that need to be implemented. That list is a good starting point for contributions.
 
 ## Examples
 
 The [examples](/examples) folder contains minimal demos that show how to use the gooey
-bindings and components. They also contain a `main.go` that is compiled into a `main.wasm`
-file and a `serve.go` that reflects the local webserver.
+bindings and components. Each example consists of the following files:
 
-Each example contains a `build.sh` that builds and serves the demo on `http://localhost:3000`.
+- The `build.sh` builds and serves the example on `http://localhost:3000`.
+- The `main.go` is compiled into a `main.wasm`.
+- The `serve.go` is the necessary local webserver.
 
 **Important**: The examples also serve as unit tests, because `go test` cannot generate
 binaries for the `syscall/js` platform right now. As soon as unit tests are available
 upstream via `go test -c`, the plan is to migrate towards fully integrated unit tests.
 
-**Bindings Examples**:
+### Bindings Examples
 
 - [canvas2d](/examples/bindings/canvas2d)
 - [console](/examples/bindings/console)
@@ -91,7 +94,7 @@ upstream via `go test -c`, the plan is to migrate towards fully integrated unit 
 - [storages](/examples/bindings/storages)
 - [websockets](/examples/bindings/websockets)
 
-**Components Examples**:
+### Components Examples
 
 - [app](/examples/components/app)
 - [app-components](/examples/components/app-components)
