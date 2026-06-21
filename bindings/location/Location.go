@@ -3,6 +3,7 @@
 package location
 
 import "github.com/cookiengineer/gooey/bindings/quirks"
+import "errors"
 import "syscall/js"
 
 var global_location *Location
@@ -94,7 +95,7 @@ func (location *Location) Assign(url string) error {
 }
 
 // Reloads the current URL in the current window.
-func (location *Location) Reload() {
+func (location *Location) Reload() error {
 
 	if location.Value != nil {
 
@@ -121,7 +122,7 @@ func (location *Location) Reload() {
 }
 
 // Replaces the current URL in the current window without preserving a Browser History entry.
-func (location *Location) Replace(url string) {
+func (location *Location) Replace(url string) error {
 
 	if location.Value != nil {
 

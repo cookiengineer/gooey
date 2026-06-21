@@ -2,7 +2,8 @@
 
 package geolocation
 
-import "github.com/cookiengineer/gooey/bindings/navigator/geolocation"
+import "github.com/cookiengineer/gooey/bindings/console"
+import "time"
 
 func ExampleGeolocation_ClearWatch() {
 
@@ -13,7 +14,7 @@ func ExampleGeolocation_ClearWatch() {
 
 	handler_id := geolocation.WatchPosition(func(position GeolocationPosition) {
 		console.Info(position)
-	}, func(err GeolocationError) {
+	}, func(err GeolocationPositionError) {
 		console.Error(err)
 	})
 
@@ -52,7 +53,7 @@ func ExampleGeolocation_GetCurrentPosition() {
 
 		console.Info(position)
 
-	}, func(err GeolocationError) {
+	}, func(err GeolocationPositionError) {
 		console.Error(err)
 	})
 
@@ -67,7 +68,7 @@ func ExampleGeolocation_WatchPosition() {
 
 	handler_id := geolocation.WatchPosition(func(position GeolocationPosition) {
 		console.Info(position)
-	}, func(err GeolocationError) {
+	}, func(err GeolocationPositionError) {
 		console.Error(err)
 	})
 

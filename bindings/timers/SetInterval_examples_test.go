@@ -15,7 +15,7 @@ func ExampleSetInterval() {
 
 	if interval_id != 0 {
 
-		setTimeout(func() {
+		SetTimeout(func() {
 			ClearInterval(interval_id)
 		}, 10 * Second)
 

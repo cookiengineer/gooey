@@ -3,8 +3,9 @@
 package fetch
 
 import "github.com/cookiengineer/gooey/bindings/console"
+import "strings"
 
-func ExampleFetch() {
+func Example() {
 
 	// import "github.com/cookiengineer/gooey/bindings/console"
 

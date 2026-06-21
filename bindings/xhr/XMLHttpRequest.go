@@ -2,6 +2,7 @@
 
 package xhr
 
+import "bytes"
 import "io"
 import "syscall/js"
 import "time"
@@ -92,7 +93,7 @@ func (xhr *XMLHttpRequest) Open(method Method, url string) {
 }
 
 // Sends an XMLHttpRequest with an optional Request Body.
-func (xhr *XMLHttpRequest) Send(body *io.Reader) {
+func (xhr *XMLHttpRequest) Send(body io.Reader) {
 
 	on_load := js.FuncOf(func(this js.Value, args []js.Value) any {
 

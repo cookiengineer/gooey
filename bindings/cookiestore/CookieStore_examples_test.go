@@ -66,7 +66,7 @@ func ExampleCookieStore_GetAll() {
 	console := console.GetConsole()
 	cookiestore := GetCookieStore()
 
-	cookies, err := cookiestore.GetAll(GetOptions{
+	cookies, err := cookiestore.GetAll(&GetOptions{
 		Name: "username",
 		Url:  "https://example.com/login",
 	})
@@ -110,14 +110,14 @@ func ExampleCookieStore_Set() {
 	console := console.GetConsole()
 	cookiestore := GetCookieStore()
 
-	err := cookiestore.Set(SetOptions{
+	samesite := SameSite("strict")
+	err      := cookiestore.Set(SetOptions{
 		Domain:      "example.com",
 		Expires:     1767139200000,
 		Name:        "username",
 		Partitioned: true,
 		Path:        "/login",
-		SameSite:    &SameSite("strict"),
-		Secure:      true,
+		SameSite:    &samesite,
 		Value:       "cookiengineer",
 	})
 

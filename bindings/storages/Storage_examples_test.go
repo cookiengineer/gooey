@@ -12,7 +12,7 @@ func Example() {
 
 	local_storage := GetLocalStorage()
 	local_storage.SetItem("username", "cookiengineer")
-	console.Log(local_storage.GetItemString("cookiengineer"))
+	console.Log(local_storage.GetItem("cookiengineer"))
 
 	session_storage := GetSessionStorage()
 	session_storage.SetItem("PHPSESSID", 13371337)

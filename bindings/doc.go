@@ -1,7 +1,6 @@
 //go:build wasm
 
-// Package bindings provides high-level API bindings for the global objects in the Browser
-// such as Window, Screen, and ScreenOrientation.
+// Package bindings provides bindings for global Interfaces such as Window, Screen, and ScreenOrientation.
 //
 // Example usage:
 //
@@ -45,4 +44,5 @@
 //		console.Log(window1.Screen.Orientation.Angle)
 //		console.Log(window1.Screen.Orientation.Type)
 //	}))
+//
 package bindings

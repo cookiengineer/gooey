@@ -1,17 +1,3 @@
-//go:build wasm
-
-// Package console implements the Console Living Standard specified by WHATWG and tries to be as
-// compatible as possible to the specification.
-//
-// See also: https://console.spec.whatwg.org/
-//
-// Example usage:
-//
-//	import "github.com/cookiengineer/gooey/bindings/console"
-//
-//	console1 := console.GetConsole()
-//	console1.Log(1337)
-//	console1.Debug("foo bar")
 package console
 
 import "encoding/json"

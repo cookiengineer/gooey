@@ -3,6 +3,7 @@
 package xhr
 
 import "github.com/cookiengineer/gooey/bindings/console"
+import "strconv"
 import "strings"
 import "time"
 
@@ -24,9 +25,11 @@ func Example() {
 		content_type := xhr.GetResponseHeader("Content-Type")
 
 		if content_type == "application/json" {
-			console.Info(status, string(response))
+			console.Info(status)
+			console.Info(string(response))
 		} else {
-			console.Warn(status, response)
+			console.Warn(status)
+			console.Warn(response)
 		}
 
 	}
@@ -39,7 +42,7 @@ func Example() {
 		console.Warn("XMLHttpRequest timed out!")
 	}
 
-	xhr.Open(xhr.MethodPost, "https://example.com/api")
+	xhr.Open(MethodPost, "https://example.com/api")
 
 	body := strings.NewReader("{\"message\": \"Hello, world!\"}")
 

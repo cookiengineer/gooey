@@ -24,7 +24,7 @@ func ExampleSetTimeout() {
 
 	if clearable_timeout_id != 0 {
 
-		setTimeout(func() {
+		SetTimeout(func() {
 			// This will cancel the timeout callback from being fired.
 			console.Warn("Cleared last timeout callback!")
 			ClearTimeout(clearable_timeout_id)

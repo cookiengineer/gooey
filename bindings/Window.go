@@ -121,7 +121,7 @@ func GetWindow() *Window {
 }
 
 // Adds an EventListener to the global Window. Only the "resize" and "scroll" EventType is supported.
-func (win *Window) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
+func (win *Window) AddEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
 	var result bool
 
@@ -156,11 +156,11 @@ func (win *Window) AddEventListener(typ dom.EventType, listener dom.EventListene
 		_, ok := win.listeners[typ]
 
 		if ok == true {
-			win.listeners[typ] = append(win.listeners[typ], &listener)
+			win.listeners[typ] = append(win.listeners[typ], listener)
 			result = true
 		} else {
 			win.listeners[typ] = make([]*dom.EventListener, 0)
-			win.listeners[typ] = append(win.listeners[typ], &listener)
+			win.listeners[typ] = append(win.listeners[typ], listener)
 			result = true
 		}
 

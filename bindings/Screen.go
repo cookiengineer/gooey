@@ -19,7 +19,7 @@ type Screen struct {
 }
 
 // Adds an Event Listener to the Screen. Only the "change" EventType is supported.
-func (screen *Screen) AddEventListener(typ dom.EventType, listener dom.EventListener) bool {
+func (screen *Screen) AddEventListener(typ dom.EventType, listener *dom.EventListener) bool {
 
 	var result bool
 
@@ -54,11 +54,11 @@ func (screen *Screen) AddEventListener(typ dom.EventType, listener dom.EventList
 		_, ok := screen.listeners[typ]
 
 		if ok == true {
-			screen.listeners[typ] = append(screen.listeners[typ], &listener)
+			screen.listeners[typ] = append(screen.listeners[typ], listener)
 			result = true
 		} else {
 			screen.listeners[typ] = make([]*dom.EventListener, 0)
-			screen.listeners[typ] = append(screen.listeners[typ], &listener)
+			screen.listeners[typ] = append(screen.listeners[typ], listener)
 			result = true
 		}
 

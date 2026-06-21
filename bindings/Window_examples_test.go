@@ -5,13 +5,6 @@ package bindings
 import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 
-func ExampleWindow_MoveTo() {
-
-	window := GetWindow()
-	window.MoveTo(128, 128)
-
-}
-
 func ExampleWindow_AddEventListener() {
 
 	// import "github.com/cookiengineer/gooey/bindings/console"
