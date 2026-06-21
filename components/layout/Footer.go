@@ -1,3 +1,5 @@
+//go:build wasm
+
 package layout
 
 import "github.com/cookiengineer/gooey/bindings/console"

@@ -1,3 +1,5 @@
+//go:build wasm
+
 package content
 
 import "github.com/cookiengineer/gooey/bindings/dom"

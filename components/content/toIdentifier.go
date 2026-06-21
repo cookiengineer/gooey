@@ -1,3 +1,5 @@
+//go:build wasm
+
 package content
 
 func toIdentifier(value string) string {

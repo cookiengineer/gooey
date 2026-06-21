@@ -1,3 +1,5 @@
+//go:build wasm
+
 package aescbc
 
 type CryptoKeyType string

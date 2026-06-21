@@ -1,3 +1,5 @@
+//go:build wasm
+
 package types
 
 type Layout string
