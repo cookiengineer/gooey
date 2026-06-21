@@ -1,14 +1,6 @@
 
 # Components
 
-## bindings/console
-
-- [ ] Write API examples and docs
-
-## bindings/canvas2d
-
-- [ ] Write API docs comments
-
 ## components/content
 
 - [ ] Implement `content.Fieldset` setter methods
