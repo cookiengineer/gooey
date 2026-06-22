@@ -56,61 +56,24 @@
 
 # Bindings
 
-## bindings/canvas2d
-
-- [ ] Write API docs and examples
-- [ ] `context.RoundRect()`
-
-Canvas Images:
-
-- [ ] canvas2d/Image
-- [ ] canvas2d/ImageBitmap
-- [ ] canvas2d/ImageData
-- [ ] `canvas2d/Canvas` needs `ToDataURL()` and `ToBlob()` support
-- [ ] `context.DrawImage()`
-
-Canvas Paths:
-
-- [ ] `Context.ClipPath(path Path2D)` to call `context.clip(path)` API
-- [ ] See also [Path2D](https://developer.mozilla.org/en-US/docs/Web/API/Path2D)
-- [ ] `context.IsPointInPath()`
-- [ ] `context.IsPointInStroke()`
-
-Canvas Styles:
-
-- [ ] `context.SetFillStyleColor()`
-- [ ] `context.SetFillStylePattern()`
-- [ ] `context.SetFillStyleGradient()`
-
-- [ ] `context.SetStrokeStyleColor()`
-- [ ] `context.SetStrokeStylePattern()`
-- [ ] `context.SetStrokeStyleGradient()`
-
-Canvas Gradients:
-
-- [ ] canvas2d/CanvasGradient
-- [ ] `context.CreateConicGradient()`
-- [ ] `context.CreateLinearGradient()`
-- [ ] `context.CreateRadialGradient()`
-
-Canvas Patterns:
-
-- [ ] canvas2d/CanvasPattern
-- [ ] `context.CreatePattern()`
-
-Canvas Matrixes:
-
-- [ ] canvas2d/DOMMatrix
-- [ ] `context.SetTransformMatrix(matrix DOMMatrix)`
-
 ## bindings/css
 
-- [ ] `css/FontFace`
+- [ ] Implement `Color`
+- [ ] Implement `Font`
+- [ ] Implement `FontFace`
+- [ ] Implement `BorderRadius`
+- [ ] Implement `Length`
 - [ ] How to implement font descriptors?
 - [ ] How to implement unicode ranges?
 
-- [ ] `css/Matrix`
-- [ ] `css/Length`
+## bindings/canvas2d
+
+- [ ] Write API docs and examples
+- [ ] `canvas2d/Context` `RoundRect()` requires `radii` support, maybe with `css.BorderRadius` or `css.Radii`???
+- [ ] Implement `canvas2d/Canvas` method `ToDataURL()`
+- [ ] Implement `canvas2d/Canvas` method `ToBlob()`
+- [ ] Implement `canvas2d/ImageBitmap` type
+- [ ] Implement `canvas2d/ImageData` type
 
 ## bindings/crypto/aesgcm
 

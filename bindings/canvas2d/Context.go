@@ -2,6 +2,7 @@
 
 package canvas2d
 
+import "github.com/cookiengineer/gooey/bindings/dom"
 import "github.com/cookiengineer/gooey/bindings/quirks"
 import "syscall/js"
 
@@ -87,13 +88,21 @@ func (context *Context) ClearRect(x int, y int, width int, height int) {
 	context.Value.Call("clearRect", x, y, width, height)
 }
 
-func (context *Context) Clip(fillrule FillRule) {
-	context.Value.Call("clip", string(fillrule))
+func (context *Context) Clip(fill_rule FillRule) {
+	context.Value.Call("clip", string(fill_rule))
+}
+
+func (context *Context) ClipPath(path *Path2D, fill_rule FillRule) {
+
+	if path != nil && path.Value != nil {
+		context.Value.Call("clip", *path.Value, string(fill_rule))
+	}
+
 }
 
 func (context *Context) CreatePattern(image *Image, repetition Repetition) *CanvasPattern {
 
-	if image.Value != nil {
+	if image != nil && image.Value != nil {
 
 		value := context.Value.Call("createPattern", *image.Value, string(repetition))
 
@@ -200,7 +209,7 @@ func (context *Context) CreateRadialGradient(x0 float64, y0 float64, r0 float64,
 
 func (context *Context) DrawImage(image *Image, sx int, sy int, swidth int, sheight int, dx int, dy int, dwidth int, dheight int) {
 
-	if image.Value != nil {
+	if image != nil && image.Value != nil {
 		context.Value.Call("drawImage", *image.Value, sx, sy, swidth, sheight, dx, dy, dwidth, dheight)
 	}
 
@@ -226,28 +235,52 @@ func (context *Context) GetLineDash() []float64 {
 	return context.LineDash
 }
 
-func (context *Context) IsPointInPath(x int, y int) bool {
+func (context *Context) IsPointInPath(path *Path2D, x int, y int, fill_rule FillRule) bool {
 
 	var result bool
 
-	tmp := context.Value.Call("isPointInPath", x, y)
+	if path != nil && path.Value != nil {
 
-	if !tmp.IsNull() && !tmp.IsUndefined() && tmp.Bool() == true {
-		result = true
+		tmp := context.Value.Call("isPointInPath", *path.Value, x, y, string(fill_rule))
+
+		if !tmp.IsNull() && !tmp.IsUndefined() && tmp.Bool() == true {
+			result = true
+		}
+
+	} else {
+
+		tmp := context.Value.Call("isPointInPath", x, y)
+
+		if !tmp.IsNull() && !tmp.IsUndefined() && tmp.Bool() == true {
+			result = true
+		}
+
 	}
 
 	return result
 
 }
 
-func (context *Context) IsPointInStroke(x int, y int) bool {
+func (context *Context) IsPointInStroke(path *Path2D, x int, y int) bool {
 
 	var result bool
 
-	tmp := context.Value.Call("isPointInStroke", x, y)
+	if path != nil && path.Value != nil {
 
-	if !tmp.IsNull() && !tmp.IsUndefined() && tmp.Bool() == true {
-		result = true
+		tmp := context.Value.Call("isPointInStroke", *path.Value, x, y)
+
+		if !tmp.IsNull() && !tmp.IsUndefined() && tmp.Bool() == true {
+			result = true
+		}
+
+	} else {
+
+		tmp := context.Value.Call("isPointInStroke", x, y)
+
+		if !tmp.IsNull() && !tmp.IsUndefined() && tmp.Bool() == true {
+			result = true
+		}
+
 	}
 
 	return result
@@ -306,7 +339,7 @@ func (context *Context) SetFillStyleColor(color *Color) {
 
 func (context *Context) SetFillStyleGradient(gradient *CanvasGradient) {
 
-	if gradient.Value != nil {
+	if gradient != nil && gradient.Value != nil {
 		context.Value.Set("fillStyle", *gradient.Value)
 	}
 
@@ -314,7 +347,7 @@ func (context *Context) SetFillStyleGradient(gradient *CanvasGradient) {
 
 func (context *Context) SetFillStylePattern(pattern *CanvasPattern) {
 
-	if pattern.Value != nil {
+	if pattern != nil && pattern.Value != nil {
 		context.Value.Set("fillStyle", *pattern.Value)
 	}
 
@@ -380,7 +413,7 @@ func (context *Context) SetStrokeStyleColor(color *Color) {
 
 func (context *Context) SetStrokeStyleGradient(gradient *CanvasGradient) {
 
-	if gradient.Value != nil {
+	if gradient != nil && gradient.Value != nil {
 		context.Value.Set("strokeStyle", *gradient.Value)
 	}
 
@@ -388,7 +421,7 @@ func (context *Context) SetStrokeStyleGradient(gradient *CanvasGradient) {
 
 func (context *Context) SetStrokeStylePattern(pattern *CanvasPattern) {
 
-	if pattern.Value != nil {
+	if pattern != nil && pattern.Value != nil {
 		context.Value.Set("strokeStyle", *pattern.Value)
 	}
 
@@ -408,8 +441,16 @@ func (context *Context) SetTransform(a float64, b float64, c float64, d float64,
 	context.Value.Call("setTransform", a, b, c, d, e, f)
 }
 
+func (context *Context) SetTransformMatrix(matrix *dom.Matrix) {
+
+	if matrix != nil && matrix.Value != nil {
+		context.Value.Call("setTransform", *matrix.Value)
+	}
+
+}
+
 func (context *Context) SetWordSpacing(css_length string) {
-	// TODO: Validate CSS lengths (with units?)
+	// TODO: Validate CSS lengths (with units?), implement and use bindings/css.Length instead
 	context.Value.Set("wordSpacing", string(css_length))
 	context.WordSpacing = css_length
 }

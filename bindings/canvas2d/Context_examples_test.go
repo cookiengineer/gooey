@@ -2,6 +2,7 @@
 
 package canvas2d
 
+import "github.com/cookiengineer/gooey/bindings/console"
 import "github.com/cookiengineer/gooey/bindings/dom"
 
 func ExampleContext_DrawImage() {
@@ -176,5 +177,58 @@ func ExampleContext_CreateRadialGradient() {
 		context.ClosePath()
 
 	}
+
+}
+
+func ExampleContext_IsPointInPath() {
+
+	// import "github.com/cookiengineer/gooey/bindings/console"
+	// import "github.com/cookiengineer/gooey/bindings/dom"
+
+	console  := console.GetConsole()
+	document := dom.GetDocument()
+	element  := document.QuerySelector("canvas")
+	canvas   := ToCanvas(element)
+	context  := canvas.GetContext()
+
+	circle_path := NewPath2D()
+	circle_path.Arc(50, 50, 30, 0, 2*3.14159, DirectionClockwise)
+
+	inside_path := context.IsPointInPath(circle_path, 50, 50, FillRuleNonZero)
+	console.Log("inside path?")
+	console.Log(inside_path)
+
+	context.BeginPath()
+	context.Rect(10, 10, 100, 100)
+
+	inside_current := context.IsPointInPath(nil, 50, 50, FillRuleNonZero)
+	console.Log("inside current path?")
+	console.Log(inside_current)
+
+}
+
+func ExampleContext_IsPointInStroke() {
+
+	// import "github.com/cookiengineer/gooey/bindings/console"
+	// import "github.com/cookiengineer/gooey/bindings/dom"
+
+	console  := console.GetConsole()
+	document := dom.GetDocument()
+	element  := document.QuerySelector("canvas")
+	canvas   := ToCanvas(element)
+	context  := canvas.GetContext()
+
+	rect_path := NewPath2DRect(10, 10, 80, 80)
+
+	inside_path := context.IsPointInStroke(rect_path, 50, 50)
+	console.Log("inside path?")
+	console.Log(inside_path)
+
+	context.BeginPath()
+	context.Rect(10, 10, 100, 100)
+
+	inside_current := context.IsPointInStroke(nil, 50, 50)
+	console.Log("inside current path?")
+	console.Log(inside_current)
 
 }
