@@ -90,6 +90,28 @@ func (context *Context) Clip(fillrule FillRule) {
 	context.Value.Call("clip", string(fillrule))
 }
 
+func (context *Context) CreatePattern(image *Image, repetition Repetition) *CanvasPattern {
+
+	if image.Value != nil {
+
+		value := context.Value.Call("createPattern", *image.Value, string(repetition))
+
+		if !value.IsNull() && !value.IsUndefined() {
+
+			return &CanvasPattern{
+				Image:      image,
+				Repetition: repetition,
+				Value:      &value,
+			}
+
+		}
+
+	}
+
+	return nil
+
+}
+
 func (context *Context) ClosePath() {
 	context.Value.Call("closePath")
 }
@@ -200,10 +222,18 @@ func (context *Context) SetFillStyleColor(color Color) {
 	context.Value.Set("fillStyle", color.String())
 }
 
-func (context *Context) SetFont(font string) {
-	// TODO: Validate CSS font syntax
-	context.Value.Set("font", string(font))
-	context.Font = font
+func (context *Context) SetFillStylePattern(pattern *CanvasPattern) {
+
+	if pattern.Value != nil {
+		context.Value.Set("fillStyle", *pattern.Value)
+	}
+
+}
+
+func (context *Context) SetFont(css_font string) {
+	// TODO: Validate CSS font syntax, implement and use bindings/css.Font instead
+	context.Value.Set("font", string(css_font))
+	context.Font = css_font
 }
 
 func (context *Context) SetGlobalAlpha(alpha float64) {
@@ -221,7 +251,7 @@ func (context *Context) SetGlobalCompositeOperation(operation CompositeOperation
 }
 
 func (context *Context) SetLetterSpacing(css_length string) {
-	// TODO: Validate CSS lengths (with units?)
+	// TODO: Validate CSS lengths (with units?), implement and use bindings/css.Length instead
 	context.Value.Set("letterSpacing", string(css_length))
 	context.WordSpacing = css_length
 }
@@ -256,6 +286,14 @@ func (context *Context) SetLineDashOffset(offset float64) {
 
 func (context *Context) SetStrokeStyleColor(color Color) {
 	context.Value.Set("strokeStyle", color.String())
+}
+
+func (context *Context) SetStrokeStylePattern(pattern *CanvasPattern) {
+
+	if pattern.Value != nil {
+		context.Value.Set("strokeStyle", *pattern.Value)
+	}
+
 }
 
 func (context *Context) SetTextAlign(align TextAlign) {
