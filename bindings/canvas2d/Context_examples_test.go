@@ -39,7 +39,7 @@ func ExampleContext_SetFillStyleColor() {
 	color, _ := NewColor("#ff0000")
 
 	context.BeginPath()
-	context.SetFillStyleColor(*color)
+	context.SetFillStyleColor(color)
 	context.FillRect(10, 10, 20, 20)
 	context.ClosePath()
 
@@ -74,7 +74,7 @@ func ExampleContext_SetStrokeStyleColor() {
 	color, _ := NewColor("#ff0000")
 
 	context.BeginPath()
-	context.SetStrokeStyleColor(*color)
+	context.SetStrokeStyleColor(color)
 	context.StrokeRect(10, 10, 20, 20)
 	context.ClosePath()
 
