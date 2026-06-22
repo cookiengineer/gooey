@@ -2,6 +2,7 @@
 
 package canvas2d
 
+import "github.com/cookiengineer/gooey/bindings/quirks"
 import "syscall/js"
 
 type Context struct {
@@ -116,6 +117,87 @@ func (context *Context) ClosePath() {
 	context.Value.Call("closePath")
 }
 
+func (context *Context) CreateConicGradient(start_angle float64, x float64, y float64) (*CanvasGradient, error) {
+
+	var result *CanvasGradient
+
+	err1 := quirks.GoTryCatch(func() {
+
+		value := context.Value.Call("createConicGradient", start_angle, x, y)
+
+		if !value.IsNull() && !value.IsUndefined() {
+
+			result = &CanvasGradient{
+				Type:  GradientTypeConic,
+				Value: &value,
+			}
+
+		}
+
+	})
+
+	if err1 == nil {
+		return result, nil
+	} else {
+		return nil, err1
+	}
+
+}
+
+func (context *Context) CreateLinearGradient(x0 float64, y0 float64, x1 float64, y1 float64) (*CanvasGradient, error) {
+
+	var result *CanvasGradient
+
+	err1 := quirks.GoTryCatch(func() {
+
+		value := context.Value.Call("createLinearGradient", x0, y0, x1, y1)
+
+		if !value.IsNull() && !value.IsUndefined() {
+
+			result = &CanvasGradient{
+				Type:  GradientTypeLinear,
+				Value: &value,
+			}
+
+		}
+
+	})
+
+	if err1 == nil {
+		return result, nil
+	} else {
+		return nil, err1
+	}
+
+}
+
+func (context *Context) CreateRadialGradient(x0 float64, y0 float64, r0 float64, x1 float64, y1 float64, r1 float64) (*CanvasGradient, error) {
+
+	var result *CanvasGradient
+
+	err1 := quirks.GoTryCatch(func() {
+
+		value := context.Value.Call("createRadialGradient", x0, y0, r0, x1, y1, r1)
+
+		if !value.IsNull() && !value.IsUndefined() {
+
+			result = &CanvasGradient{
+				Type:  GradientTypeRadial,
+				Value: &value,
+			}
+
+		}
+
+	})
+
+	if err1 == nil {
+		return result, nil
+	} else {
+		return nil, err1
+	}
+
+}
+
 func (context *Context) DrawImage(image *Image, sx int, sy int, swidth int, sheight int, dx int, dy int, dwidth int, dheight int) {
 
 	if image.Value != nil {
@@ -222,6 +304,14 @@ func (context *Context) SetFillStyleColor(color *Color) {
 	context.Value.Set("fillStyle", color.String())
 }
 
+func (context *Context) SetFillStyleGradient(gradient *CanvasGradient) {
+
+	if gradient.Value != nil {
+		context.Value.Set("fillStyle", *gradient.Value)
+	}
+
+}
+
 func (context *Context) SetFillStylePattern(pattern *CanvasPattern) {
 
 	if pattern.Value != nil {
@@ -286,6 +376,14 @@ func (context *Context) SetLineDashOffset(offset float64) {
 
 func (context *Context) SetStrokeStyleColor(color *Color) {
 	context.Value.Set("strokeStyle", color.String())
+}
+
+func (context *Context) SetStrokeStyleGradient(gradient *CanvasGradient) {
+
+	if gradient.Value != nil {
+		context.Value.Set("strokeStyle", *gradient.Value)
+	}
+
 }
 
 func (context *Context) SetStrokeStylePattern(pattern *CanvasPattern) {
