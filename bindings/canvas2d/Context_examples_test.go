@@ -13,9 +13,10 @@ func Example() {
 	canvas   := ToCanvas(element)
 	image    := NewImage(42, 42, "/images/gooey.png")
 	context  := canvas.GetContext()
+	color, _ := NewColor("#ff0000")
 
 	context.BeginPath()
-	context.SetFillStyleColor("#ff0000")
+	context.SetFillStyleColor(*color)
 	context.FillRect(10, 10, 20, 20)
 	context.ClosePath()
 

@@ -196,9 +196,8 @@ func (context *Context) Scale(x float64, y float64) {
 	context.Value.Call("scale", x, y)
 }
 
-func (context *Context) SetFillStyleColor(color string) {
-	// TODO: Validate CSS color syntax
-	context.Value.Set("fillStyle", string(color))
+func (context *Context) SetFillStyleColor(color Color) {
+	context.Value.Set("fillStyle", color.String())
 }
 
 func (context *Context) SetFont(font string) {
@@ -255,9 +254,8 @@ func (context *Context) SetLineDashOffset(offset float64) {
 	context.LineDashOffset = offset
 }
 
-func (context *Context) SetStrokeStyleColor(color string) {
-	// TODO: Validate CSS color syntax
-	context.Value.Set("strokeStyle", string(color))
+func (context *Context) SetStrokeStyleColor(color Color) {
+	context.Value.Set("strokeStyle", color.String())
 }
 
 func (context *Context) SetTextAlign(align TextAlign) {
