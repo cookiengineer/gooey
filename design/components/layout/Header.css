@@ -54,16 +54,6 @@ header div:first-of-type {
 	box-sizing: border-box;
 }
 
-header ul {
-	display: inline-block;
-	width: auto;
-	margin: 0px auto 0px auto;
-	padding: 0px;
-	list-style: none;
-	text-align: center;
-	user-select: none;
-}
-
 header div button {
 	width: auto;
 	line-height: 16px;
@@ -79,6 +69,16 @@ header div:last-of-type {
 	vertical-align: middle;
 	text-align: right;
 	box-sizing: border-box;
+}
+
+header ul {
+	display: inline-block;
+	width: auto;
+	margin: 0px auto 0px auto;
+	padding: 0px;
+	list-style: none;
+	text-align: center;
+	user-select: none;
 }
 
 header ul li {
