@@ -5,6 +5,8 @@
 
 ### Added
 
+- Added [webgl](/bindings/webgl) bindings
+
 ## [v0.0.8] - 2026-06-20
 
 ### Changed
