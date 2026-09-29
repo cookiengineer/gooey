@@ -89,6 +89,14 @@ func (chart *PieChart) Invalidate() {
 	chart.Component.InvalidateAs(chart)
 }
 
+func (chart *PieChart) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if chart.Component != nil {
+		chart.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (chart *PieChart) Mount() bool {
 
 	if chart.Component != nil {

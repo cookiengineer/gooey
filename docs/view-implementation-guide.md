@@ -119,6 +119,7 @@ is also a Component and can be used anywhere a Component is expected.
 | `Disable() bool`           | Disables the interactive parts of the View.                            |
 | `Mount() bool`             | Reads attributes and maps child elements to Components.                |
 | `Unmount() bool`           | Unmaps and unmounts child Components.                                  |
+| `SetScheduler(Scheduler)`  | Receives the scheduler propagated by `app.Main` and forwards it to the child Components. |
 | `Enter() bool`             | Sets `data-state="active"` when the View becomes the active View.      |
 | `Leave() bool`             | Removes `data-state` when another View becomes active.                 |
 | `Query(string) Component`  | Finds a nested Component by CSS-like selector.                         |
@@ -182,12 +183,13 @@ import "sort"
 import "strings"
 
 type Settings struct {
-	Element *dom.Element           `json:"element"`
-	Layout  types.Layout           `json:"layout"`
-	Content []interfaces.Component `json:"content"`
-	name    string
-	label   string
-	path    string
+	Element   *dom.Element           `json:"element"`
+	Layout    types.Layout           `json:"layout"`
+	Content   []interfaces.Component `json:"content"`
+	name      string
+	label     string
+	path      string
+	scheduler interfaces.Scheduler
 }
 
 func ToSettings(element *dom.Element) *Settings {
@@ -203,6 +205,16 @@ func ToSettings(element *dom.Element) *Settings {
 	view.path  = strings.ToLower(element.GetAttribute("data-path"))
 
 	return &view
+
+}
+
+func (view *Settings) SetScheduler(scheduler interfaces.Scheduler) {
+
+	view.scheduler = scheduler
+
+	for _, component := range view.Content {
+		component.SetScheduler(scheduler)
+	}
 
 }
 ```
@@ -415,7 +427,8 @@ The helpers are:
 ### 7. Render and String
 
 `Render()` writes the current state back into the DOM. It must always sync the `data-*`
-attributes and then replace the children with the rendered child Components.
+attributes and then reconcile the rendered child Components in place, so that unchanged nodes keep
+their focus, text selection and scroll position.
 
 ```go
 func (view *Settings) Render() *dom.Element {
@@ -438,13 +451,7 @@ func (view *Settings) Render() *dom.Element {
 			view.Element.SetAttribute("data-layout", view.Layout.String())
 		}
 
-		elements := make([]*dom.Element, 0)
-
-		for _, component := range view.Content {
-			elements = append(elements, component.Render())
-		}
-
-		view.Element.ReplaceChildren(elements)
+		components.ReconcileComponents(view.Element, view.Content)
 
 		return view.Element
 
@@ -454,6 +461,12 @@ func (view *Settings) Render() *dom.Element {
 
 }
 ```
+
+[app.Main](/components/app/Main.go) calls `SetScheduler()` after the Component graph has been
+mounted, so the View receives the [app.Scheduler](/components/app/Scheduler.go) and forwards it to
+its child Components. With a scheduler in place, state changes can call `Invalidate()` to request a
+coalesced re-render; outside an `app.Main` graph a View has no scheduler and must be rendered
+explicitly.
 
 `String()` serializes the View and its Components. It is used for server-side rendering and
 does not need to match the browser DOM one-to-one, but it should produce semantically
@@ -505,9 +518,10 @@ for the complete, runnable file.
 - [ ] `ToSettings(*dom.Element)` reads `data-name`, `data-label`, `data-path`, `data-layout`.
 - [ ] `Mount()` maps every child Component and calls `Component.Mount()` on each.
 - [ ] `Unmount()` unmounts every child Component and removes DOM listeners.
+- [ ] `SetScheduler()` forwards the scheduler to every child Component.
 - [ ] `Enter()`/`Leave()` only toggle `data-state="active"`.
 - [ ] `Query()` recurses into `Content` and is self-including.
-- [ ] `Render()` re-applies `data-*` attributes and replaces children.
+- [ ] `Render()` re-applies `data-*` attributes and reconciles children.
 - [ ] `String()` produces equivalent markup.
 - [ ] The View is registered in `views/RegisterTo.go` with the same name as its Controller.
 - [ ] App-owned CSS lives in `public/app/views/<Name>.css`.

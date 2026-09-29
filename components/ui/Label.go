@@ -55,6 +55,14 @@ func (label *Label) Invalidate() {
 	label.Component.InvalidateAs(label)
 }
 
+func (label *Label) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if label.Component != nil {
+		label.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (label *Label) Mount() bool {
 	return true
 }

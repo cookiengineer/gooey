@@ -95,6 +95,14 @@ func (chart *LineChart) Invalidate() {
 	chart.Component.InvalidateAs(chart)
 }
 
+func (chart *LineChart) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if chart.Component != nil {
+		chart.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (chart *LineChart) Mount() bool {
 
 	if chart.Component != nil {

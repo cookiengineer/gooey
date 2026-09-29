@@ -147,6 +147,22 @@ func (header *Header) Invalidate() {
 	header.Component.InvalidateAs(header)
 }
 
+func (header *Header) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if header.Component != nil {
+		header.Component.SetScheduler(scheduler)
+	}
+
+	for _, component := range header.Content.Left {
+		component.SetScheduler(scheduler)
+	}
+
+	for _, component := range header.Content.Right {
+		component.SetScheduler(scheduler)
+	}
+
+}
+
 func (header *Header) Mount() bool {
 
 	if header.Component != nil {

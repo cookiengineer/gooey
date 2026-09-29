@@ -12,6 +12,9 @@ type Component interface {
 	Mount()   bool
 	Unmount() bool
 
+	// Scheduler Propagation
+	SetScheduler(scheduler Scheduler)
+
 	// Component Methods
 	Query(string) Component
 	Render()      *dom.Element

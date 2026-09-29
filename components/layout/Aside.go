@@ -141,6 +141,22 @@ func (aside *Aside) Invalidate() {
 	aside.Component.InvalidateAs(aside)
 }
 
+func (aside *Aside) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if aside.Component != nil {
+		aside.Component.SetScheduler(scheduler)
+	}
+
+	for _, component := range aside.Content.Top {
+		component.SetScheduler(scheduler)
+	}
+
+	for _, component := range aside.Content.Bottom {
+		component.SetScheduler(scheduler)
+	}
+
+}
+
 func (aside *Aside) Mount() bool {
 
 	if aside.Component != nil {

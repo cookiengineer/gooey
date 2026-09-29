@@ -57,6 +57,18 @@ func (article *Article) Invalidate() {
 	article.Component.InvalidateAs(article)
 }
 
+func (article *Article) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if article.Component != nil {
+		article.Component.SetScheduler(scheduler)
+	}
+
+	for _, component := range article.Content {
+		component.SetScheduler(scheduler)
+	}
+
+}
+
 func (article *Article) Mount() bool {
 
 	if article.Component.Element != nil {

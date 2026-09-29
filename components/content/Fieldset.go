@@ -124,6 +124,26 @@ func (fieldset *Fieldset) Invalidate() {
 	fieldset.Component.InvalidateAs(fieldset)
 }
 
+func (fieldset *Fieldset) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if fieldset.Component != nil {
+		fieldset.Component.SetScheduler(scheduler)
+	}
+
+	for _, field := range fieldset.fields {
+
+		if field.Label != nil {
+			field.Label.SetScheduler(scheduler)
+		}
+
+		if field.Input != nil {
+			field.Input.SetScheduler(scheduler)
+		}
+
+	}
+
+}
+
 func (fieldset *Fieldset) Mount() bool {
 
 	if fieldset.Component != nil {

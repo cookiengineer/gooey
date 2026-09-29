@@ -84,7 +84,7 @@ looks the same.
 
 ## The Component Contract
 
-[interfaces.Component](/components/interfaces/Component.go) requires seven methods:
+[interfaces.Component](/components/interfaces/Component.go) requires eight methods:
 
 | Method | Purpose |
 |:-------|:--------|
@@ -92,6 +92,7 @@ looks the same.
 | `Disable() bool` | Disables interactive children. Returns `true` if something changed. |
 | `Mount() bool` | Reads attributes, maps children, attaches listeners. Called top-down. |
 | `Unmount() bool` | Unmounts children and removes listeners. Called bottom-up. |
+| `SetScheduler(Scheduler)` | Receives the [interfaces.Scheduler](/components/interfaces/Scheduler.go) propagated by `app.Main` and passes it on to nested children. |
 | `Query(string) Component` | Finds a nested Component by a CSS-like selector. |
 | `Render() *dom.Element` | Re-renders this component and its children, returns the element. |
 | `String() string` | Serializes the component for server-side rendering. |
@@ -129,7 +130,7 @@ The graph is assembled by [components.Document](/components/Document.go) togethe
    instantiated through their constructor; unregistered tags become a plain
    `components.Component` whose descendants are mapped recursively.
 4. Each component's `Mount()` then maps its own children and calls `Mount()` on them.
-5. `Render()` rebuilds the DOM top-down; `Unmount()` tears down bottom-up.
+5. `Render()` patches the DOM top-down using the [reconciler](/components/virtual/Reconcile.go); `Unmount()` tears down bottom-up.
 
 ### Graph Compatibility Rules
 
@@ -140,9 +141,11 @@ For a component to be usable inside the graph and inside other components, it **
 3. Register itself with `document.Register("<tag>", components.WrapComponent(ToX))`.
 4. In `Mount()`, map each child element to the matching component and call `child.Mount()`.
 5. Implement `Query()` recursively (and self-inclusively) over `Content`.
-6. In `Render()`, re-apply attributes and `ReplaceChildren()` with the rendered children.
-7. In `Unmount()`, unmount the children and remove any DOM listeners.
-8. Keep listeners attached in `Mount()`, never in `Render()`.
+6. In `Render()`, re-apply attributes and reconcile the rendered children with
+   `components.ReconcileComponents()` / `components.ReconcileElements()`.
+7. In `SetScheduler()`, forward the scheduler to the base `Component` and to every child.
+8. In `Unmount()`, unmount the children and remove any DOM listeners.
+9. Keep listeners attached in `Mount()`, never in `Render()`.
 
 A minimal graph-compatible component therefore looks like this. Known tags are mapped to their
 `To*` constructors (expanded in [Child Mapping Conventions](#child-mapping-conventions)); unknown
@@ -273,7 +276,7 @@ func (component *Foo) Render() *dom.Element {
 			component.Component.Element.RemoveAttribute("data-layout")
 		}
 
-		// ... replace children ...
+		// ... reconcile children ...
 
 	}
 
@@ -434,9 +437,16 @@ The layout components (`layout.Header`, `layout.Aside`, `layout.Footer`, `layout
 
 - return `component.Component.Element`,
 - re-apply all `data-*` attributes derived from component state,
-- call `ReplaceChildren()` with the rendered child elements,
+- reconcile the rendered child elements in place instead of replacing them,
 - be idempotent and safe to call repeatedly,
 - never attach or detach event listeners.
+
+Prefer [components.ReconcileComponents](/components/ReconcileComponents.go) for children that
+implement `interfaces.Component` and [components.ReconcileElements](/components/ReconcileElements.go)
+for raw `*dom.Element` slices. Both delegate to the [components/virtual](/components/virtual/Reconcile.go)
+reconciler, which preserves the identity of unchanged nodes and keeps focus, text selection and
+scroll position intact. Build list items as elements and give them a stable `data-key` so the
+reconciler can match them across renders; `data-id` and `id` are also honoured as fallbacks.
 
 ```go
 func (component *X) Render() *dom.Element {
@@ -445,13 +455,7 @@ func (component *X) Render() *dom.Element {
 
 		component.Component.Element.SetAttribute("data-name", component.Name)
 
-		elements := make([]*dom.Element, 0)
-
-		for _, content := range component.Content {
-			elements = append(elements, content.Render())
-		}
-
-		component.Component.Element.ReplaceChildren(elements)
+		components.ReconcileComponents(component.Component.Element, component.Content)
 
 	}
 
@@ -459,6 +463,38 @@ func (component *X) Render() *dom.Element {
 
 }
 ```
+
+### Reactive Invalidation
+
+Setters that change component state should call the wrapper's `Invalidate()` method. It marks the
+base `Component` dirty, bumps its revision and asks the scheduler to render it as soon as possible.
+
+Components do not own a scheduler by themselves. [app.Main.Mount](/components/app/Main.go)
+propagates its [app.Scheduler](/components/app/Scheduler.go) through the whole graph by calling
+`SetScheduler()` on every Component **after** the graph has been mounted; only then can
+`Invalidate()` reach the [interfaces.Scheduler](/components/interfaces/Scheduler.go). The
+scheduler coalesces all invalidations in one animation frame into a single `Render()`. A Component
+that is not part of an `app.Main` graph simply has no scheduler and is rendered explicitly instead.
+
+Because the base `Component` has no reference back to its wrapper, wrapper components override
+`Invalidate()` and delegate to `Component.InvalidateAs(owner)` so that the wrapper's own `Render()`
+is scheduled:
+
+```go
+func (table *Table) Invalidate() {
+	table.Component.InvalidateAs(table)
+}
+
+func (table *Table) SetDataset(dataset data.Dataset) {
+	table.Dataset = &dataset
+	table.Invalidate()
+}
+```
+
+The base [components.Component](/components/Component.go) also provides the building blocks for
+custom scheduling logic: `MarkDirty()` flags a change without scheduling, `ClearDirty()` resets the
+flag after a render, `IsDirty()` and `Revision()` report the pending state, `SetScheduler()` stores
+and propagates a scheduler, and `Schedule(owner)` enqueues a specific owner.
 
 `String()` serializes the component and its `Content` into HTML. It is used for server-side
 rendering and should produce markup that is semantically equivalent to `Render()`.
@@ -551,6 +587,8 @@ shows how a custom View maps an app-specific component tag in `Mount()`.
 - [Component](/components/Component.go)
 - [Document](/components/Document.go)
 - [EventListener](/components/EventListener.go)
+- Reconciliation helpers: [ReconcileComponents](/components/ReconcileComponents.go),
+  [ReconcileElements](/components/ReconcileElements.go)
 - Helpers: [ComponentConstructor](/components/ComponentConstructor.go),
   [UnwrapComponent](/components/UnwrapComponent.go),
   [WrapComponent](/components/WrapComponent.go)
@@ -561,7 +599,8 @@ shows how a custom View maps an app-specific component tag in `Mount()`.
 - [app.ClientListener](/components/app/ClientListener.go)
 - [app.Controller](/components/app/Controller.go)
 - [app.Main](/components/app/Main.go)
-- [app.Storage](/components/app/Storage.go)
+- [app.Scheduler](/components/app/Scheduler.go) coalesces invalidated Components once per animation frame
+- [app.Storage](/components/app/Storage.go) with the reactive `Get()`, `Revision()`, `Update()` and `Subscribe()` methods
 - [app.View](/components/app/View.go)
 - Controller helpers: [ControllerConstructor](/components/app/ControllerConstructor.go),
   [UnwrapController](/components/app/UnwrapController.go),
@@ -574,18 +613,32 @@ shows how a custom View maps an app-specific component tag in `Mount()`.
 - [interfaces.Component](/components/interfaces/Component.go)
 - [interfaces.Controller](/components/interfaces/Controller.go)
 - [interfaces.View](/components/interfaces/View.go)
+- [interfaces.Scheduler](/components/interfaces/Scheduler.go)
 
 **components/content**:
 
 - [content.Fieldset](/components/content/Fieldset.go) fires a `change-field` event
 - [content.LineChart](/components/content/LineChart.go)
 - [content.PieChart](/components/content/PieChart.go)
-- [content.Table](/components/content/Table.go) fires an `action` event
+- [content.Table](/components/content/Table.go) fires an `action` event; rows carry a stable
+  `data-key` derived from the `Identifier` field (the `data-identifier` attribute, default `"id"`)
+  so the reconciler can match them, and `SelectedKeys()` returns the keys of the selected rows
 
 **components/data** (helpers used by `content.Table`):
 
 - [data.Data](/components/data/Data.go)
 - [data.Dataset](/components/data/Dataset.go)
+
+**components/reactive** (pure-Go core, unit-testable without WebASM):
+
+- [reactive.Store](/components/reactive/Store.go) observable key/value store used by `app.Storage`
+- [reactive.Queue](/components/reactive/Queue.go) coalescing FIFO queue used by `app.Scheduler`
+
+**components/virtual** (DOM reconciler):
+
+- [virtual.Reconcile](/components/virtual/Reconcile.go) patches children in place
+- [virtual.Patch](/components/virtual/Patch.go), [virtual.Move](/components/virtual/Move.go)
+- [virtual.Element](/components/virtual/Element.go) adapts `*dom.Element` for reconciliation
 
 **components/ui**:
 
@@ -615,8 +668,9 @@ shows how a custom View maps an app-specific component tag in `Mount()`.
 - [ ] Layout components expose `Layout types.Layout` and sync `data-layout` in `Render()`.
 - [ ] `Mount()` reads attributes, maps children, and calls `child.Mount()`.
 - [ ] `Unmount()` unmounts children and removes DOM listeners.
+- [ ] `SetScheduler()` forwards the scheduler to the base `Component` and to every child.
 - [ ] `Query()` is self-including and recurses into `Content`.
-- [ ] `Render()` returns `Component.Element` and replaces children.
+- [ ] `Render()` returns `Component.Element` and reconciles children.
 - [ ] `String()` produces equivalent markup.
 - [ ] Events are reserved with `InitEvent()` and fired via `FireEventListeners()`.
 - [ ] Listeners are attached in `Mount()`, never in `Render()`.

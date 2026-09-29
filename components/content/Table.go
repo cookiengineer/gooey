@@ -27,6 +27,7 @@ type Table struct {
 	} `json:"footer"`
 	Component  *components.Component `json:"component"`
 	Selectable bool                  `json:"selectable"`
+	Identifier string                `json:"identifier"`
 	selected   []bool
 	sorted     []int
 	sortby     string
@@ -47,6 +48,7 @@ func NewTable(name string, labels []string, properties []string, types []string,
 	table.Properties = make([]string, 0)
 	table.Types = make([]string, 0)
 	table.Selectable = selectable
+	table.Identifier = "id"
 	table.selected = make([]bool, 0)
 	table.sorted = make([]int, 0)
 	table.sortby = ""
@@ -75,6 +77,12 @@ func ToTable(element *dom.Element) *Table {
 	table.Properties = make([]string, 0)
 	table.Types = make([]string, 0)
 	table.Selectable = element.HasAttribute("data-selectable")
+	table.Identifier = element.GetAttribute("data-identifier")
+
+	if table.Identifier == "" {
+		table.Identifier = "id"
+	}
+
 	table.selected = make([]bool, 0)
 	table.sorted = make([]int, 0)
 	table.sortby = ""
@@ -163,6 +171,30 @@ func (table *Table) Enable() bool {
 
 }
 
+func (table *Table) Invalidate() {
+	table.Component.InvalidateAs(table)
+}
+
+func (table *Table) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if table.Component != nil {
+		table.Component.SetScheduler(scheduler)
+	}
+
+	for _, component := range table.Footer.Content.Left {
+		component.SetScheduler(scheduler)
+	}
+
+	for _, component := range table.Footer.Content.Center {
+		component.SetScheduler(scheduler)
+	}
+
+	for _, component := range table.Footer.Content.Right {
+		component.SetScheduler(scheduler)
+	}
+
+}
+
 func (table *Table) Mount() bool {
 
 	if table.Component != nil {
@@ -183,6 +215,14 @@ func (table *Table) Mount() bool {
 			table.Selectable = true
 		} else {
 			table.Selectable = false
+		}
+
+		identifier := table.Component.Element.GetAttribute("data-identifier")
+
+		if identifier != "" {
+			table.Identifier = identifier
+		} else if table.Identifier == "" {
+			table.Identifier = "id"
 		}
 
 		thead := table.Component.Element.QuerySelector("thead")
@@ -542,20 +582,30 @@ func (table *Table) Render() *dom.Element {
 				tr := dom.GetDocument().CreateElement("tr")
 
 				tr.SetAttribute("data-id", strconv.FormatInt(int64(position), 10))
+				tr.SetAttribute("data-key", table.keyFor(position))
 
 				if table.selected[position] == true {
 					tr.SetAttribute("data-select", "true")
 				}
 
-				html := ""
-
 				if table.Selectable == true {
 
+					td := dom.GetDocument().CreateElement("td")
+					input := dom.GetDocument().CreateElement("input")
+
+					input.SetAttribute("type", "checkbox")
+					input.SetAttribute("data-action", "select")
+
 					if table.selected[position] == true {
-						html += "<td><input type=\"checkbox\" data-action=\"select\" checked/></td>"
-					} else {
-						html += "<td><input type=\"checkbox\" data-action=\"select\"/></td>"
+						input.SetAttribute("checked", "")
 					}
+
+					if input.Value != nil {
+						input.Value.Set("checked", table.selected[position])
+					}
+
+					td.Append(input)
+					tr.Append(td)
 
 				}
 
@@ -563,23 +613,45 @@ func (table *Table) Render() *dom.Element {
 
 				for _, property := range table.Properties {
 
+					td := dom.GetDocument().CreateElement("td")
+
 					val, ok := values[property]
 
 					if ok == true {
-						html += "<td>" + val + "</td>"
-					} else {
-						html += "<td></td>"
+						td.SetTextContent(val)
 					}
 
-				}
+					tr.Append(td)
 
-				tr.SetInnerHTML(html)
+				}
 
 				elements = append(elements, tr)
 
 			}
 
-			tbody.ReplaceChildren(elements)
+			components.ReconcileElements(tbody, elements)
+
+			if table.Selectable == true {
+
+				rows := tbody.QuerySelectorAll("tr")
+
+				for _, row := range rows {
+
+					position, err := strconv.Atoi(row.GetAttribute("data-id"))
+
+					if err == nil && position >= 0 && position < len(table.selected) {
+
+						input := row.QuerySelector("input[data-action=\"select\"]")
+
+						if input != nil && input.Value != nil {
+							input.Value.Set("checked", table.selected[position])
+						}
+
+					}
+
+				}
+
+			}
 
 		}
 
@@ -596,22 +668,6 @@ func (table *Table) Render() *dom.Element {
 
 			if len(tmp) == 3 {
 
-				elements_left := make([]*dom.Element, 0)
-				elements_center := make([]*dom.Element, 0)
-				elements_right := make([]*dom.Element, 0)
-
-				for _, component := range table.Footer.Content.Left {
-					elements_left = append(elements_left, component.Render())
-				}
-
-				for _, component := range table.Footer.Content.Center {
-					elements_center = append(elements_center, component.Render())
-				}
-
-				for _, component := range table.Footer.Content.Right {
-					elements_right = append(elements_right, component.Render())
-				}
-
 				colspan := len(table.Labels) - 2
 
 				if table.Selectable == true {
@@ -622,9 +678,9 @@ func (table *Table) Render() *dom.Element {
 
 				tmp[1].SetAttribute("colspan", strconv.Itoa(colspan))
 
-				tmp[0].ReplaceChildren(elements_left)
-				tmp[1].ReplaceChildren(elements_center)
-				tmp[2].ReplaceChildren(elements_right)
+				components.ReconcileComponents(tmp[0], table.Footer.Content.Left)
+				components.ReconcileComponents(tmp[1], table.Footer.Content.Center)
+				components.ReconcileComponents(tmp[2], table.Footer.Content.Right)
 
 			}
 
@@ -645,6 +701,7 @@ func (table *Table) Add(data data.Data) bool {
 		table.selected = append(table.selected, false)
 		table.sorted = append(table.sorted, table.Dataset.Length()-1)
 		result = true
+		table.Invalidate()
 
 	}
 
@@ -657,6 +714,8 @@ func (table *Table) Deselect(indexes []int) {
 	for _, index := range indexes {
 		table.selected[index] = false
 	}
+
+	table.Invalidate()
 
 }
 
@@ -718,6 +777,8 @@ func (table *Table) Remove(indexes []int) {
 	table.sortby = ""
 	table.sorted = sorted
 
+	table.Invalidate()
+
 }
 
 func (table *Table) Select(indexes []int) {
@@ -725,6 +786,8 @@ func (table *Table) Select(indexes []int) {
 	for _, index := range indexes {
 		table.selected[index] = true
 	}
+
+	table.Invalidate()
 
 }
 
@@ -752,6 +815,55 @@ func (table *Table) Selected() ([]int, []data.Data) {
 
 }
 
+// keyFor returns the stable reconciliation key for a dataset position.
+func (table *Table) keyFor(position int) string {
+
+	if table.Dataset != nil && table.Identifier != "" {
+
+		entry := table.Dataset.Get(position)
+
+		if entry != nil {
+			if _, value := entry.StringProperty(table.Identifier); value != "" {
+				return value
+			}
+		}
+
+	}
+
+	return strconv.Itoa(position)
+
+}
+
+// indexForKey resolves a stable key back to its dataset position.
+func (table *Table) indexForKey(key string) int {
+
+	if table.Dataset != nil {
+		for position := 0; position < table.Dataset.Length(); position++ {
+			if table.keyFor(position) == key {
+				return position
+			}
+		}
+	}
+
+	return -1
+
+}
+
+// SelectedKeys returns the stable keys of all selected rows.
+func (table *Table) SelectedKeys() []string {
+
+	result := make([]string, 0)
+
+	for position := 0; position < len(table.selected); position++ {
+		if table.selected[position] == true {
+			result = append(result, table.keyFor(position))
+		}
+	}
+
+	return result
+
+}
+
 func (table *Table) SetDataset(dataset data.Dataset) {
 
 	table.Dataset = &dataset
@@ -764,6 +876,8 @@ func (table *Table) SetDataset(dataset data.Dataset) {
 	for d := 0; d < dataset.Length(); d++ {
 		table.sorted[d] = d
 	}
+
+	table.Invalidate()
 
 }
 
@@ -780,18 +894,23 @@ func (table *Table) SetData(entries []data.Data) {
 		table.sorted[d] = d
 	}
 
+	table.Invalidate()
+
 }
 
 func (table *Table) SetCenter(components []interfaces.Component) {
 	table.Footer.Content.Center = components
+	table.Invalidate()
 }
 
 func (table *Table) SetLeft(components []interfaces.Component) {
 	table.Footer.Content.Left = components
+	table.Invalidate()
 }
 
 func (table *Table) SetRight(components []interfaces.Component) {
 	table.Footer.Content.Right = components
+	table.Invalidate()
 }
 
 func (table *Table) SetLabelsAndPropertiesAndTypes(labels []string, properties []string, types []string) bool {
@@ -805,6 +924,7 @@ func (table *Table) SetLabelsAndPropertiesAndTypes(labels []string, properties [
 		table.Types = types
 
 		result = true
+		table.Invalidate()
 
 	}
 
@@ -843,6 +963,7 @@ func (table *Table) SortBy(prop string) bool {
 			table.sorted = table.Dataset.SortByProperty(prop)
 			table.sortby = prop
 			result = true
+			table.Invalidate()
 		}
 
 	}
@@ -899,6 +1020,7 @@ func (table *Table) String() string {
 	for _, position := range table.sorted {
 
 		html += "<tr data-id=\"" + strconv.FormatInt(int64(position), 10) + "\""
+		html += " data-key=\"" + table.keyFor(position) + "\""
 
 		if table.selected[position] == true {
 			html += " data-select=\"true\""

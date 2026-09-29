@@ -68,6 +68,14 @@ func (button *Button) Invalidate() {
 	button.Component.InvalidateAs(button)
 }
 
+func (button *Button) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if button.Component != nil {
+		button.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (button *Button) Mount() bool {
 
 	if button.Component != nil {

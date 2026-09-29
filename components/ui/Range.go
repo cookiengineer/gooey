@@ -148,6 +148,14 @@ func (input *Range) Invalidate() {
 	input.Component.InvalidateAs(input)
 }
 
+func (input *Range) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if input.Component != nil {
+		input.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (input *Range) Mount() bool {
 
 	if input.Component != nil {

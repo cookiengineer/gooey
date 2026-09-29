@@ -82,6 +82,14 @@ func (input *Input) Invalidate() {
 	input.Component.InvalidateAs(input)
 }
 
+func (input *Input) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if input.Component != nil {
+		input.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (input *Input) Mount() bool {
 
 	if input.Component != nil {

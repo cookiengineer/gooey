@@ -101,6 +101,26 @@ func (footer *Footer) Invalidate() {
 	footer.Component.InvalidateAs(footer)
 }
 
+func (footer *Footer) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if footer.Component != nil {
+		footer.Component.SetScheduler(scheduler)
+	}
+
+	for _, component := range footer.Content.Left {
+		component.SetScheduler(scheduler)
+	}
+
+	for _, component := range footer.Content.Center {
+		component.SetScheduler(scheduler)
+	}
+
+	for _, component := range footer.Content.Right {
+		component.SetScheduler(scheduler)
+	}
+
+}
+
 func (footer *Footer) Mount() bool {
 
 	if footer.Component != nil {

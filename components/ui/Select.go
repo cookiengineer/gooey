@@ -117,6 +117,14 @@ func (self *Select) Invalidate() {
 	self.Component.InvalidateAs(self)
 }
 
+func (self *Select) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if self.Component != nil {
+		self.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (self *Select) Mount() bool {
 
 	if self.Component != nil {

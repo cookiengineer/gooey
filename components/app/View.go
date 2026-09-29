@@ -256,9 +256,20 @@ func (view *View) Revision() uint64 {
 	return view.revision
 }
 
-// SetScheduler overrides the scheduler used by this view.
+// SetScheduler overrides the scheduler used by this view and propagates it to
+// all nested Components. It is called by app.Main while the graph is being
+// assembled.
 func (view *View) SetScheduler(scheduler interfaces.Scheduler) {
+
 	view.scheduler = scheduler
+
+	for _, component := range view.Content {
+
+		if component != nil {
+			component.SetScheduler(view.scheduler)
+		}
+	}
+
 }
 
 func (view *View) String() string {

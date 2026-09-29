@@ -17,6 +17,9 @@ type View interface {
 	Mount()   bool
 	Unmount() bool
 
+	// Scheduler Propagation
+	SetScheduler(scheduler Scheduler)
+
 	// State Transition Methods
 	Enter() bool
 	Leave() bool

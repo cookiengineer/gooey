@@ -75,6 +75,14 @@ func (checkbox *Checkbox) Invalidate() {
 	checkbox.Component.InvalidateAs(checkbox)
 }
 
+func (checkbox *Checkbox) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if checkbox.Component != nil {
+		checkbox.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (checkbox *Checkbox) Mount() bool {
 
 	if checkbox.Component != nil {

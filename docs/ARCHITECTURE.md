@@ -134,6 +134,19 @@ Component States are represented using `data-` attributes:
 - `data-layout` influences the layout flow (`grid`, `flex`, `flow`)
 - `data-state` influences the activity/visibility (`active`)
 
+## Rendering and Reconciliation
+
+Each Component's `Render()` patches its existing DOM element in place through the
+[components/virtual](/components/virtual/Reconcile.go) reconciler instead of replacing its
+children. Children are matched by `data-key`, then `data-id`, then `id`, and otherwise by a
+positional tag match, so unchanged nodes keep their focus, text selection and scroll state.
+
+Invalidations are batched by [app.Scheduler](/components/app/Scheduler.go), which implements
+[interfaces.Scheduler](/components/interfaces/Scheduler.go). [app.Main.Mount](/components/app/Main.go)
+propagates its scheduler through the Component graph via `SetScheduler()`; a Component outside an
+`app.Main` graph has no scheduler and is rendered explicitly. Setters call `Invalidate()` to request
+a render, which is coalesced into a single `Render()` per animation frame.
+
 ## Implementation Guides
 
 - [Component Implementation Guide](/docs/component-implementation-guide.md) documents how to implement components and how the Component graph works.

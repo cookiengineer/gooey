@@ -149,6 +149,14 @@ func (input *Number) Invalidate() {
 	input.Component.InvalidateAs(input)
 }
 
+func (input *Number) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if input.Component != nil {
+		input.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (input *Number) Mount() bool {
 
 	if input.Component != nil {

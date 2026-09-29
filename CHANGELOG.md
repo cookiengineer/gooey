@@ -6,15 +6,14 @@
 - Changed [animations.RequestAnimationFrame](/bindings/animations/RequestAnimationFrame.go) to release its `js.Func` after firing and to track active frames for cancellation
 - Changed [animations.CancelAnimationFrame](/bindings/animations/CancelAnimationFrame.go) to release the tracked `js.Func` when cancelling
 - Changed [dom.Element](/bindings/dom/Element.go) `RemoveAttribute()` to update the cached attributes map
-- Changed [app.Main](/components/app/Main.go) `Mount()` to install and start its `RenderScheduler`, and `Render()` to flush pending component renders
+- Changed [app.Main](/components/app/Main.go) `Mount()` to install and start its [app.Scheduler](/components/app/Scheduler.go), to propagate it through the Component graph, and `Render()` to flush pending component renders
 - Changed [content.Table](/components/content/Table.go) `Render()` to build element trees and reconcile rows by stable key identifier
 
 ### Added
 
 - Added [reactive](/components/reactive) package
 - Added [virtual](/components/virtual) package
-- Added [interfaces.Scheduler](/interfaces/Scheduler.go) interface
-- Added [components.Scheduler](/components/Scheduler.go) implementation
+- Added [interfaces.Scheduler](/components/interfaces/Scheduler.go) interface, and `SetScheduler()` to [interfaces.Component](/components/interfaces/Component.go) and [interfaces.View](/components/interfaces/View.go)
 - Added [components.ReconcileComponents](/components/ReconcileComponents.go) helper
 - Added [components.ReconcileElements](/components/ReconcileElements.go) helper
 - Added [components.Component](/components/Component.go) methods `Invalidate()`, `InvalidateAs()`, `MarkDirty()`, `IsDirty()`, `ClearDirty()`, `Revision()`, `SetScheduler()` and `Schedule()`
@@ -23,6 +22,10 @@
 - Added [app.View](/components/app/View.go) methods `Invalidate()`, `IsDirty()`, `Revision()` and `SetScheduler()`
 - Added [content.Table](/components/content/Table.go) field `Identifier` (default `"id"`), method `SelectedKeys()` and stable `data-key` row attributes
 - Added [dom.Element](/bindings/dom/Element.go) methods `InsertBefore()`, `RemoveChild()`, `ReplaceChild()`, `IsSameElement()`, `Focused()`, `GetTextContent()` and `SetTextContent()`
+
+### Fixed
+
+- Fixed [app.Main](/components/app/Main.go) to propagate its [app.Scheduler](/components/app/Scheduler.go) to every mounted Component via `SetScheduler()`, so that `Invalidate()` on nested Components is no longer a no-op
 
 ## [v0.0.9] - 2026-09-20
 

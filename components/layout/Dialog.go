@@ -100,6 +100,22 @@ func (dialog *Dialog) Invalidate() {
 	dialog.Component.InvalidateAs(dialog)
 }
 
+func (dialog *Dialog) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if dialog.Component != nil {
+		dialog.Component.SetScheduler(scheduler)
+	}
+
+	if dialog.Content != nil {
+		dialog.Content.SetScheduler(scheduler)
+	}
+
+	if dialog.Footer != nil {
+		dialog.Footer.SetScheduler(scheduler)
+	}
+
+}
+
 func (dialog *Dialog) Mount() bool {
 
 	if dialog.Component != nil {

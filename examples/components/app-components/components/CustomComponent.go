@@ -54,6 +54,18 @@ func (component *CustomComponent) Enable() bool {
 	return false
 }
 
+func (component *CustomComponent) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if component.Component != nil {
+		component.Component.SetScheduler(scheduler)
+	}
+
+	for _, content := range component.Content {
+		content.SetScheduler(scheduler)
+	}
+
+}
+
 func (component *CustomComponent) Mount() bool {
 
 	if component.Component.Element != nil {

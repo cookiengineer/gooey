@@ -14,12 +14,13 @@ import "sort"
 import "strings"
 
 type Settings struct {
-	Element *dom.Element           `json:"element"`
-	Layout  types.Layout           `json:"layout"`
-	Content []interfaces.Component `json:"content"`
-	name    string                 `json:"name"`
-	label   string                 `json:"label"`
-	path    string                 `json:"path"`
+	Element   *dom.Element           `json:"element"`
+	Layout    types.Layout           `json:"layout"`
+	Content   []interfaces.Component `json:"content"`
+	name      string                 `json:"name"`
+	label     string                 `json:"label"`
+	path      string                 `json:"path"`
+	scheduler interfaces.Scheduler   `json:"-"`
 }
 
 func NewSettings(name string, label string, path string) *Settings {
@@ -62,6 +63,16 @@ func (view *Settings) Disable() bool {
 
 func (view *Settings) Enable() bool {
 	return false
+}
+
+func (view *Settings) SetScheduler(scheduler interfaces.Scheduler) {
+
+	view.scheduler = scheduler
+
+	for _, component := range view.Content {
+		component.SetScheduler(scheduler)
+	}
+
 }
 
 func (view *Settings) Enter() bool {

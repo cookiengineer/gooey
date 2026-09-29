@@ -168,7 +168,6 @@ func (main *Main) Mount() bool {
 					} else {
 
 						view := ToView(element)
-						view.SetScheduler(main.Scheduler)
 
 						main.prepareViewContent(view)
 
@@ -179,7 +178,6 @@ func (main *Main) Mount() bool {
 				} else {
 
 					view := ToView(element)
-					view.SetScheduler(main.Scheduler)
 
 					main.prepareViewContent(view)
 
@@ -300,6 +298,32 @@ func (main *Main) Mount() bool {
 		main.Dialog = dialog
 	} else {
 		main.Dialog = nil
+	}
+
+	// XXX: The scheduler is only set by app.Main, and only after the Component
+	// Graph has been mounted, so that nested Components can be reached.
+	if main.Scheduler != nil {
+
+		for _, view := range main.views {
+			view.SetScheduler(main.Scheduler)
+		}
+
+		if main.Header != nil {
+			main.Header.SetScheduler(main.Scheduler)
+		}
+
+		if main.Aside != nil {
+			main.Aside.SetScheduler(main.Scheduler)
+		}
+
+		if main.Footer != nil {
+			main.Footer.SetScheduler(main.Scheduler)
+		}
+
+		if main.Dialog != nil {
+			main.Dialog.SetScheduler(main.Scheduler)
+		}
+
 	}
 
 	// XXX: Initialize Controllers AFTER the Component Graph is ready

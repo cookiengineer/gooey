@@ -80,6 +80,14 @@ func (textarea *Textarea) Invalidate() {
 	textarea.Component.InvalidateAs(textarea)
 }
 
+func (textarea *Textarea) SetScheduler(scheduler interfaces.Scheduler) {
+
+	if textarea.Component != nil {
+		textarea.Component.SetScheduler(scheduler)
+	}
+
+}
+
 func (textarea *Textarea) Mount() bool {
 
 	if textarea.Component != nil {

@@ -69,9 +69,21 @@ func (component *Component) MarkDirty() {
 	component.revision = component.revision + 1
 }
 
-// SetScheduler overrides the scheduler used by this component.
+// SetScheduler overrides the scheduler used by this component and propagates
+// it to all nested Components. It is called by app.Main while the graph is
+// being assembled, so components never default to a scheduler of their own.
 func (component *Component) SetScheduler(scheduler interfaces.Scheduler) {
+
 	component.scheduler = scheduler
+
+	for _, content := range component.Content {
+
+		if content != nil {
+			content.SetScheduler(component.scheduler)
+		}
+
+	}
+
 }
 
 func (component *Component) Reconcile() {
