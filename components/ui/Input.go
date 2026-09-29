@@ -78,6 +78,10 @@ func (input *Input) Enable() bool {
 
 }
 
+func (input *Input) Invalidate() {
+	input.Component.InvalidateAs(input)
+}
+
 func (input *Input) Mount() bool {
 
 	if input.Component != nil {

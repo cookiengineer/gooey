@@ -163,15 +163,7 @@ func (component *CustomComponent) Render() *dom.Element {
 	if component.Component.Element != nil {
 
 		if len(component.Content) > 0 {
-
-			elements := make([]*dom.Element, 0)
-
-			for _, component := range component.Content {
-				elements = append(elements, component.Render())
-			}
-
-			component.Component.Element.ReplaceChildren(elements)
-
+			components.ReconcileComponents(component.Component.Element, component.Content)
 		}
 
 	}

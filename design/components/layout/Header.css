@@ -118,6 +118,12 @@ header ul li:last-of-type {
 	border-radius: 0px 4px 4px 0px;
 }
 
+header ul li:only-of-type {
+	border-left: 1px solid var(--button-default-border);
+	border-right: 1px solid var(--button-default-border);
+	border-radius: 4px 4px 4px 4px;
+}
+
 header ul li {
 	color: var(--button-default-color);
 	background: var(--button-default-background);

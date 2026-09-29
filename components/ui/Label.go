@@ -51,6 +51,10 @@ func (label *Label) Enable() bool {
 	return false
 }
 
+func (label *Label) Invalidate() {
+	label.Component.InvalidateAs(label)
+}
+
 func (label *Label) Mount() bool {
 	return true
 }

@@ -11,8 +11,9 @@ import "github.com/cookiengineer/gooey/components/interfaces"
 import "strings"
 
 type Main struct {
-	Client  *Client  `json:"client"`
-	Storage *Storage `json:"storage"`
+	Client    *Client    `json:"client"`
+	Storage   *Storage   `json:"storage"`
+	Scheduler *Scheduler `json:"scheduler"`
 
 	Header *layout.Header `json:"header"`
 	Aside  *layout.Aside  `json:"aside"`
@@ -36,6 +37,7 @@ func NewMain() *Main {
 
 	main.Client = NewClient()
 	main.Storage = NewStorage()
+	main.Scheduler = NewScheduler()
 
 	main.Controller = nil
 	main.ControllerRegistry = make(map[string]ControllerConstructor)
@@ -58,6 +60,7 @@ func ToMain(document *components.Document) *Main {
 
 	main.Client = NewClient()
 	main.Storage = NewStorage()
+	main.Scheduler = NewScheduler()
 
 	main.Controller = nil
 	main.ControllerRegistry = make(map[string]ControllerConstructor)
@@ -134,6 +137,10 @@ func (main *Main) GetView(name string) interfaces.View {
 
 func (main *Main) Mount() bool {
 
+	if main.Scheduler != nil {
+		main.Scheduler.Start()
+	}
+
 	main.Document.Register("aside", components.WrapComponent(layout.ToAside))
 	main.Document.Register("header", components.WrapComponent(layout.ToHeader))
 	main.Document.Register("footer", components.WrapComponent(layout.ToFooter))
@@ -161,6 +168,8 @@ func (main *Main) Mount() bool {
 					} else {
 
 						view := ToView(element)
+						view.SetScheduler(main.Scheduler)
+
 						main.prepareViewContent(view)
 
 						main.views[name] = interfaces.View(view)
@@ -170,6 +179,8 @@ func (main *Main) Mount() bool {
 				} else {
 
 					view := ToView(element)
+					view.SetScheduler(main.Scheduler)
+
 					main.prepareViewContent(view)
 
 					main.views[name] = interfaces.View(view)
@@ -465,12 +476,20 @@ func (main *Main) Render() {
 		main.Dialog.Render()
 	}
 
+	if main.Scheduler != nil {
+		main.Scheduler.Flush()
+	}
+
 }
 
 func (main *Main) Unmount() bool {
 
 	if main.Header != nil {
 		main.Header.Component.RemoveEventListener("change-view", nil)
+	}
+
+	if main.Scheduler != nil {
+		main.Scheduler.Stop()
 	}
 
 	return true

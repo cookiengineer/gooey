@@ -78,6 +78,8 @@ func (fieldset *Fieldset) AddField(name string, typ types.Input, label interface
 			Type:  typ,
 		})
 
+		fieldset.Invalidate()
+
 	}
 
 }
@@ -116,6 +118,10 @@ func (fieldset *Fieldset) Enable() bool {
 
 	return result
 
+}
+
+func (fieldset *Fieldset) Invalidate() {
+	fieldset.Component.InvalidateAs(fieldset)
 }
 
 func (fieldset *Fieldset) Mount() bool {
@@ -461,6 +467,7 @@ func (fieldset *Fieldset) RemoveField(name string) bool {
 	if index != -1 {
 		fieldset.fields = append(fieldset.fields[:index], fieldset.fields[index+1:]...)
 		result = true
+		fieldset.Invalidate()
 	}
 
 	return result
@@ -504,19 +511,18 @@ func (fieldset *Fieldset) Render() *dom.Element {
 			input := field.Input.Render()
 
 			div.SetAttribute("data-name", field.Name)
+			div.SetAttribute("data-key", field.Name)
 			label.SetAttribute("for", id)
 			input.SetAttribute("id", id)
 
-			div.ReplaceChildren([]*dom.Element{
-				label,
-				input,
-			})
+			div.Append(label)
+			div.Append(input)
 
 			elements = append(elements, div)
 
 		}
 
-		fieldset.Component.Element.ReplaceChildren(elements)
+		components.ReconcileElements(fieldset.Component.Element, elements)
 
 	}
 

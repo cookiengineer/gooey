@@ -137,6 +137,10 @@ func (aside *Aside) Enable() bool {
 
 }
 
+func (aside *Aside) Invalidate() {
+	aside.Component.InvalidateAs(aside)
+}
+
 func (aside *Aside) Mount() bool {
 
 	if aside.Component != nil {
@@ -324,6 +328,8 @@ func (aside *Aside) RegisterView(view interfaces.View) bool {
 			found.Label = label
 			found.Path = path
 
+			aside.Invalidate()
+
 			return true
 
 		} else {
@@ -336,6 +342,8 @@ func (aside *Aside) RegisterView(view interfaces.View) bool {
 			}
 
 			aside.items = append(aside.items, &item)
+
+			aside.Invalidate()
 
 			return true
 
@@ -365,8 +373,6 @@ func (aside *Aside) Render() *dom.Element {
 			}
 
 			elements_top := make([]*dom.Element, 0)
-			elements_middle := make([]*dom.Element, 0)
-			elements_bottom := make([]*dom.Element, 0)
 
 			for _, item := range aside.items {
 
@@ -376,20 +382,21 @@ func (aside *Aside) Render() *dom.Element {
 					item.Element.RemoveAttribute("data-state")
 				}
 
-				item.Element.SetInnerHTML("<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>")
+				anchor := dom.GetDocument().CreateElement("a")
+				anchor.SetAttribute("data-view", item.Name)
+				anchor.SetAttribute("href", item.Path)
+				anchor.SetInnerHTML(item.Label)
+
+				components.ReconcileElements(item.Element, []*dom.Element{anchor})
 				elements_top = append(elements_top, item.Element)
 
 			}
 
 			// Layout constraint: Middle DIV must be empty
 
-			for _, component := range aside.Content.Bottom {
-				elements_bottom = append(elements_bottom, component.Render())
-			}
-
-			tmp[0].ReplaceChildren(elements_top)
-			tmp[1].ReplaceChildren(elements_middle)
-			tmp[2].ReplaceChildren(elements_bottom)
+			components.ReconcileElements(tmp[0], elements_top)
+			components.ReconcileElements(tmp[1], make([]*dom.Element, 0))
+			components.ReconcileComponents(tmp[2], aside.Content.Bottom)
 
 		}
 
@@ -401,6 +408,7 @@ func (aside *Aside) Render() *dom.Element {
 
 func (aside *Aside) SetContentBottom(components []interfaces.Component) {
 	aside.Content.Bottom = components
+	aside.Invalidate()
 }
 
 func (aside *Aside) String() string {

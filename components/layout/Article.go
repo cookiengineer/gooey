@@ -53,6 +53,10 @@ func (article *Article) Enable() bool {
 	return false
 }
 
+func (article *Article) Invalidate() {
+	article.Component.InvalidateAs(article)
+}
+
 func (article *Article) Mount() bool {
 
 	if article.Component.Element != nil {
@@ -167,15 +171,7 @@ func (article *Article) Render() *dom.Element {
 		}
 
 		if len(article.Content) > 0 {
-
-			elements := make([]*dom.Element, 0)
-
-			for _, component := range article.Content {
-				elements = append(elements, component.Render())
-			}
-
-			article.Component.Element.ReplaceChildren(elements)
-
+			components.ReconcileComponents(article.Component.Element, article.Content)
 		}
 
 	}
@@ -187,7 +183,7 @@ func (article *Article) Render() *dom.Element {
 func (article *Article) SetContent(components []interfaces.Component) {
 
 	article.Content = components
-	article.Render()
+	article.Invalidate()
 
 }
 

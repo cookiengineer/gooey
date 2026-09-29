@@ -113,6 +113,10 @@ func (self *Select) Enable() bool {
 
 }
 
+func (self *Select) Invalidate() {
+	self.Component.InvalidateAs(self)
+}
+
 func (self *Select) Mount() bool {
 
 	if self.Component != nil {
@@ -206,6 +210,7 @@ func (self *Select) Render() *dom.Element {
 
 			placeholder := dom.GetDocument().CreateElement("option")
 			placeholder.SetAttribute("value", "")
+			placeholder.SetAttribute("data-key", "__placeholder__")
 			placeholder.SetInnerHTML(self.Label)
 
 			children = append(children, placeholder)
@@ -220,6 +225,7 @@ func (self *Select) Render() *dom.Element {
 
 				element = dom.GetDocument().CreateElement("option")
 				element.SetAttribute("value", value)
+				element.SetAttribute("data-key", value)
 				element.SetInnerHTML(value)
 
 				if self.Value != "" {
@@ -252,7 +258,15 @@ func (self *Select) Render() *dom.Element {
 
 		}
 
-		self.Component.Element.ReplaceChildren(children)
+		for _, child := range children {
+
+			if child.GetAttribute("data-key") == "" {
+				child.SetAttribute("data-key", child.GetAttribute("value"))
+			}
+
+		}
+
+		components.ReconcileElements(self.Component.Element, children)
 
 	}
 

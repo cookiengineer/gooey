@@ -89,6 +89,200 @@ func (element *Element) Append(child *Element) {
 
 }
 
+func (element *Element) Children() []*Element {
+
+	result := make([]*Element, 0)
+	value  := element.Value.Get("children")
+
+	if !value.IsNull() && !value.IsUndefined() {
+
+		for c := 0; c < value.Length(); c++ {
+
+			node := value.Index(c)
+
+			if !node.IsNull() && !node.IsUndefined() {
+				result = append(result, ToElement(node))
+			}
+
+		}
+
+	}
+
+	return result
+
+}
+
+func (element *Element) Focused() bool {
+
+	var result bool
+
+	if element.Value != nil {
+
+		active := js.Global().Get("document").Get("activeElement")
+
+		if !active.IsNull() && !active.IsUndefined() {
+			result = active.Equal(*element.Value)
+		}
+
+	}
+
+	return result
+
+}
+
+func (element *Element) GetAttribute(name string) string {
+
+	var value string
+
+	check := validateXMLName(name)
+
+	if check == nil {
+
+		tmp := element.Value.Call("getAttribute", name)
+
+		if !tmp.IsNull() {
+			element.Attributes[name] = tmp.String()
+			value = element.Attributes[name]
+		}
+
+	}
+
+	return value
+
+}
+
+func (element *Element) GetBoundingClientRect() *Rect {
+
+	var result *Rect = nil
+
+	value := element.Value.Call("getBoundingClientRect")
+
+	if !value.IsNull() && !value.IsUndefined() {
+		result = ToRect(value)
+	}
+
+	return result
+
+}
+
+func (element *Element) GetTextContent() string {
+
+	var result string
+
+	if element.Value != nil {
+
+		value := element.Value.Get("textContent")
+
+		if !value.IsNull() && !value.IsUndefined() {
+			result = value.String()
+		}
+
+	}
+
+	return result
+
+}
+
+func (element *Element) HasAttribute(name string) bool {
+
+	var result bool
+
+	check := validateXMLName(name)
+
+	if check == nil {
+
+		tmp := element.Value.Call("hasAttribute", name)
+
+		if tmp.Truthy() {
+			result = true
+		}
+
+	}
+
+	return result
+
+}
+
+func (element *Element) InsertAdjacentElement(position string, other *Element) {
+
+	if position == "beforebegin" {
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
+	} else if position == "afterbegin" {
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
+	} else if position == "beforeend" {
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
+	} else if position == "afterend" {
+		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
+	}
+
+}
+
+func (element *Element) InsertAdjacentHTML(position string, value string) {
+
+	if position == "beforebegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterbegin" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "beforeend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterend" {
+		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
+	}
+
+}
+
+func (element *Element) InsertAdjacentText(position string, value string) {
+
+	if position == "beforebegin" {
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterbegin" {
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "beforeend" {
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
+	} else if position == "afterend" {
+		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
+	}
+
+}
+
+func (element *Element) InsertBefore(child *Element, reference *Element) {
+
+	if element.Value != nil && child != nil && child.Value != nil {
+
+		if reference != nil && reference.Value != nil {
+			element.Value.Call("insertBefore", *child.Value, *reference.Value)
+		} else {
+			element.Value.Call("appendChild", *child.Value)
+		}
+
+	}
+
+}
+
+func (element *Element) IsSameElement(other *Element) bool {
+
+	if element.Value == nil || other == nil || other.Value == nil {
+		return false
+	}
+
+	return element.Value.Equal(*other.Value)
+
+}
+
+func (element *Element) ParentNode() *Element {
+
+	var result *Element = nil
+
+	value := element.Value.Get("parentNode")
+
+	if !value.IsNull() && !value.IsUndefined() {
+		result = ToElement(value)
+	}
+
+	return result
+
+}
+
 func (element *Element) Prepend(child *Element) {
 
 	if element.Value != nil && child != nil && child.Value != nil {
@@ -97,8 +291,122 @@ func (element *Element) Prepend(child *Element) {
 
 }
 
+func (element *Element) QueryParent(search string) *Element {
+
+	var result *Element = nil
+
+	value := element.Value.Get("parentNode")
+	tagname := value.Get("tagName")
+
+	for !tagname.IsNull() && !tagname.IsUndefined() && tagname.String() != "BODY" {
+
+		tmp := strings.ToLower(tagname.String())
+
+		if tmp == search {
+			result = ToElement(value)
+			break
+		} else {
+			value = value.Get("parentNode")
+			tagname = value.Get("tagName")
+		}
+
+	}
+
+	return result
+
+}
+
+func (element *Element) QuerySelector(query string) *Element {
+
+	var result *Element = nil
+
+	value := element.Value.Call("querySelector", query)
+
+	if !value.IsNull() && !value.IsUndefined() {
+		result = ToElement(value)
+	}
+
+	return result
+
+}
+
+func (element *Element) QuerySelectorAll(query string) []*Element {
+
+	var result []*Element
+
+	values := element.Value.Call("querySelectorAll", query)
+
+	for v := 0; v < values.Length(); v++ {
+
+		value := values.Index(v)
+
+		if !value.IsNull() && !value.IsUndefined() {
+			result = append(result, ToElement(value))
+		}
+
+	}
+
+	return result
+
+}
+
+func (element *Element) RefreshAttributes() {
+
+	attributes := element.Value.Call("getAttributeNames")
+
+	if !attributes.IsNull() && !attributes.IsUndefined() {
+
+		for key, _ := range element.Attributes {
+			delete(element.Attributes, key)
+		}
+
+		for a := 0; a < attributes.Length(); a++ {
+
+			name := attributes.Index(a)
+			value := element.Value.Call("getAttribute", name)
+
+			if !value.IsNull() {
+				element.Attributes[name.String()] = value.String()
+			}
+
+		}
+
+	}
+
+}
+
 func (element *Element) Remove() {
 	element.Value.Call("remove")
+}
+
+func (element *Element) RemoveAttribute(name string) bool {
+
+	var result bool
+
+	check := validateXMLName(name)
+
+	if check == nil {
+
+		tmp := element.Value.Call("removeAttribute", name)
+
+		if tmp.Truthy() {
+			result = true
+		}
+
+		delete(element.Attributes, name)
+
+	}
+
+	return result
+
+}
+
+func (element *Element) RemoveChild(child *Element) {
+
+	if element.Value != nil && child != nil && child.Value != nil {
+		element.Value.Call("removeChild", *child.Value)
+	}
+
 }
 
 func (element *Element) RemoveEventListener(typ EventType, listener *EventListener) bool {
@@ -166,49 +474,23 @@ func (element *Element) RemoveEventListener(typ EventType, listener *EventListen
 
 }
 
-func (element *Element) RefreshAttributes() {
+func (element *Element) ReplaceChild(old *Element, replacement *Element) {
 
-	attributes := element.Value.Call("getAttributeNames")
-
-	if !attributes.IsNull() && !attributes.IsUndefined() {
-
-		for key, _ := range element.Attributes {
-			delete(element.Attributes, key)
-		}
-
-		for a := 0; a < attributes.Length(); a++ {
-
-			name := attributes.Index(a)
-			value := element.Value.Call("getAttribute", name)
-
-			if !value.IsNull() {
-				element.Attributes[name.String()] = value.String()
-			}
-
-		}
-
+	if element.Value != nil && old != nil && old.Value != nil && replacement != nil && replacement.Value != nil {
+		element.Value.Call("replaceChild", *replacement.Value, *old.Value)
 	}
 
 }
 
-func (element *Element) GetAttribute(name string) string {
+func (element *Element) ReplaceChildren(children []*Element) {
 
-	var value string
+	values := make([]any, len(children))
 
-	check := validateXMLName(name)
-
-	if check == nil {
-
-		tmp := element.Value.Call("getAttribute", name)
-
-		if !tmp.IsNull() {
-			element.Attributes[name] = tmp.String()
-			value = element.Attributes[name]
-		}
-
+	for c, child := range children {
+		values[c] = *child.Value
 	}
 
-	return value
+	element.Value.Call("replaceChildren", values...)
 
 }
 
@@ -226,210 +508,6 @@ func (element *Element) SetAttribute(name string, value string) bool {
 	}
 
 	return result
-
-}
-
-func (element *Element) HasAttribute(name string) bool {
-
-	var result bool
-
-	check := validateXMLName(name)
-
-	if check == nil {
-
-		tmp := element.Value.Call("hasAttribute", name)
-
-		if tmp.Truthy() {
-			result = true
-		}
-
-	}
-
-	return result
-
-}
-
-func (element *Element) RemoveAttribute(name string) bool {
-
-	var result bool
-
-	check := validateXMLName(name)
-
-	if check == nil {
-
-		tmp := element.Value.Call("removeAttribute", name)
-
-		if tmp.Truthy() {
-			result = true
-		}
-
-	}
-
-	return result
-
-}
-
-func (element *Element) GetBoundingClientRect() *Rect {
-
-	var result *Rect = nil
-
-	value := element.Value.Call("getBoundingClientRect")
-
-	if !value.IsNull() && !value.IsUndefined() {
-		result = ToRect(value)
-	}
-
-	return result
-
-}
-
-func (element *Element) InsertAdjacentElement(position string, other *Element) {
-
-	if position == "beforebegin" {
-		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
-	} else if position == "afterbegin" {
-		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
-	} else if position == "beforeend" {
-		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
-	} else if position == "afterend" {
-		element.Value.Call("insertAdjacentElement", js.ValueOf(position), other.Value)
-	}
-
-}
-
-func (element *Element) InsertAdjacentHTML(position string, value string) {
-
-	if position == "beforebegin" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
-	} else if position == "afterbegin" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
-	} else if position == "beforeend" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
-	} else if position == "afterend" {
-		element.Value.Call("insertAdjacentHTML", js.ValueOf(position), js.ValueOf(value))
-	}
-
-}
-
-func (element *Element) InsertAdjacentText(position string, value string) {
-
-	if position == "beforebegin" {
-		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
-	} else if position == "afterbegin" {
-		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
-	} else if position == "beforeend" {
-		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
-	} else if position == "afterend" {
-		element.Value.Call("insertAdjacentText", js.ValueOf(position), js.ValueOf(value))
-	}
-
-}
-
-func (element *Element) Children() []*Element {
-
-	result := make([]*Element, 0)
-	value  := element.Value.Get("children")
-
-	if !value.IsNull() && !value.IsUndefined() {
-
-		for c := 0; c < value.Length(); c++ {
-
-			node := value.Index(c)
-
-			if !node.IsNull() && !node.IsUndefined() {
-				result = append(result, ToElement(node))
-			}
-
-		}
-
-	}
-
-	return result
-
-}
-
-func (element *Element) ParentNode() *Element {
-
-	var result *Element = nil
-
-	value := element.Value.Get("parentNode")
-
-	if !value.IsNull() && !value.IsUndefined() {
-		result = ToElement(value)
-	}
-
-	return result
-
-}
-
-func (element *Element) QueryParent(search string) *Element {
-
-	var result *Element = nil
-
-	value := element.Value.Get("parentNode")
-	tagname := value.Get("tagName")
-
-	for !tagname.IsNull() && !tagname.IsUndefined() && tagname.String() != "BODY" {
-
-		tmp := strings.ToLower(tagname.String())
-
-		if tmp == search {
-			result = ToElement(value)
-			break
-		} else {
-			value = value.Get("parentNode")
-			tagname = value.Get("tagName")
-		}
-
-	}
-
-	return result
-
-}
-
-func (element *Element) QuerySelector(query string) *Element {
-
-	var result *Element = nil
-
-	value := element.Value.Call("querySelector", query)
-
-	if !value.IsNull() && !value.IsUndefined() {
-		result = ToElement(value)
-	}
-
-	return result
-
-}
-
-func (element *Element) QuerySelectorAll(query string) []*Element {
-
-	var result []*Element
-
-	values := element.Value.Call("querySelectorAll", query)
-
-	for v := 0; v < values.Length(); v++ {
-
-		value := values.Index(v)
-
-		if !value.IsNull() && !value.IsUndefined() {
-			result = append(result, ToElement(value))
-		}
-
-	}
-
-	return result
-
-}
-
-func (element *Element) ReplaceChildren(children []*Element) {
-
-	values := make([]any, len(children))
-
-	for c, child := range children {
-		values[c] = *child.Value
-	}
-
-	element.Value.Call("replaceChildren", values...)
 
 }
 
@@ -458,3 +536,15 @@ func (element *Element) SetInnerHTML(value string) bool {
 	return true
 
 }
+
+func (element *Element) SetTextContent(value string) bool {
+
+	if element.Value != nil {
+		element.Value.Set("textContent", value)
+		element.TextContent = value
+	}
+
+	return true
+
+}
+

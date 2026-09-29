@@ -96,6 +96,10 @@ func (dialog *Dialog) Hide() bool {
 
 }
 
+func (dialog *Dialog) Invalidate() {
+	dialog.Component.InvalidateAs(dialog)
+}
+
 func (dialog *Dialog) Mount() bool {
 
 	if dialog.Component != nil {
@@ -287,7 +291,7 @@ func (dialog *Dialog) Render() *dom.Element {
 
 				elements = append(elements, tmp[2])
 
-				article.ReplaceChildren(elements)
+				components.ReconcileElements(article, elements)
 
 			}
 
@@ -302,21 +306,21 @@ func (dialog *Dialog) Render() *dom.Element {
 func (dialog *Dialog) SetContent(component interfaces.Component) {
 
 	dialog.Content = component
-	dialog.Render()
+	dialog.Invalidate()
 
 }
 
 func (dialog *Dialog) SetFooter(footer *Footer) {
 
 	dialog.Footer = footer
-	dialog.Render()
+	dialog.Invalidate()
 
 }
 
 func (dialog *Dialog) SetTitle(value string) {
 
 	dialog.Title = strings.TrimSpace(value)
-	dialog.Render()
+	dialog.Invalidate()
 
 }
 

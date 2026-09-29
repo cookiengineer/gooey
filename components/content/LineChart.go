@@ -91,6 +91,10 @@ func (chart *LineChart) Enable() bool {
 
 }
 
+func (chart *LineChart) Invalidate() {
+	chart.Component.InvalidateAs(chart)
+}
+
 func (chart *LineChart) Mount() bool {
 
 	if chart.Component != nil {

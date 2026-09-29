@@ -76,6 +76,10 @@ func (textarea *Textarea) Enable() bool {
 
 }
 
+func (textarea *Textarea) Invalidate() {
+	textarea.Component.InvalidateAs(textarea)
+}
+
 func (textarea *Textarea) Mount() bool {
 
 	if textarea.Component != nil {

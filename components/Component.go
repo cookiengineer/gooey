@@ -12,6 +12,9 @@ type Component struct {
 	Content   []interfaces.Component      `json:"content"`
 	Listeners map[string][]*EventListener `json:"listeners"`
 	Element   *dom.Element                `json:"element"`
+	dirty     bool                        `json:"-"`
+	revision  uint64                      `json:"-"`
+	scheduler interfaces.Scheduler        `json:"-"`
 }
 
 func NewComponent(element *dom.Element) Component {
@@ -21,6 +24,9 @@ func NewComponent(element *dom.Element) Component {
 	component.Content = make([]interfaces.Component, 0)
 	component.Element = element
 	component.Listeners = make(map[string][]*EventListener, 0)
+	component.dirty = false
+	component.revision = 0
+	component.scheduler = nil
 
 	return component
 
@@ -33,9 +39,70 @@ func ToComponent(element *dom.Element) *Component {
 	component.Content = make([]interfaces.Component, 0)
 	component.Element = element
 	component.Listeners = make(map[string][]*EventListener, 0)
+	component.dirty = false
+	component.revision = 0
+	component.scheduler = nil
 
 	return &component
 
+}
+
+// IsDirty reports whether the component has pending changes.
+func (component *Component) IsDirty() bool {
+	return component.dirty
+}
+
+// ClearDirty marks the component as rendered.
+func (component *Component) ClearDirty() {
+	component.dirty = false
+}
+
+// Revision returns the current revision of the component.
+func (component *Component) Revision() uint64 {
+	return component.revision
+}
+
+// MarkDirty flags the component as changed and bumps its revision without
+// scheduling a render. Setters should prefer Invalidate or InvalidateAs.
+func (component *Component) MarkDirty() {
+	component.dirty = true
+	component.revision = component.revision + 1
+}
+
+// SetScheduler overrides the scheduler used by this component.
+func (component *Component) SetScheduler(scheduler interfaces.Scheduler) {
+	component.scheduler = scheduler
+}
+
+func (component *Component) Reconcile() {
+
+	if component.Element != nil {
+		ReconcileComponents(component.Element, component.Content)
+	}
+
+}
+
+// Schedule requests a render of owner through the component's scheduler.
+func (component *Component) Schedule(owner interfaces.Component) {
+
+	if component.scheduler != nil && owner != nil {
+		component.scheduler.Schedule(owner)
+	}
+
+}
+
+// Invalidate marks the base component dirty and schedules itself.
+func (component *Component) Invalidate() {
+	component.MarkDirty()
+	component.Schedule(component)
+}
+
+// InvalidateAs marks the component dirty and schedules the given owner. It is
+// used by wrapper components (Table, Fieldset, ...) so that the correct
+// Render implementation is invoked.
+func (component *Component) InvalidateAs(owner interfaces.Component) {
+	component.MarkDirty()
+	component.Schedule(owner)
 }
 
 func (component *Component) Disable() bool {
@@ -325,6 +392,7 @@ func (component *Component) RemoveEventListener(event string, listener *EventLis
 
 func (component *Component) SetContent(components []interfaces.Component) {
 	component.Content = components
+	component.MarkDirty()
 }
 
 func (component *Component) String() string {
@@ -360,6 +428,10 @@ func (component *Component) String() string {
 }
 
 func (component *Component) Unmount() bool {
+
+	if component.scheduler != nil {
+		component.scheduler.Unschedule(component)
+	}
 
 	for _, content := range component.Content {
 		content.Unmount()

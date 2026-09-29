@@ -3,6 +3,7 @@
 package app
 
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/utils"
 import "github.com/cookiengineer/gooey/components/interfaces"
 import "github.com/cookiengineer/gooey/components/types"
@@ -10,12 +11,15 @@ import "sort"
 import "strings"
 
 type View struct {
-	Element  *dom.Element           `json:"element"`
-	Layout   types.Layout           `json:"layout"`
-	Content  []interfaces.Component `json:"content"`
-	name     string                 `json:"-"`
-	label    string                 `json:"-"`
-	path     string                 `json:"-"`
+	Element   *dom.Element           `json:"element"`
+	Layout    types.Layout           `json:"layout"`
+	Content   []interfaces.Component `json:"content"`
+	name      string                 `json:"-"`
+	label     string                 `json:"-"`
+	path      string                 `json:"-"`
+	revision  uint64                 `json:"-"`
+	dirty     bool                   `json:"-"`
+	scheduler interfaces.Scheduler   `json:"-"`
 }
 
 func NewView(name string, label string, path string) *View {
@@ -70,6 +74,28 @@ func (view *View) Enter() bool {
 
 }
 
+// Invalidate marks the view dirty and schedules a re-render.
+func (view *View) Invalidate() {
+
+	view.dirty = true
+	view.revision = view.revision + 1
+
+	if view.scheduler != nil {
+		view.scheduler.Schedule(view)
+	}
+
+}
+
+// IsDirty reports whether the view has pending changes.
+func (view *View) IsDirty() bool {
+	return view.dirty
+}
+
+// Label returns the human readable view label.
+func (view *View) Label() string {
+	return view.label
+}
+
 func (view *View) Leave() bool {
 
 	if view.Element != nil {
@@ -78,10 +104,6 @@ func (view *View) Leave() bool {
 
 	return true
 
-}
-
-func (view *View) Label() string {
-	return view.label
 }
 
 func (view *View) Mount() bool {
@@ -218,13 +240,8 @@ func (view *View) Render() *dom.Element {
 			view.Element.SetAttribute("data-layout", view.Layout.String())
 		}
 
-		elements := make([]*dom.Element, 0)
-
-		for _, component := range view.Content {
-			elements = append(elements, component.Render())
-		}
-
-		view.Element.ReplaceChildren(elements)
+		components.ReconcileComponents(view.Element, view.Content)
+		view.dirty = false
 
 		return view.Element
 
@@ -232,6 +249,16 @@ func (view *View) Render() *dom.Element {
 
 	return nil
 
+}
+
+// Revision returns the current revision of the view.
+func (view *View) Revision() uint64 {
+	return view.revision
+}
+
+// SetScheduler overrides the scheduler used by this view.
+func (view *View) SetScheduler(scheduler interfaces.Scheduler) {
+	view.scheduler = scheduler
 }
 
 func (view *View) String() string {

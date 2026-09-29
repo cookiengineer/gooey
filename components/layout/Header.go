@@ -143,6 +143,10 @@ func (header *Header) Enable() bool {
 
 }
 
+func (header *Header) Invalidate() {
+	header.Component.InvalidateAs(header)
+}
+
 func (header *Header) Mount() bool {
 
 	if header.Component != nil {
@@ -350,6 +354,8 @@ func (header *Header) RegisterView(view interfaces.View) bool {
 			found.Label = label
 			found.Path = path
 
+			header.Invalidate()
+
 			return true
 
 		} else {
@@ -362,6 +368,8 @@ func (header *Header) RegisterView(view interfaces.View) bool {
 			}
 
 			header.items = append(header.items, &item)
+
+			header.Invalidate()
 
 			return true
 
@@ -390,13 +398,7 @@ func (header *Header) Render() *dom.Element {
 				header.Component.Element.SetAttribute("data-layout", header.Layout.String())
 			}
 
-			elements_left := make([]*dom.Element, 0)
 			elements_center := make([]*dom.Element, 0)
-			elements_right := make([]*dom.Element, 0)
-
-			for _, component := range header.Content.Left {
-				elements_left = append(elements_left, component.Render())
-			}
 
 			for _, item := range header.items {
 
@@ -406,18 +408,19 @@ func (header *Header) Render() *dom.Element {
 					item.Element.RemoveAttribute("data-state")
 				}
 
-				item.Element.SetInnerHTML("<a data-view=\"" + item.Name + "\" href=\"" + item.Path + "\">" + item.Label + "</a>")
+				anchor := dom.GetDocument().CreateElement("a")
+				anchor.SetAttribute("data-view", item.Name)
+				anchor.SetAttribute("href", item.Path)
+				anchor.SetInnerHTML(item.Label)
+
+				components.ReconcileElements(item.Element, []*dom.Element{anchor})
 				elements_center = append(elements_center, item.Element)
 
 			}
 
-			for _, component := range header.Content.Right {
-				elements_right = append(elements_right, component.Render())
-			}
-
-			tmp[0].ReplaceChildren(elements_left)
-			tmp[1].ReplaceChildren(elements_center)
-			tmp[2].ReplaceChildren(elements_right)
+			components.ReconcileComponents(tmp[0], header.Content.Left)
+			components.ReconcileElements(tmp[1], elements_center)
+			components.ReconcileComponents(tmp[2], header.Content.Right)
 
 		}
 
@@ -429,10 +432,12 @@ func (header *Header) Render() *dom.Element {
 
 func (header *Header) SetContentLeft(components []interfaces.Component) {
 	header.Content.Left = components
+	header.Invalidate()
 }
 
 func (header *Header) SetContentRight(components []interfaces.Component) {
 	header.Content.Right = components
+	header.Invalidate()
 }
 
 func (header *Header) String() string {

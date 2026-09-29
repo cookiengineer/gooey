@@ -3,6 +3,7 @@
 package views
 
 import "github.com/cookiengineer/gooey/bindings/dom"
+import "github.com/cookiengineer/gooey/components"
 import "github.com/cookiengineer/gooey/components/content"
 import "github.com/cookiengineer/gooey/components/layout"
 import "github.com/cookiengineer/gooey/components/utils"
@@ -237,13 +238,7 @@ func (view *Settings) Render() *dom.Element {
 			view.Element.SetAttribute("data-layout", view.Layout.String())
 		}
 
-		elements := make([]*dom.Element, 0)
-
-		for _, component := range view.Content {
-			elements = append(elements, component.Render())
-		}
-
-		view.Element.ReplaceChildren(elements)
+		components.ReconcileComponents(view.Element, view.Content)
 
 		return view.Element
 

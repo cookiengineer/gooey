@@ -97,6 +97,10 @@ func (footer *Footer) Enable() bool {
 
 }
 
+func (footer *Footer) Invalidate() {
+	footer.Component.InvalidateAs(footer)
+}
+
 func (footer *Footer) Mount() bool {
 
 	if footer.Component != nil {
@@ -274,25 +278,9 @@ func (footer *Footer) Render() *dom.Element {
 
 			footer.Component.Element.SetAttribute("data-layout", footer.Layout.String())
 
-			elements_left := make([]*dom.Element, 0)
-			elements_center := make([]*dom.Element, 0)
-			elements_right := make([]*dom.Element, 0)
-
-			for _, component := range footer.Content.Left {
-				elements_left = append(elements_left, component.Render())
-			}
-
-			for _, component := range footer.Content.Center {
-				elements_center = append(elements_center, component.Render())
-			}
-
-			for _, component := range footer.Content.Right {
-				elements_right = append(elements_right, component.Render())
-			}
-
-			tmp[0].ReplaceChildren(elements_left)
-			tmp[1].ReplaceChildren(elements_center)
-			tmp[2].ReplaceChildren(elements_right)
+			components.ReconcileComponents(tmp[0], footer.Content.Left)
+			components.ReconcileComponents(tmp[1], footer.Content.Center)
+			components.ReconcileComponents(tmp[2], footer.Content.Right)
 
 		}
 
@@ -304,14 +292,17 @@ func (footer *Footer) Render() *dom.Element {
 
 func (footer *Footer) SetContentCenter(components []interfaces.Component) {
 	footer.Content.Center = components
+	footer.Invalidate()
 }
 
 func (footer *Footer) SetContentLeft(components []interfaces.Component) {
 	footer.Content.Left = components
+	footer.Invalidate()
 }
 
 func (footer *Footer) SetContentRight(components []interfaces.Component) {
 	footer.Content.Right = components
+	footer.Invalidate()
 }
 
 func (footer *Footer) String() string {

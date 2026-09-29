@@ -4,13 +4,17 @@ package animations
 
 import "syscall/js"
 
-type AnimationCallback func(timestamp float64)
-
 func RequestAnimationFrame(callback AnimationCallback) uint {
 
 	var result uint = 0
+	var wrapped js.Func
 
-	wrapped_callback := js.FuncOf(func(this js.Value, args []js.Value) any {
+	wrapped = js.FuncOf(func(this js.Value, args []js.Value) any {
+
+		defer func() {
+			frames.Delete(result)
+			wrapped.Release()
+		}()
 
 		if len(args) == 1 {
 			timestamp := args[0].Float()
@@ -21,10 +25,13 @@ func RequestAnimationFrame(callback AnimationCallback) uint {
 
 	})
 
-	tmp := js.Global().Call("requestAnimationFrame", wrapped_callback)
+	tmp := js.Global().Call("requestAnimationFrame", wrapped)
 
 	if !tmp.IsNull() && !tmp.IsUndefined() {
 		result = uint(tmp.Int())
+		frames.Store(result, wrapped)
+	} else {
+		wrapped.Release()
 	}
 
 	return result

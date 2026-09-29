@@ -64,6 +64,10 @@ func (button *Button) Enable() bool {
 
 }
 
+func (button *Button) Invalidate() {
+	button.Component.InvalidateAs(button)
+}
+
 func (button *Button) Mount() bool {
 
 	if button.Component != nil {

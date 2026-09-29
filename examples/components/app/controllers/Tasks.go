@@ -10,9 +10,10 @@ import "example/schemas"
 import "sync"
 
 type Tasks struct {
-	Main   *app.Main      `json:"main"`
-	Schema *schemas.Tasks `json:"schema"`
-	View   *app.View      `json:"view"`
+	Main        *app.Main      `json:"main"`
+	Schema      *schemas.Tasks `json:"schema"`
+	View        *app.View      `json:"view"`
+	unsubscribe []func()       `json:"-"`
 }
 
 func NewTasks(main *app.Main, view interfaces.View) *Tasks {
@@ -84,7 +85,6 @@ func (controller *Tasks) Enter() bool {
 						}
 
 						waitgroup.Wait()
-						table.Render()
 
 					}()
 
@@ -130,7 +130,6 @@ func (controller *Tasks) Enter() bool {
 						}
 
 						waitgroup.Wait()
-						table.Render()
 
 					}()
 
@@ -207,7 +206,6 @@ func (controller *Tasks) Enter() bool {
 							}()
 
 							waitgroup.Wait()
-							table.Render()
 
 						}
 
@@ -236,6 +234,17 @@ func (controller *Tasks) Enter() bool {
 
 	}, false))
 
+	controller.unsubscribe = append(controller.unsubscribe, controller.Main.Storage.Subscribe("tasks", func(value any) {
+
+		schema, ok := value.(*schemas.Tasks)
+
+		if ok == true {
+			controller.Schema = schema
+			controller.applyTasks(schema)
+		}
+
+	}))
+
 	go controller.Update()
 
 	return true
@@ -247,7 +256,38 @@ func (controller *Tasks) Leave() bool {
 	controller.Main.Footer.Component.RemoveEventListener("action", nil)
 	controller.Main.Dialog.Component.RemoveEventListener("action", nil)
 
+	for _, unsubscribe := range controller.unsubscribe {
+		unsubscribe()
+	}
+
+	controller.unsubscribe = controller.unsubscribe[:0]
+
 	return true
+
+}
+
+func (controller *Tasks) applyTasks(schema *schemas.Tasks) {
+
+	table, ok := components.UnwrapComponent[*content.Table](controller.View.Query("section > article > table"))
+
+	if table != nil && ok == true && schema != nil {
+
+		dataset := data.NewDataset(0)
+
+		for _, task := range schema.Tasks {
+
+			dataset.Add(data.Data(map[string]any{
+				"id":    task.ID,
+				"title": task.Title,
+				"done":  task.Done,
+			}))
+
+		}
+
+		table.SetDataset(dataset)
+		table.SortBy("id")
+
+	}
 
 }
 
@@ -262,34 +302,8 @@ func (controller *Tasks) Update() {
 		schema, err := actions.GetTasks(controller.Main.Client)
 
 		if err == nil {
-
-			controller.Schema = schema
-			controller.Main.Storage.Write("tasks", schema)
-
-			table, ok1 := components.UnwrapComponent[*content.Table](controller.View.Query("section > article > table"))
-
-			if len(controller.Schema.Tasks) > 0 && ok1 == true {
-
-				dataset := data.NewDataset(0)
-
-				for _, task := range controller.Schema.Tasks {
-
-					dataset.Add(data.Data(map[string]any{
-						"id":    task.ID,
-						"title": task.Title,
-						"done":  task.Done,
-					}))
-
-				}
-
-				table.SetDataset(dataset)
-				table.SortBy("id")
-
-			}
-
+			controller.Main.Storage.Update("tasks", schema)
 		}
-
-		controller.Render()
 
 	}
 

@@ -6,8 +6,14 @@ import "syscall/js"
 
 func CancelAnimationFrame(identifier uint) {
 
-	wrapped_identifier := js.ValueOf(identifier)
+	if value, ok := frames.LoadAndDelete(identifier); ok == true {
 
-	js.Global().Call("cancelAnimationFrame", wrapped_identifier)
+		js.Global().Call("cancelAnimationFrame", js.ValueOf(identifier))
+
+		if callback, ok2 := value.(js.Func); ok2 == true {
+			callback.Release()
+		}
+
+	}
 
 }

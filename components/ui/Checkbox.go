@@ -71,6 +71,10 @@ func (checkbox *Checkbox) Enable() bool {
 
 }
 
+func (checkbox *Checkbox) Invalidate() {
+	checkbox.Component.InvalidateAs(checkbox)
+}
+
 func (checkbox *Checkbox) Mount() bool {
 
 	if checkbox.Component != nil {

@@ -144,6 +144,10 @@ func (input *Range) Enable() bool {
 
 }
 
+func (input *Range) Invalidate() {
+	input.Component.InvalidateAs(input)
+}
+
 func (input *Range) Mount() bool {
 
 	if input.Component != nil {

@@ -1,9 +1,35 @@
 
-## [v0.0.9] - UNRELEASED
+## [v0.1.0] - UNRELEASED
 
 ### Changed
 
+- Changed [animations.RequestAnimationFrame](/bindings/animations/RequestAnimationFrame.go) to release its `js.Func` after firing and to track active frames for cancellation
+- Changed [animations.CancelAnimationFrame](/bindings/animations/CancelAnimationFrame.go) to release the tracked `js.Func` when cancelling
+- Changed [dom.Element](/bindings/dom/Element.go) `RemoveAttribute()` to update the cached attributes map
+- Changed [app.Main](/components/app/Main.go) `Mount()` to install and start its `RenderScheduler`, and `Render()` to flush pending component renders
+- Changed [content.Table](/components/content/Table.go) `Render()` to build element trees and reconcile rows by stable key identifier
+
 ### Added
+
+- Added [reactive](/components/reactive) package
+- Added [virtual](/components/virtual) package
+- Added [interfaces.Scheduler](/interfaces/Scheduler.go) interface
+- Added [components.Scheduler](/components/Scheduler.go) implementation
+- Added [components.ReconcileComponents](/components/ReconcileComponents.go) helper
+- Added [components.ReconcileElements](/components/ReconcileElements.go) helper
+- Added [components.Component](/components/Component.go) methods `Invalidate()`, `InvalidateAs()`, `MarkDirty()`, `IsDirty()`, `ClearDirty()`, `Revision()`, `SetScheduler()` and `Schedule()`
+- Added [app.Scheduler](/components/app/Scheduler.go) coalescing invalidated components once per animation frame
+- Added [app.Storage](/components/app/Storage.go) reactive methods `Get()`, `Revision()`, `Update()` and `Subscribe()`, persisted to existing LocalStorage layer
+- Added [app.View](/components/app/View.go) methods `Invalidate()`, `IsDirty()`, `Revision()` and `SetScheduler()`
+- Added [content.Table](/components/content/Table.go) field `Identifier` (default `"id"`), method `SelectedKeys()` and stable `data-key` row attributes
+- Added [dom.Element](/bindings/dom/Element.go) methods `InsertBefore()`, `RemoveChild()`, `ReplaceChild()`, `IsSameElement()`, `Focused()`, `GetTextContent()` and `SetTextContent()`
+
+## [v0.0.9] - 2026-09-20
+
+### Added
+
+- Added [dom.Matrix](/bindings/dom/Matrix.go) implementation
+- Added [canvas2d](/bindings/canvas2d) bindings
 
 ## [v0.0.8] - 2026-06-20
 

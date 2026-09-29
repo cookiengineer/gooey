@@ -85,6 +85,10 @@ func (chart *PieChart) Enable() bool {
 
 }
 
+func (chart *PieChart) Invalidate() {
+	chart.Component.InvalidateAs(chart)
+}
+
 func (chart *PieChart) Mount() bool {
 
 	if chart.Component != nil {
