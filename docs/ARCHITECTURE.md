@@ -38,9 +38,12 @@ The HTML/DOM App Layout always consists of the following elements:
 - `body > header`, represented by [layout/Header](/components/layout/Header.go)
 - `body > main`, represented by [app/Main](/components/app/Main.go)
 - `body > main > section[data-name=...]`, represented by [app/View](/components/app/View.go)
-- `body > main > section[data-name=...] > aside`, represented by [layout/Aside](/components/layout/Aside.go)
+- `body > aside`, represented by [layout/Aside](/components/layout/Aside.go)
 - `body > footer`, represented by [layout/Footer](/components/layout/Footer.go)
 - `body > dialog`, represented by [layout/Dialog](/components/layout/Dialog.go)
+
+`header` and `aside` are equivalent navigation containers and can be used interchangeably;
+`app.Main` registers each View with any of them that is present in the markup.
 
 Therefore minimal semantically enforced HTML5 code looks like this:
 
@@ -53,8 +56,8 @@ Therefore minimal semantically enforced HTML5 code looks like this:
 		<header>
 			<div></div>
 			<ul>
-				<li class="active"><a data-view="welcome" href="/index.html">Welcome</a></li>
-				<li class="active"><a data-view="settings" href="/settings.html">Settings</a></li>
+				<li data-state="active"><a data-view="welcome" href="/index.html">Welcome</a></li>
+				<li><a data-view="settings" href="/settings.html">Settings</a></li>
 			</ul>
 			<div></div>
 		</header>
@@ -77,7 +80,7 @@ Therefore minimal semantically enforced HTML5 code looks like this:
 		<!-- app.Main.Dialog -->
 		<dialog>
 			<article>
-				<button data-action="clos"></button>
+				<button data-action="close"></button>
 				<h3>Dialog Example</h3>
 				<fieldset>
 					<div data-name="title">
@@ -89,12 +92,12 @@ Therefore minimal semantically enforced HTML5 code looks like this:
 						<input type="checkbox"/>
 					</div>
 				</fieldset>
+				<footer>
+					<div><button data-action="cancel">Cancel</button></div>
+					<div></div>
+					<div><button data-action="confirm">Confirm</button></div>
+				</footer>
 			</article>
-			<footer>
-				<div><button data-action="cancel">Cancel</button></div>
-				<div></div>
-				<div><button data-action="confirm">Confirm</button></div>
-			</footer>
 		</dialog>
 		<script src="wasm_exec.js"></script>
 		<script src="wasm_init.js"></script>
@@ -113,15 +116,15 @@ stylesheets must abide by these rules in order to be commitable upstream:
 
 **Themes**:
 
-- The [Gooey App Theme](/design) classless and uses `data-` attributes to represent states.
+- The [Gooey App Theme](/design) is classless and uses `data-` attributes to represent states.
 - All App specific Themes have to be bundled via `go:embed` inside `/public/app/`.
 - All App specific Themes can use CSS classes for better customizations.
 
 **Components**:
 
 - All [UI Components](/components/ui) use native input elements to be Web Accessibility compatible.
-- All [UI Components](/components/ui) must have a [data-type or type](/types/Input.go) property.
-- All [Layout Components](/components/layout) must have a [data-layout](/types/Layout.go) property.
+- All [UI Components](/components/ui) must have a [data-type or type](/components/types/Input.go) property.
+- All [Layout Components](/components/layout) must have a [data-layout](/components/types/Layout.go) property.
 
 **Component States**:
 
@@ -130,4 +133,11 @@ Component States are represented using `data-` attributes:
 - `data-action` influences the event flow (see Reactive MVC Architecture).
 - `data-layout` influences the layout flow (`grid`, `flex`, `flow`)
 - `data-state` influences the activity/visibility (`active`)
+
+## Implementation Guides
+
+- [Component Implementation Guide](/docs/component-implementation-guide.md) documents how to implement components and how the Component graph works.
+- [View Implementation Guide](/docs/view-implementation-guide.md) documents the View layer of the loop.
+- [Controller Implementation Guide](/docs/controller-implementation-guide.md) documents the Controller layer of the loop.
+- [Backend Implementation Guide](/docs/backend-implementation-guide.md) documents the shared-schema Backend that the Client talks to.
 

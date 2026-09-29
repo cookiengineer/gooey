@@ -49,17 +49,23 @@ the Reactive MVC Architecture allows to build an App where each of the Views is
 just a Web Component layer and doesn't need to be touched for most cases.
 
 
-## Documentation
+## Developer Documentation
 
-- [ERRATA.md](/docs/ERRATA.md) documents the state of known errata and problems of using Go via WebASM.
+- [ERRATA](/docs/ERRATA.md) documents the state of known errata and problems of using Go via WebASM.
 
 **IMPORTANT**: Note that even if you have years of Go development experience, the Errata
 document is still relevant for you, because it highlights problems when using Go in the
 Web Browser and the quirks that come with it.
 
-- [ARCHITECTURE.md](/docs/ARCHITECTURE.md) documents the architecture of a Gooey App.
+- [Architecture Overview](/docs/architecture.md) documents the architecture of a Gooey App.
+- [Component Implementation Guide](/docs/component-implementation-guide.md) documents how to implement custom Components and how the Component graph works.
+- [View Implementation Guide](/docs/view-implementation-guide.md) documents how to implement a custom View.
+- [Controller Implementation Guide](/docs/controller-implementation-guide.md) documents how to implement a custom Controller.
+- [Backend Implementation Guide](/docs/backend-implementation-guide.md) documents how to implement the Backend of a Gooey App.
+
+## Contributor Documentation
+
 - [BINDINGS.md](/docs/BINDINGS.md) documents the state of implemented Web Bindings.
-- [COMPONENTS.md](/docs/COMPONENTS.md) documents the state of implemented Web Components.
 - [TODO.md](/docs/TODO.md) documents the work-in-progress of things that will be implemented in the near future.
 
 The [lint.sh](/lint.sh) script shows a list of syntax errors, missing build tags and missing
