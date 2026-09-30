@@ -36,6 +36,8 @@ func (options *RequestInit) MapToJS() map[string]any {
 			result_headers[key] = val
 		}
 
+		result["headers"] = result_headers
+
 	}
 
 	if tmp := options.Mode.String(); tmp != "" {
