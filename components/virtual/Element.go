@@ -112,8 +112,14 @@ func (element *Element) SetTextContent(value string) {
 // InsertBefore inserts child before reference. A nil reference appends.
 func (element *Element) InsertBefore(child *Element, reference *Element) {
 
-	if child != nil && reference != nil {
-		element.Element.InsertBefore(child.Element, reference.Element)
+	if child != nil {
+
+		if reference != nil {
+			element.Element.InsertBefore(child.Element, reference.Element)
+		} else {
+			element.Element.InsertBefore(child.Element, nil)
+		}
+
 	}
 
 }
