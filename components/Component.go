@@ -236,7 +236,7 @@ func (component *Component) FireEventListeners(event string, attributes map[stri
 
 	if ok == true {
 
-		indexes := make([]int, 0)
+		onces := make([]*EventListener, 0)
 
 		for l := 0; l < len(listeners); l++ {
 
@@ -244,20 +244,35 @@ func (component *Component) FireEventListeners(event string, attributes map[stri
 			listener.Callback(event, attributes)
 
 			if listener.Once == true {
-				indexes = append(indexes, l)
+				onces = append(onces, listener)
 			}
 
 		}
 
-		if len(indexes) > 0 {
+		for _, listener := range onces {
 
-			for _, index := range indexes {
-				listeners = append(listeners[:index], listeners[index+1:]...)
+			if component.Element != nil && listener.Listener != nil {
+				component.Element.RemoveEventListener(dom.EventType(event), listener.Listener)
 			}
 
-			component.Listeners[event] = listeners
+			listeners, ok := component.Listeners[event]
+
+			if ok == true {
+
+				for l := 0; l < len(listeners); l++ {
+
+					if listeners[l].Id == listener.Id {
+						component.Listeners[event] = append(listeners[:l], listeners[l+1:]...)
+						break
+					}
+
+				}
+
+			}
 
 		}
+
+		result = true
 
 	}
 

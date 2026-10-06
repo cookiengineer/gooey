@@ -492,7 +492,6 @@ func (table *Table) Mount() bool {
 
 						}
 
-						event.PreventDefault()
 						event.StopPropagation()
 
 					}

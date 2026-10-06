@@ -144,7 +144,7 @@ For a component to be usable inside the graph and inside other components, it **
 6. In `Render()`, re-apply attributes and reconcile the rendered children with
    `components.ReconcileComponents()` / `components.ReconcileElements()`.
 7. In `SetScheduler()`, forward the scheduler to the base `Component` and to every child.
-8. In `Unmount()`, unmount the children and remove any DOM listeners.
+8. In `Unmount()`, unmount the children and remove any DOM listeners using the listener references cached in `Mount()`.
 9. Keep listeners attached in `Mount()`, never in `Render()`.
 
 A minimal graph-compatible component therefore looks like this. Known tags are mapped to their
@@ -417,6 +417,12 @@ The callback signature is `func(string, map[string]any)`, defined by
 the second is the attribute map. For `click` and `change`, the base `Component` refreshes the
 target's attributes before firing.
 
+When you attach a raw DOM listener with `Element.AddEventListener`, wrap it with
+[dom.ToEventListener](/bindings/dom/EventListener.go) and store the returned `*dom.EventListener`
+in a private field of the component. `Unmount()` must pass that exact reference back to
+`Element.RemoveEventListener`, because the DOM-API callback function is retained on the Go
+listener wrapper and cannot be reconstructed from an inline closure.
+
 The standard events are:
 
 | Event | Fired by |
@@ -667,13 +673,14 @@ shows how a custom View maps an app-specific component tag in `Mount()`.
 - [ ] `ToX(...)` returns a pointer and initializes `Component` and `Content`.
 - [ ] Layout components expose `Layout types.Layout` and sync `data-layout` in `Render()`.
 - [ ] `Mount()` reads attributes, maps children, and calls `child.Mount()`.
-- [ ] `Unmount()` unmounts children and removes DOM listeners.
+- [ ] `Unmount()` unmounts children and removes DOM listeners using their cached references.
 - [ ] `SetScheduler()` forwards the scheduler to the base `Component` and to every child.
 - [ ] `Query()` is self-including and recurses into `Content`.
 - [ ] `Render()` returns `Component.Element` and reconciles children.
 - [ ] `String()` produces equivalent markup.
 - [ ] Events are reserved with `InitEvent()` and fired via `FireEventListeners()`.
 - [ ] Listeners are attached in `Mount()`, never in `Render()`.
+- [ ] Listener references are cached in private fields so `Unmount()` can detach them.
 - [ ] The component is registered before `app.Main.Mount()`.
 - [ ] App-owned CSS lives in `public/app/components/<Name>.css`.
 

@@ -111,6 +111,11 @@ type Tasks struct {
 	Main   *app.Main      `json:"main"`
 	Schema *schemas.Tasks `json:"schema"`
 	View   *app.View      `json:"view"`
+
+	// Cached listener references. See section 3 and 5.
+	footerActionListener *components.EventListener `json:"-"`
+	dialogActionListener *components.EventListener `json:"-"`
+	tableActionListener  *components.EventListener `json:"-"`
 }
 
 func NewTasks(main *app.Main, view interfaces.View) *Tasks {
@@ -170,8 +175,13 @@ Add a listener with
 [components.ToEventListener](/components/EventListener.go). The callback receives the event
 name and a `map[string]any` of attributes.
 
+Always keep the returned `*components.EventListener` in a private field of the controller. The
+Go listener representation carries an ID and (for DOM bindings) a `*js.Func`, so the very same
+reference must be handed back to `RemoveEventListener` in `Leave()` — an inline listener can
+never be detached again.
+
 ```go
-table.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+controller.tableActionListener = components.ToEventListener(func(event string, attributes map[string]any) {
 
 	action, ok := attributes["action"].(string)
 
@@ -189,7 +199,9 @@ table.Component.AddEventListener("action", components.ToEventListener(func(event
 
 	}
 
-}, false))
+}, false)
+
+table.Component.AddEventListener("action", controller.tableActionListener)
 ```
 
 The built-in events that you can listen for are:
@@ -211,7 +223,7 @@ Global UI lives on `app.Main` and is shared between Views. A common pattern:
 
 ```go
 // Footer button opens the Dialog.
-controller.Main.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+controller.footerActionListener = components.ToEventListener(func(event string, attributes map[string]any) {
 
 	action, ok := attributes["action"].(string)
 
@@ -219,10 +231,12 @@ controller.Main.Footer.Component.AddEventListener("action", components.ToEventLi
 		controller.Main.Dialog.Show()
 	}
 
-}, false))
+}, false)
+
+controller.Main.Footer.Component.AddEventListener("action", controller.footerActionListener)
 
 // Dialog confirm reads the Fieldset and creates a Task.
-controller.Main.Dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+controller.dialogActionListener = components.ToEventListener(func(event string, attributes map[string]any) {
 
 	action, ok := attributes["action"].(string)
 
@@ -269,7 +283,11 @@ controller.Main.Dialog.Component.AddEventListener("action", components.ToEventLi
 
 	}
 
-}, false))
+}, false)
+
+controller.Main.Dialog.Component.AddEventListener("action", controller.dialogActionListener)
+
+// Attach the DOM-level listeners the same way and keep their *dom.EventListener reference.
 ```
 
 Relevant methods:
@@ -283,29 +301,42 @@ Relevant methods:
 
 ### 5. Leave: Remove Event Listeners
 
-`Leave()` must remove **every** listener that `Enter()` added. Passing `nil` removes all
-listeners for that event, which is the recommended approach for shared UI such as the Footer
-and Dialog, because another Controller re-attaches them on its own `Enter()`.
+`Leave()` must remove **every** listener that `Enter()` added. Always pass the **cached listener
+reference** you stored on the controller: `RemoveEventListener` matches listeners by their Go
+reference (ID), and DOM bindings additionally need the original `*js.Func`. Passing `nil`
+removes *all* listeners for that event, which is dangerous for shared UI such as the Footer and
+Dialog because it also detaches listeners owned by another Controller.
 
 ```go
 func (controller *Tasks) Leave() bool {
 
-	controller.Main.Footer.Component.RemoveEventListener("action", nil)
-	controller.Main.Dialog.Component.RemoveEventListener("action", nil)
+	if controller.footerActionListener != nil {
+		controller.Main.Footer.Component.RemoveEventListener("action", controller.footerActionListener)
+		controller.footerActionListener = nil
+	}
+
+	if controller.dialogActionListener != nil {
+		controller.Main.Dialog.Component.RemoveEventListener("action", controller.dialogActionListener)
+		controller.dialogActionListener = nil
+	}
 
 	return true
 
 }
 ```
 
-Also remove listeners from the View's own components. In the View guide we saw that a custom
-View owns its children, so query them again in `Leave()` and detach:
+Also remove listeners from the View's own components. Because a custom View owns its children,
+keep the listener reference from `Enter()` and detach it again in `Leave()`:
 
 ```go
-table, ok := components.UnwrapComponent[*content.Table](controller.View.Query("section > article > table"))
+if controller.tableActionListener != nil {
+	table, ok := components.UnwrapComponent[*content.Table](controller.View.Query("section > article > table"))
 
-if table != nil && ok == true {
-	table.Component.RemoveEventListener("action", nil)
+	if table != nil && ok == true {
+		table.Component.RemoveEventListener("action", controller.tableActionListener)
+	}
+
+	controller.tableActionListener = nil
 }
 ```
 
@@ -530,8 +561,9 @@ for the minimal skeleton.
 - [ ] Struct has `Main`, `Schema`, and `View` fields.
 - [ ] `NewTasks(main, view)` type-asserts the View once, in the constructor.
 - [ ] `Name()` returns the same lowercase name as the View and `data-name`.
+- [ ] Listener references are cached in private controller fields.
 - [ ] `Enter()` attaches all listeners and calls `go controller.Update()`.
-- [ ] `Leave()` removes every listener (`RemoveEventListener(event, nil)`).
+- [ ] `Leave()` removes every listener using its cached reference (`RemoveEventListener(event, controller.…Listener)`).
 - [ ] `Update()` calls an action, writes `Schema` to `Storage`, updates Components.
 - [ ] `Render()` only delegates to `controller.View.Render()`.
 - [ ] Actions are called through `controller.Main.Client`, never `fetch` directly.

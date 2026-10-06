@@ -100,26 +100,24 @@ func (history *History) RemoveEventListener(listener *EventListener) bool {
 
 	if listener != nil {
 
-		var index int = -1
+		if listener.Function != nil {
 
-		for l := 0; l < len(history.listeners); l++ {
-
-			if history.listeners[l].Id == listener.Id {
-				index = l
-				break
-			}
-
-		}
-
-		if index != -1 {
-
-			listener := history.listeners[index]
 			wrapped_type := js.ValueOf("popstate")
 			wrapped_callback := *listener.Function
 			wrapped_capture := js.ValueOf(true)
 			js.Global().Get("window").Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
 
-			history.listeners = append(history.listeners[:index], history.listeners[index+1:]...)
+			listener.Function.Release()
+			listener.Function = nil
+
+			for l := 0; l < len(history.listeners); l++ {
+
+				if history.listeners[l].Id == listener.Id {
+					history.listeners = append(history.listeners[:l], history.listeners[l+1:]...)
+					break
+				}
+
+			}
 
 			result = true
 
@@ -130,10 +128,18 @@ func (history *History) RemoveEventListener(listener *EventListener) bool {
 		for l := 0; l < len(history.listeners); l++ {
 
 			listener := history.listeners[l]
-			wrapped_type := js.ValueOf("popstate")
-			wrapped_callback := *listener.Function
-			wrapped_capture := js.ValueOf(true)
-			js.Global().Get("window").Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+
+			if listener.Function != nil {
+
+				wrapped_type := js.ValueOf("popstate")
+				wrapped_callback := *listener.Function
+				wrapped_capture := js.ValueOf(true)
+				js.Global().Get("window").Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+
+				listener.Function.Release()
+				listener.Function = nil
+
+			}
 
 		}
 

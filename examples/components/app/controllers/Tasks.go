@@ -7,6 +7,7 @@ import "github.com/cookiengineer/gooey/components/data"
 import "github.com/cookiengineer/gooey/components/interfaces"
 import "example/actions"
 import "example/schemas"
+import "sort"
 import "sync"
 
 type Tasks struct {
@@ -14,6 +15,10 @@ type Tasks struct {
 	Schema      *schemas.Tasks `json:"schema"`
 	View        *app.View      `json:"view"`
 	unsubscribe []func()       `json:"-"`
+
+	table_listener  *components.EventListener `json:"-"`
+	footer_listener *components.EventListener `json:"-"`
+	dialog_listener *components.EventListener `json:"-"`
 }
 
 func NewTasks(main *app.Main, view interfaces.View) *Tasks {
@@ -37,7 +42,7 @@ func (controller *Tasks) Enter() bool {
 
 	if fieldset != nil && table != nil && ok0 == true && ok1 == true {
 
-		table.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+		controller.table_listener = components.ToEventListener(func(event string, attributes map[string]any) {
 
 			action, ok := attributes["action"].(string)
 
@@ -49,6 +54,8 @@ func (controller *Tasks) Enter() bool {
 
 						indexes, dataset := table.Selected()
 						waitgroup := sync.WaitGroup{}
+						mutex := sync.Mutex{}
+						updated := make(map[int]data.Data)
 
 						table.Deselect(indexes)
 
@@ -73,8 +80,9 @@ func (controller *Tasks) Enter() bool {
 
 								if result.Done == false && err == nil {
 
-									table.Remove([]int{index})
-									table.Add(entry)
+									mutex.Lock()
+									updated[index] = entry
+									mutex.Unlock()
 
 								}
 
@@ -86,6 +94,24 @@ func (controller *Tasks) Enter() bool {
 
 						waitgroup.Wait()
 
+						removed := make([]int, 0, len(updated))
+
+						for index := range updated {
+							removed = append(removed, index)
+						}
+
+						sort.Sort(sort.Reverse(sort.IntSlice(removed)))
+
+						for _, index := range removed {
+							table.Remove([]int{index})
+						}
+
+						for _, index := range removed {
+							table.Add(updated[index])
+						}
+
+						table.Render()
+
 					}()
 
 				} else if action == "mark-done" {
@@ -94,6 +120,8 @@ func (controller *Tasks) Enter() bool {
 
 						indexes, dataset := table.Selected()
 						waitgroup := sync.WaitGroup{}
+						mutex := sync.Mutex{}
+						updated := make(map[int]data.Data)
 
 						table.Deselect(indexes)
 
@@ -118,8 +146,9 @@ func (controller *Tasks) Enter() bool {
 
 								if result.Done == true && err == nil {
 
-									table.Remove([]int{index})
-									table.Add(entry)
+									mutex.Lock()
+									updated[index] = entry
+									mutex.Unlock()
 
 								}
 
@@ -131,17 +160,37 @@ func (controller *Tasks) Enter() bool {
 
 						waitgroup.Wait()
 
+						removed := make([]int, 0, len(updated))
+
+						for index := range updated {
+							removed = append(removed, index)
+						}
+
+						sort.Sort(sort.Reverse(sort.IntSlice(removed)))
+
+						for _, index := range removed {
+							table.Remove([]int{index})
+						}
+
+						for _, index := range removed {
+							table.Add(updated[index])
+						}
+
+						table.Render()
+
 					}()
 
 				}
 
 			}
 
-		}, false))
+		}, false)
+
+		table.Component.AddEventListener("action", controller.table_listener)
 
 	}
 
-	controller.Main.Footer.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+	controller.footer_listener = components.ToEventListener(func(event string, attributes map[string]any) {
 
 		action, ok := attributes["action"].(string)
 
@@ -153,9 +202,11 @@ func (controller *Tasks) Enter() bool {
 
 		}
 
-	}, false))
+	}, false)
 
-	controller.Main.Dialog.Component.AddEventListener("action", components.ToEventListener(func(event string, attributes map[string]any) {
+	controller.Main.Footer.Component.AddEventListener("action", controller.footer_listener)
+
+	controller.dialog_listener = components.ToEventListener(func(event string, attributes map[string]any) {
 
 		action, ok := attributes["action"].(string)
 
@@ -232,7 +283,9 @@ func (controller *Tasks) Enter() bool {
 
 		}
 
-	}, false))
+	}, false)
+
+	controller.Main.Dialog.Component.AddEventListener("action", controller.dialog_listener)
 
 	controller.unsubscribe = append(controller.unsubscribe, controller.Main.Storage.Subscribe("tasks", func(value any) {
 
@@ -253,8 +306,27 @@ func (controller *Tasks) Enter() bool {
 
 func (controller *Tasks) Leave() bool {
 
-	controller.Main.Footer.Component.RemoveEventListener("action", nil)
-	controller.Main.Dialog.Component.RemoveEventListener("action", nil)
+	if controller.table_listener != nil {
+
+		table, ok := components.UnwrapComponent[*content.Table](controller.View.Query("section > article > table"))
+
+		if table != nil && ok == true {
+			table.Component.RemoveEventListener("action", controller.table_listener)
+		}
+
+		controller.table_listener = nil
+
+	}
+
+	if controller.footer_listener != nil {
+		controller.Main.Footer.Component.RemoveEventListener("action", controller.footer_listener)
+		controller.footer_listener = nil
+	}
+
+	if controller.dialog_listener != nil {
+		controller.Main.Dialog.Component.RemoveEventListener("action", controller.dialog_listener)
+		controller.dialog_listener = nil
+	}
 
 	for _, unsubscribe := range controller.unsubscribe {
 		unsubscribe()

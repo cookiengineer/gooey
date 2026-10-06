@@ -178,34 +178,32 @@ func (win *Window) RemoveEventListener(typ dom.EventType, listener *dom.EventLis
 
 	if listener != nil {
 
-		listeners, ok := win.listeners[typ]
+		if listener.Function != nil {
 
-		if ok == true {
+			wrapped_type := js.ValueOf(string(typ))
+			wrapped_callback := *listener.Function
+			wrapped_capture := js.ValueOf(true)
+			win.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
 
-			var index int = -1
+			listener.Function.Release()
+			listener.Function = nil
 
-			for l := 0; l < len(listeners); l++ {
+			listeners, ok := win.listeners[typ]
 
-				if listeners[l].Id == listener.Id {
-					index = l
-					break
+			if ok == true {
+
+				for l := 0; l < len(listeners); l++ {
+
+					if listeners[l].Id == listener.Id {
+						win.listeners[typ] = append(listeners[:l], listeners[l+1:]...)
+						break
+					}
+
 				}
 
 			}
 
-			if index != -1 {
-
-				listener := listeners[index]
-				wrapped_type := js.ValueOf(string(typ))
-				wrapped_callback := *listener.Function
-				wrapped_capture := js.ValueOf(true)
-				win.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
-
-				win.listeners[typ] = append(win.listeners[typ][:index], win.listeners[typ][index+1:]...)
-
-				result = true
-
-			}
+			result = true
 
 		}
 
@@ -218,10 +216,18 @@ func (win *Window) RemoveEventListener(typ dom.EventType, listener *dom.EventLis
 			for l := 0; l < len(listeners); l++ {
 
 				listener := listeners[l]
-				wrapped_type := js.ValueOf(string(typ))
-				wrapped_callback := *listener.Function
-				wrapped_capture := js.ValueOf(true)
-				win.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+
+				if listener.Function != nil {
+
+					wrapped_type := js.ValueOf(string(typ))
+					wrapped_callback := *listener.Function
+					wrapped_capture := js.ValueOf(true)
+					win.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+
+					listener.Function.Release()
+					listener.Function = nil
+
+				}
 
 			}
 

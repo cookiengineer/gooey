@@ -155,34 +155,32 @@ func (websocket *WebSocket) RemoveEventListener(typ EventType, listener *EventLi
 
 	if listener != nil {
 
-		listeners, ok := websocket.listeners[typ]
+		if listener.Function != nil {
 
-		if ok == true {
+			wrapped_type := js.ValueOf(string(typ))
+			wrapped_callback := *listener.Function
+			wrapped_capture := js.ValueOf(true)
+			websocket.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
 
-			var index int = -1
+			listener.Function.Release()
+			listener.Function = nil
 
-			for l := 0; l < len(listeners); l++ {
+			listeners, ok := websocket.listeners[typ]
 
-				if listeners[l].Id == listener.Id {
-					index = l
-					break
+			if ok == true {
+
+				for l := 0; l < len(listeners); l++ {
+
+					if listeners[l].Id == listener.Id {
+						websocket.listeners[typ] = append(listeners[:l], listeners[l+1:]...)
+						break
+					}
+
 				}
 
 			}
 
-			if index != -1 {
-
-				listener := listeners[index]
-				wrapped_type := js.ValueOf(string(typ))
-				wrapped_callback := *listener.Function
-				wrapped_capture := js.ValueOf(true)
-				websocket.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
-
-				websocket.listeners[typ] = append(websocket.listeners[typ][:index], websocket.listeners[typ][index+1:]...)
-
-				result = true
-
-			}
+			result = true
 
 		}
 
@@ -195,10 +193,18 @@ func (websocket *WebSocket) RemoveEventListener(typ EventType, listener *EventLi
 			for l := 0; l < len(listeners); l++ {
 
 				listener := listeners[l]
-				wrapped_type := js.ValueOf(string(typ))
-				wrapped_callback := *listener.Function
-				wrapped_capture := js.ValueOf(true)
-				websocket.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+
+				if listener.Function != nil {
+
+					wrapped_type := js.ValueOf(string(typ))
+					wrapped_callback := *listener.Function
+					wrapped_capture := js.ValueOf(true)
+					websocket.Value.Call("removeEventListener", wrapped_type, wrapped_callback, wrapped_capture)
+
+					listener.Function.Release()
+					listener.Function = nil
+
+				}
 
 			}
 
